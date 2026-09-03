@@ -108,6 +108,8 @@ if(SQISIGN_V3_REQUIRE_STATIC_STACK)
     target_compile_options(sqisign_v3_p324_3_m4f PRIVATE
         -Werror=vla
         -Werror=alloca
+        -fno-builtin-fprintf
+        -fno-builtin-fwrite
     )
 endif()
 
@@ -215,9 +217,15 @@ else()
     set(SQISIGN_V3_PLACEMENT_SOURCE "")
 endif()
 
+set(SQISIGN_V3_DIAGNOSTIC_TRAP_SOURCE "")
+if(SQISIGN_V3_REQUIRE_STATIC_STACK)
+    set(SQISIGN_V3_DIAGNOSTIC_TRAP_SOURCE diagnostic_traps.c)
+endif()
+
 add_executable(${SQISIGN_V3_TARGET}
     ${SQISIGN_RESEARCH_ROOT}/src/platform/rp2350/call_on_psp.S
     allocator_traps.c
+    ${SQISIGN_V3_DIAGNOSTIC_TRAP_SOURCE}
     ${SQISIGN_V3_PLACEMENT_SOURCE}
     ${SQISIGN_V3_KSV_SOURCE}
     ${SQISIGN_V3_KAT_HEADER}
@@ -226,6 +234,10 @@ add_executable(${SQISIGN_V3_TARGET}
 set_source_files_properties(allocator_traps.c PROPERTIES
     COMPILE_OPTIONS "-fno-builtin"
 )
+if(SQISIGN_V3_REQUIRE_STATIC_STACK)
+    set_source_files_properties(diagnostic_traps.c PROPERTIES
+        COMPILE_OPTIONS "-fno-builtin")
+endif()
 
 target_link_libraries(${SQISIGN_V3_TARGET} PRIVATE
     hardware_clocks

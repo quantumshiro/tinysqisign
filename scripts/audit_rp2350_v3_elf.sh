@@ -87,32 +87,64 @@ if test -n "$allocator_symbols"; then
 fi
 allocator_symbols_sorted=$(printf '%s\n' "$allocator_symbols" | sed '/^$/d' | LC_ALL=C sort)
 expected_allocator_symbols=$(printf '%s\n' _free_r _malloc_r _realloc_r | LC_ALL=C sort)
-if test "$allocator_symbols_sorted" != "$expected_allocator_symbols"; then
+if test -n "$allocator_symbols_sorted" && \
+   test "$allocator_symbols_sorted" != "$expected_allocator_symbols"; then
     printf '%s allocator ABI differs from the fail-stop policy:\n%s\n' \
         "$audit_label" "$allocator_symbols_sorted" >&2
     exit 1
 fi
-if ! $objdump_tool -d --disassemble=sqisign_allocator_violation "$elf" | \
-    grep -q '[[:space:]]udf[[:space:]]'; then
-    printf '%s allocator violation handler lacks UDF\n' "$audit_label" >&2
-    exit 1
-fi
 map_file="$elf.map"
 test -f "$map_file"
-for allocator_symbol in _free_r _malloc_r _realloc_r; do
-    if ! $objdump_tool -d --disassemble="$allocator_symbol" "$elf" | \
-        grep -q '<sqisign_allocator_violation>'; then
-        printf '%s is not a direct fail-stop shim: %s\n' \
-            "$audit_label" "$allocator_symbol" >&2
+if test "$allocator_symbol_count" -gt 0; then
+    if ! $objdump_tool -d --disassemble=sqisign_allocator_violation "$elf" | \
+        grep -q '[[:space:]]udf[[:space:]]'; then
+        printf '%s allocator violation handler lacks UDF\n' "$audit_label" >&2
         exit 1
     fi
-    if ! grep -A1 "[.]text[.]unlikely[.]${allocator_symbol}$" "$map_file" | \
-        grep -q 'allocator_traps[.]c[.]o'; then
-        printf '%s has unexpected allocator symbol provenance: %s\n' \
-            "$audit_label" "$allocator_symbol" >&2
+    for allocator_symbol in _free_r _malloc_r _realloc_r; do
+        if ! $objdump_tool -d --disassemble="$allocator_symbol" "$elf" | \
+            grep -q '<sqisign_allocator_violation>'; then
+            printf '%s is not a direct fail-stop shim: %s\n' \
+                "$audit_label" "$allocator_symbol" >&2
+            exit 1
+        fi
+        if ! grep -A1 "[.]text[.]unlikely[.]${allocator_symbol}$" "$map_file" | \
+            grep -q 'allocator_traps[.]c[.]o'; then
+            printf '%s has unexpected allocator symbol provenance: %s\n' \
+                "$audit_label" "$allocator_symbol" >&2
+            exit 1
+        fi
+    done
+fi
+
+if printf '%s\n' "$symbol_names" | grep -q '^sqisign_diagnostic_violation$'; then
+    for diagnostic_symbol in fprintf abort; do
+        if ! printf '%s\n' "$symbol_names" | grep -q "^${diagnostic_symbol}$"; then
+            printf '%s diagnostic fail-stop symbol missing: %s\n' \
+                "$audit_label" "$diagnostic_symbol" >&2
+            exit 1
+        fi
+        if ! $objdump_tool -d --disassemble="$diagnostic_symbol" "$elf" | \
+            grep -q '<sqisign_diagnostic_violation>'; then
+            printf '%s is not a direct diagnostic fail-stop shim: %s\n' \
+                "$audit_label" "$diagnostic_symbol" >&2
+            exit 1
+        fi
+    done
+    if ! $objdump_tool -d --disassemble=sqisign_diagnostic_violation "$elf" | \
+        grep -q '[[:space:]]udf[[:space:]]'; then
+        printf '%s diagnostic violation handler lacks UDF\n' \
+            "$audit_label" >&2
         exit 1
     fi
-done
+    for forbidden_stdio in _fwrite_r fwrite __sfvwrite_r raise _kill_r; do
+        if printf '%s\n' "$symbol_names" | grep -q "^${forbidden_stdio}$"; then
+            printf '%s unexpected newlib diagnostic path remains: %s\n' \
+                "$audit_label" "$forbidden_stdio" >&2
+            exit 1
+        fi
+    done
+fi
 
 crypto_archive="$build_root/libsqisign_v3_p324_3_m4f.a"
 test -f "$crypto_archive"
