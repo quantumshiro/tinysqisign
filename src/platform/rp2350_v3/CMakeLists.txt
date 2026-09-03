@@ -242,6 +242,7 @@ endif()
 target_link_libraries(${SQISIGN_V3_TARGET} PRIVATE
     hardware_clocks
     hardware_structs
+    hardware_xip_cache
     pico_stdlib
     sqisign_v3_p324_3_m4f
 )

@@ -6,6 +6,7 @@
 
 #include "hardware/clocks.h"
 #include "hardware/structs/scb.h"
+#include "hardware/xip_cache.h"
 #include "pico/binary_info.h"
 #include "pico/stdio.h"
 #include "pico/stdio_usb.h"
@@ -296,6 +297,7 @@ print_banner(void)
     printf("kat_rsp_sha256=%s kat_first=0 kat_count=%u fixed_message_vector=0"
            " fixed_message_bytes=%u signing_seed=a5-sequence-v1"
            " fixed_key_buffer_address=1"
+           " xip_cache_invalidate_before_timing=1"
            " repetitions=%u passes=%u samples=%u\r\n",
            SQISIGN_V3_KAT_RSP_SHA256,
            (unsigned)SQISIGN_V3_KAT_VECTOR_COUNT,
@@ -379,6 +381,7 @@ main(void)
 
             signed_message_length = 0;
             prepare_process_stack();
+            xip_cache_invalidate_all();
             const uint64_t sign_start = time_us_64();
             const int sign_result = run_on_process_stack(sign_thunk);
             const uint64_t sign_us = time_us_64() - sign_start;
@@ -388,6 +391,7 @@ main(void)
 
             opened_message_length = 0;
             prepare_process_stack();
+            xip_cache_invalidate_all();
             const uint64_t verify_start = time_us_64();
             const int verify_result = run_on_process_stack(verify_thunk);
             const uint64_t verify_us = time_us_64() - verify_start;
