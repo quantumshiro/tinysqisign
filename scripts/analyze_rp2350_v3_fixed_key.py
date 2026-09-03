@@ -303,7 +303,43 @@ def main() -> int:
     parser.add_argument("--size-tool", type=Path, required=True)
     parser.add_argument("--expected-firmware-commit", required=True)
     parser.add_argument("--expected-d1-commit", required=True)
+    parser.add_argument(
+        "--design",
+        type=Path,
+        default=ROOT / "experiments/sca/v3-rp2350-fixed-key-timing-design.json",
+    )
     args = parser.parse_args()
+
+    design_record = json.loads(args.design.read_text(encoding="utf-8"))
+    if (
+        design_record.get("schema")
+        != "sqisign-v3-rp2350-fixed-key-timing-design-v1"
+        or design_record.get("status") != "FROZEN_BEFORE_TARGET_CAPTURE"
+    ):
+        raise ValueError("unexpected predeclared design record")
+    expected_design = {
+        "official_keys": 10,
+        "repetitions_per_key_per_pass": 5,
+        "samples_per_implementation": 100,
+        "total_sign_samples": 200,
+    }
+    for field, expected in expected_design.items():
+        if design_record["design"].get(field) != expected:
+            raise ValueError(f"predeclared design changed: {field}")
+    if design_record.get("firmware_commit") != args.expected_firmware_commit:
+        raise ValueError("predeclared design names a different firmware commit")
+    if design_record["sources"].get("official") != OFFICIAL_COMMIT:
+        raise ValueError("predeclared design names a different official source")
+    if design_record["sources"].get("d1") != args.expected_d1_commit:
+        raise ValueError("predeclared design names a different D1 source")
+    rule = design_record["predeclared_decision_rule"]
+    if (
+        rule.get("between_pass_per_key_median_spearman_minimum") != 0.8
+        or rule.get("each_pass_between_key_span_fraction_minimum") != 0.01
+        or rule.get("each_pass_span_to_median_within_key_mad_minimum") != 10.0
+        or rule.get("overall_detection_requires_both_implementations") is not True
+    ):
+        raise ValueError("predeclared timing decision rule changed")
 
     records = {
         implementation: parse_capture(
@@ -545,6 +581,11 @@ def main() -> int:
         "official_source_commit": OFFICIAL_COMMIT,
         "d1_source_commit": args.expected_d1_commit,
         "all_trees_clean": True,
+        "predeclared_design": {
+            "filename": args.design.name,
+            "sha256": sha256(args.design),
+            "status": design_record["status"],
+        },
         "validation": {
             "all_signatures_verified": True,
             "all_cells_balanced": True,

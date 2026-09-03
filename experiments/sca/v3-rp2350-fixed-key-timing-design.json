@@ -1,0 +1,37 @@
+{
+  "schema": "sqisign-v3-rp2350-fixed-key-timing-design-v1",
+  "status": "FROZEN_BEFORE_TARGET_CAPTURE",
+  "freeze_date": "2026-09-04",
+  "firmware_commit": "899e572f084c90b7b3be30222e340dc42e380876",
+  "sources": {
+    "official": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+    "d1": "9293313fb58de4c5ce9dd27a5a9fde0058766c79"
+  },
+  "design": {
+    "board_count": 1,
+    "official_keys": 10,
+    "fixed_message_vector": 0,
+    "fixed_message_bytes": 33,
+    "fixed_signing_rng": "a5-sequence-v1",
+    "pass_labels": ["A", "B"],
+    "repetitions_per_key_per_pass": 5,
+    "samples_per_implementation": 100,
+    "total_sign_samples": 200,
+    "outer_image_order": ["baseline", "d1"]
+  },
+  "confound_controls": {
+    "copy_each_secret_and_public_key_to_one_fixed_address_before_timing": true,
+    "invalidate_xip_cache_immediately_before_each_timed_sign_and_verify": true,
+    "warmup_sign_and_verify_before_samples": true,
+    "verify_every_signature": true,
+    "require_stable_signature_digest_per_key": true
+  },
+  "predeclared_decision_rule": {
+    "unit": "implementation",
+    "between_pass_per_key_median_spearman_minimum": 0.8,
+    "each_pass_between_key_span_fraction_minimum": 0.01,
+    "each_pass_span_to_median_within_key_mad_minimum": 10.0,
+    "overall_detection_requires_both_implementations": true
+  },
+  "claim_boundary": "A positive result is repeatable key-associated RP2350 wall-clock timing under this finite design. It is not attribution to secret-only state, an analog leakage test, key recovery, a population estimate, a worst-case timing bound, or evidence of side-channel resistance. A negative result is not evidence of non-leakage."
+}
