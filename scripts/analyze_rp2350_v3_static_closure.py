@@ -210,8 +210,9 @@ def main() -> int:
         "claim_boundary": (
             "The clean p324_3/RADIX32 D2 image passed one official vector-0 K/S/V path, "
             "and every observed Thread-mode PSP extent was below its linked conservative "
-            "operation bound. The result is image-specific and excludes asynchronous "
-            "interrupt/MSP nesting, other parameter sets, and side-channel resistance."
+            "synchronous operation bound. The result is image-specific and excludes "
+            "exception-entry stacking, asynchronous interrupt/MSP nesting, other parameter "
+            "sets, and side-channel resistance."
         ),
     }
     args.output_dir.mkdir(parents=True, exist_ok=True)

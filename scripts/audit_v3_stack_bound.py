@@ -738,8 +738,9 @@ def static_psp_bound(
         "fits_reservation": total <= 128 * 1024,
         "witness": witness,
         "scope": (
-            "linked p324_3/RADIX32 Thread-mode call graph rooted at the operation "
-            "thunk, with rank-bounded recursive SCCs; excludes asynchronous MSP use"
+            "linked p324_3/RADIX32 synchronous Thread-mode call graph rooted at the "
+            "operation thunk, with rank-bounded recursive SCCs; excludes exception-entry "
+            "stacking and asynchronous MSP use"
         ),
     }
 
@@ -926,16 +927,16 @@ def main() -> int:
             "operation_psp_bounds_established": all_psp_bounds_fit,
             "whole_program_worst_case_stack_bound_established": False,
             "reason": (
-                "The linked Thread-mode operation roots have conservative PSP bounds, "
+                "The linked synchronous Thread-mode operation roots have conservative PSP bounds, "
                 "including source-ranked recursion and ELF-bound manual assembly frames. "
-                "A whole-program bound is still withheld because asynchronous interrupt "
-                "nesting and MSP call chains are outside this analysis."
+                "A whole-program bound is still withheld because exception-entry stacking, "
+                "asynchronous interrupt nesting, and MSP call chains are outside this analysis."
                 if all_psp_bounds_fit
                 else "The linked operation-root closure is incomplete or one conservative "
                 "PSP bound exceeds its reservation."
             ),
             "next_proof_obligations": [
-                "add interrupt/MSP bounds separately from the operation PSP bound",
+                "add exception-entry and interrupt/MSP bounds separately from the synchronous operation PSP bound",
                 "compare the resulting static bound with guarded multi-input PSP watermarks",
             ],
         },
