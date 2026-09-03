@@ -21,6 +21,7 @@ IMPLEMENTATIONS = ("baseline", "d1")
 PASSES = ("A", "B")
 OFFICIAL_COMMIT = "6d017708db403bf83977fa70770fc4f7f9e9ff21"
 KAT_RSP_SHA256 = "b632c926c72692f850a71b7f7bb338fb1aeee0d9f3362aa35a8ac6255ca3155b"
+D1_PATCH_SHA256 = "44e089298a330b7019b8d9c82110b2d26d0dad1dce5d494098fd667e6f4853a6"
 
 
 def sha256(path: Path) -> str:
@@ -303,6 +304,7 @@ def main() -> int:
     parser.add_argument("--size-tool", type=Path, required=True)
     parser.add_argument("--expected-firmware-commit", required=True)
     parser.add_argument("--expected-d1-commit", required=True)
+    parser.add_argument("--d1-patch", type=Path, required=True)
     parser.add_argument(
         "--design",
         type=Path,
@@ -332,6 +334,8 @@ def main() -> int:
         raise ValueError("predeclared design names a different official source")
     if design_record["sources"].get("d1") != args.expected_d1_commit:
         raise ValueError("predeclared design names a different D1 source")
+    if sha256(args.d1_patch) != D1_PATCH_SHA256:
+        raise ValueError("D1 reconstruction patch digest changed")
     rule = design_record["predeclared_decision_rule"]
     if (
         rule.get("between_pass_per_key_median_spearman_minimum") != 0.8
@@ -580,6 +584,11 @@ def main() -> int:
         "firmware_commit": args.expected_firmware_commit,
         "official_source_commit": OFFICIAL_COMMIT,
         "d1_source_commit": args.expected_d1_commit,
+        "d1_reconstruction_patch": {
+            "filename": args.d1_patch.name,
+            "bytes": args.d1_patch.stat().st_size,
+            "sha256": D1_PATCH_SHA256,
+        },
         "all_trees_clean": True,
         "predeclared_design": {
             "filename": args.design.name,
