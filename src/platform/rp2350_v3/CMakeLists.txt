@@ -117,7 +117,7 @@ set_target_properties(sqisign_v3_p324_3_m4f PROPERTIES
 )
 
 set(SQISIGN_V3_IMAGE_KIND "baseline" CACHE STRING
-    "v3 firmware identity: baseline, d1, d2-static, baseline-multi, or d1-multi")
+    "v3 firmware identity: baseline, d1, d2-static, multi, or fixed-key SCA")
 set(SQISIGN_V3_PLACEMENT_VARIANT "a" CACHE STRING
     "linked-code placement variant for multi-vector images: a or b")
 if(NOT SQISIGN_V3_PLACEMENT_VARIANT MATCHES "^[ab]$")
@@ -126,6 +126,7 @@ endif()
 string(TOUPPER "${SQISIGN_V3_PLACEMENT_VARIANT}"
     SQISIGN_V3_PLACEMENT_VARIANT_UPPER)
 set(SQISIGN_V3_IS_MULTI OFF)
+set(SQISIGN_V3_IS_FIXED_KEY_SCA OFF)
 if(SQISIGN_V3_IMAGE_KIND STREQUAL "baseline")
     set(SQISIGN_V3_TARGET sqisign_rp2350_v3_baseline)
     set(SQISIGN_V3_BANNER "SQISIGN_RP2350_V3_BASELINE v1")
@@ -164,11 +165,25 @@ elseif(SQISIGN_V3_IMAGE_KIND STREQUAL "d1-multi")
         "SQISIGN_RP2350_V3_D1_MULTI_${SQISIGN_V3_PLACEMENT_VARIANT_UPPER} alive")
     set(SQISIGN_V3_DESCRIPTION
         "v3 D1 lifetime-scheduled LLL, ten-vector K/S/V plus negative verify, placement audit")
+elseif(SQISIGN_V3_IMAGE_KIND STREQUAL "baseline-sca-key")
+    set(SQISIGN_V3_IS_FIXED_KEY_SCA ON)
+    set(SQISIGN_V3_TARGET sqisign_rp2350_v3_baseline_sca_key)
+    set(SQISIGN_V3_BANNER "SQISIGN_RP2350_V3_BASELINE_SCA_KEY v1")
+    set(SQISIGN_V3_ALIVE "SQISIGN_RP2350_V3_BASELINE_SCA_KEY alive")
+    set(SQISIGN_V3_DESCRIPTION
+        "Official v3 m4f, fixed-message fixed-RNG ten-key timing screen")
+elseif(SQISIGN_V3_IMAGE_KIND STREQUAL "d1-sca-key")
+    set(SQISIGN_V3_IS_FIXED_KEY_SCA ON)
+    set(SQISIGN_V3_TARGET sqisign_rp2350_v3_d1_sca_key)
+    set(SQISIGN_V3_BANNER "SQISIGN_RP2350_V3_D1_SCA_KEY v1")
+    set(SQISIGN_V3_ALIVE "SQISIGN_RP2350_V3_D1_SCA_KEY alive")
+    set(SQISIGN_V3_DESCRIPTION
+        "v3 D1 m4f, fixed-message fixed-RNG ten-key timing screen")
 else()
     message(FATAL_ERROR "Unsupported SQISIGN_V3_IMAGE_KIND")
 endif()
 
-if(SQISIGN_V3_IS_MULTI)
+if(SQISIGN_V3_IS_MULTI OR SQISIGN_V3_IS_FIXED_KEY_SCA)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     set(SQISIGN_V3_KAT_HEADER
         "${CMAKE_CURRENT_BINARY_DIR}/generated/v3_kat_subset.h")
@@ -186,9 +201,14 @@ if(SQISIGN_V3_IS_MULTI)
             "${SQISIGN_V3_KAT_RSP}"
         VERBATIM
     )
-    set(SQISIGN_V3_KSV_SOURCE v3_ksv_multi.c)
-    set(SQISIGN_V3_PLACEMENT_SOURCE
-        placement_${SQISIGN_V3_PLACEMENT_VARIANT}.S)
+    if(SQISIGN_V3_IS_MULTI)
+        set(SQISIGN_V3_KSV_SOURCE v3_ksv_multi.c)
+        set(SQISIGN_V3_PLACEMENT_SOURCE
+            placement_${SQISIGN_V3_PLACEMENT_VARIANT}.S)
+    else()
+        set(SQISIGN_V3_KSV_SOURCE v3_sca_fixed_key.c)
+        set(SQISIGN_V3_PLACEMENT_SOURCE "")
+    endif()
 else()
     set(SQISIGN_V3_KAT_HEADER "")
     set(SQISIGN_V3_KSV_SOURCE v3_ksv_kat.c)
@@ -214,7 +234,7 @@ target_link_libraries(${SQISIGN_V3_TARGET} PRIVATE
     sqisign_v3_p324_3_m4f
 )
 
-if(SQISIGN_V3_IS_MULTI)
+if(SQISIGN_V3_IS_MULTI OR SQISIGN_V3_IS_FIXED_KEY_SCA)
     target_include_directories(${SQISIGN_V3_TARGET} PRIVATE
         "${CMAKE_CURRENT_BINARY_DIR}/generated")
 endif()

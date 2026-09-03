@@ -2,11 +2,28 @@
 # Structural audit for the isolated SQIsign v3 RP2350 firmware.
 set -eu
 
-test "$#" -eq 4
+test "$#" -eq 4 || test "$#" -eq 5
 nm_tool=$1
 objdump_tool=$2
 size_tool=$3
 elf=$4
+audit_profile=${5:-ksv}
+
+case $audit_profile in
+    ksv)
+        required_api_symbols='crypto_sign_keypair crypto_sign crypto_sign_open'
+        required_protocol_symbols='protocols_keygen protocols_sign protocols_verify'
+        ;;
+    sign-verify)
+        required_api_symbols='crypto_sign crypto_sign_open'
+        required_protocol_symbols='protocols_sign protocols_verify'
+        ;;
+    *)
+        printf 'unknown SQIsign v3 ELF audit profile: %s\n' \
+            "$audit_profile" >&2
+        exit 1
+        ;;
+esac
 
 case ${elf##*/} in
     *v3_baseline*) audit_label='v3 baseline' ;;
@@ -36,8 +53,8 @@ symbol_table=$($nm_tool -n -S "$elf")
 symbol_names=$(printf '%s\n' "$symbol_table" | awk 'NF { print $NF }')
 
 for required in \
-    crypto_sign_keypair crypto_sign crypto_sign_open \
-    protocols_keygen protocols_sign protocols_verify \
+    $required_api_symbols \
+    $required_protocol_symbols \
     dim2id2iso_ideal_to_isogeny_qlapoty \
     randombytes randombytes_init process_stack; do
     if ! printf '%s\n' "$symbol_names" | grep -q "^${required}$"; then
@@ -157,7 +174,8 @@ while test "$#" -ge 4; do
 done
 test "$#" -eq 0
 
-printf 'SQIsign %s RP2350 ELF audit PASS\n' "$audit_label"
+printf 'SQIsign %s RP2350 ELF audit PASS (profile=%s)\n' \
+    "$audit_label" "$audit_profile"
 printf 'stack_usage_files=%s dynamic_stack_records=%s allocator_trap_symbols=%s process_stack_bytes=%u heap_section_bytes=0\n' \
     "$su_count" "$dynamic_count" "$allocator_symbol_count" \
     $((0x$process_stack_size))
