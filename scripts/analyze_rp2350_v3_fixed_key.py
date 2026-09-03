@@ -360,6 +360,16 @@ def main() -> int:
         ),
         "d1": artifact_metadata(args.d1_build, "d1", args.size_tool),
     }
+    for implementation in IMPLEMENTATIONS:
+        for label in ("elf", "uf2", "map", "archive"):
+            expected_digest = design_record["binaries"][implementation][
+                f"{label}_sha256"
+            ]
+            observed_digest = artifacts[implementation]["files"][label]["sha256"]
+            if observed_digest != expected_digest:
+                raise ValueError(
+                    f"{implementation}: {label} differs from the predeclared binary"
+                )
 
     cells: dict[tuple[str, str, int], list[dict[str, object]]] = defaultdict(list)
     digests: dict[tuple[str, int], set[str]] = defaultdict(set)

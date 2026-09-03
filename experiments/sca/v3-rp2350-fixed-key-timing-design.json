@@ -7,6 +7,20 @@
     "official": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
     "d1": "9293313fb58de4c5ce9dd27a5a9fde0058766c79"
   },
+  "binaries": {
+    "baseline": {
+      "elf_sha256": "3a30a6022ce4c9e0c31a71655583a347a2c7728f36e03a69052d6981e43a834c",
+      "uf2_sha256": "09c10cd9812a14a692c64842f11204f3d69f8ce3f04c2ae962c466ad5d03c314",
+      "map_sha256": "5cce3cac57e493359b878eaa7abd74e5196453ed061211eb977190b8725578e6",
+      "archive_sha256": "99957e40a7f82db8a807f52ed39b71adcb47f312ad2bcdd5ce388eb98fe73688"
+    },
+    "d1": {
+      "elf_sha256": "a8bf87a862d15574de599da491c891119a634e928544b75d316b70c1db9bc335",
+      "uf2_sha256": "8e5a5973a96f051377b5ae1100c25ec3c91972f7a0c989bd69615db522d3f9b7",
+      "map_sha256": "1df6ad827db1f241cb8ffd77e334a0862b2c678a2e272d78bde5918a3c4557f4",
+      "archive_sha256": "5daef85128b6abd1c0826729619b7df589a8c5e2865f91efcf7a7678d11c7ae8"
+    }
+  },
   "design": {
     "board_count": 1,
     "official_keys": 10,
