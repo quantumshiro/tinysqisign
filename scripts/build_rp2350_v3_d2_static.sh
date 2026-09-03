@@ -3,7 +3,7 @@
 set -eu
 
 project_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
-sdk_root="$project_root/external/pico-sdk"
+sdk_root=${PICO_SDK_PATH:-"$project_root/external/pico-sdk"}
 v3_root=${SQISIGN_V3_SOURCE_ROOT:-"$project_root/work/v3-static-stack-d2"}
 build_root=${SQISIGN_RP2350_V3_BUILD_ROOT:-"$project_root/build-rp2350-v3-d2-static"}
 toolchain_root=${ARM_TOOLCHAIN_ROOT:-/Users/hiro/workspace/raspico2/arm-gnu-toolchain-extracted}
