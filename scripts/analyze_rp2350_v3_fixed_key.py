@@ -153,6 +153,7 @@ def parse_capture(
             "fixed_message_vector": "0",
             "fixed_message_bytes": "33",
             "signing_seed": "a5-sequence-v1",
+            "fixed_key_buffer_address": "1",
             "repetitions": "2",
             "passes": "2",
             "samples": "40",
@@ -549,6 +550,7 @@ def main() -> int:
             "emitted_schedules_identical": True,
             "stable_signature_per_key_under_fixed_rng_and_message": True,
             "baseline_and_d1_signatures_identical": True,
+            "key_address_confound_removed": True,
             "all_psp_canaries_intact": True,
             "heap_section_bytes": 0,
         },
@@ -579,7 +581,8 @@ def main() -> int:
             "side_channel_resistance_established": False,
         },
         "claim_boundary": (
-            "One RP2350 board, ten official p324_3 keys, one fixed public message, "
+            "One RP2350 board, ten official p324_3 keys copied into one fixed-address "
+            "buffer, one fixed public message, "
             "one fixed signing RNG stream, two deterministic randomized schedules, "
             "and two samples per key per schedule.  This bounded screen can expose "
             "repeatable key-associated wall-clock time on this target; it is not a "

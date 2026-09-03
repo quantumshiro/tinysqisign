@@ -1,5 +1,5 @@
 #!/bin/sh
-# Flash and capture the official/D1 fixed-key screens in opposite outer order.
+# Flash and capture official/D1 screens, each with two fixed shuffled key orders.
 set -eu
 
 project_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
@@ -19,7 +19,8 @@ run_one()
     printf 'campaign_start image=%s output=%s\n' "$kind" "$capture_path" >&2
     SQISIGN_RP2350_V3_BUILD_ROOT="$build_root" \
         "$project_root/scripts/flash_rp2350_v3_fixed_key.sh" "$kind" "$device"
-    "$project_root/scripts/capture_rp2350_v3_fixed_key.sh" "$kind" | tee "$partial_path"
+    "$project_root/scripts/capture_rp2350_v3_fixed_key.sh" "$kind" "$device" |
+        tee "$partial_path"
     grep -q '^status=PASS' "$partial_path"
     mv "$partial_path" "$capture_path"
     printf 'campaign_pass image=%s\n' "$kind" >&2

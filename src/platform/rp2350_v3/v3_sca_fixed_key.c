@@ -64,6 +64,8 @@ extern unsigned char __bss_end__[];
 
 static _Alignas(8) uint32_t process_stack[PROCESS_STACK_WORDS];
 static unsigned char signing_seed[SQISIGN_V3_KAT_SEED_BYTES];
+static unsigned char active_public_key[CRYPTO_PUBLICKEYBYTES];
+static unsigned char active_secret_key[CRYPTO_SECRETKEYBYTES];
 static unsigned char
     signed_message[CRYPTO_BYTES + SQISIGN_V3_KAT_MAX_MESSAGE_BYTES];
 static unsigned char opened_message[SQISIGN_V3_KAT_MAX_MESSAGE_BYTES];
@@ -199,7 +201,7 @@ sign_thunk(void *opaque)
                        &signed_message_length,
                        message_vector->message,
                        message_vector->message_length,
-                       current_vector->secret_key);
+                       active_secret_key);
 }
 
 static int
@@ -210,7 +212,7 @@ verify_thunk(void *opaque)
                             &opened_message_length,
                             signed_message,
                             signed_message_length,
-                            current_vector->public_key);
+                            active_public_key);
 }
 
 static int
@@ -293,6 +295,7 @@ print_banner(void)
            SQISIGN_V3_GENERATED_TREE_SHA256);
     printf("kat_rsp_sha256=%s kat_first=0 kat_count=%u fixed_message_vector=0"
            " fixed_message_bytes=%u signing_seed=a5-sequence-v1"
+           " fixed_key_buffer_address=1"
            " repetitions=%u passes=%u samples=%u\r\n",
            SQISIGN_V3_KAT_RSP_SHA256,
            (unsigned)SQISIGN_V3_KAT_VECTOR_COUNT,
@@ -332,6 +335,12 @@ main(void)
     uint64_t key_digests[SQISIGN_V3_KAT_VECTOR_COUNT] = { 0 };
 
     current_vector = &sqisign_v3_kat_vectors[0];
+    memcpy(active_secret_key,
+           current_vector->secret_key,
+           sizeof(active_secret_key));
+    memcpy(active_public_key,
+           current_vector->public_key,
+           sizeof(active_public_key));
     reset_signing_rng();
     signed_message_length = 0;
     prepare_process_stack();
@@ -360,6 +369,12 @@ main(void)
             const unsigned key = schedule[sequence];
             const unsigned repetition = seen[key]++;
             current_vector = &sqisign_v3_kat_vectors[key];
+            memcpy(active_secret_key,
+                   current_vector->secret_key,
+                   sizeof(active_secret_key));
+            memcpy(active_public_key,
+                   current_vector->public_key,
+                   sizeof(active_public_key));
             reset_signing_rng();
 
             signed_message_length = 0;
