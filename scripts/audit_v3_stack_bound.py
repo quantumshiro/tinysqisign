@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Inventory obstacles to a whole-program v3 static stack bound.
+"""Certify linked v3 Thread-mode operation PSP bounds and remaining limits.
 
-This combines linked Arm disassembly with GCC ``.su`` records.  It deliberately
-does not turn local-frame estimates into an upper bound when recursive SCCs,
-indirect calls, or linked objects without stack metadata remain.
+This combines linked Arm disassembly with GCC ``.su`` records, source-ranked
+recursion certificates, and ELF-bound manual assembly frames.  It deliberately
+does not promote the operation PSP result to a whole-program bound because
+asynchronous interrupt/MSP nesting remains outside the analysis.
 """
 
 from __future__ import annotations
@@ -28,13 +29,19 @@ INDIRECT_TRANSFER_RE = re.compile(
 LITERAL_WORD_RE = re.compile(r"\s\.word\s+0x([0-9a-fA-F]+)\b")
 CONDITIONAL_BRANCH_RE = re.compile(
     r"\s(?P<opcode>b(?:eq|ne|cs|cc|mi|pl|vs|vc|hi|ls|ge|lt|gt|le)"
-    r"(?:\.[nw])?)\s+(?:0x)?[0-9a-fA-F]+\s+<(?P<target>[^>]+)>"
+    r"(?:\.[nw])?)\s+(?:0x)?(?P<address>[0-9a-fA-F]+)\s+<(?P<target>[^>]+)>"
 )
+INSTRUCTION_ADDRESS_RE = re.compile(r"^\s*([0-9a-fA-F]+):\s")
 ROOTS = ("keygen_thunk", "sign_thunk", "verify_thunk")
 CERTIFIED_CROSS_SYMBOL_CONDITIONALS = {
-    ("__wrap___aeabi_dmul", "__wrap___aeabi_dsub"),
-    ("__wrap___aeabi_i2d", "__wrap___aeabi_ddiv"),
-    ("__wrap___aeabi_d2iz", "__wrap___aeabi_ui2d"),
+    ("__wrap___aeabi_dmul", "__wrap___aeabi_dsub+0x20"),
+    ("__wrap___aeabi_i2d", "__wrap___aeabi_ddiv+0x94"),
+    ("__wrap___aeabi_d2iz", "__wrap___aeabi_ui2d+0x1c"),
+}
+CERTIFIED_DCP_CONTINUATIONS = {
+    "__wrap___aeabi_dmul": "__wrap___aeabi_dmul+0x6",
+    "__wrap___aeabi_i2d": "__wrap___aeabi_i2d+0x6",
+    "__wrap___aeabi_d2iz": "double2int_z_entry",
 }
 
 # These routines come from fixed linked assembly or newlib objects and do not
@@ -61,8 +68,13 @@ MANUAL_FRAME_BYTES = {
     # generic_save_state's 32-byte save area, rounded upward to 8-byte ABI
     # alignment; no graph edge is needed through the local label.
     "__wrap___aeabi_d2iz": 40,
-    "__wrap___aeabi_dmul": 8,
-    "__wrap___aeabi_i2d": 8,
+    # These DCP wrappers branch backwards to an assembler fallback prefix that
+    # objdump attributes to the preceding symbol.  The prefix keeps the
+    # original four-byte LR word live, generic_save_state reaches 32 bytes,
+    # and the continuation can add an eight-byte body frame.  The exact peak
+    # is at most 36 bytes; 40 conservatively preserves eight-byte alignment.
+    "__wrap___aeabi_dmul": 40,
+    "__wrap___aeabi_i2d": 40,
     "generic_save_state": 32,
 }
 
@@ -182,6 +194,7 @@ def parse_disassembly(
     address_to_function: dict[int, str] = {}
     literal_tail_calls: list[tuple[str, int, str]] = []
     cross_symbol_conditionals: list[dict[str, str]] = []
+    ordered_instructions: list[tuple[int, str]] = []
     current: str | None = None
     for line in text.splitlines():
         match = FUNCTION_RE.match(line)
@@ -192,6 +205,9 @@ def parse_disassembly(
             continue
         if current is None:
             continue
+        instruction_address = INSTRUCTION_ADDRESS_RE.match(line)
+        if instruction_address:
+            ordered_instructions.append((int(instruction_address.group(1), 16), line.strip()))
         if line.strip():
             bodies[current].append(line.strip())
         direct = DIRECT_BRANCH_RE.search(line)
@@ -206,13 +222,16 @@ def parse_disassembly(
                 graph[current].add(target)
         conditional = CONDITIONAL_BRANCH_RE.search(line)
         if conditional:
-            target = conditional.group("target").split("+", 1)[0]
+            target_expression = conditional.group("target")
+            target = target_expression.split("+", 1)[0]
             if target != current:
                 cross_symbol_conditionals.append(
                     {
                         "function": current,
                         "opcode": conditional.group("opcode"),
                         "target": target,
+                        "target_expression": target_expression,
+                        "target_address": f"0x{int(conditional.group('address'), 16):08x}",
                         "instruction": line.strip(),
                     }
                 )
@@ -248,6 +267,37 @@ def parse_disassembly(
                 "target": target,
                 "literal": instruction,
             }
+        )
+    instruction_index = {
+        address: index for index, (address, _) in enumerate(ordered_instructions)
+    }
+    for record in cross_symbol_conditionals:
+        pair = (record["function"], record["target_expression"])
+        if pair not in CERTIFIED_CROSS_SYMBOL_CONDITIONALS:
+            continue
+        target_address = int(record["target_address"], 16)
+        if target_address not in instruction_index:
+            raise ValueError(
+                f"conditional fallback target absent: {record['target_address']}"
+            )
+        start = instruction_index[target_address]
+        prefix = [line for _, line in ordered_instructions[start : start + 3]]
+        if (
+            len(prefix) != 3
+            or "push\t{lr}" not in prefix[0]
+            or "bl\t" not in prefix[1]
+            or "<generic_save_state>" not in prefix[1]
+            or "b.n\t" not in prefix[2]
+            or f"<{CERTIFIED_DCP_CONTINUATIONS[record['function']]}>" not in prefix[2]
+        ):
+            raise ValueError(
+                f"DCP fallback prefix changed for {record['function']}: {prefix}"
+            )
+        record["fallback_prefix_instructions"] = prefix
+        record["fallback_peak_derivation"] = (
+            "max(4-byte saved LR + 32-byte generic_save_state, "
+            "4-byte saved LR + 24-byte retained state + 8-byte body) "
+            "<= 36 bytes; manual frame bound rounds this to 40 bytes"
         )
     return (
         graph,
@@ -779,7 +829,7 @@ def main() -> int:
         row for row in cross_symbol_conditionals if row["function"] in all_reachable
     ]
     observed_conditional_pairs = {
-        (row["function"], row["target"])
+        (row["function"], row["target_expression"])
         for row in reachable_cross_symbol_conditionals
     }
     if observed_conditional_pairs != CERTIFIED_CROSS_SYMBOL_CONDITIONALS:
