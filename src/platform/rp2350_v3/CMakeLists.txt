@@ -21,6 +21,8 @@ set(SQISIGN_V3_SOURCE_ROOT
     CACHE PATH "SQIsign v3 research worktree")
 set(SQISIGN_V3_GENERATED_ROOT
     "${SQISIGN_V3_SOURCE_ROOT}/src/pqm4/sqisign_p324_3/m4f")
+option(SQISIGN_V3_REQUIRE_STATIC_STACK
+    "Reject variable-length arrays and alloca in the generated library" OFF)
 
 if(NOT DEFINED SQISIGN_V3_SOURCE_COMMIT)
     set(SQISIGN_V3_SOURCE_COMMIT "unknown")
@@ -34,6 +36,9 @@ endif()
 if(NOT DEFINED SQISIGN_FIRMWARE_DIRTY)
     set(SQISIGN_FIRMWARE_DIRTY 1)
 endif()
+if(NOT DEFINED SQISIGN_V3_GENERATED_TREE_SHA256)
+    set(SQISIGN_V3_GENERATED_TREE_SHA256 "unknown")
+endif()
 
 if(NOT EXISTS "${SQISIGN_V3_GENERATED_ROOT}/pqm4_api.c")
     message(FATAL_ERROR
@@ -43,9 +48,15 @@ endif()
 file(GLOB SQISIGN_V3_GENERATED_SOURCES CONFIGURE_DEPENDS
     "${SQISIGN_V3_GENERATED_ROOT}/*.c")
 list(SORT SQISIGN_V3_GENERATED_SOURCES)
+# The upstream generic helper exports secure_free() and therefore leaves an
+# otherwise unreachable free() reference in the archive.  Embedded runs have
+# no allocator: replace it with a clear-and-trap contract for accidental use.
+list(REMOVE_ITEM SQISIGN_V3_GENERATED_SOURCES
+    "${SQISIGN_V3_GENERATED_ROOT}/mem.c")
 
 add_library(sqisign_v3_p324_3_m4f STATIC
     ${SQISIGN_V3_GENERATED_SOURCES}
+    ${CMAKE_CURRENT_LIST_DIR}/mem_noheap.c
     ${SQISIGN_V3_SOURCE_ROOT}/src/common/generic/fips202.c
     ${SQISIGN_V3_SOURCE_ROOT}/src/common/ref/aes_c.c
     ${SQISIGN_V3_SOURCE_ROOT}/src/common/ref/randombytes_ctrdrbg.c
@@ -91,13 +102,22 @@ target_compile_options(sqisign_v3_p324_3_m4f PRIVATE
     -Wno-maybe-uninitialized
 )
 
+# Keep these after the compatibility exceptions above: for the static-stack
+# experiment, a VLA or alloca is a build failure rather than a warning.
+if(SQISIGN_V3_REQUIRE_STATIC_STACK)
+    target_compile_options(sqisign_v3_p324_3_m4f PRIVATE
+        -Werror=vla
+        -Werror=alloca
+    )
+endif()
+
 set_target_properties(sqisign_v3_p324_3_m4f PROPERTIES
     INTERPROCEDURAL_OPTIMIZATION FALSE
     POSITION_INDEPENDENT_CODE FALSE
 )
 
 set(SQISIGN_V3_IMAGE_KIND "baseline" CACHE STRING
-    "v3 firmware identity: baseline or d1")
+    "v3 firmware identity: baseline, d1, or d2-static")
 if(SQISIGN_V3_IMAGE_KIND STREQUAL "baseline")
     set(SQISIGN_V3_TARGET sqisign_rp2350_v3_baseline)
     set(SQISIGN_V3_BANNER "SQISIGN_RP2350_V3_BASELINE v1")
@@ -110,13 +130,24 @@ elseif(SQISIGN_V3_IMAGE_KIND STREQUAL "d1")
     set(SQISIGN_V3_ALIVE "SQISIGN_RP2350_V3_D1 alive")
     set(SQISIGN_V3_DESCRIPTION
         "v3 D1 lifetime-scheduled LLL, deterministic KAT, guarded PSP")
+elseif(SQISIGN_V3_IMAGE_KIND STREQUAL "d2-static")
+    set(SQISIGN_V3_TARGET sqisign_rp2350_v3_d2_static)
+    set(SQISIGN_V3_BANNER "SQISIGN_RP2350_V3_D2_STATIC v1")
+    set(SQISIGN_V3_ALIVE "SQISIGN_RP2350_V3_D2_STATIC alive")
+    set(SQISIGN_V3_DESCRIPTION
+        "v3 p324_3 fixed-bound generated frames, deterministic KAT, guarded PSP")
 else()
     message(FATAL_ERROR "Unsupported SQISIGN_V3_IMAGE_KIND")
 endif()
 
 add_executable(${SQISIGN_V3_TARGET}
     ${SQISIGN_RESEARCH_ROOT}/src/platform/rp2350/call_on_psp.S
+    allocator_traps.c
     v3_ksv_kat.c
+)
+
+set_source_files_properties(allocator_traps.c PROPERTIES
+    COMPILE_OPTIONS "-fno-builtin"
 )
 
 target_link_libraries(${SQISIGN_V3_TARGET} PRIVATE
@@ -134,6 +165,7 @@ target_compile_definitions(${SQISIGN_V3_TARGET} PRIVATE
     SQISIGN_V3_IMAGE_KIND="${SQISIGN_V3_IMAGE_KIND}"
     SQISIGN_V3_SOURCE_COMMIT="${SQISIGN_V3_SOURCE_COMMIT}"
     SQISIGN_V3_SOURCE_DIRTY=${SQISIGN_V3_SOURCE_DIRTY}
+    SQISIGN_V3_GENERATED_TREE_SHA256="${SQISIGN_V3_GENERATED_TREE_SHA256}"
     SQISIGN_FIRMWARE_GIT_COMMIT="${SQISIGN_FIRMWARE_GIT_COMMIT}"
     SQISIGN_FIRMWARE_DIRTY=${SQISIGN_FIRMWARE_DIRTY}
     SQISIGN_PICO_BOARD="${PICO_BOARD}"

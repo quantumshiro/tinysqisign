@@ -30,6 +30,9 @@
 #ifndef SQISIGN_V3_IMAGE_KIND
 #define SQISIGN_V3_IMAGE_KIND "unspecified"
 #endif
+#ifndef SQISIGN_V3_GENERATED_TREE_SHA256
+#define SQISIGN_V3_GENERATED_TREE_SHA256 "unknown"
+#endif
 
 #if !PICO_RP2350 || !defined(__ARM_ARCH_8M_MAIN__)
 #error "This firmware must be built for the RP2350 Arm target"
@@ -293,6 +296,8 @@ print_banner(void)
            (unsigned)SQISIGN_V3_SOURCE_DIRTY,
            scb_hw->cpuid,
            clock_get_hz(clk_sys));
+    printf("v3_generated_tree_sha256=%s\r\n",
+           SQISIGN_V3_GENERATED_TREE_SHA256);
     printf("bss_end=0x%08" PRIxPTR " stack_limit=0x%08" PRIxPTR
            " stack_top=0x%08" PRIxPTR "\r\n",
            (uintptr_t)__bss_end__,

@@ -11,6 +11,7 @@ elf=$4
 case ${elf##*/} in
     *v3_baseline*) audit_label='v3 baseline' ;;
     *v3_d1*) audit_label='v3 D1' ;;
+    *v3_d2_static*) audit_label='v3 D2 static-stack' ;;
     *) audit_label='v3 image' ;;
 esac
 
@@ -54,10 +55,10 @@ for forbidden in \
     fi
 done
 
-# The current official and D1 images retain a qlapoty diagnostic path using
-# fprintf()/abort().  That path links newlib allocator machinery even though
-# the linker reserves a zero-byte heap.  Report this fact without interpreting
-# symbol presence as successful-path allocation.
+# The isolated firmware replaces upstream secure_free() and the re-entrant
+# newlib allocation ABI.  The only permitted allocator-shaped symbols are
+# three six-byte fail-stop shims used by newlib stdio; each must branch directly
+# to sqisign_allocator_violation(), whose body contains an Arm UDF instruction.
 allocator_symbols=$(printf '%s\n' "$symbol_names" | awk '
     /^(malloc|calloc|realloc|free)$/ ||
     /^_(malloc|calloc|realloc|free)_r$/ ||
@@ -66,8 +67,47 @@ allocator_symbols=$(printf '%s\n' "$symbol_names" | awk '
 allocator_symbol_count=0
 if test -n "$allocator_symbols"; then
     allocator_symbol_count=$(printf '%s\n' "$allocator_symbols" | wc -l | tr -d ' ')
-    printf '%s linked allocator symbol(s) retained for comparison:\n%s\n' \
-        "$audit_label" "$allocator_symbols"
+fi
+allocator_symbols_sorted=$(printf '%s\n' "$allocator_symbols" | sed '/^$/d' | LC_ALL=C sort)
+expected_allocator_symbols=$(printf '%s\n' _free_r _malloc_r _realloc_r | LC_ALL=C sort)
+if test "$allocator_symbols_sorted" != "$expected_allocator_symbols"; then
+    printf '%s allocator ABI differs from the fail-stop policy:\n%s\n' \
+        "$audit_label" "$allocator_symbols_sorted" >&2
+    exit 1
+fi
+if ! $objdump_tool -d --disassemble=sqisign_allocator_violation "$elf" | \
+    grep -q '[[:space:]]udf[[:space:]]'; then
+    printf '%s allocator violation handler lacks UDF\n' "$audit_label" >&2
+    exit 1
+fi
+map_file="$elf.map"
+test -f "$map_file"
+for allocator_symbol in _free_r _malloc_r _realloc_r; do
+    if ! $objdump_tool -d --disassemble="$allocator_symbol" "$elf" | \
+        grep -q '<sqisign_allocator_violation>'; then
+        printf '%s is not a direct fail-stop shim: %s\n' \
+            "$audit_label" "$allocator_symbol" >&2
+        exit 1
+    fi
+    if ! grep -A1 "[.]text[.]unlikely[.]${allocator_symbol}$" "$map_file" | \
+        grep -q 'allocator_traps[.]c[.]o'; then
+        printf '%s has unexpected allocator symbol provenance: %s\n' \
+            "$audit_label" "$allocator_symbol" >&2
+        exit 1
+    fi
+done
+
+crypto_archive="$build_root/libsqisign_v3_p324_3_m4f.a"
+test -f "$crypto_archive"
+archive_allocator_refs=$($nm_tool -u "$crypto_archive" | awk '
+    /[[:space:]](malloc|calloc|realloc|free)$/ ||
+    /[[:space:]]_(malloc|calloc|realloc|free)_r$/ ||
+    /[[:space:]]_?sbrk(_r)?$/ { print $NF }
+')
+if test -n "$archive_allocator_refs"; then
+    printf '%s forbidden allocator reference(s) in crypto archive:\n%s\n' \
+        "$audit_label" "$archive_allocator_refs" >&2
+    exit 1
 fi
 
 process_stack_size=$(printf '%s\n' "$symbol_table" | \
@@ -118,7 +158,7 @@ done
 test "$#" -eq 0
 
 printf 'SQIsign %s RP2350 ELF audit PASS\n' "$audit_label"
-printf 'stack_usage_files=%s dynamic_stack_records=%s allocator_symbols=%s process_stack_bytes=%u heap_section_bytes=0\n' \
+printf 'stack_usage_files=%s dynamic_stack_records=%s allocator_trap_symbols=%s process_stack_bytes=%u heap_section_bytes=0\n' \
     "$su_count" "$dynamic_count" "$allocator_symbol_count" \
     $((0x$process_stack_size))
 "$size_tool" "$elf"
