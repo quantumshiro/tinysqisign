@@ -155,9 +155,9 @@ def parse_capture(
             "signing_seed": "a5-sequence-v1",
             "fixed_key_buffer_address": "1",
             "xip_cache_invalidate_before_timing": "1",
-            "repetitions": "2",
+            "repetitions": "5",
             "passes": "2",
-            "samples": "40",
+            "samples": "100",
         },
         str(path),
     )
@@ -197,15 +197,15 @@ def parse_capture(
                 "signature_fnv1a64": fields["digest"],
             }
         )
-    if len(samples) != 40:
-        raise ValueError(f"{path}: expected 40 samples, observed {len(samples)}")
+    if len(samples) != 100:
+        raise ValueError(f"{path}: expected 100 samples, observed {len(samples)}")
 
     summary = kv_line(lines, "summary samples=")
     require(
         summary,
         {
-            "samples": "40",
-            "passed": "40",
+            "samples": "100",
+            "passed": "100",
             "mode_ok": "1",
             "msp_pattern_ok": "1",
             "psp_reserved_bytes": "131072",
@@ -331,13 +331,13 @@ def main() -> int:
             sequence = int(row["sequence"])
             if pass_label not in PASSES or not 0 <= key < 10:
                 raise ValueError("sample outside the declared pass/key design")
-            if not 0 <= repetition < 2 or not 0 <= sequence < 20:
+            if not 0 <= repetition < 5 or not 0 <= sequence < 50:
                 raise ValueError("sample outside the declared repetition/sequence design")
             cells[(implementation, pass_label, key)].append(row)
             digests[(implementation, key)].add(str(row["signature_fnv1a64"]))
 
     expected_cells = len(IMPLEMENTATIONS) * len(PASSES) * 10
-    if len(cells) != expected_cells or any(len(rows) != 2 for rows in cells.values()):
+    if len(cells) != expected_cells or any(len(rows) != 5 for rows in cells.values()):
         raise ValueError("missing or unbalanced implementation/pass/key cell")
     for implementation in IMPLEMENTATIONS:
         for pass_label in PASSES:
@@ -346,16 +346,16 @@ def main() -> int:
                 for row in records[implementation]["samples"]
                 if row["pass"] == pass_label
             ]
-            if sorted(int(row["sequence"]) for row in pass_rows) != list(range(20)):
-                raise ValueError("sequence index is not a permutation of 0..19")
+            if sorted(int(row["sequence"]) for row in pass_rows) != list(range(50)):
+                raise ValueError("sequence index is not a permutation of 0..49")
             for key in range(10):
                 repetitions = sorted(
                     int(row["repetition"])
                     for row in pass_rows
                     if int(row["key"]) == key
                 )
-                if repetitions != [0, 1]:
-                    raise ValueError("per-key repetition labels are not [0, 1]")
+                if repetitions != [0, 1, 2, 3, 4]:
+                    raise ValueError("per-key repetition labels are not [0, 1, 2, 3, 4]")
     if any(len(values) != 1 for values in digests.values()):
         raise ValueError("fixed RNG/message did not give one stable signature per key")
     for key in range(10):
@@ -370,7 +370,7 @@ def main() -> int:
         for row in records[implementation]["samples"]:
             by_sequence[(implementation, str(row["pass"]), int(row["sequence"]))] = row
     for pass_label in PASSES:
-        for sequence in range(20):
+        for sequence in range(50):
             baseline = by_sequence[("baseline", pass_label, sequence)]
             d1 = by_sequence[("d1", pass_label, sequence)]
             if (baseline["key"], baseline["repetition"]) != (
@@ -535,9 +535,9 @@ def main() -> int:
             "fixed_message_bytes": 33,
             "fixed_signing_rng": "a5-sequence-v1",
             "passes": list(PASSES),
-            "repetitions_per_key_per_pass": 2,
-            "samples_per_implementation": 40,
-            "total_sign_samples": 80,
+            "repetitions_per_key_per_pass": 5,
+            "samples_per_implementation": 100,
+            "total_sign_samples": 200,
             "warmup_signs_per_implementation": 1,
             "outer_order": ["baseline", "d1"],
         },
@@ -610,7 +610,7 @@ def main() -> int:
 
     print(
         "v3 RP2350 fixed-key timing analysis: PASS "
-        f"samples=80 repeatable_key_association={all(detections)} resistance=false"
+        f"samples=200 repeatable_key_association={all(detections)} resistance=false"
     )
     for implementation in IMPLEMENTATIONS:
         report = implementation_reports[implementation]
