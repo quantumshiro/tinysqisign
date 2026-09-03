@@ -32,6 +32,7 @@ CONDITIONAL_BRANCH_RE = re.compile(
     r"(?:\.[nw])?)\s+(?:0x)?(?P<address>[0-9a-fA-F]+)\s+<(?P<target>[^>]+)>"
 )
 INSTRUCTION_ADDRESS_RE = re.compile(r"^\s*([0-9a-fA-F]+):\s")
+INDIRECT_PC_LOAD_RE = re.compile(r"\sldr(?:\.w)?\s+pc\s*,")
 ROOTS = ("keygen_thunk", "sign_thunk", "verify_thunk")
 CERTIFIED_CROSS_SYMBOL_CONDITIONALS = {
     ("__wrap___aeabi_dmul", "__wrap___aeabi_dsub+0x20"),
@@ -825,6 +826,22 @@ def main() -> int:
     all_reachable = set().union(
         *(reachable(graph, root) for root in ROOTS)
     )
+    reachable_indirect_pc_loads = [
+        {"function": function, "instruction": line}
+        for function in sorted(all_reachable)
+        for line in bodies.get(function, [])
+        if INDIRECT_PC_LOAD_RE.search(line)
+    ]
+    resolved_veneer_names = {row["veneer"] for row in veneer_resolutions}
+    unmodeled_indirect_pc_loads = [
+        row
+        for row in reachable_indirect_pc_loads
+        if row["function"] not in resolved_veneer_names
+    ]
+    if unmodeled_indirect_pc_loads:
+        raise ValueError(
+            f"unmodeled reachable indirect PC loads: {unmodeled_indirect_pc_loads}"
+        )
     reachable_cross_symbol_conditionals = [
         row for row in cross_symbol_conditionals if row["function"] in all_reachable
     ]
@@ -888,6 +905,10 @@ def main() -> int:
         "recursion_bound_certificates": recursion_certificates,
         "manual_frame_certificates": manual_frame_certificates,
         "literal_veneer_resolutions": veneer_resolutions,
+        "indirect_pc_load_certificate": {
+            "records": reachable_indirect_pc_loads,
+            "all_are_resolved_literal_veneers": True,
+        },
         "cross_symbol_conditional_branch_certificate": {
             "records": reachable_cross_symbol_conditionals,
             "interpretation": (
