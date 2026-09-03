@@ -117,7 +117,15 @@ set_target_properties(sqisign_v3_p324_3_m4f PROPERTIES
 )
 
 set(SQISIGN_V3_IMAGE_KIND "baseline" CACHE STRING
-    "v3 firmware identity: baseline, d1, or d2-static")
+    "v3 firmware identity: baseline, d1, d2-static, baseline-multi, or d1-multi")
+set(SQISIGN_V3_PLACEMENT_VARIANT "a" CACHE STRING
+    "linked-code placement variant for multi-vector images: a or b")
+if(NOT SQISIGN_V3_PLACEMENT_VARIANT MATCHES "^[ab]$")
+    message(FATAL_ERROR "SQISIGN_V3_PLACEMENT_VARIANT must be a or b")
+endif()
+string(TOUPPER "${SQISIGN_V3_PLACEMENT_VARIANT}"
+    SQISIGN_V3_PLACEMENT_VARIANT_UPPER)
+set(SQISIGN_V3_IS_MULTI OFF)
 if(SQISIGN_V3_IMAGE_KIND STREQUAL "baseline")
     set(SQISIGN_V3_TARGET sqisign_rp2350_v3_baseline)
     set(SQISIGN_V3_BANNER "SQISIGN_RP2350_V3_BASELINE v1")
@@ -136,14 +144,63 @@ elseif(SQISIGN_V3_IMAGE_KIND STREQUAL "d2-static")
     set(SQISIGN_V3_ALIVE "SQISIGN_RP2350_V3_D2_STATIC alive")
     set(SQISIGN_V3_DESCRIPTION
         "v3 p324_3 fixed-bound generated frames, deterministic KAT, guarded PSP")
+elseif(SQISIGN_V3_IMAGE_KIND STREQUAL "baseline-multi")
+    set(SQISIGN_V3_IS_MULTI ON)
+    set(SQISIGN_V3_TARGET
+        sqisign_rp2350_v3_baseline_multi_${SQISIGN_V3_PLACEMENT_VARIANT})
+    set(SQISIGN_V3_BANNER
+        "SQISIGN_RP2350_V3_BASELINE_MULTI_${SQISIGN_V3_PLACEMENT_VARIANT_UPPER} v1")
+    set(SQISIGN_V3_ALIVE
+        "SQISIGN_RP2350_V3_BASELINE_MULTI_${SQISIGN_V3_PLACEMENT_VARIANT_UPPER} alive")
+    set(SQISIGN_V3_DESCRIPTION
+        "Official v3 m4f, ten-vector K/S/V plus negative verify, placement audit")
+elseif(SQISIGN_V3_IMAGE_KIND STREQUAL "d1-multi")
+    set(SQISIGN_V3_IS_MULTI ON)
+    set(SQISIGN_V3_TARGET
+        sqisign_rp2350_v3_d1_multi_${SQISIGN_V3_PLACEMENT_VARIANT})
+    set(SQISIGN_V3_BANNER
+        "SQISIGN_RP2350_V3_D1_MULTI_${SQISIGN_V3_PLACEMENT_VARIANT_UPPER} v1")
+    set(SQISIGN_V3_ALIVE
+        "SQISIGN_RP2350_V3_D1_MULTI_${SQISIGN_V3_PLACEMENT_VARIANT_UPPER} alive")
+    set(SQISIGN_V3_DESCRIPTION
+        "v3 D1 lifetime-scheduled LLL, ten-vector K/S/V plus negative verify, placement audit")
 else()
     message(FATAL_ERROR "Unsupported SQISIGN_V3_IMAGE_KIND")
+endif()
+
+if(SQISIGN_V3_IS_MULTI)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
+    set(SQISIGN_V3_KAT_HEADER
+        "${CMAKE_CURRENT_BINARY_DIR}/generated/v3_kat_subset.h")
+    set(SQISIGN_V3_KAT_RSP
+        "${SQISIGN_V3_SOURCE_ROOT}/KAT/PQCsignKAT_270_SQIsign_p324_3.rsp")
+    add_custom_command(
+        OUTPUT "${SQISIGN_V3_KAT_HEADER}"
+        COMMAND ${Python3_EXECUTABLE}
+            "${SQISIGN_RESEARCH_ROOT}/scripts/generate_v3_kat_subset.py"
+            --rsp "${SQISIGN_V3_KAT_RSP}"
+            --output "${SQISIGN_V3_KAT_HEADER}"
+            --count 10
+        DEPENDS
+            "${SQISIGN_RESEARCH_ROOT}/scripts/generate_v3_kat_subset.py"
+            "${SQISIGN_V3_KAT_RSP}"
+        VERBATIM
+    )
+    set(SQISIGN_V3_KSV_SOURCE v3_ksv_multi.c)
+    set(SQISIGN_V3_PLACEMENT_SOURCE
+        placement_${SQISIGN_V3_PLACEMENT_VARIANT}.S)
+else()
+    set(SQISIGN_V3_KAT_HEADER "")
+    set(SQISIGN_V3_KSV_SOURCE v3_ksv_kat.c)
+    set(SQISIGN_V3_PLACEMENT_SOURCE "")
 endif()
 
 add_executable(${SQISIGN_V3_TARGET}
     ${SQISIGN_RESEARCH_ROOT}/src/platform/rp2350/call_on_psp.S
     allocator_traps.c
-    v3_ksv_kat.c
+    ${SQISIGN_V3_PLACEMENT_SOURCE}
+    ${SQISIGN_V3_KSV_SOURCE}
+    ${SQISIGN_V3_KAT_HEADER}
 )
 
 set_source_files_properties(allocator_traps.c PROPERTIES
@@ -157,12 +214,18 @@ target_link_libraries(${SQISIGN_V3_TARGET} PRIVATE
     sqisign_v3_p324_3_m4f
 )
 
+if(SQISIGN_V3_IS_MULTI)
+    target_include_directories(${SQISIGN_V3_TARGET} PRIVATE
+        "${CMAKE_CURRENT_BINARY_DIR}/generated")
+endif()
+
 target_compile_definitions(${SQISIGN_V3_TARGET} PRIVATE
     PICO_HEAP_SIZE=0
     SQISIGN_V3_BANNER="${SQISIGN_V3_BANNER}"
     SQISIGN_V3_ALIVE="${SQISIGN_V3_ALIVE}"
     SQISIGN_V3_DESCRIPTION="${SQISIGN_V3_DESCRIPTION}"
     SQISIGN_V3_IMAGE_KIND="${SQISIGN_V3_IMAGE_KIND}"
+    SQISIGN_V3_PLACEMENT_VARIANT="${SQISIGN_V3_PLACEMENT_VARIANT}"
     SQISIGN_V3_SOURCE_COMMIT="${SQISIGN_V3_SOURCE_COMMIT}"
     SQISIGN_V3_SOURCE_DIRTY=${SQISIGN_V3_SOURCE_DIRTY}
     SQISIGN_V3_GENERATED_TREE_SHA256="${SQISIGN_V3_GENERATED_TREE_SHA256}"
