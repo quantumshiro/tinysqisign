@@ -26,7 +26,16 @@ INDIRECT_TRANSFER_RE = re.compile(
     r"(?P<register>r(?:1[0-5]|[0-9])|ip|sp|lr|pc)\b"
 )
 LITERAL_WORD_RE = re.compile(r"\s\.word\s+0x([0-9a-fA-F]+)\b")
+CONDITIONAL_BRANCH_RE = re.compile(
+    r"\s(?P<opcode>b(?:eq|ne|cs|cc|mi|pl|vs|vc|hi|ls|ge|lt|gt|le)"
+    r"(?:\.[nw])?)\s+(?:0x)?[0-9a-fA-F]+\s+<(?P<target>[^>]+)>"
+)
 ROOTS = ("keygen_thunk", "sign_thunk", "verify_thunk")
+CERTIFIED_CROSS_SYMBOL_CONDITIONALS = {
+    ("__wrap___aeabi_dmul", "__wrap___aeabi_dsub"),
+    ("__wrap___aeabi_i2d", "__wrap___aeabi_ddiv"),
+    ("__wrap___aeabi_d2iz", "__wrap___aeabi_ui2d"),
+}
 
 # These routines come from fixed linked assembly or newlib objects and do not
 # have GCC .su records.  The byte counts are conservative maxima obtained by
@@ -125,6 +134,17 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def cmake_cache_values(path: Path) -> dict[str, str]:
+    values = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line or line.startswith(("#", "//")) or "=" not in line:
+            continue
+        key_and_type, value = line.split("=", 1)
+        key = key_and_type.split(":", 1)[0]
+        values[key] = value
+    return values
+
+
 def parse_stack_usage(build_dir: Path) -> dict[str, list[dict[str, object]]]:
     records: dict[str, list[dict[str, object]]] = defaultdict(list)
     for path in sorted(build_dir.rglob("*.su")):
@@ -153,6 +173,7 @@ def parse_disassembly(
     set[str],
     dict[str, list[str]],
     list[dict[str, object]],
+    list[dict[str, str]],
 ]:
     graph: dict[str, set[str]] = defaultdict(set)
     indirect: dict[str, list[str]] = defaultdict(list)
@@ -160,6 +181,7 @@ def parse_disassembly(
     bodies: dict[str, list[str]] = defaultdict(list)
     address_to_function: dict[int, str] = {}
     literal_tail_calls: list[tuple[str, int, str]] = []
+    cross_symbol_conditionals: list[dict[str, str]] = []
     current: str | None = None
     for line in text.splitlines():
         match = FUNCTION_RE.match(line)
@@ -182,6 +204,18 @@ def parse_disassembly(
             # only when it is a tail call to a different linked symbol.
             if opcode in {"bl", "blx"} or target != current:
                 graph[current].add(target)
+        conditional = CONDITIONAL_BRANCH_RE.search(line)
+        if conditional:
+            target = conditional.group("target").split("+", 1)[0]
+            if target != current:
+                cross_symbol_conditionals.append(
+                    {
+                        "function": current,
+                        "opcode": conditional.group("opcode"),
+                        "target": target,
+                        "instruction": line.strip(),
+                    }
+                )
         literal = LITERAL_WORD_RE.search(line)
         if current.endswith("_veneer") and literal:
             literal_tail_calls.append(
@@ -215,7 +249,14 @@ def parse_disassembly(
                 "literal": instruction,
             }
         )
-    return graph, indirect, functions, bodies, resolutions
+    return (
+        graph,
+        indirect,
+        functions,
+        bodies,
+        resolutions,
+        cross_symbol_conditionals,
+    )
 
 
 def reachable(graph: dict[str, set[str]], root: str) -> set[str]:
@@ -659,7 +700,20 @@ def main() -> int:
     parser.add_argument("--elf", type=Path, required=True)
     parser.add_argument("--objdump", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--expected-firmware-commit")
     args = parser.parse_args()
+
+    cache_path = args.build_dir / "CMakeCache.txt"
+    cache = cmake_cache_values(cache_path)
+    if cache.get("SQISIGN_FIRMWARE_DIRTY") != "0":
+        raise ValueError("stack-bound ELF was not built from a clean firmware tree")
+    if cache.get("SQISIGN_V3_SOURCE_DIRTY") != "0":
+        raise ValueError("stack-bound ELF was not built from a clean v3 source tree")
+    firmware_commit = cache.get("SQISIGN_FIRMWARE_GIT_COMMIT")
+    if args.expected_firmware_commit is not None and firmware_commit != args.expected_firmware_commit:
+        raise ValueError(
+            f"expected firmware commit {args.expected_firmware_commit}, observed {firmware_commit}"
+        )
 
     disassembly = subprocess.run(
         [str(args.objdump), "-d", str(args.elf)],
@@ -667,9 +721,14 @@ def main() -> int:
         text=True,
         capture_output=True,
     ).stdout
-    graph, indirect_calls, functions, bodies, veneer_resolutions = parse_disassembly(
-        disassembly
-    )
+    (
+        graph,
+        indirect_calls,
+        functions,
+        bodies,
+        veneer_resolutions,
+        cross_symbol_conditionals,
+    ) = parse_disassembly(disassembly)
     stack_records = parse_stack_usage(args.build_dir)
 
     root_reports: dict[str, object] = {}
@@ -716,6 +775,18 @@ def main() -> int:
     all_reachable = set().union(
         *(reachable(graph, root) for root in ROOTS)
     )
+    reachable_cross_symbol_conditionals = [
+        row for row in cross_symbol_conditionals if row["function"] in all_reachable
+    ]
+    observed_conditional_pairs = {
+        (row["function"], row["target"])
+        for row in reachable_cross_symbol_conditionals
+    }
+    if observed_conditional_pairs != CERTIFIED_CROSS_SYMBOL_CONDITIONALS:
+        raise ValueError(
+            "reachable cross-symbol conditional-branch inventory changed: "
+            f"{sorted(observed_conditional_pairs)}"
+        )
     manual_frame_certificates = certify_manual_frames(bodies, all_reachable)
     recursion_certificates = derive_recursion_certificates(
         args.source_dir, args.build_dir, stack_records, unique_cycles
@@ -749,6 +820,14 @@ def main() -> int:
             "bytes": args.elf.stat().st_size,
             "sha256": sha256(args.elf),
         },
+        "build_provenance": {
+            "firmware_commit": firmware_commit,
+            "firmware_dirty": 0,
+            "v3_source_commit": cache.get("SQISIGN_V3_SOURCE_COMMIT"),
+            "v3_source_dirty": 0,
+            "generated_tree_sha256": cache.get("SQISIGN_V3_GENERATED_TREE_SHA256"),
+            "cmake_cache_sha256": sha256(cache_path),
+        },
         "compiler_stack_usage": {
             "files": len(list(args.build_dir.rglob("*.su"))),
             "records": len(all_rows),
@@ -759,6 +838,13 @@ def main() -> int:
         "recursion_bound_certificates": recursion_certificates,
         "manual_frame_certificates": manual_frame_certificates,
         "literal_veneer_resolutions": veneer_resolutions,
+        "cross_symbol_conditional_branch_certificate": {
+            "records": reachable_cross_symbol_conditionals,
+            "interpretation": (
+                "all are DCP floating-point wrapper continuations; their maximum "
+                "save area is included in the corresponding manual frame bound"
+            ),
+        },
         "static_psp_bounds": psp_bounds,
         "decision": {
             "all_compiler_local_frames_static": len(dynamic_rows) == 0,
