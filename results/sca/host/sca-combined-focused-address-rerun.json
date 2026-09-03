@@ -1,0 +1,456 @@
+{
+  "claim_boundary": "This is a deterministic host structural trace restricted to three residual function families.  An address-sequence difference shows input-dependent effective-address behavior in this corpus; equality would cover only the selected functions and captured prefix.  Neither result is a physical leakage measurement or a whole-Sign constant-time proof.",
+  "decision": {
+    "all_input_noninterference_established": false,
+    "constant_time_established": false,
+    "fixed_fixed_negative_control_stable": true,
+    "physical_side_channel_evidence": false,
+    "production_signing_approved": false,
+    "selected_control_flow_difference_observed": true,
+    "selected_memory_address_difference_observed": true,
+    "side_channel_resistance_established": false
+  },
+  "provenance": {
+    "allowlist": "experiments/sca/combined-focused-address-allowlist.txt",
+    "allowlist_sha256": "822dd262890855c1c373b8648c76fbb0baeb5215c0ae212800bfb9fe8b087772",
+    "analyzer_sha256": "dc64178e190c05d280e35415869e0c87b5b18629bf386601191a8b5af691dea3",
+    "binary": "results/host/artifacts/sca-combined-focused-address",
+    "binary_segments": [
+      {
+        "name": "__PAGEZERO",
+        "vmaddr": 0,
+        "vmsize": 4294967296
+      },
+      {
+        "name": "__TEXT",
+        "vmaddr": 4294967296,
+        "vmsize": 393216
+      },
+      {
+        "name": "__DATA_CONST",
+        "vmaddr": 4295360512,
+        "vmsize": 32768
+      },
+      {
+        "name": "__DATA",
+        "vmaddr": 4295393280,
+        "vmsize": 180224
+      },
+      {
+        "name": "__LINKEDIT",
+        "vmaddr": 4295573504,
+        "vmsize": 98304
+      }
+    ],
+    "binary_sha256": "f74ba88de44f5e2439765bce61e035d1dae4970e7e133b4f16f415ee85ce02ab",
+    "binary_text_vmaddr": "0x100000000",
+    "build_flags": "-fsanitize-coverage=trace-pc-guard,trace-loads,trace-stores -fsanitize-coverage-allowlist=/Users/hiro/workspace/sqisign/experiments/sca/combined-focused-address-allowlist.txt -fno-omit-frame-pointer -gline-tables-only",
+    "builder": "scripts/build_sca_lowmem_control_flow_harness.py",
+    "builder_sha256": "c98907438c5ccab6d8173a8c24c85b1275e1c1f82146c310bc0e8c32acfad15e",
+    "combined_contract": "experiments/sca/combined-sign-protection-contract.json",
+    "combined_contract_sha256": "2a1e2e5ac46fa335b81a670a278aff22a25304e4f0ce1d5006038b4d1030dd9a",
+    "compiler": "Apple clang version 17.0.0 (clang-1700.6.3.2)",
+    "debug": "results/host/artifacts/sca-combined-focused-address.dwarf",
+    "debug_sha256": "3706330d564bfeafbccb9d210341994e8ce33dec23b6c1c8602f524d301c7fb5",
+    "harness": "experiments/sca/trace_sign_focused_address.c",
+    "harness_sha256": "4989bb78a9c42d129fadf9e38bdf4668b78b592691fd9df26b1b81e59645a784",
+    "host": "macOS-26.3.1-arm64-arm-64bit-Mach-O",
+    "profile_flags": "Level-I GF_RADIX=32 LOWMEM selected-function-address random-ideal-fixed-budget Cornacchia-fixedwork-521 Cornacchia-fixed-halfgcd-492",
+    "raw_csv": "results/host/sca-combined-focused-address-rerun.csv",
+    "raw_csv_sha256": "9559d2e49b2ba6fd10ac8ac5137c3214445eb9b6f45da39b1a3411404b709d22",
+    "source_manifest_file_count": 461,
+    "source_manifest_sha256": "ce288a9c8c4927e6d3e577289a70fb4cb98ef8f629cd6522889110d869b5025d",
+    "source_root": "work/compact-sca-ri"
+  },
+  "results": {
+    "control_pairs": 1,
+    "pairs": [
+      {
+        "dataset": "control",
+        "edge_capture_truncated": false,
+        "edge_equal": true,
+        "edge_events_a": 997252,
+        "edge_events_b": 997252,
+        "first_edge_difference": {
+          "a_pc": "0x0",
+          "a_source": null,
+          "a_symbol": null,
+          "b_pc": "0x0",
+          "b_source": null,
+          "b_symbol": null,
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": null,
+          "a_site_pc": "0x0",
+          "a_site_source": null,
+          "a_site_symbol": null,
+          "b_event": null,
+          "b_site_pc": "0x0",
+          "b_site_source": null,
+          "b_site_symbol": null,
+          "event_index": -1
+        },
+        "load_events_a": 3455535,
+        "load_events_b": 3455535,
+        "memory_address_equal": true,
+        "memory_capture_truncated": true,
+        "pair": 0,
+        "seed_a": 0,
+        "seed_b": 0,
+        "signature_equal": true,
+        "store_events_a": 544465,
+        "store_events_b": 544465
+      },
+      {
+        "dataset": "fixed-random",
+        "edge_capture_truncated": false,
+        "edge_equal": false,
+        "edge_events_a": 997252,
+        "edge_events_b": 996908,
+        "first_edge_difference": {
+          "a_pc": "0x10415fec0",
+          "a_source": {
+            "column": 30,
+            "file": "src/quaternion/ref/generic/ideal.c",
+            "inline_origins": [
+              "quat_lideal_create_with_norm_impl"
+            ],
+            "line": 171,
+            "link_pc": "0x100017ec0"
+          },
+          "a_symbol": "sqisign_gen_quat_lideal_create_with_norm_with_workspace (in sca-combined-focused-address.dwarf) (ideal.c:287)",
+          "b_pc": "0x10415fea4",
+          "b_source": {
+            "column": 26,
+            "file": "src/quaternion/ref/generic/ideal.c",
+            "inline_origins": [
+              "quat_lideal_create_with_norm_impl"
+            ],
+            "line": 168,
+            "link_pc": "0x100017ea4"
+          },
+          "b_symbol": "sqisign_gen_quat_lideal_create_with_norm_with_workspace (in sca-combined-focused-address.dwarf) (ideal.c:287)",
+          "event_index": 668249
+        },
+        "first_memory_difference": {
+          "a_event": {
+            "address": "0x0000010418dff0",
+            "image_offset": "0x45ff0",
+            "is_store": false,
+            "raw": "0x080000010418dff0",
+            "region": "image:__TEXT",
+            "width_bytes": 8
+          },
+          "a_site_pc": "0x104155f3c",
+          "a_site_source": {
+            "column": 13,
+            "file": "src/quaternion/ref/generic/intbig.c",
+            "inline_origins": [
+              "sqisign_gen_ibz_is_negative"
+            ],
+            "line": 401,
+            "link_pc": "0x10000df3c"
+          },
+          "a_site_symbol": "sqisign_gen_ibz_bitsize (in sca-combined-focused-address.dwarf) (intbig.c:1358)",
+          "b_event": {
+            "address": "0x0000016bcad890",
+            "image_offset": null,
+            "is_store": false,
+            "raw": "0x080000016bcad890",
+            "region": "non-image",
+            "width_bytes": 8
+          },
+          "b_site_pc": "0x104155f3c",
+          "b_site_source": {
+            "column": 13,
+            "file": "src/quaternion/ref/generic/intbig.c",
+            "inline_origins": [
+              "sqisign_gen_ibz_is_negative"
+            ],
+            "line": 401,
+            "link_pc": "0x10000df3c"
+          },
+          "b_site_symbol": "sqisign_gen_ibz_bitsize (in sca-combined-focused-address.dwarf) (intbig.c:1358)",
+          "event_index": 3026431
+        },
+        "load_events_a": 3455535,
+        "load_events_b": 3455366,
+        "memory_address_equal": false,
+        "memory_capture_truncated": true,
+        "pair": 0,
+        "seed_a": 0,
+        "seed_b": 1,
+        "signature_equal": false,
+        "store_events_a": 544465,
+        "store_events_b": 544634
+      },
+      {
+        "dataset": "fixed-random",
+        "edge_capture_truncated": false,
+        "edge_equal": false,
+        "edge_events_a": 997252,
+        "edge_events_b": 998082,
+        "first_edge_difference": {
+          "a_pc": "0x10415fda8",
+          "a_source": {
+            "column": 30,
+            "file": "src/quaternion/ref/generic/ideal.c",
+            "inline_origins": [
+              "quat_lideal_create_with_norm_impl"
+            ],
+            "line": 171,
+            "link_pc": "0x100017da8"
+          },
+          "a_symbol": "sqisign_gen_quat_lideal_create_with_norm_with_workspace (in sca-combined-focused-address.dwarf) (ideal.c:287)",
+          "b_pc": "0x10415fd8c",
+          "b_source": {
+            "column": 26,
+            "file": "src/quaternion/ref/generic/ideal.c",
+            "inline_origins": [
+              "quat_lideal_create_with_norm_impl"
+            ],
+            "line": 168,
+            "link_pc": "0x100017d8c"
+          },
+          "b_symbol": "sqisign_gen_quat_lideal_create_with_norm_with_workspace (in sca-combined-focused-address.dwarf) (ideal.c:287)",
+          "event_index": 668229
+        },
+        "first_memory_difference": {
+          "a_event": {
+            "address": "0x0000010418dc90",
+            "image_offset": "0x45c90",
+            "is_store": false,
+            "raw": "0x080000010418dc90",
+            "region": "image:__TEXT",
+            "width_bytes": 8
+          },
+          "a_site_pc": "0x104155f3c",
+          "a_site_source": {
+            "column": 13,
+            "file": "src/quaternion/ref/generic/intbig.c",
+            "inline_origins": [
+              "sqisign_gen_ibz_is_negative"
+            ],
+            "line": 401,
+            "link_pc": "0x10000df3c"
+          },
+          "a_site_symbol": "sqisign_gen_ibz_bitsize (in sca-combined-focused-address.dwarf) (intbig.c:1358)",
+          "b_event": {
+            "address": "0x0000016bcad7b8",
+            "image_offset": null,
+            "is_store": false,
+            "raw": "0x080000016bcad7b8",
+            "region": "non-image",
+            "width_bytes": 8
+          },
+          "b_site_pc": "0x104155f3c",
+          "b_site_source": {
+            "column": 13,
+            "file": "src/quaternion/ref/generic/intbig.c",
+            "inline_origins": [
+              "sqisign_gen_ibz_is_negative"
+            ],
+            "line": 401,
+            "link_pc": "0x10000df3c"
+          },
+          "b_site_symbol": "sqisign_gen_ibz_bitsize (in sca-combined-focused-address.dwarf) (intbig.c:1358)",
+          "event_index": 3026298
+        },
+        "load_events_a": 3455535,
+        "load_events_b": 3455908,
+        "memory_address_equal": false,
+        "memory_capture_truncated": true,
+        "pair": 1,
+        "seed_a": 0,
+        "seed_b": 2,
+        "signature_equal": false,
+        "store_events_a": 544465,
+        "store_events_b": 544092
+      },
+      {
+        "dataset": "fixed-random",
+        "edge_capture_truncated": false,
+        "edge_equal": false,
+        "edge_events_a": 997252,
+        "edge_events_b": 997910,
+        "first_edge_difference": {
+          "a_pc": "0x10415fda8",
+          "a_source": {
+            "column": 30,
+            "file": "src/quaternion/ref/generic/ideal.c",
+            "inline_origins": [
+              "quat_lideal_create_with_norm_impl"
+            ],
+            "line": 171,
+            "link_pc": "0x100017da8"
+          },
+          "a_symbol": "sqisign_gen_quat_lideal_create_with_norm_with_workspace (in sca-combined-focused-address.dwarf) (ideal.c:287)",
+          "b_pc": "0x10415fd8c",
+          "b_source": {
+            "column": 26,
+            "file": "src/quaternion/ref/generic/ideal.c",
+            "inline_origins": [
+              "quat_lideal_create_with_norm_impl"
+            ],
+            "line": 168,
+            "link_pc": "0x100017d8c"
+          },
+          "b_symbol": "sqisign_gen_quat_lideal_create_with_norm_with_workspace (in sca-combined-focused-address.dwarf) (ideal.c:287)",
+          "event_index": 668229
+        },
+        "first_memory_difference": {
+          "a_event": {
+            "address": "0x0000010418dc90",
+            "image_offset": "0x45c90",
+            "is_store": false,
+            "raw": "0x080000010418dc90",
+            "region": "image:__TEXT",
+            "width_bytes": 8
+          },
+          "a_site_pc": "0x104155f3c",
+          "a_site_source": {
+            "column": 13,
+            "file": "src/quaternion/ref/generic/intbig.c",
+            "inline_origins": [
+              "sqisign_gen_ibz_is_negative"
+            ],
+            "line": 401,
+            "link_pc": "0x10000df3c"
+          },
+          "a_site_symbol": "sqisign_gen_ibz_bitsize (in sca-combined-focused-address.dwarf) (intbig.c:1358)",
+          "b_event": {
+            "address": "0x0000016bcad7b8",
+            "image_offset": null,
+            "is_store": false,
+            "raw": "0x080000016bcad7b8",
+            "region": "non-image",
+            "width_bytes": 8
+          },
+          "b_site_pc": "0x104155f3c",
+          "b_site_source": {
+            "column": 13,
+            "file": "src/quaternion/ref/generic/intbig.c",
+            "inline_origins": [
+              "sqisign_gen_ibz_is_negative"
+            ],
+            "line": 401,
+            "link_pc": "0x10000df3c"
+          },
+          "b_site_symbol": "sqisign_gen_ibz_bitsize (in sca-combined-focused-address.dwarf) (intbig.c:1358)",
+          "event_index": 3026298
+        },
+        "load_events_a": 3455535,
+        "load_events_b": 3454054,
+        "memory_address_equal": false,
+        "memory_capture_truncated": true,
+        "pair": 2,
+        "seed_a": 0,
+        "seed_b": 3,
+        "signature_equal": false,
+        "store_events_a": 544465,
+        "store_events_b": 545946
+      },
+      {
+        "dataset": "fixed-random",
+        "edge_capture_truncated": false,
+        "edge_equal": false,
+        "edge_events_a": 997252,
+        "edge_events_b": 998317,
+        "first_edge_difference": {
+          "a_pc": "0x104153348",
+          "a_source": {
+            "column": 5,
+            "file": "src/quaternion/ref/generic/intbig.c",
+            "inline_origins": [
+              "sqisign_gen_ibz_copy"
+            ],
+            "line": 385,
+            "link_pc": "0x10000b348"
+          },
+          "a_symbol": "sqisign_gen_ibz_mul (in sca-combined-focused-address.dwarf) (intbig.c:832)",
+          "b_pc": "0x10415340c",
+          "b_source": {
+            "column": 9,
+            "file": "src/quaternion/ref/generic/intbig.c",
+            "inline_origins": [
+              "ibz_abs_unsigned"
+            ],
+            "line": 428,
+            "link_pc": "0x10000b40c"
+          },
+          "b_symbol": "sqisign_gen_ibz_mul (in sca-combined-focused-address.dwarf) (intbig.c:832)",
+          "event_index": 669440
+        },
+        "first_memory_difference": {
+          "a_event": {
+            "address": "0x0000016bca7490",
+            "image_offset": null,
+            "is_store": false,
+            "raw": "0x080000016bca7490",
+            "region": "non-image",
+            "width_bytes": 8
+          },
+          "a_site_pc": "0x10415380c",
+          "a_site_source": {
+            "column": 26,
+            "file": "src/quaternion/ref/generic/intbig.c",
+            "inline_origins": [],
+            "line": 840,
+            "link_pc": "0x10000b80c"
+          },
+          "a_site_symbol": "sqisign_gen_ibz_mul (in sca-combined-focused-address.dwarf) (intbig.c:840)",
+          "b_event": {
+            "address": "0x0000016bca74d8",
+            "image_offset": null,
+            "is_store": false,
+            "raw": "0x080000016bca74d8",
+            "region": "non-image",
+            "width_bytes": 8
+          },
+          "b_site_pc": "0x1041536fc",
+          "b_site_source": {
+            "column": 26,
+            "file": "src/quaternion/ref/generic/intbig.c",
+            "inline_origins": [],
+            "line": 839,
+            "link_pc": "0x10000b6fc"
+          },
+          "b_site_symbol": "sqisign_gen_ibz_mul (in sca-combined-focused-address.dwarf) (intbig.c:839)",
+          "event_index": 3033316
+        },
+        "load_events_a": 3455535,
+        "load_events_b": 3455150,
+        "memory_address_equal": false,
+        "memory_capture_truncated": true,
+        "pair": 3,
+        "seed_a": 0,
+        "seed_b": 5,
+        "signature_equal": false,
+        "store_events_a": 544465,
+        "store_events_b": 544850
+      }
+    ],
+    "primary_edge_differences": 4,
+    "primary_memory_address_differences": 4,
+    "primary_pairs": 4
+  },
+  "schema": "sqisign-combined-focused-address-trace-v1",
+  "scope": {
+    "does_not_observe": [
+      "loaded or stored values",
+      "register or bus Hamming weight and transitions",
+      "power or electromagnetic leakage",
+      "unselected Sign functions",
+      "final Cortex-M33 linked behavior"
+    ],
+    "instrumentation": "Clang SanitizerCoverage trace-pc-guard plus effective load/store addresses, restricted by a function allowlist",
+    "operation": "encoded Level-I/RADIX32 low-memory Sign",
+    "selected_functions": [
+      "quat_lideal_create_with_norm_with_workspace",
+      "ibz_bitsize and inlined descendants",
+      "ibz_mul and inlined descendants"
+    ],
+    "selection_reason": "the first residual combined-control-flow sites from the four-pair bounded-prefix screen"
+  }
+}

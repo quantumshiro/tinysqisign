@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "physical_side_channel_evidence": false,
+    "reproduced": true,
+    "side_channel_resistance_established": false
+  },
+  "inputs": {
+    "first": "/Users/hiro/workspace/sqisign/results/host/sca-combined-focused-address.json",
+    "first_sha256": "9b335d1cb63e74f38488a2d90b30fc30daf1f942402877ecc946aed37514544e",
+    "second": "/Users/hiro/workspace/sqisign/results/host/sca-combined-focused-address-rerun.json",
+    "second_sha256": "b818801310ba5e102abc73939dde12a1a8e4572f7925cf51740d9556fe523c7a"
+  },
+  "results": {
+    "decisions_equal": true,
+    "event_counts_and_first_differences_equal": true,
+    "pair_records_reproduced": 5,
+    "source_and_binary_provenance_equal": true
+  },
+  "schema": "sqisign-combined-focused-address-reproducibility-v1"
+}

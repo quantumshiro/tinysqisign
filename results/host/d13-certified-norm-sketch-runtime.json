@@ -1,0 +1,64 @@
+{
+  "input": "results/host/d13-certified-norm-sketch-runtime.csv",
+  "input_sha256": "d5cb281d1ff553392d2aa081fec42a38950d1fbbf06d5c34c99b41a46b6a7f93",
+  "results": [
+    {
+      "d12c_median_ns": 228702000.0,
+      "d13_faster_rows": 7,
+      "d13_median_ns": 229547000.0,
+      "execution_sequence": "d12c-then-d13",
+      "operation": "keygen",
+      "paired_difference_mean_ns": 710366.6666666666,
+      "paired_difference_median_ns": 597500.0,
+      "paired_difference_sample_sd_ns": 1033465.9290159408,
+      "ratio_of_medians": 1.003694764365856,
+      "rows": 30,
+      "run": 1,
+      "unique_seeds": 15
+    },
+    {
+      "d12c_median_ns": 228092500.0,
+      "d13_faster_rows": 7,
+      "d13_median_ns": 229567000.0,
+      "execution_sequence": "d13-then-d12c",
+      "operation": "keygen",
+      "paired_difference_mean_ns": 612866.6666666666,
+      "paired_difference_median_ns": 458500.0,
+      "paired_difference_sample_sd_ns": 939469.1359865231,
+      "ratio_of_medians": 1.0064644826112212,
+      "rows": 30,
+      "run": 2,
+      "unique_seeds": 15
+    },
+    {
+      "d12c_median_ns": 588781000.0,
+      "d13_faster_rows": 16,
+      "d13_median_ns": 588475500.0,
+      "execution_sequence": "d12c-then-d13",
+      "operation": "sign",
+      "paired_difference_mean_ns": -967333.3333333334,
+      "paired_difference_median_ns": -393000.0,
+      "paired_difference_sample_sd_ns": 2501962.034681683,
+      "ratio_of_medians": 0.9994811313544425,
+      "rows": 30,
+      "run": 1,
+      "unique_seeds": 15
+    },
+    {
+      "d12c_median_ns": 585649000.0,
+      "d13_faster_rows": 22,
+      "d13_median_ns": 585051500.0,
+      "execution_sequence": "d13-then-d12c",
+      "operation": "sign",
+      "paired_difference_mean_ns": -1364900,
+      "paired_difference_median_ns": -1545500.0,
+      "paired_difference_sample_sd_ns": 1776957.3831072343,
+      "ratio_of_medians": 0.9989797643298289,
+      "rows": 30,
+      "run": 2,
+      "unique_seeds": 15
+    }
+  ],
+  "schema": "sqisign-certified-norm-sketch-runtime-v1",
+  "scope": "Two reversed-sequence 30-row host smoke runs per operation; not an equivalence test, target timing result, or D13-only cost attribution."
+}

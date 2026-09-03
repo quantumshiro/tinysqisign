@@ -1,0 +1,74 @@
+[1/74] Building C object src/precomp/ref/lvl1/CMakeFiles/sqisign_precomp_lvl1.dir/ec_params.c.o
+[2/74] Building C object src/precomp/ref/lvl1/CMakeFiles/sqisign_precomp_lvl1.dir/e0_basis.c.o
+[3/74] Building C object src/precomp/ref/lvl1/CMakeFiles/sqisign_precomp_lvl1.dir/hd_splitting_transforms.c.o
+[4/74] Building C object src/precomp/ref/lvl1/CMakeFiles/sqisign_precomp_lvl1.dir/torsion_constants.c.o
+[5/74] Building C object src/precomp/ref/lvl1/CMakeFiles/sqisign_precomp_lvl1.dir/quaternion_data.c.o
+[6/74] Building C object src/precomp/ref/lvl1/CMakeFiles/sqisign_precomp_lvl1.dir/endomorphism_action.c.o
+[7/74] Building C object src/ec/ref/lvl1/CMakeFiles/sqisign_ec_lvl1.dir/__/lvlx/ec_jac.c.o
+[8/74] Building C object src/gf/ref/lvl1/CMakeFiles/sqisign_gf_lvl1.dir/__/lvlx/fp.c.o
+[9/74] Building C object src/gf/ref/lvl1/CMakeFiles/sqisign_gf_lvl1.dir/__/lvlx/fp2.c.o
+[10/74] Building C object src/ec/ref/lvl1/CMakeFiles/sqisign_ec_lvl1.dir/__/lvlx/ec.c.o
+[11/74] Building C object src/gf/ref/lvl1/CMakeFiles/sqisign_gf_lvl1.dir/fp_p5248_32.c.o
+[12/74] Building C object src/mp/ref/generic/CMakeFiles/sqisign_mp_generic.dir/mp.c.o
+[13/74] Building C object src/ec/ref/lvl1/CMakeFiles/sqisign_ec_lvl1.dir/__/lvlx/xeval.c.o
+[14/74] Building C object src/ec/ref/lvl1/CMakeFiles/sqisign_ec_lvl1.dir/__/lvlx/xisog.c.o
+[15/74] Building C object src/ec/ref/lvl1/CMakeFiles/sqisign_ec_lvl1.dir/__/lvlx/isog_chains.c.o
+[16/74] Building C object src/ec/ref/lvl1/CMakeFiles/sqisign_ec_lvl1.dir/__/lvlx/basis.c.o
+[17/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/algebra.c.o
+[18/74] Linking C static library src/precomp/ref/lvl1/libsqisign_precomp_lvl1.a
+[19/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/ideal.c.o
+[20/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/dim2.c.o
+[21/74] Building C object src/ec/ref/lvl1/CMakeFiles/sqisign_ec_lvl1.dir/__/lvlx/biextension.c.o
+[22/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/integers.c.o
+[23/74] Linking C static library src/mp/ref/generic/libsqisign_mp_generic.a
+[24/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/finit.c.o
+[25/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/dim4.c.o
+[26/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/printer.c.o
+[27/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/lll/rationals.c.o
+[28/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/lll/lll_verification.c.o
+[29/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/lll/lll_applications.c.o
+[30/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/lattice.c.o
+[31/74] Linking C static library src/gf/ref/lvl1/libsqisign_gf_lvl1.a
+[32/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/hnf/ibz_division.c.o
+[33/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/hnf/hnf_internal.c.o
+[34/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/normeq.c.o
+[35/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/lll/l2.c.o
+[36/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/test/random_input_generation.c.o
+[37/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/lll/mlll.c.o
+[38/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/hnf/hnf.c.o
+[39/74] Building C object src/hd/ref/lvl1/CMakeFiles/sqisign_hd_lvl1.dir/__/lvlx/hd.c.o
+[40/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/dpe.c.o
+[41/74] Building C object src/hd/ref/lvl1/CMakeFiles/sqisign_hd_lvl1.dir/__/lvlx/theta_structure.c.o
+[42/74] Linking C static library src/ec/ref/lvl1/libsqisign_ec_lvl1.a
+[43/74] Building C object src/verification/ref/lvl1/CMakeFiles/sqisign_verification_lvl1.dir/__/lvlx/common.c.o
+[44/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/lll/ml2.c.o
+[45/74] Building C object src/verification/ref/lvl1/CMakeFiles/sqisign_verification_lvl1.dir/__/lvlx/encode_verification.c.o
+[46/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/lat_ball.c.o
+[47/74] Building C object src/verification/ref/lvl1/CMakeFiles/sqisign_verification_lvl1.dir/__/lvlx/verify.c.o
+[48/74] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/randombytes_system.c.o
+[49/74] Building C object src/id2iso/ref/lvl1/CMakeFiles/sqisign_id2iso_lvl1.dir/__/lvlx/id2iso.c.o
+[50/74] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/mem.c.o
+[51/74] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/tools.c.o
+[52/74] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/__/ref/randombytes_ctrdrbg.c.o
+[53/74] Building C object src/signature/ref/lvl1/CMakeFiles/sqisign_signature_lvl1.dir/__/lvlx/encode_signature.c.o
+[54/74] Building C object src/hd/ref/lvl1/CMakeFiles/sqisign_hd_lvl1.dir/__/lvlx/theta_isogenies.c.o
+[55/74] Building C object src/signature/ref/lvl1/CMakeFiles/sqisign_signature_lvl1.dir/__/lvlx/keygen_lowmem.c.o
+[56/74] Building C object src/signature/ref/lvl1/CMakeFiles/sqisign_signature_lvl1.dir/__/lvlx/keygen.c.o
+[57/74] Building C object src/CMakeFiles/sqisign_lvl1_test.dir/sqisign.c.o
+[58/74] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/fips202.c.o
+[59/74] Building C object src/CMakeFiles/sqisign_lvl1_test.dir/sqisign_lowmem.c.o
+[60/74] Building C object src/signature/ref/lvl1/CMakeFiles/sqisign_signature_lvl1.dir/__/lvlx/sign.c.o
+[61/74] Building C object src/id2iso/ref/lvl1/CMakeFiles/sqisign_id2iso_lvl1.dir/__/lvlx/dim2id2iso.c.o
+[62/74] Building C object src/quaternion/ref/generic/CMakeFiles/sqisign_quaternion_lvl1.dir/intbig.c.o
+[63/74] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/__/ref/aes_c.c.o
+[64/74] Building C object src/CMakeFiles/sqisign_lvl1_test_nistapi.dir/nistapi/lvl1/api.c.o
+[65/74] Building C object apps/CMakeFiles/PQCgenKAT_sign_lvl1.dir/PQCgenKAT_sign.c.o
+[66/74] Linking C static library src/hd/ref/lvl1/libsqisign_hd_lvl1.a
+[67/74] Linking C static library src/common/generic/libsqisign_common_test.a
+[68/74] Linking C static library src/quaternion/ref/generic/libsqisign_quaternion_lvl1.a
+[69/74] Linking C static library src/verification/ref/lvl1/libsqisign_verification_lvl1.a
+[70/74] Linking C static library src/id2iso/ref/lvl1/libsqisign_id2iso_lvl1.a
+[71/74] Linking C static library src/signature/ref/lvl1/libsqisign_signature_lvl1.a
+[72/74] Linking C static library src/libsqisign_lvl1_test.a
+[73/74] Linking C static library src/libsqisign_lvl1_test_nistapi.a
+[74/74] Linking C executable apps/PQCgenKAT_sign_lvl1

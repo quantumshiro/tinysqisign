@@ -1,0 +1,17 @@
+build-*/
+work/
+results/local/
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+!results/**/*.log
+*.out
+*.run.xml
+.texlive-var/
+.DS_Store
+__pycache__/
+*.pyc

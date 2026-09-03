@@ -1,0 +1,86 @@
+diff --git a/src/quaternion/ref/lvlx/lll/lll_dim4.c b/src/quaternion/ref/lvlx/lll/lll_dim4.c
+index 2d4c174..6b70942 100644
+--- a/src/quaternion/ref/lvlx/lll/lll_dim4.c
++++ b/src/quaternion/ref/lvlx/lll/lll_dim4.c
+@@ -19,6 +19,25 @@ typedef struct
+     ibz_t G[4][4];
+ } ct_mk_result_t;
+ 
++/*
++ * The LDL state is dead as soon as ct_minkowski_reduce() returns.  Conversely,
++ * Aout is not written before that return.  Make this lifetime separation part
++ * of the C object layout instead of relying on compiler stack-slot reuse after
++ * the addresses of both objects have escaped to helper functions.
++ *
++ * The second output matrix, Bout, reuses ct_mk_result_t::Ainv_total after Aout
++ * has been derived from it.  res.G and res.T remain live for the later Gram
++ * computation, so only the dead subobject is reused.
++ */
++typedef union
++{
++    fp_ldl_t reduction;
++    ibz_t Aout[4][4];
++} quat_lll_dual_phase_t;
++
++_Static_assert(sizeof(((ct_mk_result_t *)0)->Ainv_total) == sizeof(ibz_t[4][4]),
++               "Ainv_total/Bout lifetime overlay requires equal extents");
++
+ // ==== Part 1: LDL state — dual init, block update, size reduction
+ 
+ // ---- closed-form dual init
+@@ -857,10 +876,8 @@ quat_lll_dual_reduce_ideal(quat_lattice_t *reduced,
+     assert(ibz_bitsize(&hnf->basis.m[1][2]) < QUAT_HNF_BITS); // C
+     assert(ibz_bitsize(&hnf->basis.m[1][3]) < QUAT_HNF_BITS); // B
+ 
+-    // The transform that will be returned: P * Ainv_total, with the column order reversed.
+-    ibz_t Aout[4][4] = { 0 };
+-
+-    fp_ldl_t st;
++    // Reduction state and the later Aout matrix have disjoint lifetimes.
++    quat_lll_dual_phase_t phase;
+     ct_mk_result_t res = { 0 };
+ 
+     {
+@@ -875,20 +892,20 @@ quat_lll_dual_reduce_ideal(quat_lattice_t *reduced,
+     }
+ 
+     // 2. reduce
+-    lll_dim4_qlapoty_reduce(&res, &st, &twoN, &B, &C, &Dq, &E, &p, P);
++    lll_dim4_qlapoty_reduce(&res, &phase.reduction, &twoN, &B, &C, &Dq, &E, &p, P);
+ 
+     // 3. Aout = P * Ainv_total with the column order reversed; P is the pair-swap (2,3,0,1)
+     static const int QUAT_SIGMA[4] = { 2, 3, 0, 1 };
+     for (int i = 0; i < 4; i++) {
+         for (int c = 0; c < 4; c++) {
+-            ibz_copy(&Aout[i][3 - c], &res.Ainv_total[QUAT_SIGMA[i]][c]);
+-            ibz_set_bound_ct(&Aout[i][3 - c], QUAT_AINVOUT_BITS);
++            ibz_copy(&phase.Aout[i][3 - c], &res.Ainv_total[QUAT_SIGMA[i]][c]);
++            ibz_set_bound_ct(&phase.Aout[i][3 - c], QUAT_AINVOUT_BITS);
+         }
+     }
+ 
+     // 4. materialise the primal basis: reduced->basis = hnf->basis * Aout, which is exactly
+     // quat_lattice_t's basis_out = basis_in * Ainv_total convention
+-    ibz_t Bout[4][4] = { 0 };
++    ibz_t(*Bout)[4] = res.Ainv_total;
+     for (int r = 0; r < 4; r++) {
+         for (int c = 0; c < 4; c++) {
+             ibz_t acc = { 0 };
+@@ -898,7 +915,7 @@ quat_lll_dual_reduce_ideal(quat_lattice_t *reduced,
+                 ibz_t hm = { 0 }, term = { 0 };
+                 ibz_copy(&hm, &hnf->basis.m[r][m]);
+                 ibz_set_bound_ct(&hm, QUAT_HNF_BITS);
+-                ibz_mul(&term, &hm, &Aout[m][c]);
++                ibz_mul(&term, &hm, &phase.Aout[m][c]);
+                 ibz_add(&acc, &acc, &term);
+                 ibz_set_bound_ct(&acc, QUAT_BASIS_BITS);
+             }
+@@ -922,7 +939,7 @@ quat_lll_dual_reduce_ideal(quat_lattice_t *reduced,
+     for (int r = 0; r < 4; r++) {
+         for (int c = 0; c < 4; c++) {
+             ibz_copy(&reduced->basis.m[r][c], &Bout[r][c]);
+-            ibz_copy(&Ainv->m[r][c], &Aout[r][c]);
++            ibz_copy(&Ainv->m[r][c], &phase.Aout[r][c]);
+         }
+     }
+ }

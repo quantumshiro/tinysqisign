@@ -1,0 +1,33 @@
+{
+  "alerts": {
+    "first_control": false,
+    "first_primary": true,
+    "second_control": false,
+    "second_primary": true
+  },
+  "conclusion": "fixed-vs-random timing dependence reproduced with stable controls",
+  "elapsed_ms_cross_run": {
+    "max_absolute_difference_ms": 19.373000000000047,
+    "mean_absolute_difference_ms": 5.143578125000001,
+    "median_absolute_difference_ms": 4.375,
+    "pearson": 0.9999292099865222,
+    "spearman": 0.9997710622710623
+  },
+  "inputs": {
+    "first_csv": "results/host/sca-d13-sign-fixed-random.csv",
+    "first_csv_sha256": "f24471e90d91a94bf38b7fc27eade66ca2cc621c10662963ef799582b70929ef",
+    "first_summary_sha256": "fdb3a0f20781fea9f047ce3983b739512b1c50eafb1ef1ad6774e6e66f48cc79",
+    "second_csv": "results/host/sca-d13-sign-rerun-fixed-random.csv",
+    "second_csv_sha256": "0a2d9f294c853f2d743e23d6af76a62e0e889df0bc38df1c77b481154e211de6",
+    "second_summary_sha256": "f3dc6a8b0c15fa42a7aca65f483ea8ba042c4da9f1c08a998f3103968ca0e057"
+  },
+  "limitations": [
+    "Repeated deterministic seeds establish reproducibility, not independence.",
+    "Correlation does not identify the leaking internal operation.",
+    "This host result does not establish Cortex-M33 power/EM leakage or key recovery."
+  ],
+  "matched_random_seeds": 64,
+  "path_counters_and_signatures_identical": true,
+  "schema": "sqisign-sca-timing-repeat-v1",
+  "scope": "Cross-run reproducibility of class-B elapsed time for the exact same deterministic signing-RNG seeds. Path counters and signature digests must match before timing correlation is reported."
+}

@@ -1,0 +1,50 @@
+% Exact same-scale SRAM accounting for the full-norm and proposed v2 builds.
+\begin{tikzpicture}[
+  x=1mm,y=1mm,
+  lab/.style={font=\sffamily\footnotesize},
+  strong/.style={font=\sffamily\bfseries\footnotesize},
+  outline/.style={draw=black,line width=.65pt},
+  leader/.style={line width=.45pt}
+]
+  \node[strong,anchor=west] at (0,0) {(a) SRAM予約（各棒 = \num{532480} B）};
+  \node[strong,anchor=east] at (17,-11) {全精度表};
+  \node[strong,anchor=east] at (17,-25) {v2提案};
+
+  % Scale: 140 mm / 532480 B. Full-norm widths: 92.84, 34.46, 2.61, 2.15, 7.93.
+  \fill[black!18] (20,-15) rectangle (112.84,-7);
+  \fill[pattern=north east lines,pattern color=black] (112.84,-15) rectangle (147.30,-7);
+  % MSP and the remaining main-bank state are aggregated here; Table 5
+  % reports their individual values.  Aggregation keeps the narrow slices
+  % legible in monochrome print.
+  \fill[black!62] (147.30,-15) rectangle (152.06,-7);
+  \draw[outline] (20,-15) rectangle (160,-7);
+  \node[strong] at (66.4,-11) {owner \num{353136}};
+  \node[lab] at (130.1,-11) {PSP \num{131072}};
+  \draw[leader] (156.0,-7) -- (156.0,-5);
+  \node[lab,anchor=south east] at (160,-4.5) {空き \num{30144}};
+
+  % Proposed-v2 widths: 45.28, 34.46, 2.61, 2.15, 55.50.
+  \fill[black!18] (20,-29) rectangle (65.28,-21);
+  \fill[pattern=north east lines,pattern color=black] (65.28,-29) rectangle (99.74,-21);
+  \fill[black!62] (99.74,-29) rectangle (104.50,-21);
+  \draw[outline] (20,-29) rectangle (160,-21);
+  \node[strong] at (42.6,-25) {owner \num{172208}};
+  \node[lab] at (82.5,-25) {PSP \num{131072}};
+  \node[strong] at (132.25,-25) {空き \num{211072}};
+
+  \draw[leader] (102.12,-29.5) -- (102.12,-35) -- (78,-35);
+  \node[lab,anchor=east] at (77,-35) {共通予約 \num{18128}};
+
+  \node[lab,anchor=west] at (20,-43) {凡例：};
+  \fill[black!18] (34,-46) rectangle (40,-41); \draw (34,-46) rectangle (40,-41);
+  \node[lab,anchor=west] at (42,-43.5) {guard込みowner};
+  \fill[pattern=north east lines,pattern color=black] (76,-46) rectangle (82,-41); \draw (76,-46) rectangle (82,-41);
+  \node[lab,anchor=west] at (84,-43.5) {PSP予約};
+  \draw (117,-46) rectangle (123,-41);
+  \node[lab,anchor=west] at (125,-43.5) {未予約};
+
+  \node[strong,anchor=west] at (0,-53) {(b) XIP BIN image};
+  \node[lab,anchor=west] at (20,-60) {全精度表 \num{287504} B};
+  \draw[->,line width=.65pt] (68,-60) -- node[strong,above] {$+\num{880}$ B} (103,-60);
+  \node[lab,anchor=west] at (108,-60) {v2提案 \num{288384} B};
+\end{tikzpicture}

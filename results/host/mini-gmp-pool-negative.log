@@ -1,0 +1,2 @@
+mini-GMP comparison allocator exhausted
+./scripts/reproduce_mini_gmp_comparison.sh: line 89: 78817 Abort trap: 6           SQISIGN_MINI_GMP_KAT_POOL_BYTES=$failing_pool_bytes "$scratch/mini/mini_gmp_pool_kat_lvl1"

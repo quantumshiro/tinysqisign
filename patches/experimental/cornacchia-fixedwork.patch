@@ -1,0 +1,1230 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ba553b16a6e013c4b8476202adbab3460ffb8aed..bd8cace75d45ec4d8dc230767917441eaab278c0 100755
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -13,6 +13,12 @@ option(ENABLE_KAT_TESTS "Enable stored-vector regression tests (not correctness
+ option(ENABLE_ML2_PROFILE "Collect opt-in ML2 retry statistics in test binaries." OFF)
+ option(ENABLE_INTBIG_OVERFLOW_CHECK "Abort when fixed-width signed add/sub/mul overflows." OFF)
+ option(ENABLE_CT_TESTING  "Enable compilation for constant time testing." OFF)
++option(SQISIGN_CORNACCHIA_FIXEDWORK_521
++       "Use the experimental no-fallback 521-bit fixed-work Cornacchia square-root route"
++       OFF)
++option(ENABLE_CORNACCHIA_FIXEDWORK_PROFILE
++       "Collect counters for the experimental fixed-work Cornacchia route"
++       OFF)
+ option(ENABLE_SIGN "Build with sign functionality" ON)
+ option(ENABLE_GMP "Enable GMP library (not needed for fixed-precision implementation)" OFF)
+ option(SQISIGN_LOWMEM_ONLY
+@@ -26,6 +32,30 @@ if(ENABLE_KAT_TESTS AND NOT ENABLE_TESTS)
+     message(FATAL_ERROR "ENABLE_KAT_TESTS requires ENABLE_TESTS=ON")
+ endif()
+ 
++if(ENABLE_CORNACCHIA_FIXEDWORK_PROFILE AND
++   NOT SQISIGN_CORNACCHIA_FIXEDWORK_521)
++    message(FATAL_ERROR
++            "ENABLE_CORNACCHIA_FIXEDWORK_PROFILE requires SQISIGN_CORNACCHIA_FIXEDWORK_521=ON")
++endif()
++
++if(SQISIGN_CORNACCHIA_FIXEDWORK_521)
++    if(NOT ENABLE_SIGN)
++        message(FATAL_ERROR
++                "SQISIGN_CORNACCHIA_FIXEDWORK_521 requires ENABLE_SIGN=ON")
++    endif()
++    if(ENABLE_GMP)
++        message(FATAL_ERROR
++                "SQISIGN_CORNACCHIA_FIXEDWORK_521 requires ENABLE_GMP=OFF")
++    endif()
++    add_compile_definitions(SQISIGN_CORNACCHIA_FIXEDWORK_521)
++endif()
++
++if(ENABLE_CORNACCHIA_FIXEDWORK_PROFILE)
++    add_compile_definitions(
++        SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE
++        SQISIGN_SCA_FIXEDWORK_PROFILE)
++endif()
++
+ if(ENABLE_TESTS)
+     include(CTest)
+     enable_testing()
+@@ -80,7 +110,7 @@ elseif (${SQISIGN_BUILD_TYPE} MATCHES "arm64crypto")
+   add_compile_definitions(SQISIGN_BUILD_TYPE_ARM64CRYPTO SQISIGN_GF_IMPL_REF)
+ endif()
+ 
+-if(SQISIGN_LOWMEM_ONLY)
++if(SQISIGN_LOWMEM_ONLY OR SQISIGN_CORNACCHIA_FIXEDWORK_521)
+     set(SVARIANT_S "lvl1")
+ else()
+     set(SVARIANT_S "lvl1;lvl3;lvl5")
+diff --git a/src/quaternion/ref/generic/CMakeLists.txt b/src/quaternion/ref/generic/CMakeLists.txt
+index f5b5f1529e56c6ee663c3fab5eaf7cbc70783cfd..ef40c4602a553c26821db1c8a0021b6692c11d7e 100755
+--- a/src/quaternion/ref/generic/CMakeLists.txt
++++ b/src/quaternion/ref/generic/CMakeLists.txt
+@@ -23,6 +23,12 @@ set(SOURCE_FILES_QUATERNION_GENERIC_REF
+     dpe.c
+ )
+ 
++if(SQISIGN_CORNACCHIA_FIXEDWORK_521)
++    list(APPEND SOURCE_FILES_QUATERNION_GENERIC_REF
++        powmod_fixedwork_521.c
++        sqrt_mod_fixedwork_521.c)
++endif()
++
+ if(SQISIGN_LOWMEM_ONLY)
+     list(REMOVE_ITEM SOURCE_FILES_QUATERNION_GENERIC_REF
+         printer.c
+diff --git a/src/quaternion/ref/generic/integers.c b/src/quaternion/ref/generic/integers.c
+index 15afde6f7f11478607036d87ebbd44c835d7c6a6..fcbb43541c71ed7edba7cc5ac324868c99d39d24 100755
+--- a/src/quaternion/ref/generic/integers.c
++++ b/src/quaternion/ref/generic/integers.c
+@@ -1,5 +1,8 @@
+ #include <quaternion.h>
+ #include "internal.h"
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_521)
++#include "sqrt_mod_fixedwork_521.h"
++#endif
+ #include <stdlib.h>
+ #include <string.h>
+ 
+@@ -73,8 +76,23 @@ ibz_cornacchia_prime(ibz_t *x, ibz_t *y, const ibz_t *n, const ibz_t *p)
+ 
+     // get sqrt of -n mod p
+     ibz_neg(&r2, n);
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_521)
++    sqisign_sca_sqrt_fixedwork_workspace_t sqrt_workspace;
++    const sqisign_sca_sqrt_status_t sqrt_status =
++        sqisign_sca_sqrt_mod_p_fixedwork_521(
++            &r2, &r2, p, &sqrt_workspace);
++    if (sqrt_status == SQISIGN_SCA_SQRT_FATAL) {
++        /* The compiled Level-I route proof bounds every production modulus
++         * below 2^492.  A protected-domain failure is therefore a violated
++         * invariant, not permission to re-enter the leaky legacy path. */
++        abort();
++    }
++    if (sqrt_status != SQISIGN_SCA_SQRT_SUCCESS)
++        goto done;
++#else
+     if (!ibz_sqrt_mod_p(&r2, &r2, p))
+         goto done;
++#endif
+ 
+     // run loop
+     ibz_copy(&prod, p);
+diff --git a/src/quaternion/ref/generic/internal_quaternion_headers/powmod_fixedwork_521.h b/src/quaternion/ref/generic/internal_quaternion_headers/powmod_fixedwork_521.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..4397f9890c1dda2412ffbd75f691e132180d4e9e
+--- /dev/null
++++ b/src/quaternion/ref/generic/internal_quaternion_headers/powmod_fixedwork_521.h
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: Apache-2.0
++#ifndef SQISIGN_POWMOD_FIXEDWORK_521_H
++#define SQISIGN_POWMOD_FIXEDWORK_521_H
++
++#include <intbig.h>
++#include <stdint.h>
++
++enum {
++    SQISIGN_SCA_FIXEDWORK_BITS = 521,
++    SQISIGN_SCA_FIXEDWORK_WORDS = 17,
++    SQISIGN_SCA_FIXEDWORK_POW_MULTIPLICATIONS =
++        2 * SQISIGN_SCA_FIXEDWORK_BITS,
++    SQISIGN_SCA_FIXEDWORK_MUL_ITERATIONS =
++        SQISIGN_SCA_FIXEDWORK_BITS,
++    SQISIGN_SCA_FIXEDWORK_POW_MUL_ITERATIONS =
++        SQISIGN_SCA_FIXEDWORK_POW_MULTIPLICATIONS *
++        SQISIGN_SCA_FIXEDWORK_MUL_ITERATIONS,
++    SQISIGN_SCA_FIXEDWORK_POW_MODULAR_ADDITIONS =
++        2 * SQISIGN_SCA_FIXEDWORK_POW_MUL_ITERATIONS,
++};
++
++typedef uint32_t sqisign_sca_u521_t[SQISIGN_SCA_FIXEDWORK_WORDS];
++
++/* Caller-owned so the protected square-root route does not add this storage
++ * once per nested arithmetic call.  No field may overlap an input/output
++ * ibz_t.  Each public operation clears the complete object before return. */
++typedef struct {
++    sqisign_sca_u521_t modulus;
++    sqisign_sca_u521_t base;
++    sqisign_sca_u521_t result;
++    sqisign_sca_u521_t square;
++    sqisign_sca_u521_t multiplied;
++    sqisign_sca_u521_t multiply_accumulator;
++    sqisign_sca_u521_t multiply_addend;
++    sqisign_sca_u521_t selected_addend;
++    sqisign_sca_u521_t addition_sum;
++    sqisign_sca_u521_t subtraction_difference;
++    sqisign_sca_u521_t one;
++    sqisign_sca_u521_t exponent;
++    sqisign_sca_u521_t comparison;
++} sqisign_sca_fixedwork_workspace_t;
++
++/* Experimental fixed-work arithmetic for the bounded Level-I Cornacchia
++ * route.  The accepted domain is deliberately narrow: every operand must be
++ * nonnegative and fit in 521 bits, the modulus must be nonzero, and each base
++ * or multiplication operand must already be strictly below the modulus.
++ * Invalid input returns zero without publishing output.  There is no legacy
++ * arithmetic fallback.
++ *
++ * Every accepted multiplication executes 521 multiplier-bit rounds.  Every
++ * round executes two complete 17-word modular additions.  Exponentiation
++ * executes 521 exponent rounds and two multiplications per round.  This
++ * regular source/target schedule removes the published exponent-bit branch;
++ * it is not by itself a constant-power, constant-EM, or complete SQIsign
++ * side-channel-resistance claim. */
++int sqisign_sca_mul_mod_fixedwork_521_with_workspace(
++    ibz_t *product,
++    const ibz_t *a,
++    const ibz_t *b,
++    const ibz_t *modulus,
++    sqisign_sca_fixedwork_workspace_t *workspace);
++
++int sqisign_sca_powmod_fixedwork_521_with_workspace(
++    ibz_t *power,
++    const ibz_t *x,
++    const ibz_t *e,
++    const ibz_t *m,
++    sqisign_sca_fixedwork_workspace_t *workspace);
++
++int sqisign_sca_mul_mod_fixedwork_521(ibz_t *product,
++                                      const ibz_t *a,
++                                      const ibz_t *b,
++                                      const ibz_t *modulus);
++
++int sqisign_sca_powmod_fixedwork_521(ibz_t *power,
++                                     const ibz_t *x,
++                                     const ibz_t *e,
++                                     const ibz_t *m);
++
++#if defined(SQISIGN_SCA_FIXEDWORK_PROFILE)
++typedef struct {
++    uint64_t exponent_iterations;
++    uint64_t modular_multiplications;
++    uint64_t multiplier_iterations;
++    uint64_t modular_additions;
++} sqisign_sca_fixedwork_profile_t;
++
++void sqisign_sca_fixedwork_profile_reset(void);
++sqisign_sca_fixedwork_profile_t sqisign_sca_fixedwork_profile_read(void);
++#endif
++
++#endif
+diff --git a/src/quaternion/ref/generic/internal_quaternion_headers/sqrt_mod_fixedwork_521.h b/src/quaternion/ref/generic/internal_quaternion_headers/sqrt_mod_fixedwork_521.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..c03a013f12430b819d50f6799e8c39b39735b883
+--- /dev/null
++++ b/src/quaternion/ref/generic/internal_quaternion_headers/sqrt_mod_fixedwork_521.h
+@@ -0,0 +1,62 @@
++// SPDX-License-Identifier: Apache-2.0
++#ifndef SQISIGN_SQRT_MOD_FIXEDWORK_521_H
++#define SQISIGN_SQRT_MOD_FIXEDWORK_521_H
++
++#include "powmod_fixedwork_521.h"
++
++typedef enum {
++    SQISIGN_SCA_SQRT_FATAL = -1,
++    SQISIGN_SCA_SQRT_NO_ROOT = 0,
++    SQISIGN_SCA_SQRT_SUCCESS = 1,
++} sqisign_sca_sqrt_status_t;
++
++typedef struct {
++    sqisign_sca_fixedwork_workspace_t arithmetic;
++    ibz_t a_input;
++    ibz_t p_input;
++    ibz_t n;
++    ibz_t p_minus_one;
++    ibz_t q;
++    ibz_t z;
++    ibz_t c;
++    ibz_t q_plus_one;
++    ibz_t exponent;
++    ibz_t x;
++    ibz_t t;
++    ibz_t t_power;
++    ibz_t b;
++    ibz_t b_squared;
++    ibz_t legendre_exponent;
++    ibz_t legendre_power;
++} sqisign_sca_sqrt_fixedwork_workspace_t;
++
++/* Internal tri-state API for the Level-I Cornacchia experiment.
++ *
++ * SUCCESS and NO_ROOT match the legacy mathematical result.  FATAL means
++ * that a precondition or the frozen 521-bit bound was violated; callers must
++ * fail closed and must never retry through ibz_sqrt_mod_p.  The output may
++ * alias either input.  A domain rejection happens before output publication,
++ * and the complete workspace is cleared on every return. */
++sqisign_sca_sqrt_status_t sqisign_sca_sqrt_mod_p_fixedwork_521(
++    ibz_t *sqrt,
++    const ibz_t *a,
++    const ibz_t *p,
++    sqisign_sca_sqrt_fixedwork_workspace_t *workspace);
++
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++typedef struct {
++    uint64_t sqrt_calls;
++    uint64_t legendre_calls;
++    uint64_t pow_calls;
++    uint64_t tonelli_shanks_mul_calls;
++    uint64_t successes;
++    uint64_t no_roots;
++    uint64_t fatals;
++} sqisign_sca_cornacchia_fixedwork_profile_t;
++
++void sqisign_sca_cornacchia_fixedwork_profile_reset(void);
++sqisign_sca_cornacchia_fixedwork_profile_t
++sqisign_sca_cornacchia_fixedwork_profile_read(void);
++#endif
++
++#endif
+diff --git a/src/quaternion/ref/generic/powmod_fixedwork_521.c b/src/quaternion/ref/generic/powmod_fixedwork_521.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..7e77099ad8c7ed27f41c9241ecb545e50d319631
+--- /dev/null
++++ b/src/quaternion/ref/generic/powmod_fixedwork_521.c
+@@ -0,0 +1,330 @@
++// SPDX-License-Identifier: Apache-2.0
++
++#include "powmod_fixedwork_521.h"
++
++#include <stddef.h>
++#include <stdint.h>
++
++#if defined(__GNUC__) && !defined(__clang__)
++#define SQISIGN_SCA_NOINLINE __attribute__((noinline, noclone))
++#elif defined(__GNUC__) || defined(__clang__)
++#define SQISIGN_SCA_NOINLINE __attribute__((noinline))
++#else
++#define SQISIGN_SCA_NOINLINE
++#endif
++
++_Static_assert(IBZ_LIMBS == 27,
++               "fixed-work Cornacchia experiment is Level-I only");
++_Static_assert(sizeof(ibz_t) == 216,
++               "fixed-work Cornacchia experiment requires the Level-I ibz ABI");
++_Static_assert(sizeof(sqisign_sca_u521_t) == 68,
++               "521-bit word representation changed");
++_Static_assert(sizeof(sqisign_sca_fixedwork_workspace_t) == 884,
++               "fixed-work workspace layout changed");
++
++#if defined(SQISIGN_SCA_FIXEDWORK_PROFILE)
++static sqisign_sca_fixedwork_profile_t profile;
++
++void
++sqisign_sca_fixedwork_profile_reset(void)
++{
++    profile.exponent_iterations = 0;
++    profile.modular_multiplications = 0;
++    profile.multiplier_iterations = 0;
++    profile.modular_additions = 0;
++}
++
++sqisign_sca_fixedwork_profile_t
++sqisign_sca_fixedwork_profile_read(void)
++{
++    return profile;
++}
++#endif
++
++static uint32_t
++nonzero_u32(uint32_t value)
++{
++    return (value | (UINT32_C(0) - value)) >> 31;
++}
++
++static uint32_t
++fits_nonnegative_521(const ibz_t *value)
++{
++    uint64_t outside = (*value)[8] & ~UINT64_C(0x1ff);
++    for (size_t limb = 9; limb < IBZ_LIMBS; ++limb)
++        outside |= (*value)[limb];
++    return (uint32_t)(((outside | (UINT64_C(0) - outside)) >> 63) ^ 1U);
++}
++
++static void
++load_u521(sqisign_sca_u521_t target, const ibz_t *source)
++{
++    for (size_t word = 0; word < SQISIGN_SCA_FIXEDWORK_WORDS; ++word) {
++        const uint64_t limb = (*source)[word / 2];
++        target[word] =
++            (uint32_t)(limb >> ((unsigned)(word & 1U) * 32U));
++    }
++}
++
++static void
++store_u521(ibz_t *target, const sqisign_sca_u521_t source)
++{
++    for (size_t limb = 0; limb < IBZ_LIMBS; ++limb)
++        (*target)[limb] = 0;
++    for (size_t limb = 0; limb < 8; ++limb) {
++        (*target)[limb] = (uint64_t)source[2 * limb] |
++                          ((uint64_t)source[2 * limb + 1] << 32);
++    }
++    (*target)[8] = source[16];
++}
++
++static uint32_t
++subtract_words(sqisign_sca_u521_t difference,
++               const sqisign_sca_u521_t a,
++               const sqisign_sca_u521_t b)
++{
++    uint32_t borrow = 0;
++    for (size_t word = 0; word < SQISIGN_SCA_FIXEDWORK_WORDS; ++word) {
++        const uint64_t wide =
++            (uint64_t)a[word] - (uint64_t)b[word] - borrow;
++        difference[word] = (uint32_t)wide;
++        borrow = (uint32_t)(wide >> 63);
++    }
++    return borrow;
++}
++
++/* Inputs are in [0,m).  Their sum is below 2*m, so one subtraction is
++ * sufficient.  For m < 2^521 the sum fits in the 17-word extent. */
++SQISIGN_SCA_NOINLINE static void
++add_mod(sqisign_sca_u521_t output,
++        const sqisign_sca_u521_t a,
++        const sqisign_sca_u521_t b,
++        const sqisign_sca_u521_t modulus,
++        sqisign_sca_fixedwork_workspace_t *workspace)
++{
++    uint32_t carry = 0;
++    for (size_t word = 0; word < SQISIGN_SCA_FIXEDWORK_WORDS; ++word) {
++        const uint64_t wide = (uint64_t)a[word] + b[word] + carry;
++        workspace->addition_sum[word] = (uint32_t)wide;
++        carry = (uint32_t)(wide >> 32);
++    }
++
++    const uint32_t borrow =
++        subtract_words(workspace->subtraction_difference,
++                       workspace->addition_sum,
++                       modulus);
++    const uint32_t use_difference = UINT32_C(0) - (borrow ^ 1U);
++    const uint32_t use_sum = ~use_difference;
++    for (size_t word = 0; word < SQISIGN_SCA_FIXEDWORK_WORDS; ++word) {
++        output[word] =
++            (workspace->subtraction_difference[word] & use_difference) |
++            (workspace->addition_sum[word] & use_sum);
++    }
++
++#if defined(SQISIGN_SCA_FIXEDWORK_PROFILE)
++    profile.modular_additions++;
++#endif
++}
++
++static void
++reduce_one(sqisign_sca_u521_t output,
++           const sqisign_sca_u521_t modulus,
++           sqisign_sca_fixedwork_workspace_t *workspace)
++{
++    for (size_t word = 0; word < SQISIGN_SCA_FIXEDWORK_WORDS; ++word)
++        workspace->one[word] = 0;
++    workspace->one[0] = 1;
++
++    const uint32_t borrow =
++        subtract_words(workspace->subtraction_difference,
++                       workspace->one,
++                       modulus);
++    const uint32_t use_difference = UINT32_C(0) - (borrow ^ 1U);
++    const uint32_t use_one = ~use_difference;
++    for (size_t word = 0; word < SQISIGN_SCA_FIXEDWORK_WORDS; ++word) {
++        output[word] =
++            (workspace->subtraction_difference[word] & use_difference) |
++            (workspace->one[word] & use_one);
++    }
++}
++
++SQISIGN_SCA_NOINLINE static void
++multiply_mod_words(sqisign_sca_u521_t output,
++                   const sqisign_sca_u521_t a,
++                   const sqisign_sca_u521_t b,
++                   const sqisign_sca_u521_t modulus,
++                   sqisign_sca_fixedwork_workspace_t *workspace)
++{
++    for (size_t word = 0; word < SQISIGN_SCA_FIXEDWORK_WORDS; ++word) {
++        workspace->multiply_accumulator[word] = 0;
++        workspace->multiply_addend[word] = a[word];
++    }
++
++    for (unsigned bit = 0; bit < SQISIGN_SCA_FIXEDWORK_BITS; ++bit) {
++        const uint32_t multiplier_bit =
++            (b[bit / 32U] >> (bit % 32U)) & 1U;
++        const uint32_t select_addend = UINT32_C(0) - multiplier_bit;
++        for (size_t word = 0; word < SQISIGN_SCA_FIXEDWORK_WORDS; ++word) {
++            workspace->selected_addend[word] =
++                workspace->multiply_addend[word] & select_addend;
++        }
++
++        add_mod(workspace->multiply_accumulator,
++                workspace->multiply_accumulator,
++                workspace->selected_addend,
++                modulus,
++                workspace);
++        add_mod(workspace->multiply_addend,
++                workspace->multiply_addend,
++                workspace->multiply_addend,
++                modulus,
++                workspace);
++#if defined(SQISIGN_SCA_FIXEDWORK_PROFILE)
++        profile.multiplier_iterations++;
++#endif
++    }
++
++    for (size_t word = 0; word < SQISIGN_SCA_FIXEDWORK_WORDS; ++word)
++        output[word] = workspace->multiply_accumulator[word];
++#if defined(SQISIGN_SCA_FIXEDWORK_PROFILE)
++    profile.modular_multiplications++;
++#endif
++}
++
++static uint32_t
++words_nonzero(const sqisign_sca_u521_t value)
++{
++    uint32_t combined = 0;
++    for (size_t word = 0; word < SQISIGN_SCA_FIXEDWORK_WORDS; ++word)
++        combined |= value[word];
++    return nonzero_u32(combined);
++}
++
++static void
++wipe_workspace(sqisign_sca_fixedwork_workspace_t *workspace)
++{
++    volatile uint32_t *words = (volatile uint32_t *)workspace;
++    for (size_t word = 0; word < sizeof(*workspace) / sizeof(*words); ++word)
++        words[word] = 0;
++}
++
++int
++sqisign_sca_mul_mod_fixedwork_521_with_workspace(
++    ibz_t *product,
++    const ibz_t *a,
++    const ibz_t *b,
++    const ibz_t *modulus,
++    sqisign_sca_fixedwork_workspace_t *workspace)
++{
++    load_u521(workspace->base, a);
++    load_u521(workspace->result, b);
++    load_u521(workspace->modulus, modulus);
++
++    const uint32_t a_below_modulus =
++        subtract_words(workspace->comparison,
++                       workspace->base,
++                       workspace->modulus);
++    const uint32_t b_below_modulus =
++        subtract_words(workspace->comparison,
++                       workspace->result,
++                       workspace->modulus);
++    const uint32_t valid = fits_nonnegative_521(a) &
++                           fits_nonnegative_521(b) &
++                           fits_nonnegative_521(modulus) &
++                           words_nonzero(workspace->modulus) &
++                           a_below_modulus & b_below_modulus;
++    if (valid == 0) {
++        wipe_workspace(workspace);
++        return 0;
++    }
++
++    multiply_mod_words(workspace->square,
++                       workspace->base,
++                       workspace->result,
++                       workspace->modulus,
++                       workspace);
++    store_u521(product, workspace->square);
++    wipe_workspace(workspace);
++    return 1;
++}
++
++int
++sqisign_sca_powmod_fixedwork_521_with_workspace(
++    ibz_t *power,
++    const ibz_t *x,
++    const ibz_t *e,
++    const ibz_t *m,
++    sqisign_sca_fixedwork_workspace_t *workspace)
++{
++    load_u521(workspace->base, x);
++    load_u521(workspace->modulus, m);
++    load_u521(workspace->exponent, e);
++
++    const uint32_t base_below_modulus =
++        subtract_words(workspace->comparison,
++                       workspace->base,
++                       workspace->modulus);
++    const uint32_t valid = fits_nonnegative_521(x) &
++                           fits_nonnegative_521(e) &
++                           fits_nonnegative_521(m) &
++                           words_nonzero(workspace->modulus) &
++                           base_below_modulus;
++    if (valid == 0) {
++        wipe_workspace(workspace);
++        return 0;
++    }
++
++    reduce_one(workspace->result, workspace->modulus, workspace);
++    for (int bit = SQISIGN_SCA_FIXEDWORK_BITS - 1; bit >= 0; --bit) {
++        multiply_mod_words(workspace->square,
++                           workspace->result,
++                           workspace->result,
++                           workspace->modulus,
++                           workspace);
++        multiply_mod_words(workspace->multiplied,
++                           workspace->square,
++                           workspace->base,
++                           workspace->modulus,
++                           workspace);
++
++        const uint32_t exponent_bit =
++            (workspace->exponent[(unsigned)bit / 32U] >>
++             ((unsigned)bit % 32U)) & 1U;
++        const uint32_t select_multiplied = UINT32_C(0) - exponent_bit;
++        const uint32_t select_square = ~select_multiplied;
++        for (size_t word = 0; word < SQISIGN_SCA_FIXEDWORK_WORDS; ++word) {
++            workspace->result[word] =
++                (workspace->square[word] & select_square) |
++                (workspace->multiplied[word] & select_multiplied);
++        }
++#if defined(SQISIGN_SCA_FIXEDWORK_PROFILE)
++        profile.exponent_iterations++;
++#endif
++    }
++
++    store_u521(power, workspace->result);
++    wipe_workspace(workspace);
++    return 1;
++}
++
++int
++sqisign_sca_mul_mod_fixedwork_521(ibz_t *product,
++                                  const ibz_t *a,
++                                  const ibz_t *b,
++                                  const ibz_t *modulus)
++{
++    sqisign_sca_fixedwork_workspace_t workspace;
++    return sqisign_sca_mul_mod_fixedwork_521_with_workspace(
++        product, a, b, modulus, &workspace);
++}
++
++int
++sqisign_sca_powmod_fixedwork_521(ibz_t *power,
++                                 const ibz_t *x,
++                                 const ibz_t *e,
++                                 const ibz_t *m)
++{
++    sqisign_sca_fixedwork_workspace_t workspace;
++    return sqisign_sca_powmod_fixedwork_521_with_workspace(
++        power, x, e, m, &workspace);
++}
+diff --git a/src/quaternion/ref/generic/sqrt_mod_fixedwork_521.c b/src/quaternion/ref/generic/sqrt_mod_fixedwork_521.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..f6bfc56c5a74582dd16c48d82b18cd6f84224505
+--- /dev/null
++++ b/src/quaternion/ref/generic/sqrt_mod_fixedwork_521.c
+@@ -0,0 +1,272 @@
++// SPDX-License-Identifier: Apache-2.0
++
++#include "sqrt_mod_fixedwork_521.h"
++
++#include <mem.h>
++
++_Static_assert(sizeof(sqisign_sca_sqrt_fixedwork_workspace_t) == 4344,
++               "protected square-root workspace layout changed");
++
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++static sqisign_sca_cornacchia_fixedwork_profile_t profile;
++
++void
++sqisign_sca_cornacchia_fixedwork_profile_reset(void)
++{
++    profile.sqrt_calls = 0;
++    profile.legendre_calls = 0;
++    profile.pow_calls = 0;
++    profile.tonelli_shanks_mul_calls = 0;
++    profile.successes = 0;
++    profile.no_roots = 0;
++    profile.fatals = 0;
++}
++
++sqisign_sca_cornacchia_fixedwork_profile_t
++sqisign_sca_cornacchia_fixedwork_profile_read(void)
++{
++    return profile;
++}
++#endif
++
++static int
++fixed_pow(ibz_t *result,
++          const ibz_t *base,
++          const ibz_t *exponent,
++          const ibz_t *modulus,
++          sqisign_sca_sqrt_fixedwork_workspace_t *workspace)
++{
++    const int ok = sqisign_sca_powmod_fixedwork_521_with_workspace(
++        result, base, exponent, modulus, &workspace->arithmetic);
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++    if (ok)
++        profile.pow_calls++;
++#endif
++    return ok;
++}
++
++static int
++fixed_mul(ibz_t *result,
++          const ibz_t *a,
++          const ibz_t *b,
++          const ibz_t *modulus,
++          sqisign_sca_sqrt_fixedwork_workspace_t *workspace)
++{
++    const int ok = sqisign_sca_mul_mod_fixedwork_521_with_workspace(
++        result, a, b, modulus, &workspace->arithmetic);
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++    if (ok)
++        profile.tonelli_shanks_mul_calls++;
++#endif
++    return ok;
++}
++
++enum {
++    FIXED_LEGENDRE_FATAL = -2,
++    FIXED_LEGENDRE_NONRESIDUE = -1,
++    FIXED_LEGENDRE_ZERO = 0,
++    FIXED_LEGENDRE_RESIDUE = 1,
++};
++
++/* a must already be in [0,p). */
++static int
++fixed_legendre(const ibz_t *a,
++               const ibz_t *p,
++               sqisign_sca_sqrt_fixedwork_workspace_t *workspace)
++{
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++    profile.legendre_calls++;
++#endif
++    if (ibz_is_zero(a))
++        return FIXED_LEGENDRE_ZERO;
++
++    ibz_div_2exp(&workspace->legendre_exponent,
++                 &workspace->p_minus_one,
++                 1);
++    if (!fixed_pow(&workspace->legendre_power,
++                   a,
++                   &workspace->legendre_exponent,
++                   p,
++                   workspace))
++        return FIXED_LEGENDRE_FATAL;
++
++    if (ibz_is_one(&workspace->legendre_power))
++        return FIXED_LEGENDRE_RESIDUE;
++    if (ibz_cmp(&workspace->legendre_power,
++                &workspace->p_minus_one) == 0)
++        return FIXED_LEGENDRE_NONRESIDUE;
++    return FIXED_LEGENDRE_FATAL;
++}
++
++sqisign_sca_sqrt_status_t
++sqisign_sca_sqrt_mod_p_fixedwork_521(
++    ibz_t *sqrt,
++    const ibz_t *a,
++    const ibz_t *p,
++    sqisign_sca_sqrt_fixedwork_workspace_t *workspace)
++{
++    sqisign_sca_sqrt_status_t status = SQISIGN_SCA_SQRT_FATAL;
++    int published_zero = 0;
++
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++    profile.sqrt_calls++;
++#endif
++
++    /* Preserve both inputs before output publication; Cornacchia calls this
++     * with sqrt == a, and the internal contract also permits sqrt == p. */
++    ibz_copy(&workspace->a_input, a);
++    ibz_copy(&workspace->p_input, p);
++    const ibz_t *modulus = &workspace->p_input;
++
++    /* The special p==2 Cornacchia case is handled by its caller.  Checking
++     * the frozen width before touching sqrt makes domain rejection
++     * transactional and prevents a secret-dependent legacy fallback. */
++    if (ibz_cmp_int32(modulus, 2) <= 0 ||
++        ibz_is_even(modulus) ||
++        ibz_bitsize(modulus) > SQISIGN_SCA_FIXEDWORK_BITS)
++        goto cleanup;
++
++    ibz_init(sqrt);
++    published_zero = 1;
++
++    ibz_mod(&workspace->n, &workspace->a_input, modulus);
++    if (ibz_is_zero(&workspace->n)) {
++        status = SQISIGN_SCA_SQRT_SUCCESS;
++        goto cleanup;
++    }
++
++    ibz_sub(&workspace->p_minus_one,
++            modulus,
++            (const ibz_t *)&ibz_const_one);
++    const int n_symbol = fixed_legendre(&workspace->n, modulus, workspace);
++    if (n_symbol == FIXED_LEGENDRE_FATAL)
++        goto cleanup;
++    if (n_symbol != FIXED_LEGENDRE_RESIDUE) {
++        status = SQISIGN_SCA_SQRT_NO_ROOT;
++        goto cleanup;
++    }
++
++    /* Factor p-1=q*2^s.  This loop remains variable-work and is explicitly
++     * outside the exponent-schedule claim of this checkpoint. */
++    ibz_copy(&workspace->q, &workspace->p_minus_one);
++    int s = 0;
++    while (ibz_is_even(&workspace->q)) {
++        ibz_div_2exp(&workspace->q, &workspace->q, 1);
++        s++;
++    }
++    if (s <= 0)
++        goto cleanup;
++
++    /* Find a quadratic non-residue.  Candidate count remains variable; every
++     * candidate exponentiation itself follows the fixed 521-round route. */
++    ibz_set(&workspace->z, 2);
++    for (;;) {
++        if (ibz_cmp(&workspace->z, modulus) >= 0)
++            goto cleanup;
++        const int z_symbol = fixed_legendre(&workspace->z, modulus, workspace);
++        if (z_symbol == FIXED_LEGENDRE_FATAL ||
++            z_symbol == FIXED_LEGENDRE_ZERO)
++            goto cleanup;
++        if (z_symbol == FIXED_LEGENDRE_NONRESIDUE)
++            break;
++        ibz_add(&workspace->z,
++                &workspace->z,
++                (const ibz_t *)&ibz_const_one);
++    }
++
++    if (!fixed_pow(&workspace->c,
++                   &workspace->z,
++                   &workspace->q,
++                   modulus,
++                   workspace))
++        goto cleanup;
++
++    ibz_add(&workspace->q_plus_one,
++            &workspace->q,
++            (const ibz_t *)&ibz_const_one);
++    ibz_div_2exp(&workspace->exponent,
++                 &workspace->q_plus_one,
++                 1);
++    if (!fixed_pow(&workspace->x,
++                   &workspace->n,
++                   &workspace->exponent,
++                   modulus,
++                   workspace))
++        goto cleanup;
++
++    if (!fixed_pow(&workspace->t,
++                   &workspace->n,
++                   &workspace->q,
++                   modulus,
++                   workspace))
++        goto cleanup;
++
++    int m = s;
++    while (!ibz_is_one(&workspace->t)) {
++        int i;
++        ibz_copy(&workspace->t_power, &workspace->t);
++        for (i = 1; i < m; ++i) {
++            if (!fixed_mul(&workspace->t_power,
++                           &workspace->t_power,
++                           &workspace->t_power,
++                           modulus,
++                           workspace))
++                goto cleanup;
++            if (ibz_is_one(&workspace->t_power))
++                break;
++        }
++        if (i == m) {
++            status = SQISIGN_SCA_SQRT_NO_ROOT;
++            goto cleanup;
++        }
++
++        ibz_copy(&workspace->b, &workspace->c);
++        for (int j = 0; j < m - i - 1; ++j) {
++            if (!fixed_mul(&workspace->b,
++                           &workspace->b,
++                           &workspace->b,
++                           modulus,
++                           workspace))
++                goto cleanup;
++        }
++        if (!fixed_mul(&workspace->x,
++                       &workspace->x,
++                       &workspace->b,
++                       modulus,
++                       workspace))
++            goto cleanup;
++        if (!fixed_mul(&workspace->b_squared,
++                       &workspace->b,
++                       &workspace->b,
++                       modulus,
++                       workspace))
++            goto cleanup;
++        if (!fixed_mul(&workspace->t,
++                       &workspace->t,
++                       &workspace->b_squared,
++                       modulus,
++                       workspace))
++            goto cleanup;
++        ibz_copy(&workspace->c, &workspace->b_squared);
++        m = i;
++    }
++
++    ibz_copy(sqrt, &workspace->x);
++    status = SQISIGN_SCA_SQRT_SUCCESS;
++
++cleanup:
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++    if (status == SQISIGN_SCA_SQRT_SUCCESS)
++        profile.successes++;
++    else if (status == SQISIGN_SCA_SQRT_NO_ROOT)
++        profile.no_roots++;
++    else
++        profile.fatals++;
++#endif
++    /* published_zero is intentionally retained as a local invariant: fatal
++     * domain rejection occurs before publication; later internal fatal paths
++     * leave zero and are fail-stop at the sole production adapter. */
++    (void)published_zero;
++    sqisign_secure_clear(workspace, sizeof(*workspace));
++    return status;
++}
+diff --git a/src/quaternion/ref/generic/test/CMakeLists.txt b/src/quaternion/ref/generic/test/CMakeLists.txt
+index e96b434780d3db39b1923d33e1a865f277e193b1..9a46f0be37edae8d5f1db01d3808a81a9123b4f8 100755
+--- a/src/quaternion/ref/generic/test/CMakeLists.txt
++++ b/src/quaternion/ref/generic/test/CMakeLists.txt
+@@ -67,5 +67,25 @@ add_test(${RANDOM_IDEAL_WORKSPACE_TEST} ${RANDOM_IDEAL_WORKSPACE_TEST})
+ set_tests_properties(${RANDOM_IDEAL_WORKSPACE_TEST}
+     PROPERTIES LABELS "correctness;quaternion;lowmem")
+ 
++if(SQISIGN_CORNACCHIA_FIXEDWORK_521)
++    set(CORNACCHIA_FIXEDWORK_TEST
++        sqisign_test_cornacchia_fixedwork_521_lvl1)
++    add_executable(${CORNACCHIA_FIXEDWORK_TEST}
++        test_cornacchia_fixedwork_521.c)
++    target_link_libraries(${CORNACCHIA_FIXEDWORK_TEST}
++        ${LIB_QUATERNION_LVL1}
++        sqisign_common_test)
++    target_include_directories(${CORNACCHIA_FIXEDWORK_TEST} PRIVATE
++        ../internal_quaternion_headers
++        ${INC_COMMON}
++        ${INC_QUATERNION}
++        ${INC_PUBLIC})
++    target_compile_definitions(${CORNACCHIA_FIXEDWORK_TEST} PUBLIC
++        SQISIGN_VARIANT=lvl1)
++    add_test(${CORNACCHIA_FIXEDWORK_TEST} ${CORNACCHIA_FIXEDWORK_TEST})
++    set_tests_properties(${CORNACCHIA_FIXEDWORK_TEST}
++        PROPERTIES LABELS "correctness;quaternion;sca")
++endif()
++
+ # Note: sqisign_bm_quaternion benchmark target needs to be defined
+ # Currently this is a placeholder and the actual benchmark executable is not implemented
+diff --git a/src/quaternion/ref/generic/test/test_cornacchia_fixedwork_521.c b/src/quaternion/ref/generic/test/test_cornacchia_fixedwork_521.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..b5618e785d473f4161011d3ab9f92a695adb603e
+--- /dev/null
++++ b/src/quaternion/ref/generic/test/test_cornacchia_fixedwork_521.c
+@@ -0,0 +1,300 @@
++// SPDX-License-Identifier: Apache-2.0
++
++#include "sqrt_mod_fixedwork_521.h"
++
++#include <quaternion.h>
++
++#include <stdint.h>
++#include <stdio.h>
++#include <string.h>
++
++typedef struct {
++    uint64_t before[4];
++    sqisign_sca_sqrt_fixedwork_workspace_t workspace;
++    uint64_t after[4];
++} guarded_workspace_t;
++
++static int
++all_zero(const void *memory, size_t length)
++{
++    const unsigned char *bytes = memory;
++    unsigned char combined = 0;
++    for (size_t i = 0; i < length; ++i)
++        combined |= bytes[i];
++    return combined == 0;
++}
++
++static int
++guards_equal(const guarded_workspace_t *guarded, uint64_t value)
++{
++    for (size_t i = 0; i < 4; ++i) {
++        if (guarded->before[i] != value || guarded->after[i] != value)
++            return 0;
++    }
++    return 1;
++}
++
++static void
++prepare_guarded(guarded_workspace_t *guarded, uint64_t value)
++{
++    memset(guarded, 0xa5, sizeof(*guarded));
++    for (size_t i = 0; i < 4; ++i) {
++        guarded->before[i] = value;
++        guarded->after[i] = value;
++    }
++}
++
++static int
++profile_consistent(void)
++{
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++    const sqisign_sca_cornacchia_fixedwork_profile_t cornacchia =
++        sqisign_sca_cornacchia_fixedwork_profile_read();
++    const sqisign_sca_fixedwork_profile_t arithmetic =
++        sqisign_sca_fixedwork_profile_read();
++    const uint64_t multiplications =
++        cornacchia.pow_calls *
++            SQISIGN_SCA_FIXEDWORK_POW_MULTIPLICATIONS +
++        cornacchia.tonelli_shanks_mul_calls;
++    return arithmetic.exponent_iterations ==
++               cornacchia.pow_calls * SQISIGN_SCA_FIXEDWORK_BITS &&
++           arithmetic.modular_multiplications == multiplications &&
++           arithmetic.multiplier_iterations ==
++               multiplications * SQISIGN_SCA_FIXEDWORK_MUL_ITERATIONS &&
++           arithmetic.modular_additions ==
++               2 * multiplications * SQISIGN_SCA_FIXEDWORK_MUL_ITERATIONS;
++#else
++    return 1;
++#endif
++}
++
++static void
++reset_profiles(void)
++{
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++    sqisign_sca_fixedwork_profile_reset();
++    sqisign_sca_cornacchia_fixedwork_profile_reset();
++#endif
++}
++
++static int
++profile_one_success(void)
++{
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++    const sqisign_sca_cornacchia_fixedwork_profile_t profile =
++        sqisign_sca_cornacchia_fixedwork_profile_read();
++    return profile.sqrt_calls == 1 && profile.successes == 1 &&
++           profile.no_roots == 0 && profile.fatals == 0 &&
++           profile.pow_calls >= 4 && profile_consistent();
++#else
++    return 1;
++#endif
++}
++
++static int
++profile_one_no_root(void)
++{
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++    const sqisign_sca_cornacchia_fixedwork_profile_t profile =
++        sqisign_sca_cornacchia_fixedwork_profile_read();
++    return profile.sqrt_calls == 1 && profile.no_roots == 1 &&
++           profile.successes == 0 && profile.fatals == 0 &&
++           profile.pow_calls == 1 && profile_consistent();
++#else
++    return 1;
++#endif
++}
++
++static int
++profile_two_fatals(void)
++{
++#if defined(SQISIGN_CORNACCHIA_FIXEDWORK_PROFILE)
++    const sqisign_sca_cornacchia_fixedwork_profile_t profile =
++        sqisign_sca_cornacchia_fixedwork_profile_read();
++    return profile.sqrt_calls == 2 && profile.fatals == 2 &&
++           profile.successes == 0 && profile.no_roots == 0;
++#else
++    return 1;
++#endif
++}
++
++static int
++run_residue_case(int32_t prime, int32_t root)
++{
++    ibz_t p, a, legacy, protected, check;
++    ibz_set(&p, prime);
++    ibz_set(&a, root);
++    ibz_mul(&a, &a, &a);
++    ibz_mod(&a, &a, &p);
++
++    if (!ibz_sqrt_mod_p(&legacy, &a, &p))
++        return 0;
++
++    guarded_workspace_t guarded;
++    const uint64_t guard = UINT64_C(0x92d68ca2f1437b5e);
++    prepare_guarded(&guarded, guard);
++    reset_profiles();
++    const sqisign_sca_sqrt_status_t status =
++        sqisign_sca_sqrt_mod_p_fixedwork_521(
++            &protected, &a, &p, &guarded.workspace);
++    ibz_mul(&check, &protected, &protected);
++    ibz_mod(&check, &check, &p);
++    return status == SQISIGN_SCA_SQRT_SUCCESS &&
++           ibz_cmp(&protected, &legacy) == 0 &&
++           ibz_cmp(&check, &a) == 0 &&
++           guards_equal(&guarded, guard) &&
++           all_zero(&guarded.workspace, sizeof(guarded.workspace)) &&
++           profile_one_success();
++}
++
++static int
++test_residue_families(void)
++{
++    static const struct {
++        int32_t prime;
++        int32_t root;
++    } cases[] = {
++        { 3, 1 },
++        { 5, 2 },
++        { 13, 5 },
++        { 17, 7 },
++        { 41, 11 },
++        { 97, 19 },
++        { 193, 23 },
++        { 257, 31 },
++        { 769, 37 },
++        { 12289, 101 },
++    };
++    for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); ++i) {
++        if (!run_residue_case(cases[i].prime, cases[i].root)) {
++            fprintf(stderr,
++                    "fixed-work residue case failed p=%d root=%d\n",
++                    cases[i].prime,
++                    cases[i].root);
++            return 0;
++        }
++    }
++    return 1;
++}
++
++static int
++test_aliases(void)
++{
++    guarded_workspace_t guarded;
++    ibz_t p, modulus, a, expected, check;
++    ibz_set(&p, 13);
++    ibz_set(&a, -1);
++    if (!ibz_sqrt_mod_p(&expected, &a, &p))
++        return 0;
++
++    prepare_guarded(&guarded, UINT64_C(0x0102030405060708));
++    if (sqisign_sca_sqrt_mod_p_fixedwork_521(
++            &a, &a, &p, &guarded.workspace) !=
++            SQISIGN_SCA_SQRT_SUCCESS ||
++        ibz_cmp(&a, &expected) != 0 ||
++        !all_zero(&guarded.workspace, sizeof(guarded.workspace)))
++        return 0;
++
++    ibz_set(&p, 13);
++    ibz_copy(&modulus, &p);
++    ibz_set(&a, 4);
++    prepare_guarded(&guarded, UINT64_C(0x1112131415161718));
++    if (sqisign_sca_sqrt_mod_p_fixedwork_521(
++            &p, &a, &p, &guarded.workspace) !=
++            SQISIGN_SCA_SQRT_SUCCESS)
++        return 0;
++    ibz_mul(&check, &p, &p);
++    ibz_mod(&check, &check, &modulus);
++    return ibz_cmp(&check, &a) == 0 &&
++           all_zero(&guarded.workspace, sizeof(guarded.workspace));
++}
++
++static int
++test_no_root(void)
++{
++    guarded_workspace_t guarded;
++    ibz_t p, a, legacy, protected;
++    ibz_set(&p, 13);
++    ibz_set(&a, 2);
++    ibz_set(&legacy, 9876);
++    ibz_set(&protected, 9876);
++    if (ibz_sqrt_mod_p(&legacy, &a, &p) != 0 ||
++        !ibz_is_zero(&legacy))
++        return 0;
++
++    prepare_guarded(&guarded, UINT64_C(0x2122232425262728));
++    reset_profiles();
++    const sqisign_sca_sqrt_status_t status =
++        sqisign_sca_sqrt_mod_p_fixedwork_521(
++            &protected, &a, &p, &guarded.workspace);
++    return status == SQISIGN_SCA_SQRT_NO_ROOT &&
++           ibz_is_zero(&protected) &&
++           guards_equal(&guarded, UINT64_C(0x2122232425262728)) &&
++           all_zero(&guarded.workspace, sizeof(guarded.workspace)) &&
++           profile_one_no_root();
++}
++
++static int
++test_domain_rejection(void)
++{
++    guarded_workspace_t guarded;
++    ibz_t p, a, output, sentinel;
++    ibz_set(&a, 4);
++    ibz_set(&sentinel, 6789);
++
++    ibz_set(&p, 1);
++    ibz_mul_2exp(&p, &p, 521);
++    ibz_add(&p, &p, (const ibz_t *)&ibz_const_one);
++    ibz_copy(&output, &sentinel);
++    prepare_guarded(&guarded, UINT64_C(0x3132333435363738));
++    reset_profiles();
++    if (sqisign_sca_sqrt_mod_p_fixedwork_521(
++            &output, &a, &p, &guarded.workspace) !=
++            SQISIGN_SCA_SQRT_FATAL ||
++        ibz_cmp(&output, &sentinel) != 0 ||
++        !all_zero(&guarded.workspace, sizeof(guarded.workspace)) ||
++        !guards_equal(&guarded, UINT64_C(0x3132333435363738)))
++        return 0;
++
++    ibz_set(&p, 2);
++    ibz_copy(&output, &sentinel);
++    prepare_guarded(&guarded, UINT64_C(0x4142434445464748));
++    if (sqisign_sca_sqrt_mod_p_fixedwork_521(
++            &output, &a, &p, &guarded.workspace) !=
++            SQISIGN_SCA_SQRT_FATAL ||
++        ibz_cmp(&output, &sentinel) != 0 ||
++        !all_zero(&guarded.workspace, sizeof(guarded.workspace)) ||
++        !guards_equal(&guarded, UINT64_C(0x4142434445464748)))
++        return 0;
++
++    return profile_two_fatals();
++}
++
++static int
++test_cornacchia_adapter(void)
++{
++    ibz_t x, y, n, p, check, temp;
++    ibz_set(&n, 1);
++    ibz_set(&p, 13);
++    if (!ibz_cornacchia_prime(&x, &y, &n, &p))
++        return 0;
++    ibz_mul(&check, &x, &x);
++    ibz_mul(&temp, &y, &y);
++    ibz_add(&check, &check, &temp);
++    return ibz_cmp(&check, &p) == 0;
++}
++
++int
++main(void)
++{
++    if (!test_residue_families() ||
++        !test_aliases() ||
++        !test_no_root() ||
++        !test_domain_rejection() ||
++        !test_cornacchia_adapter())
++        return 1;
++    printf("cornacchia-fixedwork-521 PASS workspace=%zu bits=%d\n",
++           sizeof(sqisign_sca_sqrt_fixedwork_workspace_t),
++           SQISIGN_SCA_FIXEDWORK_BITS);
++    return 0;
++}
+-- 
+2.50.1 (Apple Git-155)
+

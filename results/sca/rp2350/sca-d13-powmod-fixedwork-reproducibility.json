@@ -1,0 +1,155 @@
+{
+  "alert_abs_t_threshold": 4.5,
+  "cross_run": {
+    "all_exponent_weights_and_digests_exact": true,
+    "all_result_digests_exact": true,
+    "pooled_fixed_minus_random": {
+      "count": 64,
+      "mean_us": -5.078125,
+      "median_us": -5.0,
+      "negative_count": 52,
+      "paired_t": -7.796294299627307,
+      "positive_count": 10,
+      "sample_sd_us": 5.210808935463357,
+      "zero_count": 2
+    },
+    "random_elapsed_us_pearson": 0.24884345721943651,
+    "random_elapsed_us_run2_minus_run1": {
+      "max_absolute": 6.0,
+      "mean": -0.5,
+      "median": 0.0,
+      "median_absolute": 2.0,
+      "sample_sd": 3.03740126615054
+    },
+    "random_trace_count": 32
+  },
+  "decision": {
+    "analog_spa_resistance_established": false,
+    "coarse_timing_screen_positive": true,
+    "constant_time_established": false,
+    "fixed_random_class_effect_reproduced": true,
+    "fixed_random_mean_offset_same_sign": true,
+    "full_sign_resistance_established": false,
+    "negative_control_warning": true
+  },
+  "interpretation": "A roughly five-microsecond fixed/random class offset reproduces after reversing dataset and within-pair order. Per-random-input timing has weak cross-run correlation, and the negative control has position/variance alerts. The large operation-count channel is suppressed, but this fixed-work candidate does not pass the coarse timing screen and does not establish side-channel resistance.",
+  "limitations": [
+    "Firmware elapsed_us is a coarse timer, not an analog power/EM trace.",
+    "The fixed/random class offset is not an exponent-recovery attack.",
+    "Negative-control alerts show residual ordering or variance effects.",
+    "The diagnostic covers one powmod primitive, not full SQIsign Sign."
+  ],
+  "runs": [
+    {
+      "analyzer": {
+        "control_execution_position_t": 5.545481908510341,
+        "control_t1": -2.2281239328081948,
+        "control_t2": -3.7135961559503023,
+        "low_high_slope_us_per_added_set_bit": -0.02697495183044316,
+        "primary_execution_position_t": -3.2995423532823582,
+        "primary_t1": -5.6535593142068175,
+        "primary_t2": 2.4441651598510004,
+        "weight_r_squared": 0.17939762984528973,
+        "weight_slope_us_per_set_bit": 0.09568938583452467,
+        "weight_time_pearson": 0.4235535737897495
+      },
+      "capture": "results/rp2350/sca-d13-powmod-fixedwork-capture.json",
+      "capture_sha256": "b5fec46d83effb2319a97bec5967d8a2eddc2171c86b74faf563fdd34900ffa7",
+      "class_effect": {
+        "fixed_median_us": 3200921.0,
+        "fixed_vector": {
+          "exponent_digest": "7a603d7f0b4aa97b",
+          "exponent_weight": 261,
+          "result_digest": "b9d10c87f8afa060"
+        },
+        "paired_fixed_minus_random": {
+          "count": 32,
+          "mean_us": -5.1875,
+          "median_us": -5.0,
+          "negative_count": 26,
+          "paired_t": -5.970480434738821,
+          "positive_count": 4,
+          "sample_sd_us": 4.91500336363223,
+          "zero_count": 2
+        },
+        "random_median_us": 3200926.5
+      },
+      "control_csv": "results/rp2350/sca-d13-powmod-fixedwork-control.csv",
+      "control_csv_sha256": "3d516c556fa4539233d0648b7bdd0ad9b93b975480554bd6931dc2e160951642",
+      "control_effect": {
+        "paired_a_minus_b": {
+          "count": 32,
+          "mean_us": -1.90625,
+          "median_us": -1.0,
+          "negative_count": 16,
+          "paired_t": -2.1432788478554743,
+          "positive_count": 13,
+          "sample_sd_us": 5.03125313063417,
+          "zero_count": 3
+        }
+      },
+      "firmware_sha256": "67896440f672d3a5c837b84d5b9ea4afc19d3061495cccd868a7b48206c1b95f",
+      "primary_csv": "results/rp2350/sca-d13-powmod-fixedwork-fixed-random.csv",
+      "primary_csv_sha256": "109542d4724d4085994b42de82945f2ed56b0d61aa994ca30efd76bb68d46c72",
+      "schedule": "interleaved control-primary; AB/BA and FR/RF; order_offset=0",
+      "summary": "results/rp2350/sca-d13-powmod-fixedwork-summary.json",
+      "summary_sha256": "50b1658e43b824cbeaa6a4151ba11255ac8d3e751cfafd055d7ce9fd1a89a7b5"
+    },
+    {
+      "analyzer": {
+        "control_execution_position_t": 4.742289242174402,
+        "control_t1": 1.7852164021750523,
+        "control_t2": 5.03320223086871,
+        "low_high_slope_us_per_added_set_bit": -0.028901734104046242,
+        "primary_execution_position_t": -4.474670714134301,
+        "primary_t1": -5.511158101570779,
+        "primary_t2": 2.309851122252482,
+        "weight_r_squared": 0.05579458283475058,
+        "weight_slope_us_per_set_bit": 0.05978811433115893,
+        "weight_time_pearson": 0.23620876958449188
+      },
+      "capture": "results/rp2350/sca-d13-powmod-fixedwork-rerun-capture.json",
+      "capture_sha256": "77acde3f77dd48d0b5055ac5510bc9b8992a2abfd5216687edd08f358d31c81f",
+      "class_effect": {
+        "fixed_median_us": 3200919.5,
+        "fixed_vector": {
+          "exponent_digest": "7a603d7f0b4aa97b",
+          "exponent_weight": 261,
+          "result_digest": "b9d10c87f8afa060"
+        },
+        "paired_fixed_minus_random": {
+          "count": 32,
+          "mean_us": -4.96875,
+          "median_us": -5.0,
+          "negative_count": 26,
+          "paired_t": -5.0483371303688465,
+          "positive_count": 6,
+          "sample_sd_us": 5.567673835228126,
+          "zero_count": 0
+        },
+        "random_median_us": 3200926.0
+      },
+      "control_csv": "results/rp2350/sca-d13-powmod-fixedwork-rerun-control.csv",
+      "control_csv_sha256": "146844dfa6aa16f883f9170d572296db7e5b3c3655f598126c48f1dc83a93e94",
+      "control_effect": {
+        "paired_a_minus_b": {
+          "count": 32,
+          "mean_us": 1.6875,
+          "median_us": 2.0,
+          "negative_count": 12,
+          "paired_t": 1.924300647970184,
+          "positive_count": 17,
+          "sample_sd_us": 4.960732906309504,
+          "zero_count": 3
+        }
+      },
+      "firmware_sha256": "67896440f672d3a5c837b84d5b9ea4afc19d3061495cccd868a7b48206c1b95f",
+      "primary_csv": "results/rp2350/sca-d13-powmod-fixedwork-rerun-fixed-random.csv",
+      "primary_csv_sha256": "37e8dcf008ff17da4694b3d1699e4ca73ea8b8df0b8f48f9f20c570caaedcf0b",
+      "schedule": "interleaved primary-control; AB/BA and FR/RF; order_offset=1",
+      "summary": "results/rp2350/sca-d13-powmod-fixedwork-rerun-summary.json",
+      "summary_sha256": "9fe30b19ae3ebc60baa7c4c4e097d84900dce12afcbc014b5bcd562ac3ecac76"
+    }
+  ],
+  "schema": "sqisign-rp2350-sca-fixedwork-reproducibility-v1"
+}

@@ -1,0 +1,13 @@
+SQISIGN_RP2350_KSV_D13 v1
+board=pico2 platform=rp2350-arm-s sdk=2.3.0 source=dc3289add3213cc7671f9943dfaa3bac770b2709 compact=71099e0827d3f0a3b3c705d2eda592c401e0d57d dirty=0
+cpuid=0x411fd210 clock_sys_hz=150000000
+bss_end=0x2004c780 stack_limit=0x20080000 stack_top=0x20082000
+mode_ok=1 arena_bytes=172080 keygen_clear=1 sign_clear=1
+keygen_result=0 keygen_us=2698150029 psp_reserved_bytes=131072 psp_written_bytes=91980
+sign_result=0 sign_us=7611258527 psp_reserved_bytes=131072 psp_written_bytes=120452 smlen=180
+verify_result=0 verify_us=814341 psp_reserved_bytes=131072 psp_written_bytes=20768 verify_member_clear=1 arena_clear=1 rng_unchanged=1
+msp_reserved_bytes=8192 msp_written_upper_bytes=2396 msplim=0x20080000
+keygen_transcript_shake256_256=1de4b175a5c3c376ec5f86593745fcdb8f697dbd40a78c63e70d3412dd177f61
+sign_transcript_shake256_256=6717808acd4a27c160801d83d6bc66ccfaec635d04d7996a89910182657f2537
+keygen_match=1 sign_match=1 rng_results=0,0 heap_section_bytes=0
+status=PASS

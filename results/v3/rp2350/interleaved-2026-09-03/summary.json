@@ -1,0 +1,554 @@
+{
+  "all_captures_passed": true,
+  "artifacts": {
+    "d1_elf": {
+      "path": "build-rp2350-v3-d1/sqisign_rp2350_v3_d1.elf",
+      "sha256": "160428e9257db45812cbd3a7d3a63d291f747090aefa3c42ea0b1963633b5836"
+    },
+    "d1_uf2": {
+      "path": "build-rp2350-v3-d1/sqisign_rp2350_v3_d1.uf2",
+      "sha256": "b4c33222a52606699add7793939a0dd5ad30e9d093ef3b9d1ecb3ad01616433d"
+    },
+    "official_elf": {
+      "path": "build-rp2350-v3-official/sqisign_rp2350_v3_baseline.elf",
+      "sha256": "34292c0a6b420d91628243007298de57c14e46a43b9d560e74fdd8456f99d44a"
+    },
+    "official_uf2": {
+      "path": "build-rp2350-v3-official/sqisign_rp2350_v3_baseline.uf2",
+      "sha256": "67cbb39ccf986c9cea6f483c4e1aa3be88fbc1987d021fb8f2d1fabaa5ffeee5"
+    }
+  },
+  "campaign": "interleaved-2026-09-03",
+  "design": {
+    "board_count": 1,
+    "capture_count": 10,
+    "interpretation": "descriptive paired repetition; not an independent-board or workload-distribution study",
+    "order": "odd rounds official-d1; even rounds d1-official",
+    "paired_rounds": 5,
+    "workload": "official KAT vector 0, deterministic KeyGen-Sign-Verify, one boot per capture"
+  },
+  "records": [
+    {
+      "capture": "results/v3/rp2350/interleaved-2026-09-03/round-01-d1.txt",
+      "capture_sha256": "4bd0aadb5df6a3984dcd0b967885b47096816b165858dfd35d86234c6a698168",
+      "firmware_commit": "7e7e8f9fac75929f775fcb9feb5a5fd9d3be0a35",
+      "firmware_dirty": 1,
+      "kind": "d1",
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 56972,
+          "time_us": 2269112
+        },
+        "sign": {
+          "psp_extent_bytes": 97132,
+          "time_us": 7182970
+        },
+        "verify": {
+          "psp_extent_bytes": 37444,
+          "time_us": 820632
+        }
+      },
+      "order_in_round": 2,
+      "round": 1
+    },
+    {
+      "capture": "results/v3/rp2350/interleaved-2026-09-03/round-01-official.txt",
+      "capture_sha256": "11e0eeb14e085a0b730cfe66f3b94ae77e2e0c19a5939f4ee92054e284d68565",
+      "firmware_commit": "7e7e8f9fac75929f775fcb9feb5a5fd9d3be0a35",
+      "firmware_dirty": 1,
+      "kind": "official",
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 56972,
+          "time_us": 2263611
+        },
+        "sign": {
+          "psp_extent_bytes": 101060,
+          "time_us": 7152762
+        },
+        "verify": {
+          "psp_extent_bytes": 37444,
+          "time_us": 822185
+        }
+      },
+      "order_in_round": 1,
+      "round": 1
+    },
+    {
+      "capture": "results/v3/rp2350/interleaved-2026-09-03/round-02-d1.txt",
+      "capture_sha256": "c6fa59c4d977c1a13f5cba0b7a8d98966ae093cb7425279d4ef8dff594c1112b",
+      "firmware_commit": "7e7e8f9fac75929f775fcb9feb5a5fd9d3be0a35",
+      "firmware_dirty": 1,
+      "kind": "d1",
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 56972,
+          "time_us": 2269350
+        },
+        "sign": {
+          "psp_extent_bytes": 97132,
+          "time_us": 7182444
+        },
+        "verify": {
+          "psp_extent_bytes": 37444,
+          "time_us": 820762
+        }
+      },
+      "order_in_round": 1,
+      "round": 2
+    },
+    {
+      "capture": "results/v3/rp2350/interleaved-2026-09-03/round-02-official.txt",
+      "capture_sha256": "74a1936176ff01ef057c40a9b00927049e10d56c348e8441a8769d1d65562c69",
+      "firmware_commit": "7e7e8f9fac75929f775fcb9feb5a5fd9d3be0a35",
+      "firmware_dirty": 1,
+      "kind": "official",
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 56972,
+          "time_us": 2263891
+        },
+        "sign": {
+          "psp_extent_bytes": 101060,
+          "time_us": 7153001
+        },
+        "verify": {
+          "psp_extent_bytes": 37444,
+          "time_us": 822058
+        }
+      },
+      "order_in_round": 2,
+      "round": 2
+    },
+    {
+      "capture": "results/v3/rp2350/interleaved-2026-09-03/round-03-d1.txt",
+      "capture_sha256": "39908561dc3d6b11bcbf41523869a432960d366c140b377e528c28946a409396",
+      "firmware_commit": "7e7e8f9fac75929f775fcb9feb5a5fd9d3be0a35",
+      "firmware_dirty": 1,
+      "kind": "d1",
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 56972,
+          "time_us": 2268914
+        },
+        "sign": {
+          "psp_extent_bytes": 97132,
+          "time_us": 7182865
+        },
+        "verify": {
+          "psp_extent_bytes": 37444,
+          "time_us": 820921
+        }
+      },
+      "order_in_round": 2,
+      "round": 3
+    },
+    {
+      "capture": "results/v3/rp2350/interleaved-2026-09-03/round-03-official.txt",
+      "capture_sha256": "2b6166e62417e8526683c29d7a12f24867178a3461a389e6aac264c99e0ef6fc",
+      "firmware_commit": "7e7e8f9fac75929f775fcb9feb5a5fd9d3be0a35",
+      "firmware_dirty": 1,
+      "kind": "official",
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 56972,
+          "time_us": 2263844
+        },
+        "sign": {
+          "psp_extent_bytes": 101060,
+          "time_us": 7152953
+        },
+        "verify": {
+          "psp_extent_bytes": 37444,
+          "time_us": 821977
+        }
+      },
+      "order_in_round": 1,
+      "round": 3
+    },
+    {
+      "capture": "results/v3/rp2350/interleaved-2026-09-03/round-04-d1.txt",
+      "capture_sha256": "9786b0f3067105720e592117e29accf897d8e06aff34bc691a20fe3da109e5bd",
+      "firmware_commit": "7e7e8f9fac75929f775fcb9feb5a5fd9d3be0a35",
+      "firmware_dirty": 1,
+      "kind": "d1",
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 56972,
+          "time_us": 2269117
+        },
+        "sign": {
+          "psp_extent_bytes": 97132,
+          "time_us": 7183168
+        },
+        "verify": {
+          "psp_extent_bytes": 37444,
+          "time_us": 820756
+        }
+      },
+      "order_in_round": 1,
+      "round": 4
+    },
+    {
+      "capture": "results/v3/rp2350/interleaved-2026-09-03/round-04-official.txt",
+      "capture_sha256": "ea9a2167cca83ef25f48d4f9a7bb5713f7ffa4877b019c07f6c0f9618dbe4751",
+      "firmware_commit": "7e7e8f9fac75929f775fcb9feb5a5fd9d3be0a35",
+      "firmware_dirty": 1,
+      "kind": "official",
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 56972,
+          "time_us": 2263417
+        },
+        "sign": {
+          "psp_extent_bytes": 101060,
+          "time_us": 7152943
+        },
+        "verify": {
+          "psp_extent_bytes": 37444,
+          "time_us": 822095
+        }
+      },
+      "order_in_round": 2,
+      "round": 4
+    },
+    {
+      "capture": "results/v3/rp2350/interleaved-2026-09-03/round-05-d1.txt",
+      "capture_sha256": "46ea25b69fa0aee058ff570aad4e93e8f9b11dbf3d30f1f15794893bcc615633",
+      "firmware_commit": "7e7e8f9fac75929f775fcb9feb5a5fd9d3be0a35",
+      "firmware_dirty": 1,
+      "kind": "d1",
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 56972,
+          "time_us": 2269165
+        },
+        "sign": {
+          "psp_extent_bytes": 97132,
+          "time_us": 7182098
+        },
+        "verify": {
+          "psp_extent_bytes": 37444,
+          "time_us": 820976
+        }
+      },
+      "order_in_round": 2,
+      "round": 5
+    },
+    {
+      "capture": "results/v3/rp2350/interleaved-2026-09-03/round-05-official.txt",
+      "capture_sha256": "1a34147ad0c925e0cc527f3bad6ee8948750f46eeba3f8b7ab4b99f82006217c",
+      "firmware_commit": "7e7e8f9fac75929f775fcb9feb5a5fd9d3be0a35",
+      "firmware_dirty": 1,
+      "kind": "official",
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 56972,
+          "time_us": 2263496
+        },
+        "sign": {
+          "psp_extent_bytes": 101060,
+          "time_us": 7152761
+        },
+        "verify": {
+          "psp_extent_bytes": 37444,
+          "time_us": 822098
+        }
+      },
+      "order_in_round": 1,
+      "round": 5
+    }
+  ],
+  "schema": "sqisign-v3-rp2350-interleaved-campaign-v1",
+  "source_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+  "summary": {
+    "keygen": {
+      "d1": {
+        "psp_extent_bytes": {
+          "max": 56972,
+          "mean": 56972,
+          "median": 56972,
+          "min": 56972,
+          "n": 5,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 2269350,
+          "mean": 2269131.6,
+          "median": 2269117,
+          "min": 2268914,
+          "n": 5,
+          "sample_stdev": 155.5323117554677
+        }
+      },
+      "official": {
+        "psp_extent_bytes": {
+          "max": 56972,
+          "mean": 56972,
+          "median": 56972,
+          "min": 56972,
+          "n": 5,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 2263891,
+          "mean": 2263651.8,
+          "median": 2263611,
+          "min": 2263417,
+          "n": 5,
+          "sample_stdev": 209.30050167163958
+        }
+      },
+      "paired_d1_minus_official": {
+        "delta_percent": {
+          "max": 0.25183163332253844,
+          "mean": 0.24207851600652375,
+          "median": 0.24301878723862005,
+          "min": 0.22395536088175688,
+          "n": 5,
+          "sample_stdev": 0.011129755971833752
+        },
+        "delta_us": {
+          "max": 5700,
+          "mean": 5479.8,
+          "median": 5501,
+          "min": 5070,
+          "n": 5,
+          "sample_stdev": 251.54661595815597
+        },
+        "pairs": [
+          {
+            "delta_percent": 0.24301878723862005,
+            "delta_us": 5501,
+            "ratio": 1.0024301878723862,
+            "round": 1
+          },
+          {
+            "delta_percent": 0.24113351747058492,
+            "delta_us": 5459,
+            "ratio": 1.002411335174706,
+            "round": 2
+          },
+          {
+            "delta_percent": 0.22395536088175688,
+            "delta_us": 5070,
+            "ratio": 1.0022395536088176,
+            "round": 3
+          },
+          {
+            "delta_percent": 0.25183163332253844,
+            "delta_us": 5700,
+            "ratio": 1.0025183163332254,
+            "round": 4
+          },
+          {
+            "delta_percent": 0.2504532811191184,
+            "delta_us": 5669,
+            "ratio": 1.0025045328111912,
+            "round": 5
+          }
+        ],
+        "ratio": {
+          "max": 1.0025183163332254,
+          "mean": 1.0024207851600653,
+          "median": 1.0024301878723862,
+          "min": 1.0022395536088176,
+          "n": 5,
+          "sample_stdev": 0.00011129755971835604
+        }
+      }
+    },
+    "sign": {
+      "d1": {
+        "psp_extent_bytes": {
+          "max": 97132,
+          "mean": 97132,
+          "median": 97132,
+          "min": 97132,
+          "n": 5,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 7183168,
+          "mean": 7182709,
+          "median": 7182865,
+          "min": 7182098,
+          "n": 5,
+          "sample_stdev": 432.05439472362735
+        }
+      },
+      "official": {
+        "psp_extent_bytes": {
+          "max": 101060,
+          "mean": 101060,
+          "median": 101060,
+          "min": 101060,
+          "n": 5,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 7153001,
+          "mean": 7152884,
+          "median": 7152943,
+          "min": 7152761,
+          "n": 5,
+          "sample_stdev": 113.95613191048562
+        }
+      },
+      "paired_d1_minus_official": {
+        "delta_percent": {
+          "max": 0.4225533462240647,
+          "mean": 0.416964682443748,
+          "median": 0.41817694034897196,
+          "min": 0.41014931157353085,
+          "n": 5,
+          "sample_stdev": 0.005841503040530656
+        },
+        "delta_us": {
+          "max": 30225,
+          "mean": 29825,
+          "median": 29912,
+          "min": 29337,
+          "n": 5,
+          "sample_stdev": 417.8295106858777
+        },
+        "pairs": [
+          {
+            "delta_percent": 0.4223263684713681,
+            "delta_us": 30208,
+            "ratio": 1.0042232636847137,
+            "round": 1
+          },
+          {
+            "delta_percent": 0.4116174456008045,
+            "delta_us": 29443,
+            "ratio": 1.004116174456008,
+            "round": 2
+          },
+          {
+            "delta_percent": 0.41817694034897196,
+            "delta_us": 29912,
+            "ratio": 1.0041817694034898,
+            "round": 3
+          },
+          {
+            "delta_percent": 0.4225533462240647,
+            "delta_us": 30225,
+            "ratio": 1.0042255334622407,
+            "round": 4
+          },
+          {
+            "delta_percent": 0.41014931157353085,
+            "delta_us": 29337,
+            "ratio": 1.0041014931157353,
+            "round": 5
+          }
+        ],
+        "ratio": {
+          "max": 1.0042255334622407,
+          "mean": 1.0041696468244374,
+          "median": 1.0041817694034898,
+          "min": 1.0041014931157353,
+          "n": 5,
+          "sample_stdev": 5.841503040534247e-05
+        }
+      }
+    },
+    "verify": {
+      "d1": {
+        "psp_extent_bytes": {
+          "max": 37444,
+          "mean": 37444,
+          "median": 37444,
+          "min": 37444,
+          "n": 5,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 820976,
+          "mean": 820809.4,
+          "median": 820762,
+          "min": 820632,
+          "n": 5,
+          "sample_stdev": 138.54529945111815
+        }
+      },
+      "official": {
+        "psp_extent_bytes": {
+          "max": 37444,
+          "mean": 37444,
+          "median": 37444,
+          "min": 37444,
+          "n": 5,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 822185,
+          "mean": 822082.6,
+          "median": 822095,
+          "min": 821977,
+          "n": 5,
+          "sample_stdev": 75.22167240895406
+        }
+      },
+      "paired_d1_minus_official": {
+        "delta_percent": {
+          "max": -0.12847074796496738,
+          "mean": -0.15487348383080754,
+          "median": -0.1576531096346,
+          "min": -0.18888692934072016,
+          "n": 5,
+          "sample_stdev": 0.023791341472102736
+        },
+        "delta_us": {
+          "max": -1056,
+          "mean": -1273.2,
+          "median": -1296,
+          "min": -1553,
+          "n": 5,
+          "sample_stdev": 195.68776149774928
+        },
+        "pairs": [
+          {
+            "delta_percent": -0.18888692934072016,
+            "delta_us": -1553,
+            "ratio": 0.9981111307065929,
+            "round": 1
+          },
+          {
+            "delta_percent": -0.1576531096346,
+            "delta_us": -1296,
+            "ratio": 0.998423468903654,
+            "round": 2
+          },
+          {
+            "delta_percent": -0.12847074796496738,
+            "delta_us": -1056,
+            "ratio": 0.9987152925203503,
+            "round": 3
+          },
+          {
+            "delta_percent": -0.16287655319640673,
+            "delta_us": -1339,
+            "ratio": 0.9983712344680359,
+            "round": 4
+          },
+          {
+            "delta_percent": -0.13648007901734344,
+            "delta_us": -1122,
+            "ratio": 0.9986351992098266,
+            "round": 5
+          }
+        ],
+        "ratio": {
+          "max": 0.9987152925203503,
+          "mean": 0.9984512651616919,
+          "median": 0.998423468903654,
+          "min": 0.9981111307065929,
+          "n": 5,
+          "sample_stdev": 0.00023791341472100601
+        }
+      }
+    }
+  }
+}

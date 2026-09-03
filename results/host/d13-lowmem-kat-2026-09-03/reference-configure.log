@@ -1,0 +1,12 @@
+-- The C compiler identification is AppleClang 17.0.0.17000603
+-- The ASM compiler identification is AppleClang
+-- Found assembler: /usr/bin/cc
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Using 32-bit radix for gf module
+-- Configuring done (0.7s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/hiro/workspace/sqisign/build-host-d13-kat-reference

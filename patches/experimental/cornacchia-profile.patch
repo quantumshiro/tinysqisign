@@ -1,0 +1,87 @@
+diff --git a/src/quaternion/ref/generic/integers.c b/src/quaternion/ref/generic/integers.c
+index 15afde6..80ccd15 100755
+--- a/src/quaternion/ref/generic/integers.c
++++ b/src/quaternion/ref/generic/integers.c
+@@ -3,6 +3,69 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
++#if defined(SQISIGN_CORNACCHIA_SCA_PROFILE)
++#include <inttypes.h>
++#include <stdio.h>
++
++static uint64_t cornacchia_profile_sequence;
++
++static unsigned
++profile_hamming_weight(const ibz_t *value)
++{
++    unsigned weight = 0;
++    for (size_t limb = 0; limb < IBZ_LIMBS; ++limb)
++        weight += (unsigned)__builtin_popcountll((*value)[limb]);
++    return weight;
++}
++
++static uint64_t
++profile_digest(const ibz_t *value)
++{
++    uint64_t digest = UINT64_C(1469598103934665603);
++    for (size_t limb = 0; limb < IBZ_LIMBS; ++limb) {
++        uint64_t word = (*value)[limb];
++        for (unsigned byte = 0; byte < 8; ++byte) {
++            digest ^= (uint8_t)(word >> (8 * byte));
++            digest *= UINT64_C(1099511628211);
++        }
++    }
++    return digest;
++}
++
++static void
++profile_cornacchia_sqrt(const ibz_t *modulus, int sqrt_status)
++{
++    ibz_t q, x_exponent;
++    ibz_sub(&q, modulus, &ibz_const_one);
++    unsigned two_adicity = 0;
++    while (ibz_is_even(&q)) {
++        ibz_div_2exp(&q, &q, 1);
++        ++two_adicity;
++    }
++    ibz_add(&x_exponent, &q, &ibz_const_one);
++    ibz_div_2exp(&x_exponent, &x_exponent, 1);
++
++    const unsigned long mod8 = ibz_mod_ui(modulus, 8);
++    fprintf(stderr,
++            "SQISIGN_CORNACCHIA_PROFILE sequence=%" PRIu64
++            " modulus_bits=%d modulus_mod8=%lu two_adicity=%u"
++            " q_bits=%d q_weight=%u x_bits=%d x_weight=%u"
++            " modulus_fnv64=%016" PRIx64 " sqrt_status=%d"
++            " published_fast_case=%d\n",
++            ++cornacchia_profile_sequence,
++            ibz_bitsize(modulus),
++            mod8,
++            two_adicity,
++            ibz_bitsize(&q),
++            profile_hamming_weight(&q),
++            ibz_bitsize(&x_exponent),
++            profile_hamming_weight(&x_exponent),
++            profile_digest(modulus),
++            sqrt_status,
++            mod8 == 5);
++}
++#endif
++
+ // Random prime generation for tests
+ int
+ ibz_generate_random_prime(ibz_t *p, int is3mod4, int bitsize, int probability_test_iterations)
+@@ -73,7 +136,11 @@ ibz_cornacchia_prime(ibz_t *x, ibz_t *y, const ibz_t *n, const ibz_t *p)
+ 
+     // get sqrt of -n mod p
+     ibz_neg(&r2, n);
+-    if (!ibz_sqrt_mod_p(&r2, &r2, p))
++    const int sqrt_status = ibz_sqrt_mod_p(&r2, &r2, p);
++#if defined(SQISIGN_CORNACCHIA_SCA_PROFILE)
++    profile_cornacchia_sqrt(p, sqrt_status);
++#endif
++    if (!sqrt_status)
+         goto done;
+ 
+     // run loop

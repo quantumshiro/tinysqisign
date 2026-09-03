@@ -1,0 +1,108 @@
+{
+  "capture": "results/rp2350/sca-d13-powmod-fixedwork-capture.json",
+  "capture_sha256": "b5fec46d83effb2319a97bec5967d8a2eddc2171c86b74faf563fdd34900ffa7",
+  "control_fixed_vs_fixed": {
+    "alert": false,
+    "alert_abs_t_threshold": 4.5,
+    "csv": "results/rp2350/sca-d13-powmod-fixedwork-control.csv",
+    "csv_sha256": "3d516c556fa4539233d0648b7bdd0ad9b93b975480554bd6931dc2e160951642",
+    "execution_position_welch_t_first_minus_second": 5.545481908510341,
+    "first_order_welch_t": -2.2281239328081948,
+    "left": {
+      "count": 32,
+      "max_us": 3200925.0,
+      "mean_us": 3200919.15625,
+      "median_us": 3200919.0,
+      "min_us": 3200914.0,
+      "sample_sd_us": 2.1569000305845156
+    },
+    "left_command": "A",
+    "paired_left_minus_right_us": {
+      "mean": -1.90625,
+      "median": -1.0,
+      "sample_sd": 5.03125313063417,
+      "t": -2.1432788478554743
+    },
+    "pairs": 32,
+    "random_exponent_weight_regression": null,
+    "random_exponent_weight_vs_elapsed_pearson": null,
+    "right": {
+      "count": 32,
+      "max_us": 3200929.0,
+      "mean_us": 3200921.0625,
+      "median_us": 3200919.5,
+      "min_us": 3200915.0,
+      "sample_sd_us": 4.332454418724169
+    },
+    "right_command": "B",
+    "second_order_centered_square_welch_t": -3.7135961559503023
+  },
+  "diagnostic_low_vs_high_weight": {
+    "elapsed_delta_us": -14,
+    "elapsed_ratio_high_over_low": 0.9999956262793133,
+    "high_elapsed_us": 3200922,
+    "high_weight": 521,
+    "low_elapsed_us": 3200936,
+    "low_weight": 2,
+    "slope_us_per_added_set_bit": -0.02697495183044316
+  },
+  "interpretation": {
+    "conclusion": "no strong exponent-weight timing dependence resolved",
+    "control_below_alert_threshold": true,
+    "limitations": [
+      "Firmware elapsed_us is a coarse timing channel, not a power/EM trace.",
+      "The direct powmod diagnostic is not a full KeyGen/Sign trace.",
+      "Fixed-vs-random detection does not recover a secret.",
+      "A negative result would not prove constant-time behavior.",
+      "The low/high-weight commands are diagnostic extremes, not a production distribution."
+    ],
+    "primary_timing_alert": true,
+    "screen_positive": false,
+    "strong_exponent_weight_timing_dependence": false
+  },
+  "primary_fixed_vs_random": {
+    "alert": true,
+    "alert_abs_t_threshold": 4.5,
+    "csv": "results/rp2350/sca-d13-powmod-fixedwork-fixed-random.csv",
+    "csv_sha256": "109542d4724d4085994b42de82945f2ed56b0d61aa994ca30efd76bb68d46c72",
+    "execution_position_welch_t_first_minus_second": -3.2995423532823582,
+    "first_order_welch_t": -5.6535593142068175,
+    "left": {
+      "count": 32,
+      "max_us": 3200930.0,
+      "mean_us": 3200921.09375,
+      "median_us": 3200921.0,
+      "min_us": 3200911.0,
+      "sample_sd_us": 4.6375701020699305
+    },
+    "left_command": "F",
+    "paired_left_minus_right_us": {
+      "mean": -5.1875,
+      "median": -5.0,
+      "sample_sd": 4.91500336363223,
+      "t": -5.970480434738821
+    },
+    "pairs": 32,
+    "random_exponent_weight_regression": {
+      "elapsed_max_us": 3200933.0,
+      "elapsed_min_us": 3200921.0,
+      "intercept_us": 3200901.410980563,
+      "r_squared": 0.17939762984528973,
+      "slope_us_per_set_bit": 0.09568938583452467,
+      "weight_max": 282.0,
+      "weight_min": 235.0
+    },
+    "random_exponent_weight_vs_elapsed_pearson": 0.4235535737897495,
+    "right": {
+      "count": 32,
+      "max_us": 3200933.0,
+      "mean_us": 3200926.28125,
+      "median_us": 3200926.5,
+      "min_us": 3200921.0,
+      "sample_sd_us": 2.331196217921523
+    },
+    "right_command": "R",
+    "second_order_centered_square_welch_t": 2.4441651598510004
+  },
+  "schema": "sqisign-rp2350-sca-timing-analysis-v1"
+}

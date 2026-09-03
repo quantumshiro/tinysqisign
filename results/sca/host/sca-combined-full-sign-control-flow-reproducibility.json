@@ -1,0 +1,21 @@
+{
+  "decision": {
+    "physical_side_channel_evidence": false,
+    "reproduced": true,
+    "side_channel_resistance_established": false
+  },
+  "inputs": {
+    "first": "/Users/hiro/workspace/sqisign/results/host/sca-combined-full-sign-control-flow.json",
+    "first_sha256": "22aa8a22728e65f346a9b940aa5243499ab2872b8e5df00397c5267a4a37e54e",
+    "second": "/Users/hiro/workspace/sqisign/results/host/sca-combined-full-sign-control-flow-rerun.json",
+    "second_sha256": "e27ba06855dca941338f6669c8d6662ac2517099580eee46eebf1a11605b9c9c"
+  },
+  "results": {
+    "decisions_equal": true,
+    "event_counts_and_first_differences_equal": true,
+    "pair_records_reproduced": 5,
+    "residual_structural_difference_observed": true,
+    "source_and_binary_provenance_equal": true
+  },
+  "schema": "sqisign-combined-full-sign-control-flow-reproducibility-v1"
+}

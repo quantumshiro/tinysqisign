@@ -1,0 +1,164 @@
+================================================================================
+                            Starting SQISign Signing                            
+================================================================================
+================================================================================
+                               Computing Keypair                                
+================================================================================
+entering idealToisogenyKLPT
+Attack successful in RepresentInteger with M = 13, (z,t) = (-3, 2)
+Time taken for attack: 0.002724 seconds
+γ_constructed= 873511784 + 953578750*i - 3*j - 2*k
+gamma in represent integer = 873511784 + 953578750*i - 3*j - 2*k
+mu in strong approximation= 55082949273464349679 + 84668717881072405760*i + 693585794903*j + 397418907747*k
+DEBUG [make_cyclic]: Ideal is not cyclic, removing scalar factor: g = 3
+DEBUG [RepresentIntegerHeuristic]: No solution found
+gamma in represent integer = None
+DEBUG [RepresentIntegerHeuristic]: No solution found
+gamma in represent integer = None
+DEBUG [RepresentIntegerHeuristic]: No solution found
+gamma in represent integer = None
+gamma in represent integer = 469820551 + 590511638*i + 17*j + 17*k
+μ_constructed= 652705884664 + 6892386538155*i - 68465*j + 195875*k
+Attack successful in Strong Approximation with M = 43054471850, (z,t) = (-68465, -195875)
+Time taken for attack: 0.001018 seconds
+mu in strong approximation= 652705884664 + 6892386538155*i - 68465*j + 195875*k
+================================================================================
+                                Signing Message                                 
+================================================================================
+computing response
+entering response
+INFO [SQISign Response]: Running SigningKLPT
+entering signingKLPT
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Already tried γ, trying again.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Already tried γ, trying again.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Already tried γ, trying again.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [SigningKLPT]: Unable to compute a C,D, given γ.
+DEBUG [make_cyclic]: Ideal is not cyclic, removing scalar factor: g = 2
+INFO [SQISign Response]: Finished SigningKLPT
+INFO [SQISign Response]: Computing the corresponding isogeny
+entering idealToisogenyKLPT
+gamma in represent integer = 187414475 + 1409338679*i + 8*j - 15*k
+μ_constructed= 9759948741438 + 109762667063680*i + 264334*j - 147715*k
+Attack successful in Strong Approximation with M = 91692184781, (z,t) = (264334, 147715)
+Time taken for attack: 0.000994 seconds
+mu in strong approximation= 9759948741438 + 109762667063680*i + 264334*j - 147715*k
+DEBUG [make_cyclic]: Ideal is not cyclic, removing scalar factor: g = 59
+Attack successful in RepresentInteger with M = 17, (z,t) = (4, 1)
+Time taken for attack: 0.002767 seconds
+γ_constructed= 657603052 + 895894698*i + 4*j - k
+gamma in represent integer = 657603052 + 895894698*i + 4*j - k
+mu in strong approximation= None
+Attack successful in RepresentInteger with M = 356, (z,t) = (16, 10)
+Time taken for attack: 0.053519 seconds
+γ_constructed= 1414431724 + 1732190449*i + 16*j - 10*k
+gamma in represent integer = 1414431724 + 1732190449*i + 16*j - 10*k
+mu in strong approximation= None
+Attack successful in RepresentInteger with M = 36, (z,t) = (-6, 0)
+Time taken for attack: 0.002818 seconds
+γ_constructed= 573198204 + 931844083*i - 6*j
+gamma in represent integer = 573198204 + 931844083*i - 6*j
+mu in strong approximation= None
+Attack successful in RepresentInteger with M = 13, (z,t) = (-3, 2)
+Time taken for attack: 0.002970 seconds
+γ_constructed= 228266451 + 1023377399*i - 3*j - 2*k
+gamma in represent integer = 228266451 + 1023377399*i - 3*j - 2*k
+μ_constructed= 13691141197504575639832 + 14060802686166053473873*i - 45317324721465*j - 62386754811265*k
+Attack successful in Strong Approximation with M = 5945767095791599465602646450, (z,t) = (-45317324721465, 62386754811265)
+Time taken for attack: 0.001881 seconds
+mu in strong approximation= 13691141197504575639832 + 14060802686166053473873*i - 45317324721465*j - 62386754811265*k
+Attack successful in RepresentInteger with M = 4, (z,t) = (2, 0)
+Time taken for attack: 0.002820 seconds
+γ_constructed= 160107035 + 264892456*i + 2*j
+gamma in represent integer = 160107035 + 264892456*i + 2*j
+μ_constructed= 36625450668455310363 + 162050666101939388263*i - 309594419062*j - 395574155933*k
+Attack successful in Strong Approximation with M = 252327617156442668060333, (z,t) = (-309594419062, 395574155933)
+Time taken for attack: 0.001803 seconds
+mu in strong approximation= 36625450668455310363 + 162050666101939388263*i - 309594419062*j - 395574155933*k
+Attack successful in RepresentInteger with M = 5, (z,t) = (-1, 2)
+Time taken for attack: 0.002846 seconds
+γ_constructed= 618764900 + 1248618582*i - j - 2*k
+gamma in represent integer = 618764900 + 1248618582*i - j - 2*k
+mu in strong approximation= 53877731284117882676 + 722848536648491995073*i - 943707706525*j - 1804162315083*k
+DEBUG [RepresentIntegerHeuristic]: No solution found
+gamma in represent integer = None
+DEBUG [RepresentIntegerHeuristic]: No solution found
+gamma in represent integer = None
+Attack successful in RepresentInteger with M = 61, (z,t) = (6, 5)
+Time taken for attack: 0.003055 seconds
+γ_constructed= 426804431 + 470164645*i + 6*j - 5*k
+gamma in represent integer = 426804431 + 470164645*i + 6*j - 5*k
+mu in strong approximation= 6272806428123032285515 + 20362884458698715052227*i + 69288797737142*j + 19469755254351*k
+DEBUG [make_cyclic]: Ideal is not cyclic, removing scalar factor: g = 3
+Attack successful in RepresentInteger with M = 40, (z,t) = (-6, -2)
+Time taken for attack: 0.002927 seconds
+γ_constructed= 805166118 + 1228813697*i - 6*j + 2*k
+gamma in represent integer = 805166118 + 1228813697*i - 6*j + 2*k
+μ_constructed= 6389485973393654181 + 10578287521871298109*i - 67521713722*j - 148166601851*k
+Attack successful in Strong Approximation with M = 26512523728028479719485, (z,t) = (-67521713722, 148166601851)
+Time taken for attack: 0.001139 seconds
+mu in strong approximation= 6389485973393654181 + 10578287521871298109*i - 67521713722*j - 148166601851*k
+Attack successful in RepresentInteger with M = 40, (z,t) = (-2, -6)
+Time taken for attack: 0.002928 seconds
+γ_constructed= 480245390 + 1261423687*i - 2*j + 6*k
+gamma in represent integer = 480245390 + 1261423687*i - 2*j + 6*k
+μ_constructed= 86340667948941390744 + 130865737279074191765*i + 591868292386*j + 467634417170*k
+Attack successful in Strong Approximation with M = 568990023653845176381896, (z,t) = (591868292386, -467634417170)
+Time taken for attack: 0.001264 seconds
+mu in strong approximation= 86340667948941390744 + 130865737279074191765*i + 591868292386*j + 467634417170*k
+DEBUG [make_cyclic]: Ideal is not cyclic, removing scalar factor: g = 3
+DEBUG [RepresentIntegerHeuristic]: No solution found
+gamma in represent integer = None
+Attack successful in RepresentInteger with M = 10, (z,t) = (-3, 1)
+Time taken for attack: 0.003029 seconds
+γ_constructed= 731317261 + 1179339846*i - 3*j - k
+gamma in represent integer = 731317261 + 1179339846*i - 3*j - k
+μ_constructed= 735689654377060415 + 1226476863384411382*i - 2981453250*j - 6841898284*k
+Attack successful in Strong Approximation with M = 55700635610537707156, (z,t) = (-2981453250, 6841898284)
+Time taken for attack: 0.001568 seconds
+mu in strong approximation= 735689654377060415 + 1226476863384411382*i - 2981453250*j - 6841898284*k
+Attack successful in RepresentInteger with M = 5, (z,t) = (-1, 2)
+Time taken for attack: 0.002947 seconds
+γ_constructed= 54897977 + 475114887*i - j - 2*k
+gamma in represent integer = 54897977 + 475114887*i - j - 2*k
+mu in strong approximation= 510310573783910770480 + 632643153605776215005*i - 46430992155666*j + 2277233852900*k
+INFO [SQISign Response]: Computed the isogeny EA → E2
+INFO [SQISign Response]: Compressing the isogeny σ to a bitstring
+DEBUG [compute_S_and_next_Q]: swapped the basis around
+INFO [SQISign Response]:Compressed the isogeny σ to a bitstring of length 297
+================================================================================
+                              Validating signature                              
+================================================================================
+INFO [SQISign Verify]: Decompressing the isogeny σ from a bitstring
+INFO [SQISign Verify]: Verifying the degree and (co)domains of σ
+INFO [SQISign Verify]: Verifying that ϕ_dual * σ is cyclic
+DEBUG [SQISign Verify]: ϕ_dual_σ(P) does not have full order, checking Q
+================================================================================
+                          Signing example worked: True                          
+================================================================================
+================================================================================
+                             Signing took 9.292112                              
+================================================================================

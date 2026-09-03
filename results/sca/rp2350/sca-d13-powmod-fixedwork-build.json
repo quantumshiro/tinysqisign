@@ -1,0 +1,67 @@
+{
+  "algorithm": "521 fixed exponent rounds; 1042 modular multiplications; every multiplication executes 521 multiplier-bit rounds and two complete 17-word modular additions per round",
+  "arm_profile": "Arm GNU 15.2.1, Cortex-M33, RP2350 Arm-S, Level-I/RADIX32, -O3",
+  "candidate_header_sha256": "e80e0f10ef9cdad64b54df3b599a68a80f6783749e9244f798c3a98593c39e50",
+  "candidate_object_sha256": "9760f2aadd6f43a53168fc5b6603939b7ce57d84f44a388c39e921bc0dc60d38",
+  "candidate_source_sha256": "60602faedb2768940d477178274c9287a99996479c8166e6353afb29f68f385c",
+  "candidate_stack_usage": {
+    "add_mod": {
+      "bytes": 88,
+      "kind": "static"
+    },
+    "multiply_mod_words": {
+      "bytes": 56,
+      "kind": "static"
+    },
+    "sqisign_sca_mul_mod_fixedwork_521": {
+      "bytes": 896,
+      "kind": "static"
+    },
+    "sqisign_sca_powmod_fixedwork_521": {
+      "bytes": 1000,
+      "kind": "static"
+    },
+    "sqisign_sca_powmod_fixedwork_window": {
+      "bytes": 32,
+      "kind": "static"
+    }
+  },
+  "candidate_symbol_code_bytes": {
+    "add_mod": 1168,
+    "multiply_mod_words": 722,
+    "sqisign_sca_powmod_fixedwork_521": 2066,
+    "sqisign_sca_powmod_fixedwork_window": 82
+  },
+  "compact_d13_commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+  "compiler_identity": "GCC: (Arm GNU Toolchain 15.2.Rel1 (Build arm-15.86)) 15.2.1 20251203",
+  "firmware_artifacts": {
+    "bin_sha256": "9639ddb333fc51c1529894f263c0e52564783f7c008f6300542da4809a744392",
+    "disassembly_sha256": "7453a41bc11f0287eef7a59183275471a948d08070fabd030d93f715dc53a8f9",
+    "elf_map_sha256": "53d5ee6e34306a346105b38a73f1791e4cb1ec4961b74cdaf2ba2d4c9d3d6d82",
+    "elf_sha256": "0c7fed494f2cca7dfa59330e17f1d9cb05b09543373552cb3976aa7c8546cd44",
+    "stack_usage_sha256": "3da29eb7f050a74f36522b65633ab84ef8549afb7a73219de0abc75ee44c2ab9",
+    "uf2_sha256": "67896440f672d3a5c837b84d5b9ea4afc19d3061495cccd868a7b48206c1b95f"
+  },
+  "firmware_build_root_commit": "7e7e8f9fac75929f775fcb9feb5a5fd9d3be0a35",
+  "firmware_build_root_dirty": true,
+  "fixed_precision_intbig_sha256": "9f7bb4222684374912cffe15001d89f74a3e8c9b71f759225fdd652f3d4b1a31",
+  "fixed_schedule": {
+    "exponent_iterations": 521,
+    "modular_additions": 1085764,
+    "modular_multiplications": 1042,
+    "multiplier_iterations": 542882
+  },
+  "linked_diagnostic_firmware_size": {
+    "bss_bytes": 36292,
+    "data_bytes": 0,
+    "text_bytes": 41928
+  },
+  "linked_fixed_length_memset_bytes": [
+    64,
+    144
+  ],
+  "pico_sdk_commit": "98a542c1a62fb549ffb5d66a3e5892b06276b670",
+  "schema": "sqisign-rp2350-sca-powmod-fixedwork-build-v1",
+  "scope": "experimental fixed-work powmod diagnostic; narrow 521-bit accepted domain; not production Sign and not a constant-time or analog-SPA-resistance claim",
+  "test_source_sha256": "5f9edeed4fd5a4f790e8854bab230bafef2b8d78d47b57280f06e4704061fded"
+}

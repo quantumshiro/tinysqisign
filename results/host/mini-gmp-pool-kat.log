@@ -1,0 +1,4 @@
+MINI_GMP_POOL_KAT {"pool_bytes":317696,"pool_compile_capacity_bytes":317696,"pool_high_water_bytes":317696,"peak_requested_bytes":67168,"peak_physical_bytes":317696,"peak_allocations":4830,"allocation_calls":85520200,"reallocation_calls":4962531,"pool_relocation_allocations":2146396,"free_calls":85520200,"secure_clear_bytes":5124448176}
+Known Answer Tests PASSED. 
+
+

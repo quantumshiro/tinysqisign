@@ -1,0 +1,11 @@
+{
+  "schema": "sqisign-intbig-arm-object-size-v1",
+  "compiler": "Arm GNU 15.2.1",
+  "fixed_source_commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+  "mini_source_commit": "dd133d7aca576c361a270c8e6434832535b42ecc",
+  "scope": "Complete source-object payload before final section GC; not linked firmware flash.",
+  "profiles": [
+    {"profile":"os-soft","fixed":{"text":7962,"data":0,"bss":0},"mini":{"text":18566,"data":24,"bss":4},"mini_over_fixed_text_ratio":2.331826174},
+    {"profile":"pico-release-like","fixed":{"text":17539,"data":0,"bss":0},"mini":{"text":45856,"data":24,"bss":4},"mini_over_fixed_text_ratio":2.614516221}
+  ]
+}

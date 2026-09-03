@@ -1,0 +1,300 @@
+{
+  "control_fixed_vs_fixed": {
+    "alert": false,
+    "alert_abs_t_threshold": 4.5,
+    "class_a": {
+      "count": 64,
+      "max_ms": 1384.625,
+      "mean_ms": 816.027796875,
+      "median_ms": 806.932,
+      "min_ms": 803.648,
+      "sample_sd_ms": 72.2327266676745
+    },
+    "class_b": {
+      "count": 64,
+      "max_ms": 2179.679,
+      "mean_ms": 829.023875,
+      "median_ms": 806.957,
+      "min_ms": 803.886,
+      "sample_sd_ms": 171.53006562796313
+    },
+    "class_b_path_correlation": {
+      "d16_attempts": {
+        "distinct": 1,
+        "max": 3.0,
+        "min": 3.0,
+        "pearson_elapsed": null,
+        "slope_ms_per_unit": null,
+        "spearman_elapsed": null
+      },
+      "d4_attempts": {
+        "distinct": 1,
+        "max": 3.0,
+        "min": 3.0,
+        "pearson_elapsed": null,
+        "slope_ms_per_unit": null,
+        "spearman_elapsed": null
+      },
+      "d8_attempts": {
+        "distinct": 1,
+        "max": 11.0,
+        "min": 11.0,
+        "pearson_elapsed": null,
+        "slope_ms_per_unit": null,
+        "spearman_elapsed": null
+      },
+      "elapsed_by_ml2_attempts": {
+        "17": {
+          "count": 64,
+          "mean_ms": 829.023875,
+          "median_ms": 806.957
+        }
+      },
+      "ml2_attempts": {
+        "distinct": 1,
+        "max": 17.0,
+        "min": 17.0,
+        "pearson_elapsed": null,
+        "slope_ms_per_unit": null,
+        "spearman_elapsed": null
+      },
+      "ml2_extra_attempts": {
+        "distinct": 1,
+        "max": 0.0,
+        "min": 0.0,
+        "pearson_elapsed": null,
+        "slope_ms_per_unit": null,
+        "spearman_elapsed": null
+      },
+      "ml2_first_failures": {
+        "distinct": 1,
+        "max": 0.0,
+        "min": 0.0,
+        "pearson_elapsed": null,
+        "slope_ms_per_unit": null,
+        "spearman_elapsed": null
+      },
+      "ml2_inputs": {
+        "distinct": 1,
+        "max": 17.0,
+        "min": 17.0,
+        "pearson_elapsed": null,
+        "slope_ms_per_unit": null,
+        "spearman_elapsed": null
+      }
+    },
+    "cohen_d_a_minus_b": -0.09875010209138477,
+    "csv": "/Users/hiro/workspace/sqisign/results/host/sca-d13-sign-control.csv",
+    "csv_sha256": "5ec12778b4f2166b376f48c4c3b7d526e8bb0110fedcd5de65ad02b4141effc3",
+    "execution_position_welch_t_first_minus_second": -0.5317639243921836,
+    "first_order_welch_t": -0.5586149346534562,
+    "paired_a_minus_b_ms": {
+      "mean": -12.996078125,
+      "median": -0.422,
+      "sample_sd": 99.3412210232521,
+      "t": -1.0465809049766441
+    },
+    "pairs": 64,
+    "prefix_stability": [
+      {
+        "first_order_t": 1.5886390354091215,
+        "pairs": 8,
+        "second_order_centered_square_t": 1.4552288156377098
+      },
+      {
+        "first_order_t": -1.5890251128605692,
+        "pairs": 16,
+        "second_order_centered_square_t": -2.076325546087943
+      },
+      {
+        "first_order_t": -1.437789954094286,
+        "pairs": 24,
+        "second_order_centered_square_t": -2.0516936194297832
+      },
+      {
+        "first_order_t": -1.3341197222329426,
+        "pairs": 32,
+        "second_order_centered_square_t": -1.923770748539533
+      },
+      {
+        "first_order_t": -0.5504841607215922,
+        "pairs": 48,
+        "second_order_centered_square_t": -0.8182858926058596
+      },
+      {
+        "first_order_t": -0.5586149346534562,
+        "pairs": 64,
+        "second_order_centered_square_t": -0.8161169408527272
+      }
+    ],
+    "probability_b_slower_than_a": 0.5518798828125,
+    "sample_sd_ratio_b_over_a": 2.374686288905193,
+    "second_order_centered_square_welch_t": -0.8161169408527272
+  },
+  "interpretation": {
+    "conclusion": "observable fixed-vs-random timing dependence detected",
+    "control_below_alert_threshold": true,
+    "limitations": [
+      "The deterministic RNG is a laboratory input selector, not production entropy.",
+      "Fixed-vs-random timing can detect dependence but does not recover a key.",
+      "The ML2 profile counters instrument the measured binary.",
+      "Host wall time does not establish RP2350 power or EM leakage.",
+      "A negative result would not prove constant-time behavior."
+    ],
+    "primary_timing_alert": true,
+    "screen_valid_for_this_run": true
+  },
+  "primary_fixed_vs_random": {
+    "alert": true,
+    "alert_abs_t_threshold": 4.5,
+    "class_a": {
+      "count": 64,
+      "max_ms": 807.051,
+      "mean_ms": 803.13140625,
+      "median_ms": 802.337,
+      "min_ms": 800.645,
+      "sample_sd_ms": 2.0034175223475525
+    },
+    "class_b": {
+      "count": 64,
+      "max_ms": 1522.144,
+      "mean_ms": 691.227390625,
+      "median_ms": 643.751,
+      "min_ms": 277.891,
+      "sample_sd_ms": 250.78165970431598
+    },
+    "class_b_path_correlation": {
+      "d16_attempts": {
+        "distinct": 1,
+        "max": 3.0,
+        "min": 3.0,
+        "pearson_elapsed": null,
+        "slope_ms_per_unit": null,
+        "spearman_elapsed": null
+      },
+      "d4_attempts": {
+        "distinct": 1,
+        "max": 3.0,
+        "min": 3.0,
+        "pearson_elapsed": null,
+        "slope_ms_per_unit": null,
+        "spearman_elapsed": null
+      },
+      "d8_attempts": {
+        "distinct": 2,
+        "max": 12.0,
+        "min": 11.0,
+        "pearson_elapsed": -0.022865760862354957,
+        "slope_ms_per_unit": -11.38423558162268,
+        "spearman_elapsed": 0.03808100235662556
+      },
+      "elapsed_by_ml2_attempts": {
+        "17": {
+          "count": 31,
+          "mean_ms": 697.0973870967742,
+          "median_ms": 631.585
+        },
+        "18": {
+          "count": 33,
+          "mean_ms": 685.7131515151515,
+          "median_ms": 678.853
+        }
+      },
+      "ml2_attempts": {
+        "distinct": 2,
+        "max": 18.0,
+        "min": 17.0,
+        "pearson_elapsed": -0.022865760862354957,
+        "slope_ms_per_unit": -11.38423558162268,
+        "spearman_elapsed": 0.03808100235662556
+      },
+      "ml2_extra_attempts": {
+        "distinct": 1,
+        "max": 0.0,
+        "min": 0.0,
+        "pearson_elapsed": null,
+        "slope_ms_per_unit": null,
+        "spearman_elapsed": null
+      },
+      "ml2_first_failures": {
+        "distinct": 1,
+        "max": 0.0,
+        "min": 0.0,
+        "pearson_elapsed": null,
+        "slope_ms_per_unit": null,
+        "spearman_elapsed": null
+      },
+      "ml2_inputs": {
+        "distinct": 2,
+        "max": 18.0,
+        "min": 17.0,
+        "pearson_elapsed": -0.022865760862354957,
+        "slope_ms_per_unit": -11.38423558162268,
+        "spearman_elapsed": 0.03808100235662556
+      }
+    },
+    "cohen_d_a_minus_b": 0.6310315001402607,
+    "csv": "/Users/hiro/workspace/sqisign/results/host/sca-d13-sign-fixed-random.csv",
+    "csv_sha256": "f24471e90d91a94bf38b7fc27eade66ca2cc621c10662963ef799582b70929ef",
+    "execution_position_welch_t_first_minus_second": 0.3325045703943427,
+    "first_order_welch_t": 3.569653223131985,
+    "paired_a_minus_b_ms": {
+      "mean": 111.904015625,
+      "median": 159.578,
+      "sample_sd": 250.3166650309286,
+      "t": 3.5763984187364715
+    },
+    "pairs": 64,
+    "prefix_stability": [
+      {
+        "first_order_t": 0.0919214414659031,
+        "pairs": 8,
+        "second_order_centered_square_t": -2.6184989442238744
+      },
+      {
+        "first_order_t": -0.385874181390561,
+        "pairs": 16,
+        "second_order_centered_square_t": -4.0114242117707475
+      },
+      {
+        "first_order_t": 0.5957450150700022,
+        "pairs": 24,
+        "second_order_centered_square_t": -4.5257111646142665
+      },
+      {
+        "first_order_t": 1.4327111372490366,
+        "pairs": 32,
+        "second_order_centered_square_t": -5.11766636341225
+      },
+      {
+        "first_order_t": 3.0800867698383216,
+        "pairs": 48,
+        "second_order_centered_square_t": -5.6495544314967665
+      },
+      {
+        "first_order_t": 3.569653223131985,
+        "pairs": 64,
+        "second_order_centered_square_t": -5.410009882277845
+      }
+    ],
+    "probability_b_slower_than_a": 0.3125,
+    "sample_sd_ratio_b_over_a": 125.17693237027126,
+    "second_order_centered_square_welch_t": -5.410009882277845
+  },
+  "provenance": {
+    "binary_sha256": "0688aa374392ab8369f28e10e0acc2ad0c5deffa682db3eefbf7732577cde6a7",
+    "build_profile": "Release/ref/Level-I/RADIX64/GMP-off/ML2-profile-on/ThinLTO",
+    "clock": "CLOCK_MONOTONIC",
+    "compiler": "Apple clang version 17.0.0 (clang-1700.6.3.2)",
+    "dataset_order": [
+      "control_fixed_vs_fixed",
+      "fixed_vs_random"
+    ],
+    "harness_sha256": "071749a9476256b779bac540c1decae618353338ae49cc63ff1dc334074dddec",
+    "host": "Darwin nakanishinoMacBook-Pro.local 25.3.0 Darwin Kernel Version 25.3.0: Wed Jan 28 20:56:42 PST 2026; root:xnu-12377.91.3~2/RELEASE_ARM64_T8142 arm64",
+    "source_commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+    "warmups_per_dataset": 3
+  },
+  "schema": "sqisign-sca-timing-v1",
+  "scope": "Host encoded Sign timing screen with a fixed key and message. Class A repeats one deterministic signing RNG stream; class B either repeats that stream (control) or uses unique deterministic streams (primary). This is leakage detection, not a power trace, attack demonstration, or constant-time certificate."
+}

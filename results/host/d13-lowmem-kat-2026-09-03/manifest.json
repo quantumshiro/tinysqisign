@@ -1,0 +1,132 @@
+{
+  "artifacts": {
+    "checker": {
+      "bytes": 12964,
+      "path": "scripts/check_d13_lowmem_kat.py",
+      "sha256": "744f58d0b3cd8bf244542be5ba315c4d791345e0f5676f078b03ab87ce4d6399"
+    },
+    "harness_cmake": {
+      "bytes": 1666,
+      "path": "experiments/kat/CMakeLists.txt",
+      "sha256": "227d1d3ffad88bb64e0af44e46b5b895a028e6be9ea39c7119a05abb56e10ad5"
+    },
+    "harness_source": {
+      "bytes": 14705,
+      "path": "experiments/kat/d13_lowmem_kat.c",
+      "sha256": "b7338d59f978098503d1b4673ebd093862e2dd3af074300716a395f91ae9f6d7"
+    },
+    "legacy_response": {
+      "bytes": 796348,
+      "path": "work/compact-d13/KAT/legacy-nist-v2/PQCsignKAT_353_SQIsign_lvl1.rsp",
+      "sha256": "03898a4b415c0fd038137b1e5716be07ea7641622161aef0777035a96fc9bba8"
+    },
+    "lowmem_binary": {
+      "bytes": 610376,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/artifacts/sqisign_d13_lowmem_kat",
+      "sha256": "eccb846bb779ff3a3849b6d7d5278cf136bf41bdf33e4980b11645c37e897200"
+    },
+    "lowmem_cache": {
+      "bytes": 24317,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/artifacts/lowmem-CMakeCache.txt",
+      "sha256": "4ae72bcbc22b8864c8c36525be45f2d5e46dd457bbded0255b1d7c02e10c7dc2"
+    },
+    "lowmem_compile_commands": {
+      "bytes": 102562,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/artifacts/lowmem-compile-commands.json",
+      "sha256": "99d6402f775b940331ba8fa66e38d81e16ae688e0f06ad5a9fd04e1ed3681775"
+    },
+    "lowmem_log_run_1": {
+      "bytes": 8017,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/lowmem-run-1.log",
+      "sha256": "18110464e089e2168d2a0a84853b1e4b744178e06141f429d943e5090747c200"
+    },
+    "lowmem_log_run_2": {
+      "bytes": 8017,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/lowmem-run-2.log",
+      "sha256": "18110464e089e2168d2a0a84853b1e4b744178e06141f429d943e5090747c200"
+    },
+    "lowmem_response_run_1": {
+      "bytes": 796347,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/lowmem-run-1/PQCsignKAT_353_SQIsign_lvl1.rsp",
+      "sha256": "1d86d15c5d2bfbef99f17634496086a3ab80f0e848d34d3e9409d75f3019dd68"
+    },
+    "lowmem_response_run_2": {
+      "bytes": 796347,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/lowmem-run-2/PQCsignKAT_353_SQIsign_lvl1.rsp",
+      "sha256": "1d86d15c5d2bfbef99f17634496086a3ab80f0e848d34d3e9409d75f3019dd68"
+    },
+    "lowmem_symbols": {
+      "bytes": 15175,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/lowmem-symbols.txt",
+      "sha256": "a4b3faf5ff8a92c35c073e37cfa85a710442166a1b974477b1bea0fe1ba10026"
+    },
+    "official_request": {
+      "bytes": 349057,
+      "path": "work/compact-d13/KAT/legacy-nist-v2/PQCsignKAT_353_SQIsign_lvl1.req",
+      "sha256": "81ff60e3ef698751e5572f0bb7f831f069605229c220ee1cf27a92572d6ebc7e"
+    },
+    "reference_binary": {
+      "bytes": 627184,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/artifacts/PQCgenKAT_sign_lvl1-d13-reference",
+      "sha256": "238b637f8682e10809369bb8fa93157e5ef6416e67ae28be96dd56f83f4b9c9c"
+    },
+    "reference_cache": {
+      "bytes": 27899,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/artifacts/reference-CMakeCache.txt",
+      "sha256": "3de1dc1a9191aae4226c58a504796fd47fbf03ee5b3fc832a9ab16cfb66753b9"
+    },
+    "reference_request": {
+      "bytes": 349056,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/reference/PQCsignKAT_353_SQIsign_lvl1.req",
+      "sha256": "bed15a848a088b12db8bd8768705e321d7231c42e2f08b765f25f258d8e4e582"
+    },
+    "reference_response": {
+      "bytes": 796347,
+      "path": "results/host/d13-lowmem-kat-2026-09-03/reference/PQCsignKAT_353_SQIsign_lvl1.rsp",
+      "sha256": "1d86d15c5d2bfbef99f17634496086a3ab80f0e848d34d3e9409d75f3019dd68"
+    },
+    "runner": {
+      "bytes": 4517,
+      "path": "scripts/run_d13_lowmem_kat.sh",
+      "sha256": "d75d433715a2c80b22f37ecaed1bae8df2b23052eaa7616579adc20359552cd0"
+    }
+  },
+  "claim_boundary": {
+    "d13_normal_lowmem_byte_match": true,
+    "legacy_nist_v2_response_match": false,
+    "legacy_response_is_oracle": false,
+    "lowmem_input_official_request_exact_hash": true,
+    "lowmem_rerun_byte_match": true,
+    "reason": "Compact fixed-precision KeyGen intentionally consumes a different random transcript from the legacy GMP implementation.",
+    "reference_request_byte_match": false,
+    "reference_request_records_match": true,
+    "reference_request_serialization_difference": "The current generator omits the archived request's one final blank-line LF; all 100 count/seed/mlen/msg records are byte-identical."
+  },
+  "host": {
+    "platform": "macOS-26.3.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.6"
+  },
+  "method": {
+    "checks_per_vector": [
+      "byte-identical response against D13 normal API",
+      "valid signed-message open and message equality",
+      "one deterministic signature-bit corruption rejected",
+      "workspace guards intact",
+      "owned workspace cleared after every operation"
+    ],
+    "implementation_under_test": "D13 caller-owned low-memory encoded KeyGen/Sign/Open/Verify API",
+    "independent_lowmem_runs": 2,
+    "oracle": "same-commit D13 normal encoded API",
+    "request_schedule": "archived official NIST-v2 100-vector request"
+  },
+  "parameter_set": "SQIsign Level I",
+  "radix": 32,
+  "result": "PASS",
+  "schema": "sqisign-d13-lowmem-kat-evidence-v1",
+  "source": {
+    "checkpoint": "D13",
+    "commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+    "tree_clean": true
+  },
+  "vectors": 100
+}
