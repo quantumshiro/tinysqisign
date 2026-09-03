@@ -1,9 +1,12 @@
-# 再構成用パッチ
+# 再構成用パッチとbundle
 
-`v2-d13.bundle`は、Compact-SQIsignの`5b94b09a1dbbdcc8b91749fec83a9f111ef9cce3`を前提として、研究時の凍結commit `71099e0827d3f0a3b3c705d2eda592c401e0d57d`までの履歴を保持します。SHA-256は`3382af62c2299c1882f55c3520edd6e1b03c4b4f66eb5bdd869f071183cda6bc`です。
+- `v2-d13.bundle`: Compact-SQIsign基準`5b94b09a...`から凍結commit`71099e08...`までの履歴。SHA-256 `3382af62c2299c1882f55c3520edd6e1b03c4b4f66eb5bdd869f071183cda6bc`。
+- `v2-lowmem-d13.patch`: 同じv2変更の閲覧用統合差分。適用後treeは`8761bccb5b14172e21d7228878fb3fc9379db5c4`。SHA-256 `7f24cbcac88abdc1067ea17c524caab53d8307d94985b7d3d2a3fc785f1d2227`。
+- `v3-lifetime-overlays.bundle`: 公式v3基準`6d017708...`を前提に、clean commit`9293313f...`を再構成する薄いbundle。treeは`30606e0b5cb2a99d782f4eb334c0c3b87b1edd1c`。SHA-256 `823e3b0dc251646046ba32b5b26a30e8a6c37197ff1a8192f725080e5d13dde2`。
+- `v3-static-stack.bundle`: 同じ基準から固定frame commit`cb94f242...`を再構成する薄いbundle。treeは`d53293e903e4cb0e5766edc0b3d4b74a3fec6a59`。SHA-256 `a7aa0c4d78507606ded4cd2174898882c004ab4ca34ee6320dfd04837d0cd710`。
+- `0035-experiment-v3-d1-lifetime-overlays.patch`: lifetime版の閲覧用差分。`v3-lifetime-overlays.patch`とbyte単位で同一。SHA-256 `44e089298a330b7019b8d9c82110b2d26d0dad1dce5d494098fd667e6f4853a6`。
+- `0036-experiment-v3-d2-static-stack.patch`: 固定frame版の閲覧用差分。SHA-256 `e1fb2d4c6f4ca7e9096e3f2399960de429b0bb0fea63cf35c2766082375ba1a8`。
 
-`v2-lowmem-d13.patch`は、同じ変更を一つにまとめた閲覧用差分です。適用後のGitツリーはbundleから取り出した凍結commitと一致します。SHA-256は`7f24cbcac88abdc1067ea17c524caab53d8307d94985b7d3d2a3fc785f1d2227`です。
+薄いv3 bundleは基準commitを持つrepository内で`git bundle verify`できる。通常はcommit/tree/clean状態を検査する`../scripts/prepare_sources.sh`を使う。
 
-`v3-lifetime-overlays.patch`は、公式SQIsign v3の`6d017708db403bf83977fa70770fc4f7f9e9ff21`へ適用する局所的な生存期間重畳です。SHA-256は`44e089298a330b7019b8d9c82110b2d26d0dad1dce5d494098fd667e6f4853a6`です。
-
-`experimental/`の2差分は、サイドチャネル原因の計測と固定work指数演算の試作に対応します。これらは低メモリ実装の既定構成には含まれず、耐性達成を意味しません。
+`experimental/`の差分はサイドチャネル原因の計測と固定work指数演算の試作であり、既定の低メモリ実装にも耐性claimにも含めない。

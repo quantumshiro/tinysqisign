@@ -1,0 +1,69 @@
+{
+  "decision": {
+    "analog_campaign_executable_in_current_hardware_state": false,
+    "analog_capture_run": false,
+    "external_hardware_blocker_recorded": true,
+    "physical_trace_count": 0,
+    "side_channel_resistance_established": false
+  },
+  "declared_equipment_inventory": {
+    "declaration_is_not_machine_detection": true,
+    "passive_current_or_near_field_probe": "absent",
+    "scope_or_sca_acquisition_instrument": "absent"
+  },
+  "host_timezone": "Asia/Tokyo",
+  "machine_observation": {
+    "only_pico_target_and_ordinary_usb_infrastructure_detected": true,
+    "passive_probe_presence_machine_detectable": false,
+    "pico_usb_target_detected": true,
+    "serial_devices": [
+      "/dev/cu.usbmodem11201"
+    ],
+    "usb_instrument_keyword_hits": [],
+    "usb_scope_or_sca_device_detected": false
+  },
+  "observed_utc": "2026-09-03T21:44:35Z",
+  "prepared_analysis": {
+    "experiments/sca/analog-trace-dataset-template.json": {
+      "bytes": 3110,
+      "sha256": "38ba3116724102af252f395a9b592d27890fe9d823cbbf558f1a8490a2a82f08"
+    },
+    "experiments/sca/cornacchia-analog-plan.json": {
+      "bytes": 24233,
+      "sha256": "28f1c37387c21c77ba95ca26189b772923bdc18d13767e7df201d846df13b49b"
+    },
+    "experiments/sca/exponent-recovery-campaign-template.json": {
+      "bytes": 2746,
+      "sha256": "28353d320d229e52f2f1d9f16d971b862ac781b18706a34400cde40138b1f82a"
+    },
+    "scripts/analyze_sca_analog_tvla.py": {
+      "bytes": 14184,
+      "sha256": "83f90ec444f156be5d49f72e8119663b5e6576adcd27d14db5381f8169973605"
+    },
+    "scripts/score_sca_exponent_recovery.py": {
+      "bytes": 13176,
+      "sha256": "e5da0608c0f6491c444415ac1ba6bd95e277c77ff7ae86316c2e93dac799d800"
+    }
+  },
+  "schema": "sqisign-sca-analog-readiness-v3",
+  "scope": "One host-local USB/software inventory plus explicit author equipment declarations. Passive hardware cannot be discovered by this script. No power or EM sample was acquired, so this is a blocker record rather than a side-channel result.",
+  "software_inventory": {
+    "commands": {
+      "chipwhisperer": null,
+      "picoscope": null,
+      "saleae": null,
+      "sigrok-cli": null
+    },
+    "python_modules": {
+      "chipwhisperer": false,
+      "numpy": false,
+      "picosdk": false,
+      "pyvisa": false,
+      "scipy": false
+    }
+  },
+  "target": {
+    "current_firmware": "v3 D1 fixed-key timing screen (899e572)",
+    "current_firmware_is_analog_acquisition_image": false
+  }
+}

@@ -1,58 +1,95 @@
 # TinySQIsign
 
-TinySQIsignは、SQIsignの同時生存メモリを削減する研究の最小公開成果物です。
-論文原稿、実装を再構成するパッチ、再現用プログラム、および論文中の主要値に対応する証拠を収録しています。巨大なビルドディレクトリ、第三者論文、外部リポジトリの複製、および途中段階のログは収録していません。
+TinySQIsign is the public artifact for Hiro Nakanishi's paper on a low-memory
+SQIsign v2 implementation and a local transfer of lifetime scheduling to
+SQIsign v3. It contains the Japanese manuscript, reconstruction patches,
+analysis programs, machine-readable certificates, clean firmware artifacts,
+and raw RP2350 captures needed for the paper-facing claims.
 
-著者は独立研究者のHiro Nakanishiです。連絡先は`quantumsity@protonmail.com`です。
+Contact: Hiro Nakanishi, independent researcher,
+`quantumsity@protonmail.com`.
 
-## 主な結果
+## Main results
 
-- SQIsign v2 Level I/RADIX32では、操作アリーナを353,008 bytesから172,080 bytesへ削減しました。削減量は180,928 bytes、削減率は51.2532%です。
-- RP2350ファームウェアが排他的に予約するSRAMは321,408 bytesです。オンチップSRAM 532,480 bytesのうち211,072 bytesを未予約として残しました。
-- 既知解テスト（Known Answer Test、KAT）では、公式NIST-v2の100入力を使った低メモリ経路を独立に2回実行しました。KeyGen、Sign、Open、改変署名の拒否、アリーナ境界、および操作後の消去は、各回100件すべてで成功しました。
-- SQIsign v3 `p324_3/m4f`への局所的な生存期間の重畳では、SignのProcess Stack Pointer（PSP）上書き深さを101,060 bytesから97,132 bytesへ削減しました。同一基板上の5組の比較におけるSign時間の増加率中央値は0.4182%です。
+- SQIsign v2.0.1 Level I/RADIX32: the operation arena falls from 353,008 to
+  172,080 bytes (−180,928 bytes, −51.2532%). The final RP2350 image reserves
+  321,408 of 532,480 on-chip SRAM bytes and leaves 211,072 bytes unreserved,
+  without GMP, heap allocation, or external PSRAM.
+- v2 correctness: 12 frozen reference/proposed transcripts agree. Two fresh
+  processes each pass all 100 official-request vectors against the same-commit
+  ordinary API, including Open, modified-signature rejection, guards, and
+  clearing. This is a differential conformance test using official requests;
+  it is not equality to the historical official response file.
+- v2 target: the exact archived UF2 completes one deterministic KeyGen, Sign,
+  and Verify path in two boots with identical transcripts and PSP extents.
+  This is not a multiple-input or worst-case stack result.
+- SQIsign v3.0 `p324_3/m4f`: two lifetime overlays reduce measured Sign PSP
+  depth from 101,060 to 97,132 bytes. Five clean-firmware pairs and a separate
+  10-vector × 2-placement campaign reproduce the 3,928-byte reduction; all 40
+  valid K/S/V and 40 modified-signature rejection trials pass.
+- A separate fixed-frame v3 prototype removes 19 compiler dynamic-frame
+  records. Its linked K/S/V PSP bounds, including one conservative 212-byte
+  Secure exception entry, are 108,300/127,932/40,468 bytes. A clean target
+  vector observes 62,096/101,060/40,252 bytes. Handler callbacks and IRQ/MSP
+  nesting remain outside this certificate, so it is not a whole-program bound.
+- A preregistered v3 RP2350 fixed-key screen completes 200/200 verified
+  signatures. Both official and overlay images reproduce key-associated
+  wall-clock timing across two key orders (rank Spearman 1.0; key-median spans
+  50.84--51.38%). Public and secret key components vary together, so this does
+  not isolate secret-only causation.
 
-## ディレクトリ
+## Claim boundary
 
-- `manuscript/`: 日本語論文のLaTeXソース、白黒TikZ図、および生成済みPDF
-- `patches/`: v2、v3、および論文で扱う実験的サイドチャネル対策の再構成用差分
-- `experiments/`: KAT、メモリ配置、およびmini-GMP比較に必要な小規模プログラム
-- `src/`: RP2350でv2とv3を測るための最小ファームウェアハーネス
-- `scripts/`: 外部ソースの準備、KAT、RP2350ビルド、およびELF監査
-- `results/`: 論文の主要な表と主張に対応する凍結済みJSON、CSV、シリアル出力、およびKAT証拠
+This artifact does **not** claim constant-time execution, analog power/EM
+resistance, key-recovery resistance, production-ready randomness, a
+whole-program worst-case stack bound, or minimum memory. Software and timing
+screens find residual variable behavior. Physical trace count is zero because
+the present bench has no current/EM probe or scope/SCA acquisition instrument.
+Other PQC schemes and other microcontrollers are outside this revision and are
+not used as evidence of generality.
 
-## 最短の再現手順
+The complete state machine is in
+[`future-work-status.json`](results/revision-2026-09-04/future-work-status.json):
+all locally executable bounded campaigns are complete, while
+`all_research_goals_achieved`, `whole_program_worst_case_stack_bound_established`,
+and `side_channel_resistance_established` remain false.
 
-最初に、収録ファイルの完全性を検査します。
+## Repository map
+
+- [`manuscript/`](manuscript/): LaTeX, monochrome TikZ figures, submission
+  metadata/checklist, generated evidence rows, and the built PDF.
+- [`patches/`](patches/): v2 and v3 reconstruction patches and bundles.
+- [`experiments/`](experiments/): KAT/differential, lifetime-layout,
+  mini-GMP, and side-channel experiment contracts and small harnesses.
+- [`scripts/`](scripts/): source reconstruction, analyzers, evidence
+  generators, target build/capture helpers, and ELF/stack audits.
+- [`results/`](results/): frozen JSON/CSV, serial captures, firmware artifacts,
+  certificates, and literature-search log.
+- [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md): exact reproduction routes and
+  the distinction between checking frozen evidence and rerunning hardware.
+
+## Fast verification
 
 ```sh
 shasum -a 256 -c SHA256SUMS
+python3 scripts/generate_manuscript_evidence.py
+python3 scripts/generate_future_work_status.py \
+  --require-v2-repeat --require-local-complete
+make -C manuscript eprint-check
 ```
 
-外部ソースを取得し、凍結した実装を再構成します。
+Reconstruct the external SQIsign sources with:
 
 ```sh
 ./scripts/prepare_sources.sh
 ```
 
-v2の100入力KATを実行します。結果ディレクトリは既存であってはいけません。
+See [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) before rebuilding firmware:
+the frozen captures bind exact historical firmware commits and toolchains, and
+new measurements must be stored separately rather than overwriting them.
 
-```sh
-./scripts/run_d13_lowmem_kat.sh ./results/local/d13-kat
-```
+## Licenses
 
-論文PDFを再生成します。
-
-```sh
-make -C manuscript
-```
-
-必要な依存関係、RP2350のビルド方法、および証拠との対応は[REPRODUCIBILITY.md](REPRODUCIBILITY.md)に記載しています。
-
-## 主張の範囲
-
-本成果物は、低メモリ化によってサイドチャネル耐性を達成したとは主張しません。v2の署名処理では時間分布、制御フロー、および実効アドレスに入力依存性を観測しています。RP2350のv2測定は、決定的乱数を使った単一基板・単一入力・一回のKeyGen/Sign/Verifyです。製品用乱数、最悪スタック量、複数基板の性能分布、および電力・電磁波による鍵回復耐性は未評価です。
-
-## ライセンス
-
-SQIsign由来コードの条件と帰属表示は`LICENSES/`に収録しています。DPE部分にはGNU Lesser General Public License version 3が適用されます。論文原稿の再利用条件は現時点で別途指定していません。
+SQIsign-derived source conditions and attribution notices are under
+[`LICENSES/`](LICENSES/). The DPE portion is subject to GNU LGPL v3. The paper
+license is intentionally left for the author to choose in the ePrint form.

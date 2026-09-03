@@ -1,0 +1,4 @@
+SQIsign v3 D2 static-stack RP2350 ELF audit PASS (profile=ksv)
+stack_usage_files=127 dynamic_stack_records=0 allocator_trap_symbols=0 process_stack_bytes=131072 heap_section_bytes=0
+   text	   data	    bss	    dec	    hex	filename
+ 214568	      0	 135668	 350236	  5581c	/Users/hiro/workspace/tinysqisign/build-rp2350-v3-static-closure/sqisign_rp2350_v3_d2_static.elf

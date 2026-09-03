@@ -1,115 +1,113 @@
 {
-  "schema": "sqisign-version-isolation-v1",
-  "captured_at": "2026-09-03T16:01:06+09:00",
+  "schema": "sqisign-version-isolation-v2",
+  "freeze_date": "2026-09-04",
   "policy": {
     "v2_artifacts_are_not_overwritten_by_v3": true,
     "within_version_deltas_support_transformation_claims": true,
     "cross_version_results_are_descriptive_only": true,
-    "cross_version_reason": "SQIsign v3 changes parameters, arithmetic, lattice reduction, ideal-to-isogeny translation, and the response distribution."
+    "dirty_development_captures_used_for_paper_values": false
   },
-  "v2_d13": {
-    "source_dir": "work/compact-d13",
-    "source_commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
-    "tracked_source_clean": true,
-    "firmware_commit": "dc3289add3213cc7671f9943dfaa3bac770b2709",
-    "build_dir": "build-rp2350-ksv-d13",
-    "result_capture": "results/rp2350/ksv-d13-dc3289a.txt",
-    "result_manifest": "results/rp2350/ksv-d13-dc3289a-manifest.json",
-    "result_capture_sha256": "be762e7d2e79f424f52523981d06dbf0beda475cfcbb534b1218d05d01b3eff0",
-    "measurement_boundary": "explicit operation arena plus separately reserved PSP and MSP",
-    "operation_arena_bytes": 172080,
-    "psp_reserved_bytes": 131072,
-    "keygen_psp_extent_bytes": 91980,
-    "sign_psp_extent_bytes": 120452,
-    "verify_psp_extent_bytes": 20768,
-    "keygen_us": 2698150029,
-    "sign_us": 7611258527,
-    "verify_us": 814341,
-    "status": "PASS"
+  "sources": {
+    "v2_d13": {
+      "directory": "work/compact-d13",
+      "base_commit": "5b94b09a1dbbdcc8b91749fec83a9f111ef9cce3",
+      "commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+      "tree": "8761bccb5b14172e21d7228878fb3fc9379db5c4",
+      "bundle": "patches/v2-d13.bundle"
+    },
+    "v3_official": {
+      "directory": "work/official-v3",
+      "commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+      "tracked_source_clean": true
+    },
+    "v3_lifetime_overlay": {
+      "directory": "work/v3-lowmem-d1",
+      "base_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+      "commit": "9293313fb58de4c5ce9dd27a5a9fde0058766c79",
+      "tree": "30606e0b5cb2a99d782f4eb334c0c3b87b1edd1c",
+      "bundle": "patches/v3-lifetime-overlays.bundle",
+      "review_patch": "patches/0035-experiment-v3-d1-lifetime-overlays.patch"
+    },
+    "v3_static_stack": {
+      "directory": "work/v3-static-stack-d2",
+      "base_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+      "commit": "cb94f242ba791a4ccb980b46c917830b309a9832",
+      "tree": "d53293e903e4cb0e5766edc0b3d4b74a3fec6a59",
+      "bundle": "patches/v3-static-stack.bundle",
+      "review_patch": "patches/0036-experiment-v3-d2-static-stack.patch"
+    }
   },
-  "v3_official": {
-    "source_dir": "work/official-v3",
-    "source_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
-    "tracked_source_clean": true,
-    "parameter_set": "p324_3",
-    "implementation": "m4f",
-    "host_build_dir": "build-host-v3-ref",
-    "rp2350_build_dir": "build-rp2350-v3-official",
-    "compiled_generated_source": "work/official-v3/src/pqm4/sqisign_p324_3/m4f/lll_dim4.c",
-    "compiled_generated_source_sha256": "a93a6dce5c5ddd49631fd942592e4a1e496b6c8567068cbb4d256d2c90a97ef8",
-    "generated_source_matches_tracked_source": true,
-    "host_validation": "results/v3/host/validation-2026-09-03.txt",
-    "result_capture": "results/v3/rp2350/baseline-official-kat-2026-09-03.txt",
-    "result_capture_sha256": "c8b8256fd9c184514a743928ba5388e0ee9db248d607f07c559e13af853e542b",
-    "elf_sha256": "34292c0a6b420d91628243007298de57c14e46a43b9d560e74fdd8456f99d44a",
-    "measurement_boundary": "PSP watermark in the official v3 stack-based implementation",
-    "psp_reserved_bytes": 131072,
-    "keygen_psp_extent_bytes": 56972,
-    "sign_psp_extent_bytes": 101060,
-    "verify_psp_extent_bytes": 37444,
-    "keygen_us": 2263809,
-    "sign_us": 7152335,
-    "verify_us": 822178,
-    "official_kat_exact_match": true,
-    "status": "PASS"
+  "host_evidence": {
+    "official_and_lifetime": {
+      "path": "results/v3/host/validation-clean-2026-09-04.txt",
+      "source_dirty": 0,
+      "official_response_vectors_per_implementation": 100,
+      "nist_api": "PASS",
+      "self_test": "PASS",
+      "official_kat": "PASS"
+    },
+    "static_stack": {
+      "path": "results/v3/host/d2-static-validation-2026-09-04.txt",
+      "source_dirty": 0,
+      "official_response_vectors": 100,
+      "official_kat": "PASS"
+    }
   },
-  "v3_lowmem_d1": {
-    "source_dir": "work/v3-lowmem-d1",
-    "source_branch": "research/v3-lowmem-d1",
-    "source_base_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
-    "reconstruction_patch": "patches/0035-experiment-v3-d1-lifetime-overlays.patch",
-    "reconstruction_patch_sha256": "44e089298a330b7019b8d9c82110b2d26d0dad1dce5d494098fd667e6f4853a6",
-    "tracked_change": "src/quaternion/ref/lvlx/lll/lll_dim4.c",
-    "tracked_change_sha256": "9a9b6643d53ad14320b6c584443ee1a8bb939c580669d5d96e95d2ec703ec403",
-    "compiled_generated_source": "work/v3-lowmem-d1/src/pqm4/sqisign_p324_3/m4f/lll_dim4.c",
-    "compiled_generated_source_sha256": "9a9b6643d53ad14320b6c584443ee1a8bb939c580669d5d96e95d2ec703ec403",
-    "generated_source_matches_tracked_source": true,
-    "host_build_dir": "build-host-v3-d1",
-    "rp2350_build_dir": "build-rp2350-v3-d1",
-    "host_validation": "results/v3/host/validation-2026-09-03.txt",
-    "result_capture": "results/v3/rp2350/d1-kat-2026-09-03.txt",
-    "result_capture_sha256": "0a0650b7d8d6535ff552bd2f7e2ccd031b7a3561f94dcca450a7059581b50487",
-    "elf_sha256": "160428e9257db45812cbd3a7d3a63d291f747090aefa3c42ea0b1963633b5836",
-    "measurement_boundary": "PSP watermark after two lifetime overlays in quat_lll_dual_reduce_ideal",
-    "psp_reserved_bytes": 131072,
-    "keygen_psp_extent_bytes": 56972,
-    "sign_psp_extent_bytes": 97132,
-    "verify_psp_extent_bytes": 37444,
-    "keygen_us": 2269336,
-    "sign_us": 7182496,
-    "verify_us": 820764,
-    "sign_psp_delta_bytes": -3928,
-    "sign_psp_delta_percent": -3.8868,
-    "initial_single_run_sign_time_delta_percent": 0.4217,
-    "official_kat_exact_match": true,
-    "status": "PASS"
+  "target_evidence": {
+    "v2_two_boot_repeat": {
+      "firmware_commit": "dc3289add3213cc7671f9943dfaa3bac770b2709",
+      "summary": "results/rp2350/ksv-d13-repeat-2026-09-04-summary.json",
+      "boot_count": 2,
+      "status": "PASS",
+      "worst_case_stack_bound_established": false
+    },
+    "v3_clean_interleaved": {
+      "firmware_commit": "467ca5b61a5f6810218ee173850862d629cf07a7",
+      "firmware_dirty": 0,
+      "directory": "results/v3/rp2350/interleaved-clean-2026-09-04",
+      "capture_count": 10,
+      "adapted_source_representation": "official commit plus SHA-256-pinned patch",
+      "status": "PASS"
+    },
+    "v3_multi_input_placement": {
+      "firmware_commit": "76f88dccf6ce9ba1b4d12fc20724b47e03a5f6ab",
+      "firmware_dirty": 0,
+      "official_source_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+      "adapted_source_commit": "9293313fb58de4c5ce9dd27a5a9fde0058766c79",
+      "source_dirty": 0,
+      "summary": "results/v3/rp2350/multi-input-placement-clean-2026-09-04/summary.json",
+      "official_vector_count": 10,
+      "positive_trials": 40,
+      "modified_signature_rejections": 40,
+      "status": "PASS"
+    },
+    "v3_static_stack_closure": {
+      "firmware_commit": "e564a6413766f1f299db3db1d706478c42f1cc96",
+      "firmware_dirty": 0,
+      "source_commit": "cb94f242ba791a4ccb980b46c917830b309a9832",
+      "source_dirty": 0,
+      "summary": "results/v3/rp2350/static-closure-clean-2026-09-04/summary.json",
+      "operation_psp_bound_established": true,
+      "whole_program_worst_case_stack_bound_established": false,
+      "status": "PASS"
+    },
+    "v3_fixed_key_timing": {
+      "firmware_commit": "899e572f084c90b7b3be30222e340dc42e380876",
+      "firmware_dirty": 0,
+      "official_source_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+      "adapted_source_commit": "9293313fb58de4c5ce9dd27a5a9fde0058766c79",
+      "source_dirty": 0,
+      "summary": "results/v3/rp2350/fixed-key-timing-clean-2026-09-04/summary.json",
+      "signature_count": 200,
+      "side_channel_resistance_established": false,
+      "status": "PASS"
+    }
   },
-  "v3_interleaved_campaign": {
-    "directory": "results/v3/rp2350/interleaved-2026-09-03",
-    "design": "five paired rounds; odd official-d1, even d1-official; one fresh boot per capture",
-    "board_count": 1,
-    "paired_rounds": 5,
-    "capture_count": 10,
-    "official_kat_exact_match_all_captures": true,
-    "summary": "results/v3/rp2350/interleaved-2026-09-03/summary.json",
-    "summary_sha256": "d13e990ea66081de06dcbb349e7286c7799c6ae1205e79cd8a2b8b0996e2f821",
-    "measurements": "results/v3/rp2350/interleaved-2026-09-03/measurements.csv",
-    "measurements_sha256": "ab428bb6b45b5e653296d83e07806e9c8f03720e0acd8e5bd1e6f2e14e2c8cb0",
-    "official_keygen_median_us": 2263611,
-    "d1_keygen_median_us": 2269117,
-    "paired_keygen_delta_percent_median": 0.243019,
-    "official_sign_median_us": 7152943,
-    "d1_sign_median_us": 7182865,
-    "paired_sign_delta_percent_median": 0.418177,
-    "paired_sign_delta_percent_min": 0.410149,
-    "paired_sign_delta_percent_max": 0.422553,
-    "official_verify_median_us": 822095,
-    "d1_verify_median_us": 820762,
-    "paired_verify_delta_percent_median": -0.157653,
-    "official_sign_psp_extent_bytes": 101060,
-    "d1_sign_psp_extent_bytes": 97132,
-    "sign_psp_delta_bytes": -3928,
-    "status": "PASS",
-    "interpretation": "descriptive result for one board and one deterministic KAT vector; not an independent-board or workload-distribution estimate"
+  "claim_boundary": {
+    "single_board": true,
+    "v2_multiple_input_target_campaign": false,
+    "whole_program_worst_case_stack_bound": false,
+    "physical_power_or_em_traces": 0,
+    "side_channel_resistance": false
   }
 }

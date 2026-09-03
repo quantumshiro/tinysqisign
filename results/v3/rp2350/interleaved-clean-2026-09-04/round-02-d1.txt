@@ -1,0 +1,11 @@
+SQISIGN_RP2350_V3_D1 v1
+scheme=SQIsign-v3.0 variant=p324_3 implementation=m4f image=d1
+board=pico2 platform=rp2350-arm-s sdk=2.3.0 firmware=467ca5b61a5f6810218ee173850862d629cf07a7 firmware_dirty=0
+v3_source=6d017708db403bf83977fa70770fc4f7f9e9ff21 v3_dirty=1 cpuid=0x411fd210 clock_sys_hz=150000000
+bss_end=0x20022d38 stack_limit=0x20080000 stack_top=0x20082000
+kat_decoded=1 mode_ok=1 heap_section_bytes=0
+keygen_result=0 keygen_match=1 keygen_us=2269166 psp_reserved_bytes=131072 psp_written_bytes=56972
+sign_result=0 sign_match=1 sign_us=7182371 psp_reserved_bytes=131072 psp_written_bytes=97132 smlen=233
+verify_result=0 verify_match=1 verify_us=820921 psp_reserved_bytes=131072 psp_written_bytes=37444 mlen=33
+msp_reserved_bytes=8192 msp_written_upper_bytes=2308 msplim=0x20080000
+status=PASS

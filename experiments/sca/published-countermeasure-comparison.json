@@ -1,0 +1,505 @@
+{
+  "schema": "sqisign-sca-published-countermeasure-comparison-v4",
+  "reviewed_on": "2026-08-23",
+  "scope": {
+    "scheme": "SQIsign NIST round-2 reference lineage",
+    "target_profile": "Level-I/RADIX32/Cortex-M33 RP2350 research signer",
+    "question": "Which published countermeasures can close each frozen residual side-channel surface, in what dependency order, and with which claims still withheld?",
+    "exclusions": [
+      "This is not a systematic-review claim that no other paper exists.",
+      "Paper-level constant-time evidence is not treated as physical power or EM resistance.",
+      "Component implementations are not treated as a constant-time full signer.",
+      "Reported measurements from different machines and code bases are not compared as one benchmark."
+    ]
+  },
+  "decision": {
+    "selected_first_work_package": "WP-CORNACCHIA",
+    "reason": "The fixed-width integer substrate and fixed 1421-round half-GCD now execute on the experimental Level-I Sign route; an independent exact-integer proof gives a 644-active-round sufficient bound for the frozen recurrence, and the matched variable-Euclid firmware provides a detected coarse-timer positive control. Two independent host full-Sign runs also retain stable fixed/fixed controls while all four fixed/random pairs differ in both edge and address streams. Two clean source-localization builds map the first differences to a used-limb scan or early-exit integer comparison, and two clean caller-stack builds show both paths share the random-ideal sampler. The next fail-closed gates are to acquire the legacy image as an analog positive control, protect the complete random-ideal-sampling boundary rather than one visible branch, continue localizing later full-Sign structural differences, and repeat the audit on the final Cortex-M33 image before any deployment claim.",
+    "complete_constant_time_signer_available_from_reviewed_artifacts": false,
+    "current_full_sign_constant_time": false,
+    "current_full_sign_control_flow_difference_observed": true,
+    "current_full_sign_memory_address_difference_observed": true,
+    "current_full_sign_first_divergences_localized": true,
+    "current_full_sign_variable_integer_control_observed": true,
+    "current_full_sign_first_divergence_callers_localized": true,
+    "current_full_sign_random_ideal_sampling_common_owner_observed": true,
+    "current_full_sign_fixed_width_fixed_round_random_ideal_remediation_required": true,
+    "current_full_sign_long_term_key_leakage_demonstrated": false,
+    "current_analog_power_or_em_resistance": false,
+    "current_masking_or_blinding": false,
+    "published_attack_blocked": false,
+    "production_signing_approved": false
+  },
+  "residual_surface_inventory": {
+    "path": "experiments/sca/residual-surface-inventory.json",
+    "sha256": "5e925f75009e189fc8fbcf416da4c4410fed4ca17a3f5e2dd64876e918d6b672",
+    "checker": "scripts/check_sca_residual_surfaces.py",
+    "checker_sha256": "eafc0e3b6325b655474f0e8ef278326e52e9a7586d003dab0290436737586fae",
+    "open_surfaces": 12
+  },
+  "primary_literature": [
+    {
+      "id": "PAPER-SPA-2025-830",
+      "title": "Simple Power Analysis Attack on SQIsign",
+      "url": "https://eprint.iacr.org/2025/830",
+      "kind": "attack",
+      "review_result": "The Cornacchia modular-exponentiation trace exposes a secret-derived ephemeral exponent and the paper connects its recovery to signing-key recovery.",
+      "local_reproduction": "The paper's three exponent-to-Cornacchia-input formulas recover all 24 frozen public-fixture inputs, the current isolated C Legendre exponent recovers all 16 public-fixture moduli through m=2e+1, and the authors' 54-bit Sage toy backtracking demo reaches its valid-signature marker. None of these runs starts from a physical RP2350 trace or recovers a key from the current C signer.",
+      "relevance_to_this_project": "It directly motivates the isolated one-pow target and prevents a fixed instruction count from being relabeled as power resistance.",
+      "does_not_establish": "That the current 521-bit RP2350 experimental route is exploitable or resistant; that requires physical traces and attack scoring on the frozen target."
+    },
+    {
+      "id": "PAPER-TIMING-2023-807",
+      "title": "Ready to SQI? Safety First!",
+      "url": "https://eprint.iacr.org/2023/807",
+      "kind": "attack_and_countermeasure",
+      "review_result": "The paper analyzes Cornacchia/half-GCD leakage and proposes a fixed-iteration C-halfgcd plus a randomized two-dimensional lattice alternative.",
+      "reported_tradeoffs": {
+        "c_halfgcd_component": "The reported basic C-halfgcd microbenchmark is roughly 250 times the variable-time half-GCD; tighter variants reduce but do not remove that component cost.",
+        "randomized_lattice_component": "The reported randomized lattice alternative is roughly five times the compared Cornacchia component.",
+        "whole_sign": "The paper reports that whole-signing cost can remain in a similar broad range because other SQIsign work dominates; this is not a target-independent equivalence result."
+      },
+      "does_not_establish": "A complete constant-time signer or power/EM resistance; the paper explicitly treats SPA/DPA as a separate step after timing regularization."
+    },
+    {
+      "id": "PAPER-CTINT-2025-832",
+      "title": "Constant-Time Integer Arithmetic for SQIsign",
+      "url": "https://eprint.iacr.org/2025/832",
+      "kind": "countermeasure",
+      "review_result": "It specifies fixed-size GMP-free C arithmetic for SQIsign, including signed operations, Euclidean division, Montgomery-ladder exponentiation, integer square root and dynamic-modulus reduction, and reports Timecop/Valgrind tests.",
+      "source_status": "No public implementation repository was located in this primary-source review; reproduce the specification or obtain an author source release before code comparison.",
+      "does_not_establish": "Constant-time quaternion, lattice and protocol composition, analog resistance, or a full constant-time signer."
+    },
+    {
+      "id": "PAPER-CTLLL-2025-027",
+      "title": "Constant-time lattice reduction in dimension 4",
+      "url": "https://eprint.iacr.org/2025/027",
+      "kind": "countermeasure",
+      "review_result": "It gives a fixed-size constant-time dimension-4 LLL/BKZ-2-style reduction and reports ctgrind plus runtime-distribution testing.",
+      "reported_tradeoffs": "The optimized reduction is reported around 1.5 times the compared non-constant-time reduction, while that component is under about three percent of Release SQIsign in the evaluated setting.",
+      "does_not_establish": "A direct 32-bit Cortex-M33 port, a GMP-free full signer, constant-time close-vector enumeration, or physical power/EM resistance."
+    },
+    {
+      "id": "PAPER-CTQUAT-2025-2192",
+      "title": "Constant-time Quaternion Algorithms for SQIsign",
+      "url": "https://eprint.iacr.org/2025/2192",
+      "kind": "countermeasure",
+      "review_result": "It regularizes selected HNF, ideal-generator, RepresentInteger and Qlapoti/quaternion routines with fixed iteration counts and branch-free choices.",
+      "reported_tradeoffs": "The published benchmarks are mixed and input-bound dependent; large fixed RepresentInteger loop bounds can dominate.",
+      "does_not_establish": "A full constant-time signer. The reviewed repository states that benchmark integer arithmetic uses non-constant-time GMP and that surrounding LLL remains non-constant-time."
+    }
+  ],
+  "reviewed_upstream_snapshots": [
+    {
+      "id": "UPSTREAM-CTQUAT",
+      "url": "https://github.com/dj33-96/Constant-time-Quaternion-SQIsign",
+      "branch": "main",
+      "commit": "3b9281d50468819f93879679d084ef87e2f38961",
+      "license_scope": "Apache-2.0 for cc/ct-quaternion-NIST2-main; separately review other subtrees",
+      "reviewed_paths": [
+        "README.md",
+        "cc/ct-quaternion-NIST2-main/LICENSE",
+        "cc/ct-quaternion-NIST2-main/src/quaternion/ref/generic/integers.c",
+        "cc/ct-quaternion-NIST2-main/src/quaternion/ref/generic/normeq.c"
+      ],
+      "portability_constraints": [
+        "The reviewed C-halfgcd source still calls GMP-backed ibz comparison, sign, bit-size, shift and multiply operations.",
+        "The reviewed norm-equation code retains ordinary C decisions around candidate success and uses non-constant-time lower arithmetic.",
+        "Treat the source as an algorithmic reference, not as drop-in Cortex-M33 constant-time evidence."
+      ]
+    },
+    {
+      "id": "UPSTREAM-CTLLL",
+      "url": "https://github.com/CTlll-SQIsign/CTlll-SQIsign",
+      "branch": "main",
+      "commit": "1fd09e1934e72737706dac21aa02a36bfdf245de",
+      "license_scope": "GPL-2.0",
+      "reviewed_paths": [
+        "LICENSE",
+        "README.md",
+        "src/README.md"
+      ],
+      "portability_constraints": [
+        "The repository requires a 64-bit little-endian architecture and GCC.",
+        "GMP secure mpn routines are used to size or support arithmetic scratch, and ctgrind is not an ARM-target validation path.",
+        "Direct code reuse requires a license decision; a clean-room 32-bit implementation is the default research assumption."
+      ]
+    },
+    {
+      "id": "UPSTREAM-SQISIGN",
+      "url": "https://github.com/SQISign/the-sqisign",
+      "branch": "main",
+      "commit": "dd133d7aca576c361a270c8e6434832535b42ecc",
+      "license_scope": "repository-specific; review before cross-project reuse",
+      "reviewed_paths": [],
+      "portability_constraints": [
+        "This commit is a literature-comparison anchor, not the dirty compact-sca-ct3 experimental source snapshot."
+      ]
+    }
+  ],
+  "countermeasure_candidates": [
+    {
+      "id": "CM-CURRENT-FIXED-SCHEDULE",
+      "priority": "implemented_experiment",
+      "implementation_status": "experimental_component_only",
+      "description": "521 fixed rounds, always-square-and-multiply, fixed-work Montgomery arithmetic and bounded outer square-root work on the protected calibration route.",
+      "surface_coverage": [
+        {"surface_id": "SURF-POW-OPCOUNT", "effect": "partially_mitigates", "closes_surface": false},
+        {"surface_id": "SURF-POW-SELECTOR", "effect": "does_not_mitigate", "closes_surface": false},
+        {"surface_id": "SURF-POW-PREFIX-STATE", "effect": "does_not_mitigate", "closes_surface": false},
+        {"surface_id": "SURF-MONTGOMERY-DATAPATH", "effect": "regularizes_schedule_only", "closes_surface": false},
+        {"surface_id": "SURF-FIXED-REDUCTION-MASKS", "effect": "regularizes_schedule_only", "closes_surface": false},
+        {"surface_id": "SURF-TONELLI-SHANKS-MASKS", "effect": "regularizes_schedule_only", "closes_surface": false},
+        {"surface_id": "SURF-SQRT-STATUS", "effect": "does_not_mitigate", "closes_surface": false}
+      ],
+      "preconditions": [],
+      "required_new_evidence": [
+        "two independent physical fixed-vs-fixed and fixed-vs-random campaigns",
+        "one-, ten- and hundred-trace exponent-recovery attempts",
+        "integration and whole-Sign follow-up"
+      ],
+      "claim_boundary": "Removes a known operation-count mechanism; it is neither masking nor a constant-time or constant-power proof."
+    },
+    {
+      "id": "CM-CTINT-FIXED-WIDTH",
+      "priority": "P0",
+      "implementation_status": "integer_foundation_complete_experimental_cornacchia_route_integrated",
+      "description": "A Cortex-M33/RADIX32 fixed-width integer substrate modeled on the primitive coverage of ePrint 2025/832 and integrated into the experimental Cornacchia square-root and half-GCD route, but not the whole signer.",
+      "surface_coverage": [
+        {"surface_id": "SURF-POW-OPCOUNT", "effect": "candidate_structural_mitigation", "closes_surface": false},
+        {"surface_id": "SURF-POW-SELECTOR", "effect": "constant_address_not_masking", "closes_surface": false},
+        {"surface_id": "SURF-POW-PREFIX-STATE", "effect": "constant_address_not_masking", "closes_surface": false},
+        {"surface_id": "SURF-MONTGOMERY-DATAPATH", "effect": "candidate_structural_mitigation", "closes_surface": false},
+        {"surface_id": "SURF-FIXED-REDUCTION-MASKS", "effect": "candidate_structural_mitigation", "closes_surface": false},
+        {"surface_id": "SURF-TONELLI-SHANKS-MASKS", "effect": "candidate_structural_mitigation", "closes_surface": false},
+        {"surface_id": "SURF-SQRT-STATUS", "effect": "candidate_structural_mitigation", "closes_surface": false},
+        {"surface_id": "SURF-CORNACCHIA-EUCLID", "effect": "required_prerequisite", "closes_surface": false},
+        {"surface_id": "SURF-REPRESENT-SEARCH", "effect": "required_prerequisite", "closes_surface": false},
+        {"surface_id": "SURF-HIGHER-LEVEL-RETRIES", "effect": "required_prerequisite", "closes_surface": false}
+      ],
+      "preconditions": [
+        "Level-I operand and result bounds must be proved at every API boundary.",
+        "Signed compare, select, bit-size, shift, add/subtract, multiply, division, reduction, pow and sqrt must share one fixed-width contract.",
+        "Failure must be fail-closed rather than truncating or retrying silently."
+      ],
+      "required_new_evidence": [
+        "differential correctness including alias, boundary and malformed cases",
+        "secret-tainted branch/address test and compiler-disassembly gate",
+        "Cortex-M33 stack, SRAM, flash and cycle measurements",
+        "whole-Sign composition and physical power/EM follow-up"
+      ],
+      "claim_boundary": "Constant control flow and addresses would still not mask secret-dependent data switching."
+    },
+    {
+      "id": "CM-C-HALFGCD",
+      "priority": "P1_after_CTINT",
+      "implementation_status": "experimental_sign_route_integrated_structural_only",
+      "description": "Fixed-iteration Cornacchia half-GCD following ePrint 2023/807, integrated on the experimental Level-I Sign route with a fixed 1421-round control/address schedule.",
+      "surface_coverage": [
+        {"surface_id": "SURF-CORNACCHIA-EUCLID", "effect": "candidate_structural_mitigation", "closes_surface": false},
+        {"surface_id": "SURF-WHOLE-SIGN", "effect": "one_required_component", "closes_surface": false}
+      ],
+      "preconditions": [
+        "CM-CTINT-FIXED-WIDTH is present for every primitive invoked by the protected half-GCD.",
+        "The conservative fixed iteration bound is independently proved or machine-checked for the exact Level-I C implementation.",
+        "The existing quotient/remainder and failure semantics are differentially preserved."
+      ],
+      "required_new_evidence": [
+        "two physical campaigns with same-input negative and legacy-variable positive controls",
+        "per-round update-mask/state classifier plus whole-Sign timing and physical follow-up"
+      ],
+      "claim_boundary": "The current integration establishes fixed component control/address structure and transcript preservation only. It does not establish constant power, protect Cornacchia inputs/outputs physically, or make the complete signer constant-time."
+    },
+    {
+      "id": "CM-RANDOMIZED-CORNACCHIA-LATTICE",
+      "priority": "P1_alternative",
+      "implementation_status": "paper_algorithm_reviewed_not_ported",
+      "description": "Randomized two-dimensional lattice reduction proposed in ePrint 2023/807 as an alternative to deterministic half-GCD leakage.",
+      "surface_coverage": [
+        {"surface_id": "SURF-CORNACCHIA-EUCLID", "effect": "timing_resistant_candidate_not_constant_time", "closes_surface": false},
+        {"surface_id": "SURF-HIGHER-LEVEL-RETRIES", "effect": "adds_rng_and_retry_analysis", "closes_surface": false},
+        {"surface_id": "SURF-WHOLE-SIGN", "effect": "one_required_component", "closes_surface": false}
+      ],
+      "preconditions": [
+        "RNG freshness and failure behavior are specified and tested.",
+        "The output distribution and first-success behavior remain protocol compatible.",
+        "Timing resistance is evaluated separately from strict constant-time behavior."
+      ],
+      "required_new_evidence": [
+        "post-RNG differential transcripts",
+        "distribution and retry-count analysis",
+        "target timing and physical attack reruns"
+      ],
+      "claim_boundary": "Randomization can decorrelate a timing trace but is not a fixed-trace or masking proof."
+    },
+    {
+      "id": "CM-CT-QUATERNION",
+      "priority": "P2",
+      "implementation_status": "upstream_source_reviewed_not_ported",
+      "description": "Fixed-iteration HNF, ideal-generator, RepresentInteger and related quaternion algorithms from ePrint 2025/2192.",
+      "surface_coverage": [
+        {"surface_id": "SURF-REPRESENT-SEARCH", "effect": "candidate_structural_mitigation", "closes_surface": false},
+        {"surface_id": "SURF-HIGHER-LEVEL-RETRIES", "effect": "partial_component_coverage", "closes_surface": false},
+        {"surface_id": "SURF-WHOLE-SIGN", "effect": "multiple_required_components", "closes_surface": false}
+      ],
+      "preconditions": [
+        "Replace or audit every GMP-backed integer dependency with CM-CTINT-FIXED-WIDTH.",
+        "Prove fixed loop bounds and output/failure semantics for Level-I.",
+        "Separate Apache-2.0 NIST2 code from differently licensed repository subtrees."
+      ],
+      "required_new_evidence": [
+        "clean-room or license-reviewed Cortex-M33 port",
+        "full transcript and retry-order differential",
+        "resource Pareto and taint/physical evaluation"
+      ],
+      "claim_boundary": "The reviewed source itself acknowledges non-constant-time GMP and LLL dependencies."
+    },
+    {
+      "id": "CM-CT-DIM4-LATTICE",
+      "priority": "P2",
+      "implementation_status": "upstream_source_reviewed_not_ported",
+      "description": "Fixed-size dimension-4 reduction following ePrint 2025/027.",
+      "surface_coverage": [
+        {"surface_id": "SURF-HIGHER-LEVEL-RETRIES", "effect": "partial_lattice_component_coverage", "closes_surface": false},
+        {"surface_id": "SURF-WHOLE-SIGN", "effect": "one_required_component", "closes_surface": false}
+      ],
+      "preconditions": [
+        "Reimplement or adapt to 32-bit little-endian fixed limbs without assuming the upstream 64-bit/GMP environment.",
+        "Resolve GPL-2.0 reuse before copying code.",
+        "Audit close-vector enumeration and all callers outside the reduction module."
+      ],
+      "required_new_evidence": [
+        "fixed-width bound proof",
+        "differential lattice/output tests",
+        "Cortex-M33 stack, SRAM, flash, cycle and branch/address measurements"
+      ],
+      "claim_boundary": "A constant-time lattice submodule does not regularize protocol retries or all lattice consumers."
+    },
+    {
+      "id": "CM-MASKING-OR-BLINDING",
+      "priority": "parallel_research_gap",
+      "implementation_status": "no_reviewed_sqisign_specific_design",
+      "description": "Fresh masking, exponent/base blinding or state randomization aimed at analog value leakage after control-flow regularization.",
+      "rejected_design_evidence": {
+        "path": "experiments/sca/cornacchia-exponent-blinding-design.json",
+        "sha256": "f5dd9ccabec6f43a777b115e97ba185b73ca0be2e67eedff8ad103fd89fafc9d",
+        "bytes": 8930,
+        "checker": "scripts/check_cornacchia_exponent_blinding.py",
+        "checker_sha256": "2ff4e473f5d25da1e7faf888fc5535a2d2a91594b296c99b984e1de4c703cde8",
+        "status": "standalone_exponent_blinding_rejected_pending_cryptanalysis",
+        "factorization_identity": "k2*E-(k1+1)=(1+k2*r)*(p-1)",
+        "blind_128_ecm_proxy_bits": 40.70179122011839,
+        "standalone_adopted": false
+      },
+  "rejected_selector_masking_evidence": {
+        "path": "experiments/sca/cornacchia-selector-masking-design.json",
+        "sha256": "524b0781b82d079796266867aff327c60893eaaf74c6fcf94bd49ff930305d73",
+        "bytes": 8078,
+        "checker": "scripts/check_cornacchia_selector_masking.py",
+        "checker_sha256": "80cd49c0d8be19cfc7e8c83e2c0280a6c670adc1c99b5e0c7da32c97de5c4de4",
+        "status": "naive_two_share_selector_masking_rejected_transition_leakage",
+        "reduced_assignments": 16380,
+    "standalone_adopted": false
+  },
+  "required_masked_montgomery_scope_evidence": {
+    "path": "experiments/sca/cornacchia-masked-montgomery-scope.json",
+    "sha256": "2683dd5f223caa43c1d523d8d871696a828b56c72a8909e0e9db054518b6c004",
+    "bytes": 13002,
+    "checker": "scripts/check_cornacchia_masked_montgomery_scope.py",
+    "checker_sha256": "1f41a1e51bd07fb11303e0930864194284426282b79885eb9beb7ba556d2ca48",
+    "status": "required_scope_frozen_no_masked_candidate_approved",
+    "secret_reachable_values": 18,
+    "rejected_partial_candidates": 6,
+    "complete_candidate_exists": false
+  },
+  "masked_arithmetic_prototype_direction_evidence": {
+    "path": "experiments/sca/cornacchia-masked-arithmetic-design.json",
+    "sha256": "f82e70aed6eb93734db09b81add740e507f6eb37e5380770e47164d61fbb0265",
+    "bytes": 7893,
+    "checker": "scripts/check_cornacchia_masked_arithmetic_design.py",
+    "checker_sha256": "e057b93463a54a921999056c8c2508ecd35106564f3a1d7e625b1bdfc124b99a",
+    "status": "word_arithmetic_functional_prototype_implemented_transition_assembly_pending",
+    "secure_and_assignments": 32,
+    "full_adder_assignments": 256,
+    "naive_boolean_pow_randomness_mib": 183.800048828125,
+    "functional_prototype_implemented": true,
+    "transition_safe_assembly_implemented": false
+  },
+  "masked_word_functional_prototype_evidence": {
+    "path": "experiments/sca/cornacchia-masked-word-prototype.json",
+    "sha256": "0216b9f53f874719d2351bc72d785254c3dc337c7aa2631e5611868daa68cc3d",
+    "bytes": 5986,
+    "checker": "scripts/check_cornacchia_masked_word_prototype.py",
+    "checker_sha256": "384dc074e78e506dd831ab3194c329d729ac076eb079489f3f3b27e98706a675",
+    "status": "two_limb_functional_and_reduced_value_model_checked_transition_assembly_pending",
+    "ring_bits": 64,
+    "limbs": 2,
+    "reduced_assignments": 1082400,
+    "direct_adjacent_share_channels_rejected": 5,
+    "physical_resistance": false
+  },
+  "masked_refresh_m33_evidence": {
+    "path": "experiments/sca/cornacchia-masked-refresh-m33.json",
+    "sha256": "7decd795ee515e65cdc6793413e099a9d4255e9670be0687944ab1513f4dfee9",
+    "bytes": 7984,
+    "checker": "scripts/check_cornacchia_masked_refresh_m33.py",
+    "checker_sha256": "9fd8eeb7e41a44d09d6e137fba70d8b1f1a17ffe6bc090b07a8618dc8705a193",
+    "status": "one_word_transition_controlled_assembly_frozen_qemu_and_rp2350_functional_abstract_hd_pass_physical_pending",
+    "function_size_bytes": 66,
+    "instructions": 23,
+    "qemu_cases": 10036,
+    "reduced_assignments": 299592,
+    "rp2350_fixture_built": true,
+    "rp2350_serial_records": 12,
+    "physical_resistance": false,
+    "production_adopted": false
+  },
+      "surface_coverage": [
+        {"surface_id": "SURF-POW-SELECTOR", "effect": "required_for_analog_hypothesis", "closes_surface": false},
+        {"surface_id": "SURF-POW-PREFIX-STATE", "effect": "required_for_analog_hypothesis", "closes_surface": false},
+        {"surface_id": "SURF-MONTGOMERY-DATAPATH", "effect": "required_for_analog_hypothesis", "closes_surface": false},
+        {"surface_id": "SURF-FIXED-REDUCTION-MASKS", "effect": "required_for_analog_hypothesis", "closes_surface": false},
+        {"surface_id": "SURF-TONELLI-SHANKS-MASKS", "effect": "required_for_analog_hypothesis", "closes_surface": false},
+        {"surface_id": "SURF-BLINDING-AND-MASKING", "effect": "candidate_countermeasure_family", "closes_surface": false},
+        {"surface_id": "SURF-WHOLE-SIGN", "effect": "composition_required", "closes_surface": false}
+      ],
+  "preconditions": [
+    "Specify the algebraic invariant, mask order, refresh schedule and fresh-randomness budget.",
+    "Analyze the structured factorization identity left by a recovered blinded exponent and leakage while forming the blind; blind entropy alone is not a security level.",
+    "Model sequential register/bus transitions and compiler share placement; secret-independent marginal share distributions alone are insufficient for software masking.",
+    "Cover the secret-derived temporary modulus, Montgomery inverse and radix residues, exponent/selector, accumulator prefixes, full multiply/reduce temporaries and Tonelli--Shanks composition; selector-only, exponent-only, context-only, base-only and accumulator-only designs are incomplete.",
+    "Prove all fixed-width intermediate bounds and define fail-closed behavior.",
+    "Cover every production exponent and status path rather than one diagnostic fixture."
+  ],
+  "required_new_evidence": [
+    "formal or exhaustive reduced-domain invariant checks",
+    "source-to-final-assembly dependency and share-placement audit for the complete dynamic-modulus Montgomery state",
+    "fault and RNG-failure tests",
+    "first- and higher-order physical campaigns plus attack-driven scoring"
+  ],
+  "claim_boundary": "No reviewed SQIsign-specific masking or blinding construction has been adopted; ad hoc exponent blinding and partial masking of only the selector, exponent, base, context or accumulator are forbidden."
+    },
+    {
+      "id": "CM-WHOLE-SIGN-COMPOSITION",
+      "priority": "P3",
+      "implementation_status": "not_started",
+      "description": "Compose the integer, Cornacchia, quaternion and lattice countermeasures across every Sign phase and retry boundary.",
+      "surface_coverage": [
+        {"surface_id": "SURF-REPRESENT-SEARCH", "effect": "composition_and_search_policy", "closes_surface": false},
+        {"surface_id": "SURF-HIGHER-LEVEL-RETRIES", "effect": "composition_and_retry_policy", "closes_surface": false},
+        {"surface_id": "SURF-WHOLE-SIGN", "effect": "required_final_structural_gate", "closes_surface": false}
+      ],
+      "preconditions": [
+        "All preceding component work packages pass their structural gates.",
+        "The end-to-end operation preserves transcript, RNG consumption, failure and retry semantics."
+      ],
+      "required_new_evidence": [
+        "whole-Sign secret-taint branch/address audit",
+        "stable negative controls and repeated target timing",
+        "segmented power/EM campaigns and key-recovery attempts",
+        "RAM, stack, flash and runtime Pareto on the final linked firmware"
+      ],
+      "claim_boundary": "Only this composition stage can support a whole-Sign constant-time claim, and physical resistance remains a separate gate."
+    }
+  ],
+  "work_packages": [
+    {
+      "id": "WP-CTINT-FOUNDATION",
+      "order": 1,
+      "priority": "P0",
+      "status": "integer_dependency_set_complete_experimental_cornacchia_route_integrated",
+      "objective": "Implement an auditable fixed-width Level-I/RADIX32 integer kernel before importing any high-level constant-time algorithm.",
+      "required_primitives": [
+        "compare",
+        "conditional_move",
+        "sign_and_absolute_value",
+        "bit_length",
+        "left_and_right_shift",
+        "add_and_subtract",
+        "multiply_and_square",
+        "signed_truncating_division",
+        "signed_modular_reduction",
+        "modular_exponentiation",
+        "integer_square_root",
+        "integer_floor_square_root",
+        "cornacchia_halfgcd"
+      ],
+      "acceptance_gates": [
+        "differential_correctness",
+        "bounds_and_fail_closed_inputs",
+        "constant_control_flow_and_address_trace",
+        "cortex_m33_disassembly",
+        "stack_sram_flash_cycle_pareto",
+        "physical_followup_required"
+      ],
+      "foundation_evidence": {
+        "path": "experiments/sca/ctint1728-foundation-contract.json",
+        "sha256": "7f1c02ccbc953f41e77c27ed6cca6374b30d7955b481d4a94dcd81a7dca25496",
+        "bytes": 10401,
+        "checker": "scripts/check_ctint1728_foundation.py",
+        "checker_sha256": "603a120aa70fcddbf47ee3e2a681a3dc14a43e6461cdab8f138171ecd9cf6b79",
+        "implemented_primitives": 21,
+        "remaining_primitives": 0,
+        "status": "experimental_fixed_width_integer_and_cornacchia_halfgcd_component_complete_not_integrated",
+        "claim_boundary": "component-level differential and exact Cortex-M33 structural evidence only; no production, whole-Sign, formal noninterference, masking, power or EM claim"
+      },
+      "completed_slices": "Fixed compare/select/sign/bit-length/shift/add/subtract/multiply/square, 1728-round signed truncating division, signed modular reduction, fixed 521-round modular exponentiation, fixed 864-round exact integer square root, and the fixed half-GCD substrate are component-tested; the square-root and half-GCD subset is integrated on the experimental Level-I Cornacchia route.",
+      "claim_after_pass": "constant-control-flow/address integer component on the audited profile only; no analog or whole-Sign resistance"
+    },
+    {
+      "id": "WP-CORNACCHIA",
+      "order": 2,
+      "priority": "P1",
+      "status": "component_bound_and_timer_positive_control_complete_physical_pending",
+      "objective": "Validate residual physical leakage, using the frozen matched legacy firmware as the analog positive control, before comparing randomized alternatives.",
+      "acceptance_gates": [
+        "all_input_iteration_bound",
+        "cornacchia_and_sign_differential",
+        "rng_and_failure_semantics",
+        "target_pareto",
+        "physical_and_attack_followup"
+      ],
+      "claim_after_pass": "Cornacchia timing/control-flow mitigation only; not a whole-Sign or power/EM claim"
+    },
+    {
+      "id": "WP-QUATERNION-AND-LATTICE",
+      "order": 3,
+      "priority": "P2",
+      "status": "blocked_on_whole_sign_fixed_integer_coverage",
+      "objective": "Port bounded HNF, RepresentInteger and dimension-4 reduction components without importing variable-time GMP or incompatible target assumptions.",
+      "acceptance_gates": [
+        "license_and_provenance_review",
+        "fixed_width_bounds",
+        "component_differential",
+        "secret_taint_branch_address_trace",
+        "target_pareto"
+      ],
+      "claim_after_pass": "audited component coverage only"
+    },
+    {
+      "id": "WP-WHOLE-SIGN-AND-PHYSICAL",
+      "order": 4,
+      "priority": "P3",
+      "status": "blocked_on_component_work",
+      "objective": "Compose every countermeasure, rerun complete Sign leakage screens and perform the preregistered analog and key-recovery campaigns.",
+      "acceptance_gates": [
+        "whole_sign_structural_audit",
+        "whole_sign_correctness_and_rng_equivalence",
+        "two_independent_timing_campaigns",
+        "two_independent_power_or_em_campaigns",
+        "attack_driven_exponent_and_key_recovery",
+        "final_target_pareto"
+      ],
+      "claim_after_pass": "only evidence reviewed at this stage may change the fail-closed deployment decision"
+    }
+  ],
+  "claim_boundaries": {
+    "fixed_schedule_implies_constant_time": false,
+    "constant_time_implies_constant_power": false,
+    "timecop_or_ctgrind_pass_implies_physical_resistance": false,
+    "component_constant_time_implies_whole_sign_constant_time": false,
+    "randomized_timing_implies_constant_time": false,
+    "negative_tvla_implies_attack_resistance": false,
+    "memory_safety_or_heap_free_implies_side_channel_resistance": false
+  }
+}

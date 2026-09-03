@@ -1,0 +1,115 @@
+{
+  "schema": "sqisign-analog-trace-dataset-halfgcd-v1",
+  "status": "template_not_executed",
+  "path_base": "project_root",
+  "campaign_id": "replace-with-independent-campaign-id",
+  "independent_campaign": 0,
+  "purpose": "protected_fixed_vs_varying_or_same_input_control",
+  "classes": ["fixed", "varying"],
+  "class_assignment": {
+    "fixed": "repeat public fixture 0, or fixture 0 under label A for the same-input control",
+    "varying": "balanced cycle over public fixtures 1..15, or the identical fixture 0 under label B for the same-input control",
+    "interpretation": "The trigger contains only one fixed-round half-GCD call. A positive screen is actionable input/state-dependent leakage. A non-detection is not proof that production-secret values are hidden."
+  },
+  "capture": {
+    "kind": "power_or_em",
+    "instrument_model": "replace",
+    "instrument_serial": "replace",
+    "probe_model": "replace-shunt-current-or-near-field-em-probe",
+    "channel": "replace",
+    "coupling": "replace",
+    "range": "replace",
+    "sample_rate_hz": 0,
+    "adc_bits": 0,
+    "raw_unfiltered_archived": false,
+    "board_revision": "replace",
+    "board_serial": "replace",
+    "clock_hz": 150000000,
+    "trigger_gpio": 2,
+    "interrupt_policy": "interrupts masked inside measured GPIO window"
+  },
+  "firmware": {
+    "elf": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-halfgcd-ce228b15/sqisign_rp2350_sca_cornacchia_halfgcd.elf",
+      "sha256": "8b2ce7d21c850df8af326f0ae199435481fd57c999e10235db19c3c0501a646c"
+    },
+    "uf2": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-halfgcd-ce228b15/sqisign_rp2350_sca_cornacchia_halfgcd.uf2",
+      "sha256": "ce228b151a0c79234d9a51777a2b1ed3ac47388ab28f4dda4129a97f0086692f"
+    },
+    "bin": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-halfgcd-ce228b15/sqisign_rp2350_sca_cornacchia_halfgcd.bin",
+      "sha256": "8a67ff365751739b8ed64c1b7e3683a6ae437043ca815b2503bbb3382ffec389"
+    },
+    "map": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-halfgcd-ce228b15/sqisign_rp2350_sca_cornacchia_halfgcd.elf.map",
+      "sha256": "0ea8bff879832943028cd8005530487abb071c239edab236532af72421a77b06"
+    }
+  },
+  "matched_legacy_positive_control_firmware": {
+    "required_before_protected_non_detection_is_interpreted": true,
+    "classes": {
+      "low": "public fixture 4; 95 legacy Euclid steps",
+      "high": "public fixture 7; 122 legacy Euclid steps"
+    },
+    "elf": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-euclid-legacy-5e03b239/sqisign_rp2350_sca_cornacchia_euclid_legacy.elf",
+      "sha256": "3e1fd734a93826f8238df5a5ac30d3974316fa345b5cc8b5652eca70e4d2b9ae"
+    },
+    "uf2": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-euclid-legacy-5e03b239/sqisign_rp2350_sca_cornacchia_euclid_legacy.uf2",
+      "sha256": "5e03b239ae40ac6defa01b5341dcded66ba9b095c6ed9eee8febf300898ca565"
+    },
+    "bin": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-euclid-legacy-5e03b239/sqisign_rp2350_sca_cornacchia_euclid_legacy.bin",
+      "sha256": "c7f6652d044c7dd24208d26156a2296d85fca4b808341c0f37838e385f9b672d"
+    },
+    "map": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-euclid-legacy-5e03b239/sqisign_rp2350_sca_cornacchia_euclid_legacy.elf.map",
+      "sha256": "65adc8ff285eaf48ca541f6ee8505d43dda3e2f113edb78c357eea4d5388d39f"
+    },
+    "coarse_timer_comparison": {
+      "path": "results/rp2350/sca-cornacchia-halfgcd-positive-control-comparison.json",
+      "sha256": "14825c7c6dbcf6ef49136d228aa365952484f8943eb9b8cda739a3dd66695802"
+    },
+    "claim_boundary": "Timer sensitivity is already established; power/EM sensitivity remains unvalidated until this image is acquired through the same analog channel and preprocessing pipeline."
+  },
+  "raw_trace_file": {
+    "path": "replace-with-raw-unfiltered-float32-le-traces",
+    "sha256": "replace",
+    "format": "float32-le"
+  },
+  "analysis_trace_file": {
+    "path": "replace-with-frozen-aligned-and-cropped-float32-le-traces",
+    "sha256": "replace",
+    "format": "float32-le",
+    "trace_count": 0,
+    "samples_per_trace": 0
+  },
+  "labels_file": {
+    "path": "replace-with-labels-csv",
+    "sha256": "replace"
+  },
+  "preprocessing": {
+    "alignment": "replace-with-none-or-frozen-public-trigger-alignment",
+    "alignment_parameters": "replace",
+    "crop_start_sample": 0,
+    "crop_samples": 0,
+    "filter": "none unless preregistered",
+    "normalization": "none unless preregistered"
+  },
+  "analysis": {
+    "welch_threshold": 4.5,
+    "minimum_traces_per_class": 10000,
+    "tests": [
+      "point-wise first-order Welch",
+      "point-wise centered-square second-order Welch"
+    ],
+    "same_input_control_required": true,
+    "second_independent_campaign_required": true
+  },
+  "decision": {
+    "analog_capture_run": false,
+    "side_channel_resistance_established": false
+  }
+}

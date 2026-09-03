@@ -1,0 +1,111 @@
+SQISIGN_RP2350_V3_BASELINE_SCA_KEY v1
+scheme=SQIsign-v3.0 variant=p324_3 implementation=m4f image=baseline-sca-key
+board=pico2 platform=rp2350-arm-s sdk=2.3.0 firmware=899e572f084c90b7b3be30222e340dc42e380876 firmware_dirty=0
+v3_source=6d017708db403bf83977fa70770fc4f7f9e9ff21 v3_dirty=0 cpuid=0x411fd210 clock_sys_hz=150000000
+v3_generated_tree_sha256=38ee7ae007db2de0366cdb66dfe22f83f66ee5ce3d99f7f6260dc9ab24c3328a
+kat_rsp_sha256=b632c926c72692f850a71b7f7bb338fb1aeee0d9f3362aa35a8ac6255ca3155b kat_first=0 kat_count=10 fixed_message_vector=0 fixed_message_bytes=33 signing_seed=a5-sequence-v1 fixed_key_buffer_address=1 xip_cache_invalidate_before_timing=1 repetitions=5 passes=2 samples=100
+bss_end=0x200228f4 stack_limit=0x20080000 stack_top=0x20082000 heap_section_bytes=0
+warmup_sign=0 warmup_verify=0 warmup_status=PASS
+pass=A sequence=0 key=3 repetition=0 sign_result=0 sign_us=7103721 sign_psp=101060 verify_result=0 verify_us=899355 verify_psp=37444 digest=cbf924fdba614a84 digest_stable=1 sample_status=PASS
+pass=A sequence=1 key=9 repetition=0 sign_result=0 sign_us=6270990 sign_psp=101060 verify_result=0 verify_us=858015 verify_psp=37444 digest=1dd01d463a1ae956 digest_stable=1 sample_status=PASS
+pass=A sequence=2 key=6 repetition=0 sign_result=0 sign_us=6350953 sign_psp=101060 verify_result=0 verify_us=901268 verify_psp=37444 digest=42b7d92684927db5 digest_stable=1 sample_status=PASS
+pass=A sequence=3 key=0 repetition=0 sign_result=0 sign_us=9624377 sign_psp=101060 verify_result=0 verify_us=855387 verify_psp=37444 digest=0617d6741d8fd4e4 digest_stable=1 sample_status=PASS
+pass=A sequence=4 key=2 repetition=0 sign_result=0 sign_us=6835215 sign_psp=101060 verify_result=0 verify_us=854300 verify_psp=37444 digest=8377eaac40e0e967 digest_stable=1 sample_status=PASS
+pass=A sequence=5 key=4 repetition=0 sign_result=0 sign_us=6511185 sign_psp=101060 verify_result=0 verify_us=855131 verify_psp=37444 digest=267be939651e4196 digest_stable=1 sample_status=PASS
+pass=A sequence=6 key=5 repetition=0 sign_result=0 sign_us=7455929 sign_psp=101060 verify_result=0 verify_us=897675 verify_psp=37444 digest=1fdd60a5d4da0c58 digest_stable=1 sample_status=PASS
+pass=A sequence=7 key=8 repetition=0 sign_result=0 sign_us=6230229 sign_psp=101060 verify_result=0 verify_us=854268 verify_psp=37444 digest=65f7bb9d831e4524 digest_stable=1 sample_status=PASS
+pass=A sequence=8 key=5 repetition=1 sign_result=0 sign_us=7454959 sign_psp=101060 verify_result=0 verify_us=897908 verify_psp=37444 digest=1fdd60a5d4da0c58 digest_stable=1 sample_status=PASS
+pass=A sequence=9 key=0 repetition=1 sign_result=0 sign_us=9623519 sign_psp=101060 verify_result=0 verify_us=855579 verify_psp=37444 digest=0617d6741d8fd4e4 digest_stable=1 sample_status=PASS
+pass=A sequence=10 key=4 repetition=1 sign_result=0 sign_us=6511489 sign_psp=101060 verify_result=0 verify_us=855219 verify_psp=37444 digest=267be939651e4196 digest_stable=1 sample_status=PASS
+pass=A sequence=11 key=8 repetition=1 sign_result=0 sign_us=6230472 sign_psp=101060 verify_result=0 verify_us=854172 verify_psp=37444 digest=65f7bb9d831e4524 digest_stable=1 sample_status=PASS
+pass=A sequence=12 key=6 repetition=1 sign_result=0 sign_us=6350075 sign_psp=101060 verify_result=0 verify_us=901345 verify_psp=37444 digest=42b7d92684927db5 digest_stable=1 sample_status=PASS
+pass=A sequence=13 key=1 repetition=0 sign_result=0 sign_us=6445027 sign_psp=101060 verify_result=0 verify_us=858123 verify_psp=37444 digest=00d7bdc064a43a01 digest_stable=1 sample_status=PASS
+pass=A sequence=14 key=1 repetition=1 sign_result=0 sign_us=6444960 sign_psp=101060 verify_result=0 verify_us=858139 verify_psp=37444 digest=00d7bdc064a43a01 digest_stable=1 sample_status=PASS
+pass=A sequence=15 key=7 repetition=0 sign_result=0 sign_us=6913200 sign_psp=101060 verify_result=0 verify_us=856630 verify_psp=37444 digest=e6a4fb77cd98825a digest_stable=1 sample_status=PASS
+pass=A sequence=16 key=1 repetition=2 sign_result=0 sign_us=6445312 sign_psp=101060 verify_result=0 verify_us=858067 verify_psp=37444 digest=00d7bdc064a43a01 digest_stable=1 sample_status=PASS
+pass=A sequence=17 key=8 repetition=2 sign_result=0 sign_us=6230793 sign_psp=101060 verify_result=0 verify_us=854298 verify_psp=37444 digest=65f7bb9d831e4524 digest_stable=1 sample_status=PASS
+pass=A sequence=18 key=6 repetition=2 sign_result=0 sign_us=6350236 sign_psp=101060 verify_result=0 verify_us=901182 verify_psp=37444 digest=42b7d92684927db5 digest_stable=1 sample_status=PASS
+pass=A sequence=19 key=3 repetition=1 sign_result=0 sign_us=7103670 sign_psp=101060 verify_result=0 verify_us=899799 verify_psp=37444 digest=cbf924fdba614a84 digest_stable=1 sample_status=PASS
+pass=A sequence=20 key=9 repetition=1 sign_result=0 sign_us=6271884 sign_psp=101060 verify_result=0 verify_us=858011 verify_psp=37444 digest=1dd01d463a1ae956 digest_stable=1 sample_status=PASS
+pass=A sequence=21 key=4 repetition=2 sign_result=0 sign_us=6510675 sign_psp=101060 verify_result=0 verify_us=855277 verify_psp=37444 digest=267be939651e4196 digest_stable=1 sample_status=PASS
+pass=A sequence=22 key=2 repetition=1 sign_result=0 sign_us=6834865 sign_psp=101060 verify_result=0 verify_us=854208 verify_psp=37444 digest=8377eaac40e0e967 digest_stable=1 sample_status=PASS
+pass=A sequence=23 key=0 repetition=2 sign_result=0 sign_us=9623375 sign_psp=101060 verify_result=0 verify_us=855168 verify_psp=37444 digest=0617d6741d8fd4e4 digest_stable=1 sample_status=PASS
+pass=A sequence=24 key=8 repetition=3 sign_result=0 sign_us=6231020 sign_psp=101060 verify_result=0 verify_us=854370 verify_psp=37444 digest=65f7bb9d831e4524 digest_stable=1 sample_status=PASS
+pass=A sequence=25 key=2 repetition=2 sign_result=0 sign_us=6835540 sign_psp=101060 verify_result=0 verify_us=854365 verify_psp=37444 digest=8377eaac40e0e967 digest_stable=1 sample_status=PASS
+pass=A sequence=26 key=5 repetition=2 sign_result=0 sign_us=7455516 sign_psp=101060 verify_result=0 verify_us=897225 verify_psp=37444 digest=1fdd60a5d4da0c58 digest_stable=1 sample_status=PASS
+pass=A sequence=27 key=5 repetition=3 sign_result=0 sign_us=7455569 sign_psp=101060 verify_result=0 verify_us=897617 verify_psp=37444 digest=1fdd60a5d4da0c58 digest_stable=1 sample_status=PASS
+pass=A sequence=28 key=0 repetition=3 sign_result=0 sign_us=9623839 sign_psp=101060 verify_result=0 verify_us=855424 verify_psp=37444 digest=0617d6741d8fd4e4 digest_stable=1 sample_status=PASS
+pass=A sequence=29 key=7 repetition=1 sign_result=0 sign_us=6913449 sign_psp=101060 verify_result=0 verify_us=856823 verify_psp=37444 digest=e6a4fb77cd98825a digest_stable=1 sample_status=PASS
+pass=A sequence=30 key=7 repetition=2 sign_result=0 sign_us=6912236 sign_psp=101060 verify_result=0 verify_us=856730 verify_psp=37444 digest=e6a4fb77cd98825a digest_stable=1 sample_status=PASS
+pass=A sequence=31 key=1 repetition=3 sign_result=0 sign_us=6445427 sign_psp=101060 verify_result=0 verify_us=858047 verify_psp=37444 digest=00d7bdc064a43a01 digest_stable=1 sample_status=PASS
+pass=A sequence=32 key=3 repetition=2 sign_result=0 sign_us=7104178 sign_psp=101060 verify_result=0 verify_us=899872 verify_psp=37444 digest=cbf924fdba614a84 digest_stable=1 sample_status=PASS
+pass=A sequence=33 key=3 repetition=3 sign_result=0 sign_us=7104280 sign_psp=101060 verify_result=0 verify_us=899952 verify_psp=37444 digest=cbf924fdba614a84 digest_stable=1 sample_status=PASS
+pass=A sequence=34 key=9 repetition=2 sign_result=0 sign_us=6272564 sign_psp=101060 verify_result=0 verify_us=857870 verify_psp=37444 digest=1dd01d463a1ae956 digest_stable=1 sample_status=PASS
+pass=A sequence=35 key=5 repetition=4 sign_result=0 sign_us=7454616 sign_psp=101060 verify_result=0 verify_us=897778 verify_psp=37444 digest=1fdd60a5d4da0c58 digest_stable=1 sample_status=PASS
+pass=A sequence=36 key=1 repetition=4 sign_result=0 sign_us=6444872 sign_psp=101060 verify_result=0 verify_us=857992 verify_psp=37444 digest=00d7bdc064a43a01 digest_stable=1 sample_status=PASS
+pass=A sequence=37 key=0 repetition=4 sign_result=0 sign_us=9623059 sign_psp=101060 verify_result=0 verify_us=855520 verify_psp=37444 digest=0617d6741d8fd4e4 digest_stable=1 sample_status=PASS
+pass=A sequence=38 key=2 repetition=3 sign_result=0 sign_us=6834848 sign_psp=101060 verify_result=0 verify_us=854628 verify_psp=37444 digest=8377eaac40e0e967 digest_stable=1 sample_status=PASS
+pass=A sequence=39 key=4 repetition=3 sign_result=0 sign_us=6511145 sign_psp=101060 verify_result=0 verify_us=854846 verify_psp=37444 digest=267be939651e4196 digest_stable=1 sample_status=PASS
+pass=A sequence=40 key=7 repetition=3 sign_result=0 sign_us=6912672 sign_psp=101060 verify_result=0 verify_us=856639 verify_psp=37444 digest=e6a4fb77cd98825a digest_stable=1 sample_status=PASS
+pass=A sequence=41 key=8 repetition=4 sign_result=0 sign_us=6230749 sign_psp=101060 verify_result=0 verify_us=854163 verify_psp=37444 digest=65f7bb9d831e4524 digest_stable=1 sample_status=PASS
+pass=A sequence=42 key=6 repetition=3 sign_result=0 sign_us=6350552 sign_psp=101060 verify_result=0 verify_us=901292 verify_psp=37444 digest=42b7d92684927db5 digest_stable=1 sample_status=PASS
+pass=A sequence=43 key=3 repetition=4 sign_result=0 sign_us=7103846 sign_psp=101060 verify_result=0 verify_us=899754 verify_psp=37444 digest=cbf924fdba614a84 digest_stable=1 sample_status=PASS
+pass=A sequence=44 key=4 repetition=4 sign_result=0 sign_us=6510838 sign_psp=101060 verify_result=0 verify_us=854907 verify_psp=37444 digest=267be939651e4196 digest_stable=1 sample_status=PASS
+pass=A sequence=45 key=2 repetition=4 sign_result=0 sign_us=6835526 sign_psp=101060 verify_result=0 verify_us=854484 verify_psp=37444 digest=8377eaac40e0e967 digest_stable=1 sample_status=PASS
+pass=A sequence=46 key=7 repetition=4 sign_result=0 sign_us=6912889 sign_psp=101060 verify_result=0 verify_us=856375 verify_psp=37444 digest=e6a4fb77cd98825a digest_stable=1 sample_status=PASS
+pass=A sequence=47 key=9 repetition=3 sign_result=0 sign_us=6271890 sign_psp=101060 verify_result=0 verify_us=858218 verify_psp=37444 digest=1dd01d463a1ae956 digest_stable=1 sample_status=PASS
+pass=A sequence=48 key=6 repetition=4 sign_result=0 sign_us=6350127 sign_psp=101060 verify_result=0 verify_us=901237 verify_psp=37444 digest=42b7d92684927db5 digest_stable=1 sample_status=PASS
+pass=A sequence=49 key=9 repetition=4 sign_result=0 sign_us=6272113 sign_psp=101060 verify_result=0 verify_us=858135 verify_psp=37444 digest=1dd01d463a1ae956 digest_stable=1 sample_status=PASS
+pass=B sequence=0 key=6 repetition=0 sign_result=0 sign_us=6351255 sign_psp=101060 verify_result=0 verify_us=901165 verify_psp=37444 digest=42b7d92684927db5 digest_stable=1 sample_status=PASS
+pass=B sequence=1 key=0 repetition=0 sign_result=0 sign_us=9624124 sign_psp=101060 verify_result=0 verify_us=855605 verify_psp=37444 digest=0617d6741d8fd4e4 digest_stable=1 sample_status=PASS
+pass=B sequence=2 key=0 repetition=1 sign_result=0 sign_us=9623969 sign_psp=101060 verify_result=0 verify_us=855468 verify_psp=37444 digest=0617d6741d8fd4e4 digest_stable=1 sample_status=PASS
+pass=B sequence=3 key=8 repetition=0 sign_result=0 sign_us=6230734 sign_psp=101060 verify_result=0 verify_us=854213 verify_psp=37444 digest=65f7bb9d831e4524 digest_stable=1 sample_status=PASS
+pass=B sequence=4 key=7 repetition=0 sign_result=0 sign_us=6912896 sign_psp=101060 verify_result=0 verify_us=856569 verify_psp=37444 digest=e6a4fb77cd98825a digest_stable=1 sample_status=PASS
+pass=B sequence=5 key=6 repetition=1 sign_result=0 sign_us=6350253 sign_psp=101060 verify_result=0 verify_us=901098 verify_psp=37444 digest=42b7d92684927db5 digest_stable=1 sample_status=PASS
+pass=B sequence=6 key=9 repetition=0 sign_result=0 sign_us=6271900 sign_psp=101060 verify_result=0 verify_us=858015 verify_psp=37444 digest=1dd01d463a1ae956 digest_stable=1 sample_status=PASS
+pass=B sequence=7 key=6 repetition=2 sign_result=0 sign_us=6350364 sign_psp=101060 verify_result=0 verify_us=901336 verify_psp=37444 digest=42b7d92684927db5 digest_stable=1 sample_status=PASS
+pass=B sequence=8 key=9 repetition=1 sign_result=0 sign_us=6272495 sign_psp=101060 verify_result=0 verify_us=858051 verify_psp=37444 digest=1dd01d463a1ae956 digest_stable=1 sample_status=PASS
+pass=B sequence=9 key=9 repetition=2 sign_result=0 sign_us=6271370 sign_psp=101060 verify_result=0 verify_us=858128 verify_psp=37444 digest=1dd01d463a1ae956 digest_stable=1 sample_status=PASS
+pass=B sequence=10 key=5 repetition=0 sign_result=0 sign_us=7455384 sign_psp=101060 verify_result=0 verify_us=897604 verify_psp=37444 digest=1fdd60a5d4da0c58 digest_stable=1 sample_status=PASS
+pass=B sequence=11 key=4 repetition=0 sign_result=0 sign_us=6510771 sign_psp=101060 verify_result=0 verify_us=854976 verify_psp=37444 digest=267be939651e4196 digest_stable=1 sample_status=PASS
+pass=B sequence=12 key=3 repetition=0 sign_result=0 sign_us=7103959 sign_psp=101060 verify_result=0 verify_us=899664 verify_psp=37444 digest=cbf924fdba614a84 digest_stable=1 sample_status=PASS
+pass=B sequence=13 key=2 repetition=0 sign_result=0 sign_us=6835946 sign_psp=101060 verify_result=0 verify_us=854164 verify_psp=37444 digest=8377eaac40e0e967 digest_stable=1 sample_status=PASS
+pass=B sequence=14 key=2 repetition=1 sign_result=0 sign_us=6835780 sign_psp=101060 verify_result=0 verify_us=854288 verify_psp=37444 digest=8377eaac40e0e967 digest_stable=1 sample_status=PASS
+pass=B sequence=15 key=1 repetition=0 sign_result=0 sign_us=6445781 sign_psp=101060 verify_result=0 verify_us=858309 verify_psp=37444 digest=00d7bdc064a43a01 digest_stable=1 sample_status=PASS
+pass=B sequence=16 key=8 repetition=1 sign_result=0 sign_us=6230613 sign_psp=101060 verify_result=0 verify_us=854346 verify_psp=37444 digest=65f7bb9d831e4524 digest_stable=1 sample_status=PASS
+pass=B sequence=17 key=1 repetition=1 sign_result=0 sign_us=6445070 sign_psp=101060 verify_result=0 verify_us=857885 verify_psp=37444 digest=00d7bdc064a43a01 digest_stable=1 sample_status=PASS
+pass=B sequence=18 key=1 repetition=2 sign_result=0 sign_us=6445064 sign_psp=101060 verify_result=0 verify_us=857916 verify_psp=37444 digest=00d7bdc064a43a01 digest_stable=1 sample_status=PASS
+pass=B sequence=19 key=5 repetition=1 sign_result=0 sign_us=7454953 sign_psp=101060 verify_result=0 verify_us=897763 verify_psp=37444 digest=1fdd60a5d4da0c58 digest_stable=1 sample_status=PASS
+pass=B sequence=20 key=2 repetition=2 sign_result=0 sign_us=6834817 sign_psp=101060 verify_result=0 verify_us=854425 verify_psp=37444 digest=8377eaac40e0e967 digest_stable=1 sample_status=PASS
+pass=B sequence=21 key=4 repetition=1 sign_result=0 sign_us=6510270 sign_psp=101060 verify_result=0 verify_us=855124 verify_psp=37444 digest=267be939651e4196 digest_stable=1 sample_status=PASS
+pass=B sequence=22 key=2 repetition=3 sign_result=0 sign_us=6835581 sign_psp=101060 verify_result=0 verify_us=854208 verify_psp=37444 digest=8377eaac40e0e967 digest_stable=1 sample_status=PASS
+pass=B sequence=23 key=6 repetition=3 sign_result=0 sign_us=6350384 sign_psp=101060 verify_result=0 verify_us=901493 verify_psp=37444 digest=42b7d92684927db5 digest_stable=1 sample_status=PASS
+pass=B sequence=24 key=1 repetition=3 sign_result=0 sign_us=6444894 sign_psp=101060 verify_result=0 verify_us=857922 verify_psp=37444 digest=00d7bdc064a43a01 digest_stable=1 sample_status=PASS
+pass=B sequence=25 key=4 repetition=2 sign_result=0 sign_us=6512030 sign_psp=101060 verify_result=0 verify_us=855419 verify_psp=37444 digest=267be939651e4196 digest_stable=1 sample_status=PASS
+pass=B sequence=26 key=0 repetition=2 sign_result=0 sign_us=9624039 sign_psp=101060 verify_result=0 verify_us=855321 verify_psp=37444 digest=0617d6741d8fd4e4 digest_stable=1 sample_status=PASS
+pass=B sequence=27 key=7 repetition=1 sign_result=0 sign_us=6912698 sign_psp=101060 verify_result=0 verify_us=856758 verify_psp=37444 digest=e6a4fb77cd98825a digest_stable=1 sample_status=PASS
+pass=B sequence=28 key=7 repetition=2 sign_result=0 sign_us=6912263 sign_psp=101060 verify_result=0 verify_us=856487 verify_psp=37444 digest=e6a4fb77cd98825a digest_stable=1 sample_status=PASS
+pass=B sequence=29 key=1 repetition=4 sign_result=0 sign_us=6445049 sign_psp=101060 verify_result=0 verify_us=858113 verify_psp=37444 digest=00d7bdc064a43a01 digest_stable=1 sample_status=PASS
+pass=B sequence=30 key=7 repetition=3 sign_result=0 sign_us=6912670 sign_psp=101060 verify_result=0 verify_us=856956 verify_psp=37444 digest=e6a4fb77cd98825a digest_stable=1 sample_status=PASS
+pass=B sequence=31 key=0 repetition=3 sign_result=0 sign_us=9623573 sign_psp=101060 verify_result=0 verify_us=855176 verify_psp=37444 digest=0617d6741d8fd4e4 digest_stable=1 sample_status=PASS
+pass=B sequence=32 key=3 repetition=1 sign_result=0 sign_us=7104120 sign_psp=101060 verify_result=0 verify_us=899727 verify_psp=37444 digest=cbf924fdba614a84 digest_stable=1 sample_status=PASS
+pass=B sequence=33 key=9 repetition=3 sign_result=0 sign_us=6271951 sign_psp=101060 verify_result=0 verify_us=857963 verify_psp=37444 digest=1dd01d463a1ae956 digest_stable=1 sample_status=PASS
+pass=B sequence=34 key=5 repetition=2 sign_result=0 sign_us=7455182 sign_psp=101060 verify_result=0 verify_us=897525 verify_psp=37444 digest=1fdd60a5d4da0c58 digest_stable=1 sample_status=PASS
+pass=B sequence=35 key=8 repetition=2 sign_result=0 sign_us=6230676 sign_psp=101060 verify_result=0 verify_us=854352 verify_psp=37444 digest=65f7bb9d831e4524 digest_stable=1 sample_status=PASS
+pass=B sequence=36 key=9 repetition=4 sign_result=0 sign_us=6271888 sign_psp=101060 verify_result=0 verify_us=857981 verify_psp=37444 digest=1dd01d463a1ae956 digest_stable=1 sample_status=PASS
+pass=B sequence=37 key=5 repetition=3 sign_result=0 sign_us=7455089 sign_psp=101060 verify_result=0 verify_us=897434 verify_psp=37444 digest=1fdd60a5d4da0c58 digest_stable=1 sample_status=PASS
+pass=B sequence=38 key=3 repetition=2 sign_result=0 sign_us=7103208 sign_psp=101060 verify_result=0 verify_us=900026 verify_psp=37444 digest=cbf924fdba614a84 digest_stable=1 sample_status=PASS
+pass=B sequence=39 key=4 repetition=3 sign_result=0 sign_us=6510579 sign_psp=101060 verify_result=0 verify_us=855331 verify_psp=37444 digest=267be939651e4196 digest_stable=1 sample_status=PASS
+pass=B sequence=40 key=3 repetition=3 sign_result=0 sign_us=7104513 sign_psp=101060 verify_result=0 verify_us=899532 verify_psp=37444 digest=cbf924fdba614a84 digest_stable=1 sample_status=PASS
+pass=B sequence=41 key=0 repetition=4 sign_result=0 sign_us=9623699 sign_psp=101060 verify_result=0 verify_us=855479 verify_psp=37444 digest=0617d6741d8fd4e4 digest_stable=1 sample_status=PASS
+pass=B sequence=42 key=5 repetition=4 sign_result=0 sign_us=7455714 sign_psp=101060 verify_result=0 verify_us=897779 verify_psp=37444 digest=1fdd60a5d4da0c58 digest_stable=1 sample_status=PASS
+pass=B sequence=43 key=2 repetition=4 sign_result=0 sign_us=6835482 sign_psp=101060 verify_result=0 verify_us=854450 verify_psp=37444 digest=8377eaac40e0e967 digest_stable=1 sample_status=PASS
+pass=B sequence=44 key=4 repetition=4 sign_result=0 sign_us=6510257 sign_psp=101060 verify_result=0 verify_us=855149 verify_psp=37444 digest=267be939651e4196 digest_stable=1 sample_status=PASS
+pass=B sequence=45 key=6 repetition=4 sign_result=0 sign_us=6350542 sign_psp=101060 verify_result=0 verify_us=901165 verify_psp=37444 digest=42b7d92684927db5 digest_stable=1 sample_status=PASS
+pass=B sequence=46 key=8 repetition=3 sign_result=0 sign_us=6230377 sign_psp=101060 verify_result=0 verify_us=854143 verify_psp=37444 digest=65f7bb9d831e4524 digest_stable=1 sample_status=PASS
+pass=B sequence=47 key=7 repetition=4 sign_result=0 sign_us=6912584 sign_psp=101060 verify_result=0 verify_us=856713 verify_psp=37444 digest=e6a4fb77cd98825a digest_stable=1 sample_status=PASS
+pass=B sequence=48 key=8 repetition=4 sign_result=0 sign_us=6230063 sign_psp=101060 verify_result=0 verify_us=853752 verify_psp=37444 digest=65f7bb9d831e4524 digest_stable=1 sample_status=PASS
+pass=B sequence=49 key=3 repetition=4 sign_result=0 sign_us=7103483 sign_psp=101060 verify_result=0 verify_us=900092 verify_psp=37444 digest=cbf924fdba614a84 digest_stable=1 sample_status=PASS
+summary samples=100 passed=100 mode_ok=1 msp_pattern_ok=1 sign_psp_max=101060 verify_psp_max=37444 psp_reserved_bytes=131072
+msp_reserved_bytes=8192 msp_written_upper_bytes=2676 msplim=0x20080000
+status=PASS

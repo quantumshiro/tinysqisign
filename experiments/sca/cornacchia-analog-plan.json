@@ -1,0 +1,315 @@
+{
+  "schema": "sqisign-cornacchia-analog-plan-v5",
+  "status": "preregistered_waiting_for_acquisition_instrument",
+  "literature_anchor": {
+    "attack": "Simple Power Analysis Attack on SQIsign",
+    "reference": "IACR ePrint 2025/830; AFRICACRYPT 2025; DOI 10.1007/978-3-031-97260-7_12",
+    "targeted_mechanism": "secret-derived ephemeral exponent in Cornacchia modular-square-root exponentiation",
+    "related_timing_work": "IACR ePrint 2023/807, Ready to SQI? Safety First!"
+  },
+  "candidate": {
+    "security_level": "Level-I",
+    "base_commit": "c2a80712e32891c5228da3f49f0148993a4ec560",
+    "base_tree": "0043a41f170415c97eb2ae2dc3ff7777ff8942d1",
+    "state": "uncommitted WIP frozen by exact source and firmware hashes",
+    "features": [
+      "fixed 521-round square-and-multiply-always schedule",
+      "fixed 17x17-word Montgomery multiplication and reduction",
+      "fixed 521-round signed input reduction",
+      "bounded 32-round Tonelli-Shanks schedule",
+      "fixed scan of 32 public non-residue prime candidates"
+    ],
+    "build_evidence": "results/rp2350/sca-ct3-fixed-reduce-build.json",
+    "withheld_claims": [
+      "full-Sign constant time",
+      "constant power or EM",
+      "resistance to the published exponent-recovery attack",
+      "unconditional support for every valid Level-I modulus",
+      "production readiness"
+    ]
+  },
+  "correctness_and_structure": {
+    "frozen_transcript_result": "12/12 Level-I PK/SK/signed-message/post-RNG transcripts byte-identical to the frozen control corpus",
+    "focused_sanitizer_result": "fixed signed reduction and protected square-root focused ASan+UBSan test passed",
+    "full_sign_sanitizer_boundary": "full packed Sign reaches a pre-existing mp_invert_matrix/mp_mul dynamic-stack overflow under ASan in both the protected candidate and clean c2a807 control; therefore no full-Sign sanitizer pass is claimed",
+    "cortex_m33_frames": {
+      "fixed_signed_reduction_bytes": 200,
+      "protected_sqrt_bytes": 168,
+      "kind": "static",
+      "compiler": "Arm GNU 15.2.1 Pico-like -O3/softfp/CMSE"
+    },
+    "linked_elf_result": "one IRQ-masked GPIO window; no legacy sqrt/pow/div fallback; fixed 521-bit exponent and input-reduction loops; one 4,488-byte workspace clear"
+  },
+  "primary_segment_firmware": {
+    "status": "flashed_and_serial_timing_captured_not_analog_captured",
+    "target": "RP2350 Cortex-M33 Arm-S, Level-I/RADIX32, Release -O3, 150 MHz",
+    "trigger_gpio": 2,
+    "fixtures": "16 public deterministic 368-bit probable-prime/residue pairs",
+    "measured_window": "interrupt-masked GPIO window containing exactly one protected 521-round Montgomery exponentiation; context setup, exponent derivation, validation, erasure and serial I/O are outside",
+    "build_evidence": "results/rp2350/sca-ct3-cornacchia-pow-segment-build.json",
+    "elf_sha256": "19dab1b1b0165b51ff407c0e6b481831b6f4636099b502809402ac439b0116bf",
+    "uf2_sha256": "1f8b6ddc81acd98ebc6667d89135c1080de48a29953e4dd3a9e00d2d0c95681e",
+    "ground_truth": "experiments/sca/cornacchia-pow-segment-ground-truth.json",
+    "ground_truth_sha256": "b2f2ad5aefa13c628e4d6b32a035a598a8683db8a30de76c6f988454a7de9d52",
+    "timing_evidence": "results/rp2350/sca-ct3-cornacchia-pow-segment-timing-summary.json",
+    "timing_evidence_sha256": "a9d4d07a4afa492ef52105445be4ab4a853eb97eed3faa725d5c8b9cff862dec",
+    "timing_result": {
+      "window": "160/160 operations passed; 62,042..62,053 us for one exponentiation at integer-microsecond resolution",
+      "cycle_centered_weight_correlation": 0.0866147745815816,
+      "minimum_vs_maximum_weight_welch_t": -0.5786913866065998,
+      "interpretation": "no strong coarse timing association is resolved in this small public corpus; this is not an equivalence test or an analog result"
+    },
+    "claim_boundary": "firmware construction, structural ELF evidence and coarse target-reported timing only; exact recovery of its Legendre e=(m-1)/2 would reveal the corresponding modulus as m=2e+1, while mask selection and operand/state switching remain possible analog leakages"
+  },
+  "integrated_followup_firmware": {
+    "status": "frozen_full_sqrt_artifact_not_currently_the_primary_acquisition_image",
+    "purpose": "repeat any segment-level finding inside one complete protected Cornacchia square root and test composition effects",
+    "measured_window": "one protected modular square root including fixed input reduction and bounded Tonelli-Shanks",
+    "build_evidence": "results/rp2350/sca-ct3-fixed-reduce-build.json",
+    "elf_sha256": "f6e884f5d42fc12bd5c4a5915f79472a4e053b2ebeaac66295eb2868a90969fe",
+    "uf2_sha256": "0898c6579cecf33f32715b45dbb5accda73d4e518b33b2b23f74a1001db7110a",
+    "timing_evidence": "results/rp2350/sca-ct3-fixed-reduce-timing-summary.json",
+    "timing_evidence_sha256": "a6b128a32870bdbe0e5ee6957b0b46f0e7b4f261f821e402dbbda54c6e695b8a",
+    "mean_window": "roughly 768.108 ms",
+    "claim_boundary": "integrated timing and structure only; no archived raw power or EM samples"
+  },
+  "instrument_readiness": {
+    "evidence": "results/rp2350/sca-analog-readiness-2026-08-23.json",
+    "rp2350_serial_target_detected": true,
+    "analog_acquisition_instrument_detected": false,
+    "analysis_manifest": "experiments/sca/analog-trace-dataset-template.json",
+    "tvla_analyzer": "scripts/analyze_sca_analog_tvla.py",
+    "attack_manifest": "experiments/sca/exponent-recovery-campaign-template.json",
+    "attack_scorer": "scripts/score_sca_exponent_recovery.py",
+    "attack_manifest_sha256": "28353d320d229e52f2f1d9f16d971b862ac781b18706a34400cde40138b1f82a",
+    "attack_scorer_sha256": "e5da0608c0f6491c444415ac1ba6bd95e277c77ff7ae86316c2e93dac799d800",
+    "attack_tooling_checker": "scripts/check_sca_exponent_recovery_tooling.py",
+    "attack_tooling_checker_sha256": "e8834e800f595cc08691cdaef1b622de54c3cb0413f7e480ba60560ffe686afa",
+    "published_input_recovery_contract": "experiments/sca/published-spa-input-recovery-contract.json",
+    "published_input_recovery_contract_sha256": "a96512637d524697c4646d43c3ebf5b7576f05be9c996edac770c19a0b7edfa3",
+    "published_input_recovery_checker": "scripts/check_sca_published_spa_input_recovery.py",
+    "published_input_recovery_checker_sha256": "26128fc89105be7c68687f64e9dbae3d4d5f35c9d73eb14aa229a9832d4ab0a7",
+    "masked_refresh_analysis_manifest": "experiments/sca/masked-refresh-analog-dataset-template.json",
+    "masked_refresh_hd_scorer": "scripts/score_masked_refresh_m33_hd.py",
+    "masked_refresh_decision_manifest": "experiments/sca/masked-refresh-analog-decision-template.json",
+    "masked_refresh_campaign_comparator": "scripts/compare_masked_refresh_m33_campaigns.py",
+    "masked_refresh_tooling_checker": "scripts/check_masked_refresh_analog_tooling.py",
+    "ground_truth_checker": "scripts/check_sca_cornacchia_pow_segment_ground_truth.py"
+  },
+  "residual_surface_inventory": {
+    "path": "experiments/sca/residual-surface-inventory.json",
+    "sha256": "5e925f75009e189fc8fbcf416da4c4410fed4ca17a3f5e2dd64876e918d6b672",
+    "checker": "scripts/check_sca_residual_surfaces.py",
+    "checker_sha256": "eafc0e3b6325b655474f0e8ef278326e52e9a7586d003dab0290436737586fae",
+    "open_surfaces": 12,
+    "selector_model": "an ideal observation of the source-level all-zero/all-one selector mask recovers all 16 public fixture exponents; this is a leakage hypothesis and structural rejection test, not a physical result"
+  },
+  "rejected_blinding_design": {
+    "path": "experiments/sca/cornacchia-exponent-blinding-design.json",
+    "sha256": "f5dd9ccabec6f43a777b115e97ba185b73ca0be2e67eedff8ad103fd89fafc9d",
+    "checker": "scripts/check_cornacchia_exponent_blinding.py",
+    "checker_sha256": "2ff4e473f5d25da1e7faf888fc5535a2d2a91594b296c99b984e1de4c703cde8",
+    "decision": "standalone exponent blinding is rejected; any future randomized candidate must pass the multi-call GCD campaign rather than only a single-pow screen"
+  },
+  "rejected_selector_masking_design": {
+    "path": "experiments/sca/cornacchia-selector-masking-design.json",
+    "sha256": "524b0781b82d079796266867aff327c60893eaaf74c6fcf94bd49ff930305d73",
+    "checker": "scripts/check_cornacchia_selector_masking.py",
+    "checker_sha256": "80cd49c0d8be19cfc7e8c83e2c0280a6c670adc1c99b5e0c7da32c97de5c4de4",
+    "decision": "naive two-share selector masking is rejected because sequential share Hamming distance reveals the bit; future masking must include transition-aware compiler and physical gates"
+  },
+  "required_masked_montgomery_scope": {
+    "path": "experiments/sca/cornacchia-masked-montgomery-scope.json",
+    "sha256": "2683dd5f223caa43c1d523d8d871696a828b56c72a8909e0e9db054518b6c004",
+    "checker": "scripts/check_cornacchia_masked_montgomery_scope.py",
+    "checker_sha256": "1f41a1e51bd07fb11303e0930864194284426282b79885eb9beb7ba556d2ca48",
+    "decision": "a future candidate must cover all 18 source-backed secret-reachable values and the outer Tonelli--Shanks composition; six partial scopes are rejected before physical evaluation"
+  },
+  "masked_arithmetic_prototype_direction": {
+    "path": "experiments/sca/cornacchia-masked-arithmetic-design.json",
+    "sha256": "f82e70aed6eb93734db09b81add740e507f6eb37e5380770e47164d61fbb0265",
+    "checker": "scripts/check_cornacchia_masked_arithmetic_design.py",
+    "checker_sha256": "e057b93463a54a921999056c8c2508ecd35106564f3a1d7e625b1bdfc124b99a",
+    "decision": "a two-limb functional word-arithmetic oracle now exists; abstract Boolean gadgets pass single-wire marginal checks but fail adjacent-share transition checks, and transition-controlled assembly remains pending"
+  },
+  "masked_word_functional_prototype": {
+    "path": "experiments/sca/cornacchia-masked-word-prototype.json",
+    "sha256": "0216b9f53f874719d2351bc72d785254c3dc337c7aa2631e5611868daa68cc3d",
+    "checker": "scripts/check_cornacchia_masked_word_prototype.py",
+    "checker_sha256": "384dc074e78e506dd831ab3194c329d729ac076eb079489f3f3b27e98706a675",
+    "decision": "functional/value-model evidence only; five direct adjacent-share HD channels are rejected, zero-precharge passes only an abstract model, and ANALOG-4 remains mandatory"
+  },
+  "masked_refresh_m33": {
+    "path": "experiments/sca/cornacchia-masked-refresh-m33.json",
+    "sha256": "7decd795ee515e65cdc6793413e099a9d4255e9670be0687944ab1513f4dfee9",
+    "checker": "scripts/check_cornacchia_masked_refresh_m33.py",
+    "checker_sha256": "9fd8eeb7e41a44d09d6e137fba70d8b1f1a17ffe6bc090b07a8618dc8705a193",
+    "analog_dataset_template": "experiments/sca/masked-refresh-analog-dataset-template.json",
+    "analog_dataset_template_sha256": "0672c26ccaed1e0d78fff9cf67de84c751e3b9d1d8dbb14c74f2424b938cc954",
+    "hd_scorer": "scripts/score_masked_refresh_m33_hd.py",
+    "hd_scorer_sha256": "6b3340e0b326675a1c1b3c509533a1d52e5383dd6e42aea02549b48d5f68436c",
+    "decision_template": "experiments/sca/masked-refresh-analog-decision-template.json",
+    "decision_template_sha256": "41d18544d78b16e340b14537e6cff560170288c7a978e6113b785fe09abecdba",
+    "campaign_comparator": "scripts/compare_masked_refresh_m33_campaigns.py",
+    "campaign_comparator_sha256": "7e3c18a2d934b4697ed72da1383693829482ffbf000ea6e07e36a2cd841b8c72",
+    "tooling_checker": "scripts/check_masked_refresh_analog_tooling.py",
+    "tooling_checker_sha256": "9dae7241861c60d1ecc9052d77df3a1d1a4730f0e34df4d2e014092eb4e58871",
+    "decision": "exact one-word Cortex-M33 assembly, QEMU functionality, a byte-audited RP2350 acquisition image, 12 serial smoke records and a reduced zero-precharge HD model are frozen; no analog traces exist, physical RP2350 leakage remains unknown, and ANALOG-5 is mandatory before reuse"
+  },
+  "campaigns": [
+    {
+      "id": "ANALOG-0",
+      "purpose": "instrument, trigger, clipping and alignment calibration",
+      "datasets": [
+        "fixture 0 split into balanced control_a/control_b labels",
+        "fixture 0 repeated versus a balanced cycle over fixtures 1..15"
+      ],
+      "acceptance": "stable public trigger/alignment and a quiet fixed-vs-fixed negative control in two independent acquisitions",
+      "failure_or_inconclusive": "trigger ambiguity, clipping, clock drift, or a noisy negative control prevents security interpretation"
+    },
+    {
+      "id": "ANALOG-1",
+      "purpose": "attack-driven single/few-trace SPA, first on the isolated Legendre exponentiation and then on directly invertible powers inside the integrated square root",
+      "trace_budgets_per_fixture": [
+        1,
+        10,
+        100
+      ],
+      "minimum_public_fixtures": 16,
+      "analysis": [
+        "freeze an ePrint-2025/830-style exponent segmentation and bit classifier before viewing protected results",
+        "test the direct selector-mask hypothesis separately from prefix-state and Montgomery-operand hypotheses",
+        "score all 521 isolated Legendre-exponent bits against research-only ground truth and score the current C input relation m=2e+1",
+        "after the isolated classifier is frozen, segment the integrated m mod 8 = 5 square root and score q=(m-1)/4 and (q+1)/2=(m+3)/8 with the paper's three input-candidate formulas",
+        "report every fixture/budget/trial including no-candidate and trace-failure cells",
+        "report exact exponent recovery, exact input-candidate recovery, bit accuracy, Hamming distance and guess rank"
+      ],
+      "stages": [
+        {
+          "id": "ANALOG-1A",
+          "target": "isolated public-fixture Legendre e=(m-1)/2 pow",
+          "input_relation": "m=2e+1",
+          "claim_boundary": "classifier and leakage calibration; the frozen m values are public"
+        },
+        {
+          "id": "ANALOG-1B",
+          "target": "integrated protected square-root q and (q+1)/2 powers for public m congruent to 5 modulo 8",
+          "input_relations": [
+            "m=4e+1",
+            "m=8e-3",
+            "m=8e+5"
+          ],
+          "claim_boundary": "public-fixture reproduction of the paper's input-recovery step before any secret-distribution or whole-Sign claim"
+        }
+      ],
+      "scorer": "scripts/score_sca_exponent_recovery.py",
+      "input_recovery_checker": "scripts/check_sca_published_spa_input_recovery.py",
+      "acceptance": "no exact exponent or input recovery within the preregistered budgets in both ANALOG-1A and ANALOG-1B across two independent campaigns",
+      "warning": "failure to recover is bounded empirical evidence, not proof against stronger preprocessing, profiling, DPA or full key recovery"
+    },
+    {
+      "id": "ANALOG-2",
+      "purpose": "fixed-fixture versus varying-public-fixture leakage assessment on the isolated exponentiation, followed by the integrated square-root image if the segment campaign is interpretable",
+      "minimum_traces_per_class": 10000,
+      "schedule": "balanced AB/BA with independently permuted acquisition order and a second independent campaign",
+      "analysis": [
+        "point-wise first-order Welch t-test",
+        "point-wise centered-square second-order Welch t-test",
+        "effect sizes and confidence intervals in the final campaign report",
+        "fixed-vs-fixed negative control",
+        "trace-quality, clipping, alignment and execution-position diagnostics"
+      ],
+      "analyzer": "scripts/analyze_sca_analog_tvla.py",
+      "exploratory_threshold": "absolute t below 4.5 in both primary and negative-control datasets of both campaigns",
+      "warning": "a TVLA-style non-detection does not establish constant time or rule out SPA, DPA, profiling or horizontal attacks"
+    },
+    {
+      "id": "ANALOG-3",
+      "purpose": "conditional multi-call attack gate for any future exponent-randomized or masked square-root candidate",
+      "precondition": "execute only after a candidate exists and ANALOG-1 produces per-call exponent candidates or ranked hypotheses; it is not evidence about the current unblinded firmware",
+      "measured_window": "the integrated square-root image, with the Legendre, c=z^q, x=n^((q+1)/2), and t=n^q power segments grouped under the same modulus and acquisition invocation",
+      "analysis": [
+        "retain every per-call candidate and rank rather than only the best single exponent",
+        "apply each public affine relation N_i=k2_i*E_i-(k1_i+1)",
+        "compute GCDs for the repeated q pair and all four transformed values",
+        "report exact p-1 recovery, residual multiplier, candidate-rank combinations and total trace budget",
+        "repeat in two independent acquisitions and include failed segmentation/recovery cells"
+      ],
+      "rejection_rule": "any reproducible recovery of p-1 or p from the composed candidates rejects the randomized construction regardless of blind width or single-call TVLA result",
+      "acceptance_boundary": "non-recovery is bounded empirical evidence only and cannot establish masking security, because classifier errors, larger candidate lists, more traces or another leakage model may change the result"
+    },
+    {
+      "id": "ANALOG-4",
+      "purpose": "conditional transition-aware validation for any future software-masked selector and Montgomery-state candidate",
+      "precondition": "execute only after the masked-Montgomery scope checker passes for a reviewed end-to-end implementation, final Cortex-M33 assembly freezes share locations/order, and correctness/RNG/nonpublication tests pass",
+      "analysis": [
+        "verify coverage of the temporary modulus, Montgomery inverse and radix residues, base/exponent/selector, accumulator prefix, multiply/reduce temporaries and Tonelli--Shanks state before collecting traces",
+        "inspect final assembly for share recombination, register reuse, spills, adjacent share loads/stores and unmasked temporaries",
+        "align traces to each share operation and test static Hamming-weight plus consecutive-operation Hamming-distance hypotheses",
+        "run first-order, centered-product and higher-order tests over share pairs and mask-refresh boundaries",
+        "attempt horizontal selector-bit and exponent-prefix recovery rather than relying only on fixed-vs-random TVLA",
+        "repeat with changed compiler optimization and register allocation as a separate build, not pooled traces"
+      ],
+      "rejection_rule": "any reproducible bit/state recovery, positive transition model, unmasked compiler temporary or unintended share recombination rejects the implementation",
+      "acceptance_boundary": "two negative campaigns under frozen builds are bounded evidence, not a composable probing-security proof or approval of the whole signer"
+    },
+    {
+      "id": "ANALOG-5",
+      "purpose": "direct physical validation of the exact 32-bit arithmetic-share refresh before scaling it into masked Montgomery arithmetic",
+      "precondition": "build a dedicated RP2350 image whose interrupt-masked GPIO window contains exactly the frozen 66-byte refresh function; generate independent masks and prepare labels outside the window; freeze ELF/UF2/map and verify the linked function bytes",
+      "datasets": [
+        "balanced fixed-secret versus random-secret classes with independent uniform masks",
+        "two fixed secrets under independent masks for direct transition-model scoring",
+        "label-randomized fixed-versus-fixed negative control with identical input distribution"
+      ],
+      "minimum_traces_per_class": 10000,
+      "analysis": [
+        "point-wise first-order Welch t-test and confidence/effect-size report",
+        "point-wise centered-square characterization plus a preregistered cross-time centered-product second-order Welch screen over at most 4,096 pairs from two disjoint windows selected by public trigger/instruction timing before class analysis",
+        "correlate aligned subwindows against input-share, output-share, direct adjacent-share HD and frozen zero-precharge HD predictions",
+        "run scripts/score_masked_refresh_m33_hd.py on the frozen per-trace serial ground truth and retain every preregistered model, including null or contradictory results",
+        "score two deterministically permuted direct-share null models and treat a positive null screen as an inconclusive campaign control failure",
+        "attempt fixed-secret classification and secret-difference ranking from one and multiple refresh invocations",
+        "repeat the complete acquisition twice with independent masks and acquisition order",
+        "combine exactly six distinct reports with scripts/compare_masked_refresh_m33_campaigns.py; one-run peaks cannot reject or approve the primitive"
+      ],
+      "rejection_rule": "any reproducible first-order fixed-secret signal, direct adjacent-share prediction, secret classification above the preregistered control distribution, linked-byte mismatch or non-quiet negative control rejects the primitive",
+      "acceptance_boundary": "two negative first-order campaigns establish only bounded evidence for this one refresh primitive and frozen build; second-order leakage must be reported, and no result composes into masked multiplication, Montgomery arithmetic, Cornacchia or SQIsign resistance"
+    }
+  ],
+  "capture_requirements": {
+    "target": "RP2350 Cortex-M33 at the frozen clock, voltage, SDK, compiler and primary-segment firmware hashes above",
+    "channels": [
+      "shunt power or calibrated current probe",
+      "near-field EM when available",
+      "GPIO 2 public phase trigger"
+    ],
+    "metadata": [
+      "ELF/UF2/BIN/map hashes",
+      "board revision and serial",
+      "probe and oscilloscope model, serial and settings",
+      "firmware clock, voltage and interrupt policy",
+      "raw unfiltered traces, aligned derivative and acquisition-order labels",
+      "ground-truth labels kept outside production firmware"
+    ],
+    "segmentation": "first use the dedicated one-pow GPIO window for Legendre e=(m-1)/2; then freeze public-instruction-time subwindows for q and (q+1)/2 inside the integrated m mod 8 = 5 square-root image before viewing class labels; serial output must remain outside measured windows",
+    "raw_format": "little-endian float32 traces bound to a manifest, or a lossless instrument-native archive plus a hashed float32 analysis derivative"
+  },
+  "remaining_secret_dependent_surfaces": [
+    "operand and state-dependent switching inside regular Montgomery arithmetic and masked selection",
+    "validity, zero and publication branches outside the frozen successful calibration domain",
+    "the finite 32-prime non-residue bound and fail path",
+    "fixed-half-GCD operand, mask and state switching; the frozen source recurrence now has an independent 644-active-round sufficient bound inside the 1421-round schedule, but no formal compiled-program equivalence proof",
+    "Cornacchia and higher-level retry counts",
+    "the remainder of KeyGen and Sign",
+    "the reproducible host full-Sign edge/address differences observed in all four fixed/random pairs, pending localization, target reproduction and physical evaluation"
+  ],
+  "decision_rule": {
+    "pass": "ANALOG-0 controls pass, ANALOG-1A and ANALOG-1B have no exact exponent/input recovery, and ANALOG-2 has no positive primary or control screen in both independent campaigns",
+    "fail": "any reproducible exact exponent or Cornacchia-input recovery, or positive primary leakage result",
+    "inconclusive": "failed controls, insufficient traces, unstable acquisition, one-run-only alerts or missing raw/provenance artifacts",
+    "deployment_after_pass": "still blocked until the positive host full-Sign control/address differences, retries, half-GCD and residual arithmetic surfaces are addressed and the final target is evaluated",
+    "future_randomized_candidate": "must additionally execute ANALOG-3; a single-call non-recovery or TVLA non-detection cannot approve exponent blinding",
+    "future_masked_candidate": "must first pass the local ANALOG-5 primitive campaign, cover the complete checked dynamic-modulus Montgomery/Tonelli--Shanks scope, and then execute ANALOG-4 with final-assembly share tracking and transition-aware attacks; secret-independent share marginals or QEMU functionality cannot approve software masking"
+  }
+}

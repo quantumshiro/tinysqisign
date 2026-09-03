@@ -1,0 +1,114 @@
+{
+  "campaign_manifest": {
+    "path": "results/host/v3-fixed-key-timing-2026-09-04/manifest.json",
+    "sha256": "0c7641207bc7d2432e35066ce457f0360fb53459c2bcc0e04a78dbde9addfead"
+  },
+  "claim_boundary": "Ten official p324_3 keys copied into one fixed-address buffer, one fixed public message, one fixed signing RNG stream, two randomized schedule passes, and native Darwin/arm64 reference code.  This screen can expose repeatable key-associated host time but cannot certify an RP2350 trace, physical leakage, exploitability, or resistance.",
+  "d1_over_official_descriptive_ratio": {
+    "maximum": 1.0216170280569903,
+    "median": 1.0175397177371104,
+    "minimum": 1.0121283833752404,
+    "warning": "conditions were run sequentially on a non-isolated host"
+  },
+  "decision": {
+    "key_recovery_established": false,
+    "physical_leakage_established": false,
+    "repeatable_fixed_key_associated_host_timing_observed": true,
+    "rp2350_or_m4f_timing_tested": false,
+    "secret_dependent_control_or_address_trace_established": false,
+    "side_channel_resistance_established": false
+  },
+  "design": {
+    "fixed_key_buffer_address": true,
+    "fixed_message_bytes": 33,
+    "fixed_message_vector": 0,
+    "fixed_signing_rng_seed": "a5a4a7a6a1a0a3a2adacafaea9a8abaab5b4b7b6b1b0b3b2bdbcbfbeb9b8bbba85848786818083828d8c8f8e89888b8a",
+    "implementations": [
+      "official",
+      "d1"
+    ],
+    "key_count": 10,
+    "passes": [
+      "a",
+      "b"
+    ],
+    "repetitions_per_key_per_pass": 30,
+    "samples_per_implementation": 600,
+    "schedule": "deterministic Fisher-Yates shuffle; distinct public seed per pass",
+    "timed_region": "crypto_sign only; randombytes_init and verification excluded"
+  },
+  "implementations": {
+    "d1": {
+      "between_pass_key_median_spearman": 0.9878787878787879,
+      "fixed_key_associated_timing_detected": true,
+      "passes": {
+        "a": {
+          "fastest_key": 8,
+          "key_median_max_ns": 54566000,
+          "key_median_min_ns": 35027000,
+          "key_median_span_fraction": 0.526480296396093,
+          "key_median_span_ns": 19539000,
+          "median_within_key_mad_ns": 191000.0,
+          "slowest_key": 0,
+          "span_to_within_key_mad_ratio": 102.29842931937172
+        },
+        "b": {
+          "fastest_key": 8,
+          "key_median_max_ns": 54744000,
+          "key_median_min_ns": 35149500,
+          "key_median_span_fraction": 0.526312962080057,
+          "key_median_span_ns": 19594500,
+          "median_within_key_mad_ns": 187250.0,
+          "slowest_key": 0,
+          "span_to_within_key_mad_ratio": 104.64352469959947
+        }
+      },
+      "predeclared_screen_rule": "Spearman >= 0.8 in the two per-key median rankings, and in both passes between-key span >= 1% of the central median and >= 10x median within-key MAD"
+    },
+    "official": {
+      "between_pass_key_median_spearman": 1.0,
+      "fixed_key_associated_timing_detected": true,
+      "passes": {
+        "a": {
+          "fastest_key": 8,
+          "key_median_max_ns": 53791500,
+          "key_median_min_ns": 34340500,
+          "key_median_span_fraction": 0.5351657346457289,
+          "key_median_span_ns": 19451000,
+          "median_within_key_mad_ns": 80000.0,
+          "slowest_key": 0,
+          "span_to_within_key_mad_ratio": 243.1375
+        },
+        "b": {
+          "fastest_key": 8,
+          "key_median_max_ns": 54088000,
+          "key_median_min_ns": 34695000,
+          "key_median_span_fraction": 0.5291260811437615,
+          "key_median_span_ns": 19393000,
+          "median_within_key_mad_ns": 144500.0,
+          "slowest_key": 0,
+          "span_to_within_key_mad_ratio": 134.2076124567474
+        }
+      },
+      "predeclared_screen_rule": "Spearman >= 0.8 in the two per-key median rankings, and in both passes between-key span >= 1% of the central median and >= 10x median within-key MAD"
+    }
+  },
+  "outputs": {
+    "per_key_csv": "results/host/v3-fixed-key-timing-2026-09-04/per-key.csv",
+    "per_key_csv_sha256": "7d94d381dece32dccdb77dd495b7cfa1003d943c89dd3d80531611fc146db247"
+  },
+  "raw_csv": {
+    "path": "results/host/v3-fixed-key-timing-2026-09-04/raw.csv",
+    "rows": 1200,
+    "sha256": "93c7164c3ee7a3ca640e6fa0e1c31d8e983d48fa6d987582e32ee6f161b1bf8c"
+  },
+  "schema": "sqisign-v3-fixed-key-host-timing-analysis-v1",
+  "status": "PASS",
+  "validation": {
+    "all_signatures_verified": true,
+    "balanced_cells": true,
+    "key_address_confound_removed": true,
+    "official_and_d1_signatures_identical": true,
+    "stable_signature_per_key_under_fixed_rng_and_message": true
+  }
+}

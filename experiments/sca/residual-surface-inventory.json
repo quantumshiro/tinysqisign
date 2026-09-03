@@ -1,0 +1,587 @@
+{
+  "schema": "sqisign-sca-residual-surface-inventory-v4",
+  "scope": "Residual timing, power, EM and trace surfaces after regularizing the experimental Level-I Cornacchia modular-square-root exponentiation and fixed-round half-GCD control/address schedule, including a positive two-run host full-Sign control-flow/address screen, source localization of its first divergences, and caller-stack localization of their shared random-ideal-sampling owner",
+  "snapshot": {
+    "protected_base_commit": "c2a80712e32891c5228da3f49f0148993a4ec560",
+    "primary_firmware_elf_sha256": "19dab1b1b0165b51ff407c0e6b481831b6f4636099b502809402ac439b0116bf",
+    "primary_firmware_uf2_sha256": "1f8b6ddc81acd98ebc6667d89135c1080de48a29953e4dd3a9e00d2d0c95681e",
+    "public_ground_truth_sha256": "b2f2ad5aefa13c628e4d6b32a035a598a8683db8a30de76c6f988454a7de9d52",
+    "halfgcd_firmware_elf_sha256": "8b2ce7d21c850df8af326f0ae199435481fd57c999e10235db19c3c0501a646c",
+    "halfgcd_firmware_uf2_sha256": "ce228b151a0c79234d9a51777a2b1ed3ac47388ab28f4dda4129a97f0086692f",
+    "halfgcd_build_evidence_sha256": "6bdc4eb441aca4f7860ac7530f86c10ce2b55bdd86e4ea93cbc4e4c4a8246d3a",
+    "legacy_euclid_firmware_elf_sha256": "3e1fd734a93826f8238df5a5ac30d3974316fa345b5cc8b5652eca70e4d2b9ae",
+    "legacy_euclid_firmware_uf2_sha256": "5e03b239ae40ac6defa01b5341dcded66ba9b095c6ed9eee8febf300898ca565",
+    "legacy_euclid_build_evidence_sha256": "2e5f21bcc0d437c827bd0db80a6ebcf90d3344d76dcd27f58ed91dfe6b274e40",
+    "legacy_euclid_capture_sha256": "75081efffd9cc1ec1d205a02d44d9c76d3fb8e419e5c44b104c31394e965909d",
+    "legacy_euclid_summary_sha256": "c423f26c4639092bad29becaeda6a14c5c398e0662f7f7f4499031810358fef4",
+    "halfgcd_positive_control_comparison_sha256": "14825c7c6dbcf6ef49136d228aa365952484f8943eb9b8cda739a3dd66695802",
+    "halfgcd_bound_contract_sha256": "7b54b3ede32e14a530d7d19b3be2f5f3e825a103bdeb1660b0cffc2fc5b571a4",
+    "halfgcd_bound_checker_sha256": "090fc36d42bee38ca43514cc9c78857aaa16ab8472746c75fe935192fe30aedf"
+  },
+  "published_spa_attack_closure": {
+    "path": "experiments/sca/published-spa-attack-closure.json",
+    "sha256": "009896049203ae500577d9b27cdd9e63f58768b0f567350003e77a538d560691",
+    "checker": "scripts/check_sca_published_spa_attack_closure.py",
+    "checker_sha256": "9f11df9d1badff5295e70ff0b4129bf875163fae8f6d305c496c177623ae2d32",
+    "arm_runner": "scripts/run_sca_published_spa_attack_closure_arm.sh",
+    "arm_runner_sha256": "c87c0e9a19596411051a2043d23f352615212359f0e704ffd258cb5e5a6207c1",
+    "normal_d13_route": "published attack prerequisite structurally reachable through legacy secret-bit-conditioned exponentiation",
+    "experimental_route": "fixed-work exponent schedule and fixed-round half-GCD remove the legacy accepted-path schedule edges, but the selector and arithmetic operands remain unmasked",
+    "frozen_sign_observation_budget": "12 signs; 361 Cornacchia square roots; 2,180 modular exponentiations; 75--409 exponentiations per Sign",
+    "claim_boundary": "source/runtime/Arm closure, public-fixture exponent-to-input algebra and authors' 54-bit Sage backtracking demo; no physical SPA, integrated secret-input recovery or current-C signing-key recovery"
+  },
+  "whole_sign_structural_trace": {
+    "first_raw": {
+      "path": "results/host/sca-d13-full-sign-control-address.csv",
+      "sha256": "262f443e39ab434191c4e2a784119aa416772e2bf776255229d91fe6cb71058a",
+      "bytes": 3631
+    },
+    "first_summary": {
+      "path": "results/host/sca-d13-full-sign-control-address.json",
+      "sha256": "725bcff2bdcae234da7b0ae3535bf97028053ba0834bee673560a75a6bb24378",
+      "bytes": 8639
+    },
+    "second_raw": {
+      "path": "results/host/sca-d13-full-sign-control-address-rerun.csv",
+      "sha256": "e88f93b5eeec8b9d79a5d967c5ebfe91261509813870116553333c2b9857707e",
+      "bytes": 3631
+    },
+    "second_summary": {
+      "path": "results/host/sca-d13-full-sign-control-address-rerun.json",
+      "sha256": "db2bb774c9f6178fe7818dac5b0a04be6df036dbb34fc364a45d1df365249b25",
+      "bytes": 8645
+    },
+    "binary": {
+      "path": "results/host/artifacts/sca-d13-full-sign-control-address",
+      "sha256": "a928eb337a07fd5e50c141733167c44114846f142eb4632a0e3a27d6188c615a",
+      "bytes": 1495512
+    },
+    "checker": "scripts/check_sca_control_flow_trace_artifacts.py",
+    "checker_sha256": "f24bc5084654fd6d40c928c52f58f642693f9bdf5bf2dba0e60d94d1dffc7a35",
+    "independent_process_runs": 2,
+    "control_pairs_per_run": 2,
+    "primary_pairs_per_run": 4,
+    "result": "fixed/fixed signatures, edge streams and address streams match in 2/2 pairs per run; fixed/random signatures, edge streams and address streams differ in 4/4 pairs per run; the stable decisions reproduce in two independent same-binary processes",
+    "claim_boundary": "positive host compiled-control/address evidence for the frozen four-seed corpus; two 64-bit streaming hashes and event counts are diagnostic rather than a formal trace proof, nearest-symbol labels are not exact source attribution, and no values, register switching, Cortex-M33 final-linked trace, power, EM or key recovery are observed"
+  },
+  "whole_sign_edge_localization": {
+    "first_raw": {
+      "path": "results/host/sca-d13-full-sign-edge-localization.csv",
+      "sha256": "c90a198708277d41a15dbb4ea8b6bef25d66718e06dd14505d7e8b6d075469b3",
+      "bytes": 1708
+    },
+    "first_summary": {
+      "path": "results/host/sca-d13-full-sign-edge-localization.json",
+      "sha256": "43418a05fe689f10265b4ba503c89865da391192aa4371729ec69cf55141c8d6",
+      "bytes": 10606
+    },
+    "first_binary": {
+      "path": "results/host/artifacts/sca-d13-full-sign-edge-localization",
+      "sha256": "86e78a1835b59ee96687c10440936a64da61a622c3cf334fd9fcee5821a05971",
+      "bytes": 1327872
+    },
+    "first_debug": {
+      "path": "results/host/artifacts/sca-d13-full-sign-edge-localization.dwarf",
+      "sha256": "495da7c5d21979573157f851588b631db051e55cf3ea9d7a09cc3263f92270f7",
+      "bytes": 1108476
+    },
+    "second_raw": {
+      "path": "results/host/sca-d13-full-sign-edge-localization-rerun.csv",
+      "sha256": "c5dd0c3f78dc5d064a815f6a15d8708a4c871c570fbe50c0d9ce6a6470627d34",
+      "bytes": 1708
+    },
+    "second_summary": {
+      "path": "results/host/sca-d13-full-sign-edge-localization-rerun.json",
+      "sha256": "17590a3e68a077f7ce61f845fb9208ac6b2806e342cc33fc36b16951b85d8000",
+      "bytes": 10696
+    },
+    "second_binary": {
+      "path": "results/host/artifacts/sca-d13-full-sign-edge-localization-rerun",
+      "sha256": "5934becade2d8a444fbec1fb7c13af042572575b62db08c66266580fc8cb9772",
+      "bytes": 1327872
+    },
+    "second_debug": {
+      "path": "results/host/artifacts/sca-d13-full-sign-edge-localization-rerun.dwarf",
+      "sha256": "67375bf7ea043ef959168332f8ab2c1578fb62435b222c9e4a4ecf39b802e8df",
+      "bytes": 1108476
+    },
+    "harness": {
+      "path": "experiments/sca/localize_sign_control_flow.c",
+      "sha256": "e5bfabbf1644bc49fc57dacb3d56d1ddaae34f482857dce62a41489e9f3fc908",
+      "bytes": 9031
+    },
+    "analyzer": {
+      "path": "scripts/analyze_sca_edge_localization.py",
+      "sha256": "c9d6cc6f09b811e484cae42766995b179ad0b3862649bf18e8a37f143362a614",
+      "bytes": 11587
+    },
+    "runner": {
+      "path": "scripts/run_sca_edge_localization.sh",
+      "sha256": "c0810f438d551560894c9db06a75cb58b12ff32b24ce3f92f33528dcbd73d848",
+      "bytes": 3476
+    },
+    "checker": {
+      "path": "scripts/check_sca_edge_localization_artifacts.py",
+      "sha256": "d0f4d7348d0c8410b2f74cdc6a26cd20a88f893a7a04a1a133b3ba246ee3e168",
+      "bytes": 12061
+    },
+    "source": {
+      "path": "work/compact-d13/src/quaternion/ref/generic/intbig.c",
+      "sha256": "9f7bb4222684374912cffe15001d89f74a3e8c9b71f759225fdd652f3d4b1a31"
+    },
+    "independent_clean_build_runs": 2,
+    "control_pairs_per_run": 1,
+    "primary_pairs_per_run": 4,
+    "localized_surfaces": [
+      "intbig.c:163-164 used-limb scan inlined at dividend-size computation line 250 for seeds 1 and 3",
+      "intbig.c:992-996 most-significant-limb early-exit comparison for seeds 2 and 5"
+    ],
+    "status": "first_host_control_divergences_localized_to_variable_integer_control",
+    "claim_boundary": "the first edge divergence in four fixed-key/message deterministic-RNG comparisons is reproducibly localized; this does not enumerate later divergences, prove all-input trace behavior, demonstrate long-term-key leakage, reproduce the final Cortex-M33 image, or provide power/EM or key-recovery evidence"
+  },
+  "whole_sign_first_divergence_stack": {
+    "first_raw": {
+      "path": "results/host/sca-d13-full-sign-first-divergence-stack.csv",
+      "sha256": "7aa904a205d24bf4f1c5b5e142fea19dc603f7a5d148ae762f4edb11b932c912",
+      "bytes": 8636
+    },
+    "first_summary": {
+      "path": "results/host/sca-d13-full-sign-first-divergence-stack.json",
+      "sha256": "9210a1a484724aafdffa1daf180a55af5ca0c6fc4834654ba9847d1b04fe2727",
+      "bytes": 30493
+    },
+    "first_binary": {
+      "path": "results/host/artifacts/sca-d13-full-sign-first-divergence-stack",
+      "sha256": "af095a60e73fc6ff2a0b13b9453022b08e00d28566e26facf16b52238f957c94",
+      "bytes": 561264
+    },
+    "first_debug": {
+      "path": "results/host/artifacts/sca-d13-full-sign-first-divergence-stack.dwarf",
+      "sha256": "513704f0d6fe171059b1dd8a9d50749d9ed618e8ef3b4679289c3b87be4173d1",
+      "bytes": 365724
+    },
+    "second_raw": {
+      "path": "results/host/sca-d13-full-sign-first-divergence-stack-rerun.csv",
+      "sha256": "1415624b76974b5cae460a6415cbaeac736067b0b91150a4a1a0022ca55c44ca",
+      "bytes": 8636
+    },
+    "second_summary": {
+      "path": "results/host/sca-d13-full-sign-first-divergence-stack-rerun.json",
+      "sha256": "f486c5b56d5bf2da1eaae5eebbb4b822a91fa5b9bf7ac5c21e6649f4f4278dce",
+      "bytes": 31015
+    },
+    "second_binary": {
+      "path": "results/host/artifacts/sca-d13-full-sign-first-divergence-stack-rerun",
+      "sha256": "df126e5dc1f0977953fee069f63dc138bb9347751bf686a783e034d85ac9ea0e",
+      "bytes": 561264
+    },
+    "second_debug": {
+      "path": "results/host/artifacts/sca-d13-full-sign-first-divergence-stack-rerun.dwarf",
+      "sha256": "e1f1d303e9ec02c6f134c8f23c57a3e08b80c90731502347d49974aef75b7cd7",
+      "bytes": 365724
+    },
+    "harness": {
+      "path": "experiments/sca/trace_sign_first_divergence_stack.c",
+      "sha256": "f6799072361c31eeb796ffc18a36791e7ffa3798cbc848cf18fca63a224349b0",
+      "bytes": 3625
+    },
+    "analyzer": {
+      "path": "scripts/analyze_sca_first_divergence_stack.py",
+      "sha256": "7ee9ca2b68e56db58ef5ca3d0c844605413c0522b85fb292aca01749c695ebcc",
+      "bytes": 9690
+    },
+    "runner": {
+      "path": "scripts/run_sca_first_divergence_stack.sh",
+      "sha256": "1dbc96907afa60ab67f2643809774bc3836fc2435b3cb95f8b17fa3e957eece6",
+      "bytes": 3413
+    },
+    "checker": {
+      "path": "scripts/check_sca_first_divergence_stack_artifacts.py",
+      "sha256": "baa27a2d19c78e59d0ac17ce0c2b88bf02bd811eb119909fca482f27828ace47",
+      "bytes": 13927
+    },
+    "independent_clean_build_runs": 2,
+    "captured_groups_per_run": 8,
+    "common_owner": "quat_sampling_random_ideal_O0_given_norm_impl",
+    "division_chain": "ibz_divrem_unsigned_wide -> ibz_div -> ibz_div_floor -> ibz_mod -> quat_alg_norm_mod -> random-ideal sampler -> protocols_sign_with_workspace -> sqisign_sign_with_workspace",
+    "comparison_chain": "ibz_cmp -> ibz_rand_interval -> random-ideal sampler -> protocols_sign_with_workspace -> sqisign_sign_with_workspace",
+    "status": "first_host_divergence_callers_localized_to_random_ideal_sampling",
+    "claim_boundary": "the caller stacks reproduce for the first divergence of four fixed-key/message deterministic-RNG comparisons; they identify a common remediation boundary but do not prove all-input behavior, show long-term-key leakage, enumerate later divergences, reproduce the Cortex-M33 image, or provide physical power/EM evidence"
+  },
+  "decision": {
+    "published_operation_count_branch_removed_on_experimental_route": true,
+    "cornacchia_euclid_schedule_regularized_on_experimental_route": true,
+    "matched_legacy_timer_positive_control_detected": true,
+    "halfgcd_source_recurrence_bound_machine_checked": true,
+    "analog_positive_control_detected": false,
+    "fixed_instruction_schedule_only": true,
+    "first_order_masking_present": false,
+    "exponent_or_base_blinding_present": false,
+    "physical_power_or_em_evaluated": false,
+    "published_algebraic_backtracking_reproduced_on_author_toy": true,
+    "whole_sign_host_control_flow_difference_observed": true,
+    "whole_sign_host_memory_address_difference_observed": true,
+    "whole_sign_structural_trace_reproduced": true,
+    "whole_sign_first_control_divergences_localized": true,
+    "whole_sign_variable_integer_control_observed": true,
+    "whole_sign_first_divergence_callers_localized": true,
+    "whole_sign_random_ideal_sampling_common_owner_observed": true,
+    "whole_sign_fixed_width_fixed_round_random_ideal_remediation_required": true,
+    "whole_sign_long_term_key_leakage_demonstrated": false,
+    "whole_sign_constant_time": false,
+    "published_key_recovery_attack_blocked": false,
+    "side_channel_resistant": false,
+    "production_signing_approved": false
+  },
+  "literature": [
+    {
+      "id": "LIT-SPA-2025-830",
+      "title": "Simple Power Analysis Attack on SQIsign",
+      "reference": "IACR ePrint 2025/830; AFRICACRYPT 2025; DOI 10.1007/978-3-031-97260-7_12",
+      "url": "https://eprint.iacr.org/2025/830",
+      "relevance": "Targets the secret-derived exponentiation used by Cornacchia modular square root and gives a route from recovered information to the signing key."
+    },
+    {
+      "id": "LIT-TIMING-2023-807",
+      "title": "Ready to SQI? Safety First!",
+      "reference": "IACR ePrint 2023/807",
+      "url": "https://eprint.iacr.org/2023/807",
+      "relevance": "Shows that leakage of Cornacchia inputs and outputs enables polynomial-time key recovery and proposes constant-time half-GCD and randomized lattice-reduction alternatives."
+    },
+    {
+      "id": "LIT-CTINT-2025-832",
+      "title": "Constant-Time Integer Arithmetic for SQIsign",
+      "reference": "IACR ePrint 2025/832; AFRICACRYPT 2025; DOI 10.1007/978-3-031-97260-7_10",
+      "url": "https://eprint.iacr.org/2025/832",
+      "relevance": "Reference design for fixed-size, GMP-free constant-time division, exponentiation, integer square root and modular reduction; comparison or integration remains future work."
+    }
+  ],
+  "source_snapshots": [
+    {
+      "id": "SRC-POW-FROZEN",
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/source/protected/src/quaternion/ref/generic/montgomery_fixedwork_521.c",
+      "sha256": "2c867bd1d32beda6b9ce94c4e285292de1daf73917107ebce4b149924a5050f6",
+      "role": "Exact source linked into the primary one-exponentiation acquisition firmware",
+      "required_markers": [
+        "const uint32_t one_mask = UINT32_C(0) - choose_one;",
+        "montgomery_multiply_words(scratch->square,",
+        "montgomery_multiply_words(scratch->multiplied,",
+        "const uint32_t exponent_bit =",
+        "select_words(scratch->result,",
+        "exponent_bit);"
+      ]
+    },
+    {
+      "id": "SRC-SQRT-FROZEN",
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/source/protected/src/quaternion/ref/generic/sqrt_mod_fixedwork_521.c",
+      "sha256": "f63849130c935a781c6e0e99990fbe81a0ff246d492875a9ef46d65971f345fc",
+      "role": "Exact fixed-outer square-root source used to build the acquisition firmware",
+      "required_markers": [
+        "static uint32_t\nfactor_power_of_two_fixed",
+        "select_first_nonresidue_fixed(",
+        "tonelli_shanks_fixed_schedule(",
+        "const uint32_t input_has_no_root =",
+        "if (input_has_no_root)",
+        "if (!input_is_residue)"
+      ]
+    },
+    {
+      "id": "SRC-CORNACCHIA-FIXED-HALFGCD",
+      "path": "work/compact-sca-ct3/src/quaternion/ref/generic/integers.c",
+      "sha256": "f28278b531fd6ddc2d4b12120e9cfa9e8ebbb8e5102bae2b197ad834aa524c8b",
+      "role": "Current experimental Sign integration selecting the fixed 1421-round half-GCD without a legacy Euclid fallback on the protected route",
+      "required_markers": [
+        "ibz_cornacchia_prime(",
+        "SQISIGN_CORNACCHIA_FIXED_HALFGCD_492",
+        "sqisign_sca_cornacchia_halfgcd_492(",
+        "violates the protected domain and must never fall back"
+      ]
+    },
+    {
+      "id": "SRC-REPRESENT-WIP",
+      "path": "work/compact-sca-ct3/src/quaternion/ref/generic/normeq.c",
+      "sha256": "3fa1480eb2ce031f96a40539be550a1f364c48b0c6a30fb735f63b13afee770e",
+      "role": "Current experimental integration showing secret-derived search, primality, retry and publication behavior above Cornacchia",
+      "required_markers": [
+        "quat_represent_integer(",
+        "while (!found && ibz_cmp(&counter, &ibz_const_zero) != 0)",
+        "ibz_probab_prime(&cornacchia_target",
+        "found = ibz_cornacchia_prime(",
+        "while (!beta_ok)",
+        "while (!found)"
+      ]
+    },
+    {
+      "id": "SRC-INTBIG-WIP",
+      "path": "work/compact-sca-ct3/src/quaternion/ref/generic/intbig.c",
+      "sha256": "9f7bb4222684374912cffe15001d89f74a3e8c9b71f759225fdd652f3d4b1a31",
+      "role": "Fixed-size backend still containing operand-dependent normalization, division, primality and legacy square-root loops outside the narrow protected primitive",
+      "required_markers": [
+        "while (capacity > 0 && value[capacity - 1] == 0)",
+        "while (!ibz_is_zero(&u))",
+        "while (ibz_is_even(&d))",
+        "while (!ibz_is_one(&t))"
+      ]
+    }
+  ],
+  "source_level_selector_model": {
+    "status": "idealized_source_model_not_physical_measurement",
+    "schedule_bits": 521,
+    "selector_word_bits": 32,
+    "selector_mask_hamming_weight": {
+      "exponent_bit_0": 0,
+      "exponent_bit_1": 32
+    },
+    "perfect_mask_observation_exactly_recovers_all_fixture_exponents": true,
+    "fixture_count": 16,
+    "interpretation": "The all-zero/all-one selector mask is an unmasked first-order representation of each exponent bit. This proves only a source-level leakage hypothesis; compiler, microarchitecture, probe placement and noise determine whether it is observable physically."
+  },
+  "surfaces": [
+    {
+      "id": "SURF-POW-OPCOUNT",
+      "priority": "P0",
+      "scope": "isolated Cornacchia exponentiation",
+      "secret": "ephemeral exponent bits",
+      "mechanism": "legacy square-and-multiply executed a multiply only for one bits",
+      "status": "schedule_regularized_analog_unresolved",
+      "current_control": "both square and multiply execute in every one of 521 rounds",
+      "residual_risk": "regular control flow alone does not suppress value-dependent switching or horizontal attacks",
+      "source_ids": ["SRC-POW-FROZEN"],
+      "literature_ids": ["LIT-SPA-2025-830"],
+      "required_evidence": [
+        "two independent interpretable ANALOG-1 campaigns",
+        "no exact exponent recovery at frozen 1, 10 and 100 trace budgets",
+        "integrated square-root and whole-Sign follow-up"
+      ],
+      "claim_withheld": "published_key_recovery_attack_blocked"
+    },
+    {
+      "id": "SURF-POW-SELECTOR",
+      "priority": "P0",
+      "scope": "isolated Cornacchia exponentiation",
+      "secret": "one exponent bit per round",
+      "mechanism": "select_words forms an all-zero or all-one 32-bit mask directly from the exponent bit",
+      "status": "unmitigated_value_dependent_switching",
+      "current_control": "branchless mask selection",
+      "residual_risk": "the selector word and selected data remain first-order functions of the secret bit",
+      "source_ids": ["SRC-POW-FROZEN"],
+      "literature_ids": ["LIT-SPA-2025-830"],
+      "required_evidence": [
+        "physical SPA/EM bit-classification result on the frozen one-pow firmware",
+        "a masking, blinding or otherwise justified value-hiding countermeasure if classification succeeds",
+        "post-countermeasure attack rerun"
+      ],
+      "claim_withheld": "first_order_power_resistant"
+    },
+    {
+      "id": "SURF-POW-PREFIX-STATE",
+      "priority": "P0",
+      "scope": "isolated Cornacchia exponentiation",
+      "secret": "prefix of the ephemeral exponent",
+      "mechanism": "the selected result becomes the next round's square and multiply operand",
+      "status": "unmitigated_value_dependent_switching",
+      "current_control": "fixed operation and address schedule",
+      "residual_risk": "Montgomery operands and intermediate states depend on every preceding exponent bit",
+      "source_ids": ["SRC-POW-FROZEN"],
+      "literature_ids": ["LIT-SPA-2025-830"],
+      "required_evidence": [
+        "horizontal single-trace and profiled multi-trace attacks against intermediate-state leakage",
+        "power/EM leakage assessment after any value-hiding countermeasure"
+      ],
+      "claim_withheld": "horizontal_attack_resistant"
+    },
+    {
+      "id": "SURF-MONTGOMERY-DATAPATH",
+      "priority": "P0",
+      "scope": "fixed 17-word Montgomery multiply and reduction",
+      "secret": "secret-derived operands, products, carries and conditional-reduction borrow",
+      "mechanism": "fixed loops process data-dependent partial products, carry chains and selection masks",
+      "status": "unmitigated_value_dependent_switching",
+      "current_control": "fixed loop bounds and memory indices",
+      "residual_risk": "constant control flow is not a masking or hiding proof",
+      "source_ids": ["SRC-POW-FROZEN"],
+      "literature_ids": ["LIT-CTINT-2025-832"],
+      "required_evidence": [
+        "operand/state leakage models preregistered before protected traces are inspected",
+        "first- and higher-order physical leakage campaigns",
+        "comparison with the published constant-time integer implementation"
+      ],
+      "claim_withheld": "constant_power_arithmetic"
+    },
+    {
+      "id": "SURF-FIXED-REDUCTION-MASKS",
+      "priority": "P1",
+      "scope": "fixed signed input reduction",
+      "secret": "input bits, sign, subtraction borrows and reduced residue",
+      "mechanism": "521 fixed rounds still select using secret-derived borrow and sign masks",
+      "status": "unmitigated_value_dependent_switching",
+      "current_control": "fixed loop count removed a reproducible coarse timing effect",
+      "residual_risk": "nonpositive microsecond timing is not an analog leakage result",
+      "source_ids": ["SRC-POW-FROZEN"],
+      "literature_ids": ["LIT-CTINT-2025-832"],
+      "required_evidence": [
+        "integrated fixed-vs-random power/EM traces covering reduction",
+        "mask/state leakage tests"
+      ],
+      "claim_withheld": "analog_reduction_resistant"
+    },
+    {
+      "id": "SURF-TONELLI-SHANKS-MASKS",
+      "priority": "P1",
+      "scope": "fixed-outer modular square root",
+      "secret": "two-adicity-derived state, selected i, active state and intermediate residues",
+      "mechanism": "bounded rounds use secret-derived equality, less-than and selection masks",
+      "status": "unmitigated_value_dependent_switching",
+      "current_control": "fixed outer and inner loop bounds on the Level-I domain",
+      "residual_risk": "state and mask values remain correlated with secret-derived inputs",
+      "source_ids": ["SRC-SQRT-FROZEN"],
+      "literature_ids": ["LIT-SPA-2025-830", "LIT-CTINT-2025-832"],
+      "required_evidence": [
+        "integrated square-root analog campaign",
+        "state-oriented CPA or profiled attack"
+      ],
+      "claim_withheld": "fixed_outer_is_constant_power"
+    },
+    {
+      "id": "SURF-SQRT-STATUS",
+      "priority": "P1",
+      "scope": "modular-square-root API outside the isolated one-pow trigger",
+      "secret": "zero, residuosity, bound validity and success/failure state",
+      "mechanism": "status and publication paths retain secret-derived branches",
+      "status": "unmitigated_variable_control_flow",
+      "current_control": "successful frozen calibration domain only",
+      "residual_risk": "integrated executions can expose validity or retry behavior even when the pow loop is regular",
+      "source_ids": ["SRC-SQRT-FROZEN"],
+      "literature_ids": ["LIT-SPA-2025-830"],
+      "required_evidence": [
+        "all-domain branch/address audit",
+        "balanced success/no-root/fatal timing and analog experiments",
+        "proof that production secret distributions cannot trigger distinguishable failure paths"
+      ],
+      "claim_withheld": "complete_sqrt_side_channel_resistant"
+    },
+    {
+      "id": "SURF-CORNACCHIA-EUCLID",
+      "priority": "P1",
+      "scope": "Cornacchia after modular square root",
+      "secret": "Cornacchia inputs, quotient sequence and remainders",
+      "mechanism": "The legacy Euclidean division loop exposed secret-derived iteration and quotient behavior; the replacement retains unmasked, secret-derived operands, update masks and output state across a fixed schedule.",
+      "status": "schedule_regularized_analog_unresolved",
+      "current_control": "the protected Level-I route executes 1421 shift/subtract half-GCD rounds with one public loop back edge and no legacy division fallback; a matched 150-MHz RP2350 variable-Euclid positive control resolves the 95-versus-122-step classes by +1476.8667 us, while the fixed route's +0.2-us H/L mean has an approximate 95% CI crossing zero",
+      "residual_risk": "the 1421-round schedule now has an independent 644-active-round sufficient bound for the frozen source recurrence, but the compiled binary is not formally verified against that model, later output validation still uses variable-time integer primitives, fixed control/address flow does not hide operand or mask switching, and the timer positive control does not validate analog acquisition sensitivity",
+      "source_ids": ["SRC-CORNACCHIA-FIXED-HALFGCD"],
+      "literature_ids": ["LIT-TIMING-2023-807"],
+      "required_evidence": [
+        "two physical half-GCD campaigns with same-input negative controls and the already frozen legacy-variable firmware acquired as an analog positive control",
+        "attack-driven per-round mask/state classification and whole-Sign follow-up"
+      ],
+      "claim_withheld": "cornacchia_inputs_and_outputs_protected"
+    },
+    {
+      "id": "SURF-REPRESENT-SEARCH",
+      "priority": "P2",
+      "scope": "RepresentInteger and norm-equation search",
+      "secret": "candidate coordinates, primality outcomes, success and primitive checks",
+      "mechanism": "search length, continue paths, primality work and first-success publication are data dependent",
+      "status": "unmitigated_variable_control_flow",
+      "current_control": "none beyond fixed-size storage",
+      "residual_risk": "end-to-end timing and trace leakage remains measurable above Cornacchia",
+      "source_ids": ["SRC-REPRESENT-WIP", "SRC-INTBIG-WIP"],
+      "literature_ids": ["LIT-TIMING-2023-807", "LIT-CTINT-2025-832"],
+      "required_evidence": [
+        "complete call-path inventory with public/secret classification",
+        "bounded or randomized search design with an explicit leakage argument",
+        "whole-Sign attack-driven validation"
+      ],
+      "claim_withheld": "whole_sign_control_flow_independent"
+    },
+    {
+      "id": "SURF-HIGHER-LEVEL-RETRIES",
+      "priority": "P2",
+      "scope": "random ideal generation, lattice reduction, ML2 and higher-level signing retries",
+      "secret": "candidate acceptance, rank, norm and first-success state",
+      "mechanism": "multiple success-terminated loops and retry APIs remain",
+      "status": "unmitigated_variable_control_flow",
+      "current_control": "memory ownership is explicit but execution count is not regularized",
+      "residual_risk": "arena scheduling prevents allocation leakage but does not hide phase duration or arithmetic state",
+      "source_ids": ["SRC-REPRESENT-WIP", "SRC-INTBIG-WIP"],
+      "literature_ids": ["LIT-TIMING-2023-807"],
+      "required_evidence": [
+        "retry-count and phase-duration distributions",
+        "bounded retry policy with correctness and failure semantics",
+        "full signing traces"
+      ],
+      "claim_withheld": "retry_trace_independent"
+    },
+    {
+      "id": "SURF-WHOLE-SIGN",
+      "priority": "P2",
+      "scope": "complete signing operation",
+      "secret": "long-term signing key and every secret-derived intermediate",
+      "mechanism": "composition of remaining variable algorithms, retries, branches, addresses and switching leakage",
+      "status": "host_control_address_positive_random_ideal_owner_localized_target_and_physical_pending",
+      "current_control": "the protected square-root and half-GCD schedules are locally regularized, but two independent frozen host runs retain stable fixed/fixed controls while all four fixed/random Sign pairs differ in both full streamed edge and memory-address sequences; two clean source-localization builds map the first differences to a used-limb scan or early comparison, and two clean caller-stack builds show both paths share the random-ideal sampler",
+      "residual_risk": "the compiled host signer has secret-ephemeral-dependent execution structure on the measured corpus; a branchless comparison alone cannot regularize variable-width norm modular reduction, rejection count, RNG consumption and first-success publication; later divergences remain unenumerated, no affected integer primitive is yet remediated, and neither the final Cortex-M33 image nor physical leakage has been evaluated",
+      "source_ids": ["SRC-CORNACCHIA-FIXED-HALFGCD", "SRC-REPRESENT-WIP", "SRC-INTBIG-WIP"],
+      "literature_ids": ["LIT-SPA-2025-830", "LIT-TIMING-2023-807", "LIT-CTINT-2025-832"],
+      "required_evidence": [
+        "implement and validate a fixed-width, fixed-round random-ideal-sampling boundary covering norm modular reduction, candidate comparison, rejection budget, RNG semantics and first-success publication rather than patching only the visible comparison branch",
+        "continue beyond the remediated first host edge difference and enumerate each later reproducible phase/surface",
+        "repeat the full-Sign branch/address audit on the final linked Cortex-M33 signing image with fixed/fixed negative controls",
+        "full-sign power/EM TVLA-style campaigns with negative controls",
+        "attack-driven key or intermediate recovery attempts",
+        "final target compiler and linked-image review"
+      ],
+      "claim_withheld": "production_signing_approved"
+    },
+    {
+      "id": "SURF-BLINDING-AND-MASKING",
+      "priority": "P1",
+      "scope": "countermeasure composition",
+      "secret": "ephemeral exponent and arithmetic intermediates",
+      "mechanism": "no exponent/base blinding, Boolean/arithmetic masking or share refresh is present",
+      "status": "absent_countermeasure",
+      "current_control": "schedule regularization only",
+      "residual_risk": "naive blinding has not been proven to preserve all fixed-width domains, distributions, retries and correctness; it is not silently assumed",
+      "source_ids": ["SRC-POW-FROZEN", "SRC-SQRT-FROZEN"],
+      "literature_ids": ["LIT-SPA-2025-830"],
+      "required_evidence": [
+        "formally specified blinding or masking invariant",
+        "all-input fixed-width and correctness proof",
+        "fresh-randomness and failure analysis",
+        "physical attack rerun"
+      ],
+      "claim_withheld": "first_order_masked"
+    }
+  ],
+  "next_experiments": [
+    {
+      "id": "NEXT-ANALOG-POW",
+      "priority": "P0",
+      "status": "waiting_for_instrument",
+      "action": "Run the preregistered isolated one-pow SPA/EM classifier and TVLA-style campaigns on the exact frozen firmware.",
+      "evidence_target": "raw traces, acquisition metadata, predictions and reports bound to exact hashes"
+    },
+    {
+      "id": "NEXT-CTINT-REFERENCE",
+      "priority": "P1",
+      "status": "not_started",
+      "action": "Reproduce and compare the 2025/832 constant-time integer implementation under the same Level-I/RADIX32 correctness, stack, code-size and timing profiles.",
+      "evidence_target": "source/commit provenance, differential transcripts, Timecop-style results and Cortex-M33 measurements"
+    },
+    {
+      "id": "NEXT-CORNACCHIA",
+      "priority": "P1",
+      "status": "component_bound_and_timer_positive_control_complete_physical_pending",
+      "action": "Acquire the frozen matched legacy firmware as the analog positive control, then run protected power/EM and per-round mask/state campaigns before considering randomized alternatives.",
+      "evidence_target": "exact source/ELF evidence, differential correctness, two-session power/EM traces, and attack-driven per-round classifier results"
+    },
+    {
+      "id": "NEXT-WHOLE-SIGN",
+      "priority": "P2",
+      "status": "random_ideal_sampling_owner_localized_remediation_target_and_physical_pending",
+      "action": "Protect the shared random-ideal-sampling boundary with fixed-width norm modular arithmetic and a rigorously specified fixed-budget sampler, then continue phase-by-phase localization beyond the first divergence, reproduce the audit on the final Cortex-M33 image, and extend physical acquisition from isolated components to complete Sign.",
+      "evidence_target": "differential correctness and distribution/RNG/failure analysis for the protected sampler, phase-labelled host and target branch/address traces, final-linked target review, and whole-Sign power/EM evidence with stable fixed/fixed controls"
+    }
+  ]
+}

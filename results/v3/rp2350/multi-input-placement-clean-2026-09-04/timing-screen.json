@@ -1,0 +1,166 @@
+{
+  "claim_boundary": "The official KAT vectors change seed, key pair, and message together.  The screen therefore shows reproducible input-associated timing structure on one board, not fixed-key leakage attribution, power/EM leakage, or an attack.",
+  "decision": {
+    "fixed_key_leakage_established": false,
+    "key_recovery_established": false,
+    "power_or_em_leakage_established": false,
+    "production_signing_approved": false,
+    "repeatable_input_associated_sign_timing_observed": true,
+    "side_channel_resistance_established": false
+  },
+  "design": {
+    "board_count": 1,
+    "clock_hz": 150000000,
+    "repetition_mechanism": "two linked placements separated by 1024 code bytes",
+    "repetitions_per_implementation_and_vector": 2,
+    "vectors": 10
+  },
+  "results": {
+    "baseline": {
+      "keygen": {
+        "placement_a_vs_b_pearson": 0.9999993033826188,
+        "placement_a_vs_b_spearman": 1.0,
+        "placement_pair_delta_percent": {
+          "max": 0.018606646939823637,
+          "median": -0.0060986284619143245,
+          "min": -0.031331014158782214
+        },
+        "pooled_time_us": {
+          "coefficient_of_variation": 0.11633718941895857,
+          "max": 2854694.0,
+          "max_over_min": 1.3702500506398865,
+          "median": 2263968.0,
+          "min": 2083338.0
+        },
+        "vectors": 10
+      },
+      "negative": {
+        "placement_a_vs_b_pearson": 0.999992223315085,
+        "placement_a_vs_b_spearman": 1.0,
+        "placement_pair_delta_percent": {
+          "max": 0.030856887061620333,
+          "median": 0.022415028381581645,
+          "min": -0.026690432756355804
+        },
+        "pooled_time_us": {
+          "coefficient_of_variation": 0.037587902056137316,
+          "max": 462031.0,
+          "max_over_min": 1.0836487900067078,
+          "median": 445527.5,
+          "min": 426366.0
+        },
+        "vectors": 10
+      },
+      "sign": {
+        "placement_a_vs_b_pearson": 0.9999998665768214,
+        "placement_a_vs_b_spearman": 1.0,
+        "placement_pair_delta_percent": {
+          "max": 0.00492971549903864,
+          "median": -0.0049403705292540455,
+          "min": -0.02071685915047852
+        },
+        "pooled_time_us": {
+          "coefficient_of_variation": 0.13927900289272163,
+          "max": 8992085.0,
+          "max_over_min": 1.4746351862143905,
+          "median": 7134887.0,
+          "min": 6097837.0
+        },
+        "vectors": 10
+      },
+      "verify": {
+        "placement_a_vs_b_pearson": 0.9999770151497037,
+        "placement_a_vs_b_spearman": 1.0,
+        "placement_pair_delta_percent": {
+          "max": 0.04106885314019699,
+          "median": 0.008160336332650786,
+          "min": -0.0065470496448225566
+        },
+        "pooled_time_us": {
+          "coefficient_of_variation": 0.0199559742858846,
+          "max": 860731.0,
+          "max_over_min": 1.0436328804660835,
+          "median": 843990.0,
+          "min": 824745.0
+        },
+        "vectors": 10
+      }
+    },
+    "d1": {
+      "keygen": {
+        "placement_a_vs_b_pearson": 0.9999996700398933,
+        "placement_a_vs_b_spearman": 1.0,
+        "placement_pair_delta_percent": {
+          "max": 0.016791063503984682,
+          "median": -0.0013907872029857613,
+          "min": -0.02194279844057964
+        },
+        "pooled_time_us": {
+          "coefficient_of_variation": 0.11458515802403225,
+          "max": 2883257.0,
+          "max_over_min": 1.3645944160264736,
+          "median": 2292906.0,
+          "min": 2112904.0
+        },
+        "vectors": 10
+      },
+      "negative": {
+        "placement_a_vs_b_pearson": 0.9999848299438985,
+        "placement_a_vs_b_spearman": 0.9878787878787879,
+        "placement_pair_delta_percent": {
+          "max": 0.056499559256550196,
+          "median": 0.012657323080866385,
+          "min": -0.011815184262174563
+        },
+        "pooled_time_us": {
+          "coefficient_of_variation": 0.036314723014973405,
+          "max": 457611.0,
+          "max_over_min": 1.0811275019372886,
+          "median": 441623.0,
+          "min": 423272.0
+        },
+        "vectors": 10
+      },
+      "sign": {
+        "placement_a_vs_b_pearson": 0.9999999119708065,
+        "placement_a_vs_b_spearman": 1.0,
+        "placement_pair_delta_percent": {
+          "max": 0.008209756370511044,
+          "median": 0.001615855708182926,
+          "min": -0.007829588831543883
+        },
+        "pooled_time_us": {
+          "coefficient_of_variation": 0.1377704474234992,
+          "max": 9094563.0,
+          "max_over_min": 1.468728627114437,
+          "median": 7229949.0,
+          "min": 6192133.0
+        },
+        "vectors": 10
+      },
+      "verify": {
+        "placement_a_vs_b_pearson": 0.9999577775408035,
+        "placement_a_vs_b_spearman": 1.0,
+        "placement_pair_delta_percent": {
+          "max": 0.03157439182723078,
+          "median": 0.0015829183835350336,
+          "min": -0.034406165390315456
+        },
+        "pooled_time_us": {
+          "coefficient_of_variation": 0.0192063491721735,
+          "max": 853504.0,
+          "max_over_min": 1.042159965615598,
+          "median": 837472.5,
+          "min": 818976.0
+        },
+        "vectors": 10
+      }
+    }
+  },
+  "schema": "sqisign-v3-rp2350-ten-vector-timing-screen-v1",
+  "source": {
+    "path": "results/v3/rp2350/multi-input-placement-clean-2026-09-04/summary.json",
+    "sha256": "5e1d1cd821e83de58ce9cafaa5912dcddb4953cf2367d973fdf8d0728d1c0c88"
+  },
+  "status": "POSITIVE_INPUT_DEPENDENCE"
+}

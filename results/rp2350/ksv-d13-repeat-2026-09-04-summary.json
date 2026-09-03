@@ -1,0 +1,107 @@
+{
+  "binary": {
+    "firmware_commit": "dc3289add3213cc7671f9943dfaa3bac770b2709",
+    "path": "results/rp2350/artifacts/ksv-d13-dc3289a/sqisign_rp2350_ksv.uf2",
+    "sha256": "6971b9c84a42e26f08d761becd29c2c0e78b4ac1927ae19feb6b2f5c1a035a9f",
+    "sqisign_commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d"
+  },
+  "captures": [
+    {
+      "bytes": 1002,
+      "keygen_transcript_shake256_256": "1de4b175a5c3c376ec5f86593745fcdb8f697dbd40a78c63e70d3412dd177f61",
+      "msp_extent_upper_bytes": 2396,
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 91980,
+          "time_us": 2698150029
+        },
+        "sign": {
+          "psp_extent_bytes": 120452,
+          "time_us": 7611258527
+        },
+        "verify": {
+          "psp_extent_bytes": 20768,
+          "time_us": 814341
+        }
+      },
+      "path": "results/rp2350/ksv-d13-dc3289a.txt",
+      "sha256": "be762e7d2e79f424f52523981d06dbf0beda475cfcbb534b1218d05d01b3eff0",
+      "sign_transcript_shake256_256": "6717808acd4a27c160801d83d6bc66ccfaec635d04d7996a89910182657f2537"
+    },
+    {
+      "bytes": 1002,
+      "keygen_transcript_shake256_256": "1de4b175a5c3c376ec5f86593745fcdb8f697dbd40a78c63e70d3412dd177f61",
+      "msp_extent_upper_bytes": 2396,
+      "operations": {
+        "keygen": {
+          "psp_extent_bytes": 91980,
+          "time_us": 2698150324
+        },
+        "sign": {
+          "psp_extent_bytes": 120452,
+          "time_us": 7611257377
+        },
+        "verify": {
+          "psp_extent_bytes": 20768,
+          "time_us": 814356
+        }
+      },
+      "path": "results/rp2350/ksv-d13-repeat-2026-09-04.txt",
+      "sha256": "9391e8f81e951629817abe4cd801c8baa692cd3ccd7f3d75ecfb32d35fddc8e7",
+      "sign_transcript_shake256_256": "6717808acd4a27c160801d83d6bc66ccfaec635d04d7996a89910182657f2537"
+    }
+  ],
+  "claim_boundary": "Two boots reproduce one deterministic K/S/V path with the same archived UF2. This is bounded repetition evidence, not a multiple-input campaign, performance distribution, or worst-case stack proof.",
+  "decision": {
+    "both_boots_passed": true,
+    "input_distribution_established": false,
+    "performance_distribution_established": false,
+    "psp_extents_equal_across_boots": true,
+    "transcripts_equal_across_boots": true,
+    "worst_case_stack_bound_established": false
+  },
+  "design": {
+    "board_count": 1,
+    "boot_count": 2,
+    "deterministic_test_rng": true,
+    "distinct_input_count": 1,
+    "same_archived_uf2": true
+  },
+  "schema": "tinysqisign-v2-target-repeat-v1",
+  "status": "PASS",
+  "timing": {
+    "keygen": {
+      "max_us": 2698150324,
+      "median_us": 2698150176.5,
+      "min_us": 2698150029,
+      "n": 2,
+      "second_vs_first_percent": 1.0933417223998259e-05,
+      "values_us": [
+        2698150029,
+        2698150324
+      ]
+    },
+    "sign": {
+      "max_us": 7611258527,
+      "median_us": 7611257952.0,
+      "min_us": 7611257377,
+      "n": 2,
+      "second_vs_first_percent": -1.5109196408458825e-05,
+      "values_us": [
+        7611258527,
+        7611257377
+      ]
+    },
+    "verify": {
+      "max_us": 814356,
+      "median_us": 814348.5,
+      "min_us": 814341,
+      "n": 2,
+      "second_vs_first_percent": 0.0018419802023967847,
+      "values_us": [
+        814341,
+        814356
+      ]
+    }
+  }
+}

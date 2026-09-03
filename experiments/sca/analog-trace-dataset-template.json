@@ -1,0 +1,88 @@
+{
+  "schema": "sqisign-analog-trace-dataset-v1",
+  "status": "template_not_executed",
+  "path_base": "project_root",
+  "campaign_id": "replace-with-independent-campaign-id",
+  "independent_campaign": 0,
+  "purpose": "primary_fixed_vs_random",
+  "classes": [
+    "fixed",
+    "random"
+  ],
+  "class_assignment": {
+    "fixed": "repeat public fixture 0",
+    "random": "balanced cycle over public fixtures 1..15",
+    "interpretation": "The trigger contains only the protected exponentiation. A positive screen is actionable input/state-dependent leakage; a non-detection is not evidence that production-secret values are hidden."
+  },
+  "capture": {
+    "kind": "power",
+    "instrument_model": "replace",
+    "instrument_serial": "replace",
+    "probe_model": "replace-shunt-current-or-near-field-em-probe",
+    "channel": "replace",
+    "coupling": "replace",
+    "range": "replace",
+    "sample_rate_hz": 0,
+    "adc_bits": 0,
+    "raw_unfiltered_archived": false,
+    "board_revision": "replace",
+    "board_serial": "replace",
+    "clock_hz": 150000000,
+    "trigger_gpio": 2,
+    "interrupt_policy": "interrupts masked inside measured GPIO window"
+  },
+  "firmware": {
+    "elf": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/sqisign_rp2350_sca_cornacchia_pow_segment.elf",
+      "sha256": "19dab1b1b0165b51ff407c0e6b481831b6f4636099b502809402ac439b0116bf"
+    },
+    "uf2": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/sqisign_rp2350_sca_cornacchia_pow_segment.uf2",
+      "sha256": "1f8b6ddc81acd98ebc6667d89135c1080de48a29953e4dd3a9e00d2d0c95681e"
+    },
+    "bin": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/sqisign_rp2350_sca_cornacchia_pow_segment.bin",
+      "sha256": "4a67f1d6f73ea061db665c150deeaab6fa9a5bf6b44c34b2d2b4f9f14fa60081"
+    },
+    "map": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/sqisign_rp2350_sca_cornacchia_pow_segment.elf.map",
+      "sha256": "c6d69f521382c4aec16b109092d6ed03d88a03a564d2e0d9cbd4755bc546777e"
+    }
+  },
+  "raw_trace_file": {
+    "path": "replace-with-raw-unfiltered-float32-le-traces",
+    "sha256": "replace",
+    "format": "float32-le"
+  },
+  "analysis_trace_file": {
+    "path": "replace-with-frozen-aligned-and-cropped-float32-le-traces",
+    "sha256": "replace",
+    "format": "float32-le",
+    "trace_count": 0,
+    "samples_per_trace": 0
+  },
+  "labels_file": {
+    "path": "replace-with-labels-csv",
+    "sha256": "replace"
+  },
+  "preprocessing": {
+    "alignment": "replace-with-none-or-frozen-public-trigger-alignment",
+    "alignment_parameters": "replace",
+    "crop_start_sample": 0,
+    "crop_samples": 0,
+    "filter": "none unless preregistered",
+    "normalization": "none unless preregistered"
+  },
+  "analysis": {
+    "welch_threshold": 4.5,
+    "minimum_traces_per_class": 10000,
+    "tests": [
+      "point-wise first-order Welch",
+      "point-wise centered-square second-order Welch"
+    ]
+  },
+  "decision": {
+    "analog_capture_run": false,
+    "side_channel_resistance_established": false
+  }
+}

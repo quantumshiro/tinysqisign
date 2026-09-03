@@ -1,0 +1,162 @@
+{
+  "schema": "sqisign-masked-refresh-m33-analog-dataset-v2",
+  "status": "template_not_executed",
+  "path_base": "project_root",
+  "campaign_id": "replace-with-independent-analog-5-campaign-id",
+  "independent_campaign": 0,
+  "purpose": "fixed_a_vs_fixed_b",
+  "classes": [
+    "fixed_a",
+    "fixed_b"
+  ],
+  "class_assignment": {
+    "fixed_vs_random": "analysis classes fixed/random map to firmware commands A/R",
+    "fixed_a_vs_fixed_b": "analysis classes fixed_a/fixed_b map to firmware commands A/B",
+    "fixed_vs_fixed_control": "analysis classes control_a/control_b both map to command A; labels are assigned independently while the firmware input distribution is identical",
+    "pairing": "each pair contains one trace from each analysis class; AB and BA first positions differ by at most one",
+    "interpretation": "A positive direct-input/output-share HD, secret-HW or cross-time centered-product screen is a rejection signal only after the preregistered control and independent campaign confirm it. A negative screen is not a resistance proof."
+  },
+  "capture": {
+    "kind": "power",
+    "instrument_model": "replace",
+    "instrument_serial": "replace",
+    "probe_model": "replace-shunt-current-or-near-field-em-probe",
+    "channel": "replace",
+    "coupling": "replace",
+    "range": "replace",
+    "sample_rate_hz": 0,
+    "adc_bits": 0,
+    "raw_unfiltered_archived": false,
+    "board_revision": "replace",
+    "board_serial": "replace",
+    "clock_hz": 150000000,
+    "trigger_gpio": 2,
+    "interrupt_policy": "interrupts masked inside measured GPIO window"
+  },
+  "primitive_contract": {
+    "path": "experiments/sca/cornacchia-masked-refresh-m33.json",
+    "sha256": "7decd795ee515e65cdc6793413e099a9d4255e9670be0687944ab1513f4dfee9",
+    "bytes": 7984
+  },
+  "firmware": {
+    "elf": {
+      "path": "results/rp2350/artifacts/sca-masked-refresh-m33-17dee8f0/sqisign_rp2350_sca_masked_refresh_m33.elf",
+      "sha256": "1ec2a8457b13382f793bf962781efdd532b576771004df3ed1b08c61e5f2aabb",
+      "bytes": 640144
+    },
+    "uf2": {
+      "path": "results/rp2350/artifacts/sca-masked-refresh-m33-17dee8f0/sqisign_rp2350_sca_masked_refresh_m33.uf2",
+      "sha256": "17dee8f0c71e070f5cb371123419ddea3263b634ab71531cedf22dfbde369735",
+      "bytes": 64000
+    },
+    "bin": {
+      "path": "results/rp2350/artifacts/sca-masked-refresh-m33-17dee8f0/sqisign_rp2350_sca_masked_refresh_m33.bin",
+      "sha256": "63f2fb2b03c5b1c589d306a8c942310ee0af40c19f9c0a1e1da172accfa2b7b1",
+      "bytes": 31596
+    },
+    "map": {
+      "path": "results/rp2350/artifacts/sca-masked-refresh-m33-17dee8f0/sqisign_rp2350_sca_masked_refresh_m33.elf.map",
+      "sha256": "1637872ec3d56f123765b198a15b146cdda315450e4ac588c19c38bc743dc736",
+      "bytes": 584275
+    }
+  },
+  "raw_trace_file": {
+    "path": "replace-with-raw-unfiltered-float32-le-traces",
+    "sha256": "replace",
+    "bytes": 0,
+    "format": "float32-le"
+  },
+  "analysis_trace_file": {
+    "path": "replace-with-frozen-aligned-and-cropped-float32-le-traces",
+    "sha256": "replace",
+    "bytes": 0,
+    "format": "float32-le",
+    "trace_count": 0,
+    "samples_per_trace": 0
+  },
+  "labels_file": {
+    "path": "replace-with-labels-csv",
+    "sha256": "replace",
+    "bytes": 0,
+    "columns": [
+      "trace_index",
+      "pair_id",
+      "pair_position",
+      "analysis_class",
+      "command",
+      "sequence",
+      "secret",
+      "input0",
+      "input1",
+      "mask",
+      "output0",
+      "output1",
+      "scratch",
+      "valid",
+      "trigger_valid",
+      "clipped"
+    ]
+  },
+  "preprocessing": {
+    "alignment": "replace-with-none-or-frozen-public-trigger-alignment",
+    "alignment_parameters": "replace",
+    "crop_start_sample": 0,
+    "crop_samples": 0,
+    "filter": "none",
+    "normalization": "none"
+  },
+  "analysis": {
+    "minimum_traces_per_class": 10000,
+    "correlation_t_threshold": 4.5,
+    "welch_t_threshold": 4.5,
+    "models": [
+      "hw_secret",
+      "hd_direct_input_shares",
+      "hd_direct_output_shares",
+      "hw_input0",
+      "hw_input1",
+      "hw_mask",
+      "hw_output0",
+      "hw_output1",
+      "hd_input0_output0",
+      "hd_input1_output1",
+      "carry_count_add",
+      "borrow_count_sub",
+      "null_hd_direct_input_shares",
+      "null_hd_direct_output_shares"
+    ],
+    "null_model_permutation_seed_sha256": "bb007a18a46c5947b0749e72033aaf6359c5559e7310b97cef505580a7e93ca6",
+    "cross_time_second_order": {
+      "enabled": true,
+      "window_selection_basis": "two disjoint windows selected from public GPIO-triggered instruction timing before analysis-class labels or class statistics are inspected",
+      "window_selection_evidence": {
+        "path": "replace-with-frozen-public-timing-or-disassembly-evidence",
+        "sha256": "replace",
+        "bytes": 0
+      },
+      "window_a_start_sample": 0,
+      "window_a_samples": 0,
+      "window_b_start_sample": 0,
+      "window_b_samples": 0,
+      "maximum_pairs": 4096
+    },
+    "integrated_tests": [
+      "point-wise first-order Welch t-test",
+      "point-wise centered-square second-order Welch t-test",
+      "preregistered cross-time centered-product second-order Welch t-test between two disjoint public-timing windows",
+      "fixed-vs-fixed negative control",
+      "second independent acquisition",
+      "direct scalar leakage-model correlations from validated per-trace ground truth"
+    ],
+    "scorer": "scripts/score_masked_refresh_m33_hd.py"
+  },
+  "decision": {
+    "analog_capture_run": false,
+    "minimum_trace_budget_met": false,
+    "attack_model_screen_positive": false,
+    "reproducible_rejection_established": false,
+    "side_channel_resistance_established": false,
+    "production_approved": false
+  },
+  "scope": "Template, preregistered scalar models and at most 4,096 products inside two frozen windows only. Pairs outside those windows, joint multivariate and orders above two are not tested. Synthetic self-tests validate scorer behavior but are never physical evidence. Even two negative campaigns apply only to this exact one-word primitive, not masked multiplication, Montgomery arithmetic, Cornacchia, Sign or SQIsign."
+}

@@ -1,0 +1,97 @@
+{
+  "schema": "sqisign-finduv-equivalence-check-v1",
+  "status": "PASS",
+  "scope": "bounded frozen-source correspondence audit; not formal whole-program equivalence",
+  "reference_commit": "6b79cfb5cfe1c756d7061b92038d5069bda66f72",
+  "candidate_commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+  "checks": [
+    {
+      "check": "candidate commit is frozen D13",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate worktree has no tracked or untracked changes",
+      "status": "PASS"
+    },
+    {
+      "check": "D12c is the direct D13 parent",
+      "status": "PASS"
+    },
+    {
+      "check": "reference source digest",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate source digest",
+      "status": "PASS"
+    },
+    {
+      "check": "reference row-enumeration skeleton",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate row-enumeration skeleton",
+      "status": "PASS"
+    },
+    {
+      "check": "reference exact norm and odd admission",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate exact norm and odd admission",
+      "status": "PASS"
+    },
+    {
+      "check": "reference total key is full norm then enumeration index",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate total key is certified sketch, exact replay, then index",
+      "status": "PASS"
+    },
+    {
+      "check": "sort replay failure cannot publish fallback order",
+      "status": "PASS"
+    },
+    {
+      "check": "reference triangular order-pair schedule",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate triangular order-pair schedule",
+      "status": "PASS"
+    },
+    {
+      "check": "reference row-index schedule",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate row-index schedule",
+      "status": "PASS"
+    },
+    {
+      "check": "reference congruence representative and stride",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate congruence representative and stride",
+      "status": "PASS"
+    },
+    {
+      "check": "production pair search disables optional sum-of-squares filter",
+      "status": "PASS"
+    },
+    {
+      "check": "reference status propagation and terminal clear",
+      "status": "PASS"
+    },
+    {
+      "check": "candidate status propagation and terminal clear",
+      "status": "PASS"
+    },
+    {
+      "check": "runtime fixture covers Fatal, ordinary miss/retry, guards, and clearing",
+      "status": "PASS"
+    }
+  ]
+}

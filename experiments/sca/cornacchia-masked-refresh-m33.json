@@ -1,0 +1,157 @@
+{
+  "schema": "sqisign-cornacchia-masked-refresh-m33-v1",
+  "status": "one_word_transition_controlled_assembly_frozen_qemu_and_rp2350_functional_abstract_hd_pass_physical_pending",
+  "parent_prototype": {
+    "path": "experiments/sca/cornacchia-masked-word-prototype.json",
+    "sha256": "0216b9f53f874719d2351bc72d785254c3dc337c7aa2631e5611868daa68cc3d",
+    "status": "two_limb_functional_and_reduced_value_model_checked_transition_assembly_pending"
+  },
+  "source": {
+    "header": "experiments/sca/masked_word_refresh_m33.h",
+    "header_sha256": "640b50d41f27fd7260195de668bd90a7f7d2fc8d9e9dfe4dc594645a3f25067a",
+    "assembly": "experiments/sca/masked_word_refresh_m33.S",
+    "assembly_sha256": "a460b23fd3e0fdb193a193598e11649ddedbadabfe5d36c172a050f35fc5a3c6",
+    "function": "sca_masked_word_refresh32_m33",
+    "functional_test": "experiments/sca/test_masked_word_refresh_m33.c",
+    "functional_test_sha256": "f8b5ed040a9632972de9168fab0d5d8812f070a6a72adeec18914ed0785592ba",
+    "startup": "experiments/sca/masked_word_refresh_m33_startup.S",
+    "startup_sha256": "b93eb2001a3e8773598e12d3ca36149aa58464077998004d53936234fbe37ae9",
+    "linker_script": "experiments/sca/masked_word_refresh_m33_qemu.ld",
+    "linker_script_sha256": "5298458cf76a24f8173faf4f9904c34ee7798ef44954f2f84a46b6f77d107b3b"
+  },
+  "target_artifact": {
+    "compiler": "Arm GNU Toolchain 15.2.1",
+    "flags": "-mcpu=cortex-m33 -mthumb -mfloat-abi=softfp -O3 -ffreestanding",
+    "format": "elf32-littlearm",
+    "function_size_bytes": 66,
+    "function_bytes_sha256": "78ab16c14cd829d57e6a12794a8717936243d04e0d49ceea45119914a3d4d356",
+    "instructions": 23,
+    "stack_frame_bytes": 16,
+    "undefined_symbols": 0,
+    "relocations": 0,
+    "calls": 0,
+    "conditional_branches": 0
+  },
+  "functional_execution": {
+    "emulator": "QEMU system-arm 10.2.0",
+    "machine": "mps2-an505",
+    "compiler": "Arm GNU Toolchain 15.2.1",
+    "flags": "-mcpu=cortex-m33 -mthumb -mfloat-abi=soft -O2 -ffreestanding -fno-builtin -fno-stack-protector -nostdlib -Wl,--gc-sections",
+    "loader": "ELF generic-loader with cpu-num=0",
+    "elf_form": "arm-none-eabi-objcopy --strip-all deterministic ELF",
+    "elf_sha256": "c909dc714e3ada40d1fb711e60558aea641e65fd2ee1ed6d3819bbf805d508d8",
+    "binary_sha256": "b86914c3714b3eb09118639a30b9a25e0257c3b0b88b81b53776847b532c21ac",
+    "edge_cases": 36,
+    "deterministic_random_cases": 10000,
+    "expected_checksum": "0x6f653503",
+    "output_formula_checked": true,
+    "recombination_checked": true,
+    "zero_scratch_checked": true,
+    "semihosted_exit_status": 0,
+    "passed": true,
+    "boundary": "Instruction-set functional execution only; QEMU does not model RP2350 power leakage, bus coupling, interrupts, physical noise or analog probes."
+  },
+  "contract": {
+    "ring": "Z/(2^32)",
+    "input": "x=x0+x1 mod 2^32",
+    "fresh_randomness": "uniform independent 32-bit r",
+    "output": "y0=x0+r; y1=x1-r mod 2^32",
+    "zero_scratch": "one writable 32-bit word disjoint from input/output",
+    "aliases_allowed": false,
+    "interrupt_policy": "caller must decide and document interrupt handling; primitive does not mask interrupts"
+  },
+  "assembly_schedule": {
+    "input_load_bus": "x0 -> 0 -> x1",
+    "output_store_bus": "y0 -> 0 -> y1 -> 0",
+    "share_register": "x0 -> 0 -> x1 -> 0",
+    "result_register": "0 -> y0 -> 0 -> y1 -> 0",
+    "mask_register": "r -> 0",
+    "alu_input_lanes": "(x0,r) -> (0,0) -> (x1,r) -> (0,0)",
+    "alu_output_lane": "y0 -> 0 -> y1 -> 0",
+    "saved_register_restore": "all share-holding registers are zero before pop",
+    "dummy_memory_value": 0
+  },
+  "reduced_exhaustive_model": {
+    "ring_widths_bits": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "assignments": 299592,
+    "correctness": true,
+    "individual_value_marginals_secret_independent": true,
+    "individual_add_sub_event_hw_tuple_marginals_secret_independent": true,
+    "direct_input_share_hd_secret_dependent_every_width": true,
+    "direct_output_share_hd_secret_dependent_every_width": true,
+    "frozen_precharged_register_alu_and_memory_hd_marginals_secret_independent": true,
+    "model_boundary": "first-order reduced HW/HD abstraction only; no joint/higher-order, horizontal, pipeline, bus-coupling, interrupt or analog proof"
+  },
+  "exact_instruction_transition_model": {
+    "ring_widths_bits": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "assignments": 37448,
+    "channels": 55,
+    "channels_modeled": "every adjacent ALU A/B/result, r2/r4/r5/r12 write, load-data and store-data transition in the exact 23-instruction primitive; wrapper entry provenance is checked separately in the linked ELF",
+    "all_frozen_adjacent_hd_marginals_secret_independent": true,
+    "three_direct_schedule_mutations_rejected": true,
+    "negative_mutations": [
+      "direct ALU-A share0-to-share1 transition",
+      "direct load-data share0-to-share1 transition",
+      "direct store-data output0-to-output1 transition"
+    ],
+    "model_boundary": "Reduced first-order scalar HW/HD distributions only. This does not model joint or higher-order leakage, pipeline overlap, register-file coupling, address/control coupling, analog effects or composability."
+  },
+  "physical_campaign": {
+    "required": true,
+    "firmware_exists": true,
+    "firmware_build_evidence": {
+      "path": "results/rp2350/sca-masked-refresh-m33-build.json",
+      "sha256": "227f064c3b9b4bc0d727fe853e5b35a259009ed4cc3e6772eaa1d3fe501d5d9e",
+      "bytes": 5837,
+      "elf_sha256": "1ec2a8457b13382f793bf962781efdd532b576771004df3ed1b08c61e5f2aabb",
+      "uf2_sha256": "17dee8f0c71e070f5cb371123419ddea3263b634ab71531cedf22dfbde369735",
+      "uniform_rng_calls_per_class": 3,
+      "r12_precharged_before_gpio_high": true
+    },
+    "serial_smoke_passed": true,
+    "raw_traces_exist": false,
+    "first_order_tvla_passed": false,
+    "second_order_tvla_passed": false,
+    "direct_hd_attack_failed": false,
+    "independent_repeated_campaign_passed": false
+  },
+  "next_checkpoint": {
+    "name": "refresh32_rp2350_analog_campaign",
+    "requirements": [
+      "build a dedicated IRQ-policy-explicit GPIO-window RP2350 fixture with fixed/random secret classes and independent masks",
+      "freeze final ELF/UF2/map and verify the exact 66-byte function body is linked unchanged",
+      "capture two independent fixed-vs-random and fixed-vs-fixed datasets",
+      "run first-/second-order TVLA plus direct input/output HD predictions",
+      "reject on any reproducible first-order leakage or successful prediction"
+    ]
+  },
+  "decision": {
+    "one_word_transition_controlled_assembly_exists": true,
+    "exact_target_bytes_frozen": true,
+    "cortex_m33_qemu_functional_execution_passed": true,
+    "rp2350_acquisition_fixture_built": true,
+    "rp2350_serial_smoke_passed": true,
+    "abstract_transition_model_checked": true,
+    "composable_masking_proof_exists": false,
+    "microarchitectural_transition_security_proved": false,
+    "physical_resistance_established": false,
+    "masked_multiplication_implemented": false,
+    "complete_masked_montgomery_implemented": false,
+    "published_attack_blocked": false,
+    "production_signing_approved": false
+  },
+  "claim_boundary": "The exact 66-byte Cortex-M33 refresh primitive, its 10,036-case QEMU functional execution, a reduced first-order HW/HD model, and a byte-audited RP2350 acquisition image with a 12-record serial smoke are frozen. The acquisition wrapper gives every A/B/R class the same three-call RNG history and precharges r12 before GPIO-high; these remove identified experimental confounds rather than proving resistance. Dummy zero loads/stores and register erasure make the modeled schedule pass, while unprecharged adjacent shares fail. Neither QEMU nor serial correctness is a power/EM result: this is not a composable masking proof, microarchitectural guarantee, analog result, masked multiplication or SQIsign protection result."
+}

@@ -1,0 +1,86 @@
+{
+  "schema": "sqisign-exponent-recovery-campaign-v1",
+  "status": "template_not_executed",
+  "path_base": "project_root",
+  "campaign_id": "replace-with-independent-campaign-id",
+  "independent_campaign": 0,
+  "capture": {
+    "kind": "power",
+    "synthetic": false,
+    "campaign_evidence_eligible": true,
+    "instrument_model": "replace",
+    "instrument_serial": "replace",
+    "probe_model": "replace-shunt-current-or-near-field-em-probe",
+    "sample_rate_hz": 0,
+    "raw_unfiltered_archived": false
+  },
+  "exponent_bits": 521,
+  "trace_budgets": [
+    1,
+    10,
+    100
+  ],
+  "fixture_ids": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15"
+  ],
+  "trials_per_fixture_and_budget": 1,
+  "classifier": {
+    "method": "replace-with-frozen-square-and-multiply-segmentation-and-bit-classifier",
+    "version": "replace-with-source-hash",
+    "preprocessing": "replace",
+    "segmentation": "replace"
+  },
+  "ground_truth": {
+    "path": "experiments/sca/cornacchia-pow-segment-ground-truth.json",
+    "sha256": "b2f2ad5aefa13c628e4d6b32a035a598a8683db8a30de76c6f988454a7de9d52"
+  },
+  "firmware": {
+    "elf": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/sqisign_rp2350_sca_cornacchia_pow_segment.elf",
+      "sha256": "19dab1b1b0165b51ff407c0e6b481831b6f4636099b502809402ac439b0116bf"
+    },
+    "uf2": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/sqisign_rp2350_sca_cornacchia_pow_segment.uf2",
+      "sha256": "1f8b6ddc81acd98ebc6667d89135c1080de48a29953e4dd3a9e00d2d0c95681e"
+    },
+    "bin": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/sqisign_rp2350_sca_cornacchia_pow_segment.bin",
+      "sha256": "4a67f1d6f73ea061db665c150deeaab6fa9a5bf6b44c34b2d2b4f9f14fa60081"
+    },
+    "map": {
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/sqisign_rp2350_sca_cornacchia_pow_segment.elf.map",
+      "sha256": "c6d69f521382c4aec16b109092d6ed03d88a03a564d2e0d9cbd4755bc546777e"
+    }
+  },
+  "raw_trace_file": {
+    "path": "replace-with-raw-power-or-em-traces",
+    "sha256": "replace"
+  },
+  "records_csv": {
+    "path": "replace-with-complete-attack-records-csv",
+    "sha256": "replace"
+  },
+  "decision": {
+    "analog_capture_run": false,
+    "exponent_recovery_attempted": false,
+    "ground_truth_semantics": "Legendre e=(m-1)/2; exact recovery implies the current-C public fixture modulus m=2e+1 but does not itself recover a secret",
+    "integrated_sign_secret_modulus_recovery_tested": false,
+    "complete_signing_key_recovery_tested": false,
+    "side_channel_resistance_established": false
+  }
+}

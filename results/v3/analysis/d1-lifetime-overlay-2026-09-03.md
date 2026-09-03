@@ -24,8 +24,10 @@ byte-identical to the modified tracked source.  Both files have SHA-256
 - Host self-test: PASS.
 - Host official KAT: PASS.
 - RP2350 KAT #0: public key, secret key, signed message, and opened message all
-  match byte for byte in the initial captures and in all ten captures of the
-  five-pair interleaved campaign; every capture reports status PASS.
+  match byte for byte in all ten clean-harness captures of the five-pair
+  interleaved campaign; every capture reports `firmware_dirty=0` and status
+  PASS.  The D1 source is reconstructed from the pinned official commit and
+  the hashed D1 patch recorded by the campaign summary.
 
 ## Baseline-to-D1 observations
 
@@ -36,14 +38,14 @@ byte-identical to the modified tracked source.  Both files have SHA-256
 | Sign PSP watermark | 101,060 B | 97,132 B | -3,928 B (-3.887%) |
 | Verify PSP watermark | 37,444 B | 37,444 B | 0 B |
 | Linked crypto archive text | 204,157 B | 203,945 B | -212 B (-0.104%) |
-| KeyGen time, median of 5 | 2,263,611 us | 2,269,117 us | paired median +0.2430% |
-| Sign time, median of 5 | 7,152,943 us | 7,182,865 us | paired median +0.4182% |
-| Verify time, median of 5 | 822,095 us | 820,762 us | paired median -0.1577% |
+| KeyGen time, median of 5 | 2,263,654 us | 2,269,166 us | paired median +0.2416% |
+| Sign time, median of 5 | 7,152,690 us | 7,182,418 us | paired median +0.4190% |
+| Verify time, median of 5 | 822,142 us | 820,780 us | paired median -0.1713% |
 
 The campaign alternated the order within each pair: odd rounds ran official
 v3 then v3-D1, and even rounds ran v3-D1 then official v3.  The paired Sign
-delta ranged from +0.4101% to +0.4226%; its mean was +0.4170% and its median
-was +0.4182%.  The PSP observations were identical in all five repetitions.
+delta ranged from +0.4112% to +0.4204%; its mean was +0.4176% and its median
+was +0.4190%.  The PSP observations were identical in all five repetitions.
 This supports a narrow runtime statement for this binary, board, clock, and
 deterministic KAT vector.  It is not a workload-distribution or independent-
 board performance estimate.  The nonzero KeyGen and Verify timing deltas also
@@ -51,5 +53,7 @@ show that code placement and whole-image effects cannot be excluded even
 though D1 changes only one source file.
 
 Machine-readable inputs and summaries are in
-`results/v3/rp2350/interleaved-2026-09-03/measurements.csv` and
-`results/v3/rp2350/interleaved-2026-09-03/summary.json`.
+`results/v3/rp2350/interleaved-clean-2026-09-04/measurements.csv` and
+`results/v3/rp2350/interleaved-clean-2026-09-04/summary.json`. The earlier
+dirty-firmware campaign is omitted from the current tree, remains recoverable
+from Git history, and is not used for the values above.

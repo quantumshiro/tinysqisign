@@ -1,0 +1,1 @@
+PASS implementation=d1 pass=b keys=10 repetitions=30 samples=300 fixed_message_bytes=33 kat_rsp_sha256=b632c926c72692f850a71b7f7bb338fb1aeee0d9f3362aa35a8ac6255ca3155b

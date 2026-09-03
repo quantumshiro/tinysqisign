@@ -1,0 +1,177 @@
+{
+  "schema": "sqisign-sca-combined-sign-protection-v1",
+  "generated_utc": "2026-08-23",
+  "status": "combined_software_protection_verified_physical_pending",
+  "scope": {
+    "variant": "Level-I",
+    "radix": 32,
+    "api": "caller-owned low-memory deterministic KeyGen plus encoded Sign/Verify",
+    "source_root": "work/compact-sca-ri",
+    "normal_compatibility_build_preserved": true
+  },
+  "published_attack_surface": {
+    "paper": "Simple Power Analysis Attack on SQIsign",
+    "eprint": "2025/830",
+    "target": "Cornacchia secret-derived ephemeral exponent and Euclidean control flow",
+    "software_response": [
+      "521-round fixed-schedule modular exponentiation",
+      "1421-round fixed half-GCD with one public loop back edge",
+      "no fallback to the legacy modular-square-root or variable Euclid route"
+    ]
+  },
+  "integrated_countermeasures": {
+    "commitment_random_ideal": {
+      "gamma_budget": 130,
+      "beta_budget": 1,
+      "coordinate_draws": 394,
+      "entropy_bytes": 38218,
+      "sampler_workspace_bytes": 12096,
+      "same_residue_primitive_lift": true,
+      "software_distribution_bound_verified": true
+    },
+    "cornacchia": {
+      "pow_rounds": 521,
+      "halfgcd_modulus_bits": 492,
+      "halfgcd_rounds": 1421,
+      "independent_sufficient_active_rounds": 644,
+      "schedule_margin_rounds": 777,
+      "fallback": false
+    }
+  },
+  "build_configuration": {
+    "cmake_build_type": "Release",
+    "build_type": "ref",
+    "gf_radix": 32,
+    "gmp": false,
+    "sign": true,
+    "tests": true,
+    "lowmem_only": true,
+    "ipo": false,
+    "combined_defines": [
+      "SQISIGN_SCA_RANDOM_IDEAL_FIXED_BUDGET",
+      "SQISIGN_CORNACCHIA_FIXEDWORK_521",
+      "SQISIGN_CORNACCHIA_FIXED_HALFGCD_492"
+    ]
+  },
+  "sources": {
+    "root_cmake": {
+      "path": "work/compact-sca-ri/CMakeLists.txt",
+      "sha256": "6a941ba689d2cbfa3f26992459bc17733e2054fcb339912fa665178f01c16d2f"
+    },
+    "quaternion_cmake": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/CMakeLists.txt",
+      "sha256": "9d6bf0b1ddcddcd907b56671ebe7912cd98f903f1f1f90421e4826a04ea89af4"
+    },
+    "integers": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/integers.c",
+      "sha256": "f28278b531fd6ddc2d4b12120e9cfa9e8ebbb8e5102bae2b197ad834aa524c8b"
+    },
+    "pow_header": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/internal_quaternion_headers/powmod_fixedwork_521.h",
+      "sha256": "c27e458379b64194cc8994920e48fd4903d0cdd09f956f995eacc58aba4967a9"
+    },
+    "pow_source": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/powmod_fixedwork_521.c",
+      "sha256": "d1047647bc0df65a480443d16b1dac4e115e6804084998ccf4f19bb2417630fe"
+    },
+    "sqrt_header": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/internal_quaternion_headers/sqrt_mod_fixedwork_521.h",
+      "sha256": "1a0de79294ba25519f45f8b29bee8747a18493d4d9cb700e41bee6d2528dc2b2"
+    },
+    "sqrt_source": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/sqrt_mod_fixedwork_521.c",
+      "sha256": "f63849130c935a781c6e0e99990fbe81a0ff246d492875a9ef46d65971f345fc"
+    },
+    "halfgcd_header": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/internal_quaternion_headers/cornacchia_halfgcd_fixed_492.h",
+      "sha256": "946b2dbc0421f6c85cda678750b22a19a1340b1c6f30e3c320de46b4df1eecf3"
+    },
+    "halfgcd_source": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/cornacchia_halfgcd_fixed_492.c",
+      "sha256": "1ee4ed8f5d516fab0303f353b72d3280f326147b0b448db4d2ea5447b7f5c12e"
+    },
+    "ctint_header": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/internal_quaternion_headers/ctint1728_32.h",
+      "sha256": "af7864d1ce0ffc3b8bf2ceea2680bec3bdfb18f5e59ac150bfc061d58446dc8b"
+    },
+    "ctint_source": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/ctint1728_32.c",
+      "sha256": "6934d65c4475a86365664fa89a979d200670e8ace1464244d3d08560583987e6"
+    },
+    "sign_route": {
+      "path": "work/compact-sca-ri/src/signature/ref/lvlx/sign.c",
+      "sha256": "464fe4ef97a10a244350979f48f8767d25436c1b708f703306f7ed9567cefc8b"
+    },
+    "runner": {
+      "path": "scripts/run_sca_combined_sign_protection.sh",
+      "sha256": "8bcbcc2fa01de9915a0b21d79431f049364661004772057b16a812ce38641b89"
+    }
+  },
+  "component_contracts": {
+    "random_ideal": {
+      "path": "experiments/sca/random-ideal-fixed-budget-sampler-contract.json",
+      "sha256": "c9682891933ee6bf854d534f99f4b222e8f0ebc8a64486f75fe988907bf5b7e3"
+    },
+    "cornacchia": {
+      "path": "experiments/sca/cornacchia-halfgcd-integration.json",
+      "sha256": "c97597e52f16011a74672c044e43148706e4d91641c46a4ca2f36b656850fe6f"
+    }
+  },
+  "host_release_evidence": {
+    "compiler": "Apple clang 17.0.0",
+    "normal_binary_sha256": "259df27ac547f841c20e0cdd55fab08349ec94bd5e032cb770e88a7c474d32be",
+    "random_ideal_binary_sha256": "2b215805f7b6af365a33d71e3eb1e36571c6e74ebc9d6c73c34a3a73e3f6f1cf",
+    "combined_binary_sha256": "0440ed1e2fb17416529f10913b6d41e6d3af50eb14c6f86faed69e795811f924",
+    "normal_random_combined_distinct": true,
+    "allocator_or_gmp_undefined_symbols": false,
+    "normal_excludes_protected_components": true,
+    "random_ideal_only_excludes_cornacchia_components": true,
+    "combined_contains_both_components": true,
+    "combined_integer_object_has_legacy_modular_sqrt_edge": false,
+    "protected_sign_transcript_digest_sha256": "6bc629c02e07b2f875d7e72fbd43408bc82ae7050321466b58b53a1cd0043225",
+    "random_ideal_and_combined_transcripts_equal": true,
+    "keygen_sign_verify_closure_pass": true
+  },
+  "sanitizer_evidence": {
+    "asan": true,
+    "ubsan": true,
+    "undefined_recovery": false,
+    "abort_on_error": true,
+    "combined_keygen_sign_verify_closure_pass": true
+  },
+  "cortex_m33_evidence": {
+    "compiler": "Arm GNU 15.2.1",
+    "profile": "-O3 Cortex-M33 softfp CMSE freestanding",
+    "combined_compile_commands_contain_all_three_defines": true,
+    "combined_cornacchia_fixed_sqrt_edge": true,
+    "combined_cornacchia_fixed_halfgcd_edge": true,
+    "combined_cornacchia_legacy_modular_sqrt_edge": false,
+    "halfgcd_outer_frame_bytes": 5480,
+    "halfgcd_adapter_frame_bytes": 32,
+    "halfgcd_core_frame_bytes": 64,
+    "halfgcd_secret_dependent_branches": 0,
+    "halfgcd_public_back_edges": 1,
+    "sampler_workspace_bytes": 12096,
+    "sampler_fixed_public_loop_back_edges": 8,
+    "sampler_indirect_control_flow": false
+  },
+  "claims": {
+    "software_correctness": true,
+    "frozen_transcript_regression": true,
+    "component_control_address_regularization": true,
+    "published_cornacchia_spa_control_surface_removed": true,
+    "whole_sign_constant_time": false,
+    "constant_power": false,
+    "operand_leakage_protected": false,
+    "masked": false,
+    "physical_tvla_pass": false,
+    "physical_spa_key_recovery_resisted": false,
+    "side_channel_resistant": false
+  },
+  "next_required": [
+    "rerun full protected Sign control/address traces and localize the next divergence",
+    "regularize or mask the remaining ideal-construction and lattice routes",
+    "capture RP2350 fixed-vs-random analog traces",
+    "run TVLA, component classifiers, SPA exponent recovery and end-to-end key-recovery scoring"
+  ]
+}

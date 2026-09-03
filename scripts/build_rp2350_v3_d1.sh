@@ -8,7 +8,7 @@ v3_root=${SQISIGN_V3_SOURCE_ROOT:-"$project_root/work/v3-lowmem-d1"}
 build_root=${SQISIGN_RP2350_V3_BUILD_ROOT:-"$project_root/build-rp2350-v3-d1"}
 toolchain_root=${ARM_TOOLCHAIN_ROOT:?Set ARM_TOOLCHAIN_ROOT to the Arm GNU Toolchain directory}
 picotool_cmake_dir=${PICOTOOL_CMAKE_DIR:?Set PICOTOOL_CMAKE_DIR to the picotool CMake package directory}
-expected_v3_commit=6d017708db403bf83977fa70770fc4f7f9e9ff21
+expected_v3_commit=9293313fb58de4c5ce9dd27a5a9fde0058766c79
 
 v3_root=$(CDPATH= cd -- "$v3_root" && pwd -P)
 v3_commit=$(git -C "$v3_root" rev-parse HEAD)
@@ -18,11 +18,8 @@ test -f "$sdk_root/pico_sdk_init.cmake"
 test -x "$toolchain_root/bin/arm-none-eabi-gcc"
 test -f "$picotool_cmake_dir/picotoolConfig.cmake"
 
+test -z "$(git -C "$v3_root" status --porcelain --untracked-files=no)"
 v3_dirty=0
-if test -n "$(git -C "$v3_root" status --porcelain --untracked-files=no)"; then
-    v3_dirty=1
-fi
-test "$v3_dirty" -eq 1
 
 firmware_commit=$(git -C "$project_root" rev-parse HEAD)
 firmware_dirty=0

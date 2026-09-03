@@ -1,0 +1,76 @@
+{
+  "schema": "sqisign-finduv-equivalence-certificate-v1",
+  "scope": "D12c resident full-norm rows versus D13 certified-sketch/exact-replay rows",
+  "reference_commit": "6b79cfb5cfe1c756d7061b92038d5069bda66f72",
+  "candidate_commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+  "source": "src/id2iso/ref/lvlx/dim2id2iso.c",
+  "claim_boundary": "This certificate checks source-level correspondence at the frozen commits and binds it to finite differential/runtime tests. It is not a whole-program formal equivalence proof.",
+  "mappings": [
+    {
+      "obligation": "row_enumeration",
+      "reference": "enumerate_hypercube: x/y/z/w nested loops, sign representatives, divisibility-by-2/3 filters, order-four symmetry filter, exact Gram evaluation, odd-norm admission",
+      "candidate": "enumerate_hypercube: identical loops and filters; finduv_eval_norm performs the same quadratic form and exact division before the same odd-norm admission",
+      "candidate_lines": "622-727",
+      "failure": "A nonzero division remainder or nonpositive exact norm returns ID2ISO_STATUS_FATAL; capacity/sketch failure is fatal."
+    },
+    {
+      "obligation": "row_sort_key",
+      "reference": "finduv_sort_permutation orders original enumeration indices by (full norm, original index)",
+      "candidate": "finduv_compare_indices orders by bit length, leading 64 bits, replayed exact norm on a sketch tie, then original index",
+      "candidate_lines": "129-245, 733-800",
+      "failure": "A replay error latches context.fatal; the temporary index fallback cannot be published because finduv_sort_permutation then fails the row."
+    },
+    {
+      "obligation": "order_pair_and_diagonal_schedule",
+      "reference": "j1 increases from 0; j2 increases from j1; diagonal aliases row 1; non-diagonal regenerates row 2",
+      "candidate": "the same triangular loops and alias/regeneration rule",
+      "candidate_lines": "1359-1407",
+      "failure": "A regeneration error or a count differing from the validation pass is fatal before pair search."
+    },
+    {
+      "obligation": "row_index_schedule",
+      "reference": "i1 increases from 0; i2 starts at i1 on the diagonal and at 0 otherwise",
+      "candidate": "find_uv_from_compact_lists uses the same i1 and starting_index2/i2 loops",
+      "candidate_lines": "1029-1053",
+      "failure": "An exact norm regeneration failure is fatal."
+    },
+    {
+      "obligation": "congruence_solution_schedule",
+      "reference": "for invertible n2 modulo n1, v starts at (T mod n1) n2^{-1} mod n1 and advances by n1 while v < floor(T/n2)",
+      "candidate": "the same ibz_invmod, modular representative, quotient bound, and v += n1 sequence; production passes number_sum_square=0",
+      "candidate_lines": "1073-1109, 1409-1435",
+      "failure": "Nonexact or nonpositive reconstructed u is fatal; a noninvertible pair continues; exhaustion is NotFound."
+    },
+    {
+      "obligation": "publication_and_terminal_status",
+      "reference": "publish only after a positive list status and validate ideal membership; propagate negative status to fatal cleanup",
+      "candidate": "the same positive-status publication structure plus selected exact norms; all terminal paths join workspace clearing",
+      "candidate_lines": "1437-1517, 1538-1566",
+      "failure": "Success, NotFound, and Fatal all finalize active objects and clear the complete find_uv workspace."
+    }
+  ],
+  "dynamic_evidence": [
+    {
+      "test": "frozen D12c/D13 deterministic transcript differential",
+      "coverage": "12 seeds; public key, secret key, signed message, and post-call RNG transcript",
+      "result": "byte-identical for all 12 seeds"
+    },
+    {
+      "test": "D13 official-request differential conformance",
+      "coverage": "100 official request vectors, repeated in two fresh processes; normal D13 API versus caller-owned low-memory D13 API",
+      "result": "100/100 twice; response SHA-256 identical",
+      "oracle_boundary": "not the historical official response file"
+    },
+    {
+      "test": "find_uv workspace/status fixture",
+      "coverage": "success/output wrapper differential, ordinary NotFound/retry handling, invalid-input Fatal, guards, and terminal zeroization",
+      "source": "src/id2iso/ref/lvlx/test/test_dim2id2iso.c",
+      "result": "PASS at the frozen D13 commit"
+    },
+    {
+      "test": "deliberate sketch collision fixture",
+      "coverage": "2^100 versus 2^100+1",
+      "result": "exact fallback restores the full-integer order"
+    }
+  ]
+}

@@ -1,0 +1,248 @@
+{
+  "schema": "sqisign-ctint1728-foundation-v8",
+  "recorded_on": "2026-08-22",
+  "status": "experimental_fixed_width_integer_and_cornacchia_halfgcd_component_complete_not_integrated",
+  "scope": "Fixed-width compare/select/shift/add/subtract/multiply/square/signed-truncating-division/signed-modular-reduction/fixed-521-round-modular-exponentiation/fixed-864-round exact and floor square roots plus a fixed-1421-round Cornacchia half-GCD component for the Level-I/RADIX32 Cortex-M33 research profile. The evidence covers component correctness and the frozen compiler's control-flow/address lowering only; it does not cover SQIsign integration or physical leakage.",
+  "artifacts": [
+    {
+      "path": "experiments/sca/ctint1728_32.c",
+      "sha256": "6934d65c4475a86365664fa89a979d200670e8ace1464244d3d08560583987e6",
+      "bytes": 34938,
+      "role": "experimental fixed-width implementation"
+    },
+    {
+      "path": "experiments/sca/ctint1728_32.h",
+      "sha256": "af7864d1ce0ffc3b8bf2ceea2680bec3bdfb18f5e59ac150bfc061d58446dc8b",
+      "bytes": 13224,
+      "role": "ABI, failure and claim-boundary contract"
+    },
+    {
+      "path": "experiments/sca/test_ctint1728_32.c",
+      "sha256": "7038b7dbf940fa89dcc98890ad9f2bdb3c3a078d7f6e0ab2c82ea2d0377240db",
+      "bytes": 60598,
+      "role": "independent branchy-reference, division/reduction/pow/sqrt/halfgcd boundary, alias and malformed-input test"
+    },
+    {
+      "path": "experiments/sca/test_ctint1728_against_ibz.c",
+      "sha256": "0f2774a5948ac42778fe9dbd20fb0764ba8a48b6f887c4711e715ae50f60d55d",
+      "bytes": 23059,
+      "role": "differential arithmetic/division/reduction/pow/sqrt/halfgcd bridge to the current Level-I ibz_t implementation"
+    },
+    {
+      "path": "scripts/check_ctint1728_arm.py",
+      "sha256": "31a7b10221b131adadc745a62409d26ee21d155c3765fde127f77a06d589ce29",
+      "bytes": 25905,
+      "role": "exact Cortex-M33 stack, text, branch and address-lowering checker"
+    },
+    {
+      "path": "scripts/check_ctint1728_foundation.py",
+      "sha256": "603a120aa70fcddbf47ee3e2a681a3dc14a43e6461cdab8f138171ecd9cf6b79",
+      "bytes": 14428,
+      "role": "fail-closed evidence-contract checker"
+    },
+    {
+      "path": "scripts/run_ctint1728_foundation.sh",
+      "sha256": "a040ee717f8928915b1f5e392610248b32f44efa6cc87b38339814a0e80fd31c",
+      "bytes": 6036,
+      "role": "aggregate host, sanitizer, ibz and Arm reproducer"
+    },
+    {
+      "path": "experiments/sca/cornacchia-halfgcd-bound-contract.json",
+      "sha256": "7b54b3ede32e14a530d7d19b3be2f5f3e825a103bdeb1660b0cffc2fc5b571a4",
+      "bytes": 5612,
+      "role": "independent exact-integer contraction proof and source/model contract"
+    },
+    {
+      "path": "scripts/check_cornacchia_halfgcd_bound.py",
+      "sha256": "090fc36d42bee38ca43514cc9c78857aaa16ab8472746c75fe935192fe30aedf",
+      "bytes": 9376,
+      "role": "fail-closed exact bound, source mapping and executable-model checker"
+    }
+  ],
+  "reference_ibz": {
+    "path": "work/compact-sca-ct3/src/quaternion/ref/generic/intbig.c",
+    "commit": "c2a80712e32891c5228da3f49f0148993a4ec560",
+    "sha256": "9f7bb4222684374912cffe15001d89f74a3e8c9b71f759225fdd652f3d4b1a31",
+    "bytes": 64505,
+    "role": "differential oracle only; variable-time and not imported"
+  },
+  "target_profile": {
+    "security_level": "Level-I",
+    "radix": 32,
+    "word_bits": 32,
+    "words": 54,
+    "value_bits": 1728,
+    "target_core": "Cortex-M33"
+  },
+  "abi": {
+    "value_bytes": 216,
+    "value_alignment_bytes": 4,
+    "shift_workspace_bytes": 648,
+    "shift_workspace_alignment_bytes": 4,
+    "arithmetic_workspace_bytes": 432,
+    "arithmetic_workspace_alignment_bytes": 4,
+    "multiplication_workspace_bytes": 1080,
+    "multiplication_workspace_alignment_bytes": 4,
+    "division_workspace_bytes": 1512,
+    "division_workspace_alignment_bytes": 4,
+    "modular_reduction_workspace_bytes": 2160,
+    "modular_reduction_workspace_alignment_bytes": 4,
+    "modular_exponentiation_workspace_bytes": 3240,
+    "modular_exponentiation_workspace_alignment_bytes": 4,
+    "integer_square_root_workspace_bytes": 864,
+    "integer_square_root_workspace_alignment_bytes": 4,
+    "halfgcd_phase_workspace_bytes": 1080,
+    "halfgcd_phase_workspace_alignment_bytes": 4,
+    "cornacchia_halfgcd_workspace_bytes": 3456,
+    "cornacchia_halfgcd_workspace_alignment_bytes": 4,
+    "caller_owned_workspace": true,
+    "workspace_cleared_on_every_return": true
+  },
+  "modular_exponentiation_profile": {
+    "algorithm": "fixed_square_and_multiply_always",
+    "rounds": 521,
+    "maximum_exponent_bits": 521,
+    "maximum_positive_modulus_bits": 863,
+    "products_proven_to_fit_signed_1728_bits": true
+  },
+  "integer_square_root_profile": {
+    "algorithm": "radix_4_restoring",
+    "rounds": 864,
+    "exact_and_floor_variants": true
+  },
+  "cornacchia_halfgcd_profile": {
+    "algorithm": "fixed_shift_subtract_half_euclid",
+    "rounds": 1421,
+    "maximum_modulus_bits": 492,
+    "stop_threshold": "ceil(sqrt(modulus))",
+    "scheduled_iteration_bound": "floor((49*492+57)/17)",
+    "scheduled_bound_source": "ePrint 2023/807 Algorithm 8/Theorem 4 and the Bernstein-Yang Theorem 11.2 divstep count",
+    "independent_squared_norm_contraction_bound": "10/17 per active round",
+    "independent_sufficient_active_rounds": 644,
+    "scheduled_inactive_round_margin": 777,
+    "independent_bound_contract": "experiments/sca/cornacchia-halfgcd-bound-contract.json",
+    "completed_state_freezes_by_conditional_move": true
+  },
+  "implemented_primitives": [
+    "copy",
+    "conditional_move",
+    "is_zero",
+    "sign",
+    "signed_compare",
+    "unsigned_compare",
+    "absolute_value",
+    "signed_absolute_bit_length",
+    "unsigned_bit_length",
+    "signed_add",
+    "signed_subtract",
+    "signed_multiply",
+    "signed_square",
+    "signed_truncating_division",
+    "signed_modular_reduction",
+    "fixed_521_round_modular_exponentiation",
+    "fixed_864_round_exact_integer_square_root",
+    "fixed_864_round_floor_integer_square_root",
+    "fixed_1421_round_cornacchia_halfgcd",
+    "lossless_unsigned_left_shift",
+    "logical_unsigned_right_shift"
+  ],
+  "not_yet_implemented": [],
+  "host_validation": {
+    "strict_optimization": "PASS",
+    "fatal_asan_ubsan": "PASS",
+    "scalar_random_cases": 10000,
+    "add_sub_random_cases": 10000,
+    "full_width_multiplication_cases": 2000,
+    "bounded_multiplication_cases": 2000,
+    "division_boundary_cases": 100,
+    "division_random_cases": 320,
+    "modular_reduction_boundary_cases": 100,
+    "modular_reduction_random_cases": 320,
+    "modular_exponentiation_valid_cases": 4,
+    "modular_exponentiation_invalid_cases": 5,
+    "integer_square_root_boundary_cases": 10,
+    "integer_square_root_random_exact_cases": 32,
+    "integer_square_root_random_nonsquare_cases": 32,
+    "cornacchia_halfgcd_valid_cases": 20,
+    "cornacchia_halfgcd_invalid_cases": 6,
+    "valid_shift_cases": 17280,
+    "random_shift_cases": 2000,
+    "component_digest": "b35e3662ebeadfb3",
+    "ibz_random_pairs": 10000,
+    "ibz_bounded_products": 10000,
+    "ibz_divisions": 512,
+    "ibz_modular_reductions": 512,
+    "ibz_modular_exponentiations": 3,
+    "ibz_integer_square_roots": 36,
+    "ibz_floor_integer_square_roots": 36,
+    "ibz_cornacchia_halfgcd_cases": 17,
+    "ibz_random_shifts": 10000,
+    "ibz_bridge_strict_optimization": "PASS",
+    "ibz_bridge_fatal_asan_ubsan": "PASS",
+    "ibz_bridge_digest": "b99c978dcd9a5143"
+  },
+  "cortex_m33_validation": {
+    "toolchain": "Arm GNU Toolchain 15.2.Rel1 Build arm-15.86; GCC 15.2.1 20251203",
+    "profiles": {
+      "os-soft": {
+        "optimization": "-Os",
+        "float_abi": "soft",
+        "text_bytes": 3560,
+        "all_frames_static": true,
+        "max_function_frame_bytes": 80
+      },
+      "pico-like": {
+        "optimization": "-O3",
+        "float_abi": "softfp",
+        "text_bytes": 4264,
+        "all_frames_static": true,
+        "max_function_frame_bytes": 96
+      }
+    },
+    "structural_gate": {
+      "scalar_secret_conditions_have_only_fixed_loop_back_edges": true,
+      "shift_schedule_stages": 11,
+      "shift_derived_memory_addresses": false,
+      "fixed_schoolbook_multiplication": true,
+      "operand_derived_multiplication_addresses": false,
+      "fixed_restoring_division_rounds": 1728,
+      "division_addresses_derived_only_from_public_round_index": true,
+      "fixed_signed_modular_reduction": true,
+      "modular_reduction_secret_conditions_are_branch_free": true,
+      "fixed_modular_exponentiation_rounds": 521,
+      "square_and_multiply_always": true,
+      "exponent_addresses_derived_only_from_public_round_index": true,
+      "modular_exponentiation_secret_conditions_are_branch_free": true,
+      "fixed_exact_integer_square_root_rounds": 864,
+      "fixed_floor_integer_square_root_rounds": 864,
+      "square_root_addresses_derived_only_from_public_round_index": true,
+      "square_root_secret_conditions_are_branch_free": true,
+      "cornacchia_maximum_modulus_bits": 492,
+      "cornacchia_halfgcd_rounds": 1421,
+      "cornacchia_halfgcd_has_only_public_loop_back_edge": true,
+      "cornacchia_halfgcd_operand_derived_memory_addresses": false,
+      "cornacchia_completed_state_freezes": true,
+      "indirect_or_table_branches": false,
+      "invalid_shift_is_fail_closed": true,
+      "left_shift_overflow_is_fail_closed": true,
+      "invalid_division_is_fail_closed": true,
+      "invalid_modular_exponentiation_is_fail_closed": true,
+      "negative_or_nonsquare_sqrt_is_fail_closed": true,
+      "invalid_or_unfinished_cornacchia_halfgcd_is_fail_closed": true,
+      "source_and_exact_disassembly_gate": "PASS"
+    }
+  },
+  "claim_boundaries": {
+    "integrated_into_sqisign": false,
+    "whole_sign_constant_time": false,
+    "formal_noninterference_proved": false,
+    "iteration_bound_independently_machine_checked_for_frozen_source_recurrence": true,
+    "compiled_c_or_binary_formally_verified": false,
+    "constant_power": false,
+    "masking_or_blinding": false,
+    "physical_power_or_em_resistance": false,
+    "published_attack_blocked": false,
+    "production_signing_approved": false
+  },
+  "next_required_gate": "Integrate the fixed-width integer foundation into the exact production Cornacchia locus while preserving KAT, RNG, failure and caller-owned lifetime semantics."
+}

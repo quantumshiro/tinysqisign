@@ -1,0 +1,206 @@
+{
+  "schema": "sqisign-random-ideal-constant-work-design-v4",
+  "status": "fixed_budget_sampler_integrated_software_distribution_bounded_physical_pending",
+  "scope": {
+    "profile": "experimental Level-I fixed-width Sign route",
+    "owner": "quat_sampling_random_ideal_O0_given_norm_impl",
+    "normal_compatibility_route": "unchanged",
+    "protected_route": "opt-in only; no variable-time fallback",
+    "goal": "remove secret-ephemeral-dependent control and address variation from the first localized full-Sign remediation boundary",
+    "not_claimed": [
+      "long-term signing-key leakage from the localized host branches",
+      "constant-power behavior",
+      "Cortex-M33 final-linked trace equivalence",
+      "physical power or EM resistance",
+      "legacy byte identity for the protected Sign transcript",
+      "constant-time ideal construction after generator sampling",
+      "complete constant-time SQIsign"
+    ]
+  },
+  "frozen_evidence": {
+    "first_divergence_stack_checker": {
+      "path": "scripts/check_sca_first_divergence_stack_artifacts.py",
+      "sha256": "baa27a2d19c78e59d0ac17ce0c2b88bf02bd811eb119909fca482f27828ace47"
+    },
+    "attempt_and_budget_checker": {
+      "path": "scripts/check_sca_random_ideal_attempt_artifacts.py",
+      "sha256": "6b5d5389eb90e3703a3b15bef25b9c9589b10fc0c0bffff792ae6dd283491dd4"
+    },
+    "source_commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+    "normeq": {
+      "path": "work/compact-d13/src/quaternion/ref/generic/normeq.c",
+      "sha256": "3fa1480eb2ce031f96a40539be550a1f364c48b0c6a30fb735f63b13afee770e",
+      "required_markers": [
+        "while (!found)",
+        "ibz_rand_interval(&gen.coord[i]",
+        "quat_alg_norm_mod(&n_temp, &gen, norm",
+        "found = ibz_sqrt_mod_p(&gen.coord[0], &disc, norm)",
+        "while (!beta_ok)",
+        "beta_ok = (ibz_cmp(&beta_nrd, &ibz_const_zero) != 0)"
+      ]
+    },
+    "intbig": {
+      "path": "work/compact-d13/src/quaternion/ref/generic/intbig.c",
+      "sha256": "9f7bb4222684374912cffe15001d89f74a3e8c9b71f759225fdd652f3d4b1a31",
+      "required_markers": [
+        "int\nibz_rand_interval(ibz_t *rand, const ibz_t *a, const ibz_t *b)",
+        "int len_bits = ibz_bitsize(&range)",
+        "for (int tries = 0; tries < 1000; tries++)",
+        "if (ibz_cmp(rand, &range) <= 0)",
+        "return 1"
+      ]
+    },
+    "algebra": {
+      "path": "work/compact-d13/src/quaternion/ref/generic/algebra.c",
+      "sha256": "d6b002eeb1afc26c608f121c3ef0d586691a716c04e8ab4af5e321e8e01e316c",
+      "required_markers": [
+        "quat_alg_norm_mod(ibz_t *res",
+        "ibz_mod(res, res, N)",
+        "ibz_mod(&tmp, &tmp, N)"
+      ]
+    },
+    "fixed_width_substrate": {
+      "source": "experiments/sca/ctint1728_32.c",
+      "source_sha256": "6934d65c4475a86365664fa89a979d200670e8ace1464244d3d08560583987e6",
+      "header": "experiments/sca/ctint1728_32.h",
+      "header_sha256": "af7864d1ce0ffc3b8bf2ceea2680bec3bdfb18f5e59ac150bfc061d58446dc8b",
+      "contract": "experiments/sca/ctint1728-foundation-contract.json",
+      "contract_sha256": "7f1c02ccbc953f41e77c27ed6cca6374b30d7955b481d4a94dcd81a7dca25496"
+    },
+    "fixed_budget_component_checkpoint": {
+      "contract": "experiments/sca/random-ideal-fixed-budget-component-contract.json",
+      "contract_sha256": "d7ebfa4b31bf8e7351498e359b76b857186d950989bb05682b7062fc3ed970f6",
+      "checker": "scripts/check_sca_random_ideal_fixed_budget_components.py",
+      "checker_sha256": "044c3a569669bfc70c6d7dffaa698949e1429c954801df39235c80de4831288d"
+    },
+    "fixed_budget_sampler_checkpoint": {
+      "contract": "experiments/sca/random-ideal-fixed-budget-sampler-contract.json",
+      "contract_sha256": "c9682891933ee6bf854d534f99f4b222e8f0ebc8a64486f75fe988907bf5b7e3",
+      "checker": "scripts/check_sca_random_ideal_fixed_budget_sampler.py",
+      "checker_sha256": "245657be435832b8c822b5c671e6147b7e6d74ce08ebd727d1b82eeaf07b1731"
+    },
+    "output_distribution_checkpoint": {
+      "evidence": "experiments/sca/random-ideal-output-distribution.json",
+      "evidence_sha256": "b2f4d21b4be2f968c102553049974613e91bc9ea591eab1f5d99eb81eb700863",
+      "checker": "scripts/check_sca_random_ideal_distribution.py",
+      "checker_sha256": "c21fc0aa1fd45f26d0aa7e29d7a731128d52fc36b6e27ad88bd7177096f36df1"
+    }
+  },
+  "localized_paths": {
+    "norm_mod_division": "ibz_divrem_unsigned_wide -> ibz_div -> ibz_div_floor -> ibz_mod -> quat_alg_norm_mod -> random-ideal sampler",
+    "interval_rejection": "ibz_cmp -> ibz_rand_interval -> random-ideal sampler",
+    "shared_owner": "quat_sampling_random_ideal_O0_given_norm_impl",
+    "single_branch_patch_sufficient": false
+  },
+  "protected_coordinate_sampler": {
+    "range": "Level-I fixed prime field [0,N-1], N=2^512+75",
+    "method": "draw one fixed 769-bit integer and reduce it modulo N with the fixed-width dynamic-modulus reducer",
+    "wide_bits": 769,
+    "wide_bytes": 97,
+    "slack_bits": 256,
+    "coordinate_draws_per_prime_ideal": 394,
+    "fixed_random_bytes_per_prime_ideal": 38218,
+    "single_draw_total_variation_upper_bound": "N/2^769",
+    "joint_total_variation_log2_upper_bound": -248.37794818054363,
+    "schedule": [
+      "read exactly 97 random bytes for every coordinate",
+      "mask the public seven excess high bits without a data-dependent branch",
+      "run the same fixed-width reduction schedule for every coordinate",
+      "publish only the reduced 513-bit coordinate after the complete schedule"
+    ],
+    "distribution": "not exact uniformity; the complete 394-coordinate product distribution is within 2^-248.37 total variation of uniform",
+    "rng_compatibility": "fixed consumption intentionally differs from the legacy rejection sampler; freeze a separate protected transcript rather than claiming byte-identical legacy KAT output",
+    "rejected_shortcut": "making ibz_cmp branchless while retaining early return, variable byte count or variable attempt count"
+  },
+  "rejected_inner_rejection_baseline": {
+    "method": "128 fixed rejection attempts per coordinate followed by first-success selection",
+    "reason": "exact uniformity is available but would require 50432 candidate draws for one prime ideal under the 130/1 outer budget, making it an unsuitable first implementation Pareto point"
+  },
+  "outer_gamma_and_beta_schedule": {
+    "gamma_candidate_work": [
+      "sample all three non-scalar coordinates with the fixed wide-reduction sampler",
+      "compute quat_alg_norm_mod with fixed-width dynamic-modulus reduction",
+      "compute modular square root on the protected fixed-round route",
+      "evaluate nonzero and N^2-divisibility predicates without early exit and apply the primitive-lift correction",
+      "select the first valid gamma without early publication"
+    ],
+    "beta_candidate_work": [
+      "sample all four coordinates with the fixed wide-reduction sampler",
+      "compute fixed-width norm modulo N",
+      "select the first nonzero-norm beta without early publication"
+    ],
+    "budget": {
+      "gamma_candidates": 130,
+      "beta_candidates": 1,
+      "combined_exhaustion_or_coordinate_bias": "strictly below 2^-128"
+    },
+    "derivation": {
+      "quadratic_form": "Q=x0^2+x1^2+p*x2^2+p*x3^2 over F_N",
+      "four_dimensional_zero_count": "N^3+N^2-N",
+      "gamma_success_count": "(N^3+2*N^2-N-2)/2, hence probability >1/2",
+      "beta_failure_count": "N^3+N^2-N out of N^4",
+      "primitive_lift": "if N^2 divides Q(x), replace the first nonzero canonical xi by xi-N; the residue class modulo N is unchanged and Q/N changes by -2*ai*xi mod N and becomes nonzero",
+      "evidence": "results/host/sca-d13-random-ideal-attempts.json"
+    },
+    "blocking_obligation": null,
+    "integration_blocking_obligation": null,
+    "failure_semantics": "execute every scheduled candidate, clear the complete workspace, publish no partial ideal, and return a distinct fatal/exhausted status only after the fixed schedule",
+    "forbidden": [
+      "unbounded while (!found) or while (!beta_ok)",
+      "legacy variable-time fallback",
+      "candidate-dependent RNG consumption",
+      "candidate-dependent output publication"
+    ]
+  },
+  "implementation_dependencies": [
+    "fixed-width wide-input reduction, masks and first-success select",
+    "fixed-round signed division and dynamic-modulus reduction",
+    "verified fixed-work Level-I modular square root and its gamma-loop integration",
+    "fixed-size candidate workspace overlaid with non-overlapping existing phases",
+    "secure clear at entry, exhaustion and every return"
+  ],
+  "acceptance_gates": {
+    "correctness": [
+      "legacy-versus-protected ideal validity over a frozen multi-seed corpus, explicitly treated as regression rather than a distribution proof",
+      "formal or statistical proof that wide reduction, fixed first-success selection and deterministic primitive-lift correction meet the output-ideal distribution required by the SQIsign security argument",
+      "wide-reduction total-variation proof plus exhaustive reduced-domain point-count and primitive-lift checks",
+      "gamma/beta fixed-budget derivation and forced-exhaustion nonpublication fixtures",
+      "ASan, UBSan and effective strict-aliasing builds",
+      "normal compatibility route byte-identical to its frozen transcript"
+    ],
+    "structural": [
+      "host full-Sign edge/address negative controls remain stable",
+      "the remediated first-divergence events disappear for the frozen corpus",
+      "final Arm object and linked-image review shows fixed loop bounds, fixed addresses and no legacy fallback",
+      "continue localization to the next divergence rather than declaring the signer constant-time"
+    ],
+    "performance_and_memory": [
+      "report fixed random-byte budget, cycles, stack, arena, flash and exhaustion probability",
+      "compare normal and protected variants as a Pareto point without an equivalence claim"
+    ],
+    "physical": [
+      "two-session fixed-vs-random power/EM campaign with stable negative controls",
+      "attack-driven intermediate or key-recovery attempt on the exact final target",
+      "retain side_channel_resistant=false unless both structural and physical gates pass"
+    ]
+  },
+  "decision": {
+    "common_remediation_boundary_selected": true,
+    "branchless_compare_only_rejected": true,
+    "fixed_coordinate_sampler_distribution_bounded": true,
+    "outer_candidate_budget_proven": true,
+    "fixed_budget_components_verified": true,
+    "fixed_level1_square_root_component_verified": true,
+    "fixed_budget_sampler_verified": true,
+    "sign_commitment_route_integrated": true,
+    "software_output_ideal_distribution_bound_established": true,
+    "sampler_implementation_complete": true,
+    "ideal_construction_protected": false,
+    "implementation_complete": false,
+    "legacy_kat_byte_identity_expected": false,
+    "long_term_key_leakage_demonstrated": false,
+    "physical_side_channel_evidence": false,
+    "side_channel_resistance_established": false,
+    "production_signing_approved": false
+  }
+}

@@ -26,6 +26,7 @@ build_root=${SQISIGN_RP2350_V3_BUILD_ROOT:-"$project_root/build-rp2350-v3-${kind
 toolchain_root=${ARM_TOOLCHAIN_ROOT:?Set ARM_TOOLCHAIN_ROOT to the Arm GNU Toolchain directory}
 picotool_cmake_dir=${PICOTOOL_CMAKE_DIR:?Set PICOTOOL_CMAKE_DIR to the picotool CMake package directory}
 base_commit=6d017708db403bf83977fa70770fc4f7f9e9ff21
+d1_commit=9293313fb58de4c5ce9dd27a5a9fde0058766c79
 
 v3_root=$(CDPATH= cd -- "$v3_root" && pwd -P)
 generated_root="$v3_root/src/pqm4/sqisign_p324_3/m4f"
@@ -33,8 +34,7 @@ v3_commit=$(git -C "$v3_root" rev-parse HEAD)
 if test "$kind" = baseline; then
     test "$v3_commit" = "$base_commit"
 else
-    git -C "$v3_root" merge-base --is-ancestor "$base_commit" "$v3_commit"
-    test "$(git -C "$v3_root" rev-list --count "$base_commit..$v3_commit")" -eq 1
+    test "$v3_commit" = "$d1_commit"
 fi
 test -z "$(git -C "$v3_root" status --porcelain --untracked-files=no)"
 test -f "$generated_root/pqm4_api.c"

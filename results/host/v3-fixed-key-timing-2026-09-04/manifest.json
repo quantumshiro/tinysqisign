@@ -1,0 +1,302 @@
+{
+  "claim_boundary": {
+    "fixed_key_association_tested": true,
+    "key_recovery_tested": false,
+    "physical_power_or_em_tested": false,
+    "rp2350_or_m4f_tested": false,
+    "side_channel_resistance_established": false
+  },
+  "conditions": [
+    {
+      "build": "/Users/hiro/workspace/sqisign/build-host-v3-ref",
+      "build_stdout": "[  7%] Built target sqisign_precomp_p324_3\n[ 15%] Built target sqisign_mp_p324_3\n[ 15%] Built target sqisign_gf_p324_3\n[ 23%] Built target sqisign_ec_p324_3\n[ 30%] Built target sqisign_hd_p324_3\n[ 61%] Built target sqisign_quaternion_p324_3\n[ 69%] Built target sqisign_id2iso_p324_3\n[ 76%] Built target sqisign_verification_p324_3\n[ 84%] Built target sqisign_signature_p324_3\n[100%] Built target sqisign_common_test\n[100%] Built target sqisign_p324_3_test\n[100%] Built target sqisign_test_kat_p324_3",
+      "compile_command": [
+        "/usr/bin/cc",
+        "-O2",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DENABLE_SIGN",
+        "-DRADIX_32",
+        "-DSQISIGN_BUILD_TYPE_REF",
+        "-DSQISIGN_GF_IMPL_REF",
+        "-DSQISIGN_VARIANT=p324_3",
+        "-DTARGET_ARM64",
+        "-I/Users/hiro/workspace/sqisign/work/official-v3/src/nistapi/p324_3",
+        "-I/Users/hiro/workspace/sqisign/work/official-v3/include",
+        "-I/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-fixed-key-xt2ja70e",
+        "/Users/hiro/workspace/sqisign/experiments/sca/v3_fixed_key_timing.c",
+        "-o",
+        "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-fixed-key-xt2ja70e/v3-fixed-key-official",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/libsqisign_p324_3_test_nistapi.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/libsqisign_p324_3_test.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/signature/ref/p324_3/libsqisign_signature_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/verification/ref/p324_3/libsqisign_verification_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/id2iso/ref/p324_3/libsqisign_id2iso_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/quaternion/ref/p324_3/libsqisign_quaternion_p324_3.a",
+        "-lm",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/hd/ref/p324_3/libsqisign_hd_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/ec/ref/p324_3/libsqisign_ec_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/gf/ref/p324_3/libsqisign_gf_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/mp/ref/p324_3/libsqisign_mp_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/precomp/ref/p324_3/libsqisign_precomp_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/common/generic/libsqisign_common_test.a"
+      ],
+      "compile_stderr": "",
+      "compile_stdout": "",
+      "executable_sha256": "8d6da7128fcad87740faf68a948fe1b635684501ac2125721083d0e4aec4ffb6",
+      "label": "official",
+      "linked_archives": [
+        {
+          "bytes": 5104,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/libsqisign_p324_3_test_nistapi.a",
+          "sha256": "b9c9194a15c0d083632af7bed957c0825f1f51494a2b6b2bdf1cad42c85fa379"
+        },
+        {
+          "bytes": 8864,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/libsqisign_p324_3_test.a",
+          "sha256": "9abe2f18978435447e85fe8a0cf7461aa9f8a4dabd51e81331f339aa7d41ca91"
+        },
+        {
+          "bytes": 30312,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/signature/ref/p324_3/libsqisign_signature_p324_3.a",
+          "sha256": "4c4324bb4095fd307d5338db9405bd55c4d10095faf086180cbcef25aa314a14"
+        },
+        {
+          "bytes": 21848,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/verification/ref/p324_3/libsqisign_verification_p324_3.a",
+          "sha256": "a1e1b1d4c1a7b3169ddf9f413214b9138f615fef36765c301c74850449d8135f"
+        },
+        {
+          "bytes": 20352,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/id2iso/ref/p324_3/libsqisign_id2iso_p324_3.a",
+          "sha256": "37d2f1840cba5fc4d7beb1ce200f63efc95c447f1df9daea88ce16eb736106bd"
+        },
+        {
+          "bytes": 218632,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/quaternion/ref/p324_3/libsqisign_quaternion_p324_3.a",
+          "sha256": "0c28581491faa9c3b64418a6aa09ebc851f0eee6da98e7a738665cb0b1d13c31"
+        },
+        {
+          "bytes": 48592,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/hd/ref/p324_3/libsqisign_hd_p324_3.a",
+          "sha256": "1562016a975a4380afe0c53a4a963cd813c111da7fe579131cb76c6fe5ed4f54"
+        },
+        {
+          "bytes": 62864,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/ec/ref/p324_3/libsqisign_ec_p324_3.a",
+          "sha256": "dfa67adb2a1ffb1e88b0b332384b120731b327d338ee7c83cd9b7704395ba873"
+        },
+        {
+          "bytes": 44224,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/gf/ref/p324_3/libsqisign_gf_p324_3.a",
+          "sha256": "0d54dd357cf1d04971753c0d69a5353e97ebb593040b5b57d3507489a9bd1858"
+        },
+        {
+          "bytes": 120408,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/mp/ref/p324_3/libsqisign_mp_p324_3.a",
+          "sha256": "9f70295e0c9d0b62dc1adb4c5dd9082f9707ce17c50bcbb9b1093e4088c2f9cf"
+        },
+        {
+          "bytes": 15448,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/precomp/ref/p324_3/libsqisign_precomp_p324_3.a",
+          "sha256": "0d208f013cf3155d3d5a85ecd6299e91bd647719a951052c375f0b972c022d6f"
+        },
+        {
+          "bytes": 79904,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-ref/src/common/generic/libsqisign_common_test.a",
+          "sha256": "60087b9907be7e546051cc6c1dadfc5132c59d531b12a282be308558339f745f"
+        }
+      ],
+      "passes": [
+        {
+          "log": "results/host/v3-fixed-key-timing-2026-09-04/official-a.log",
+          "log_sha256": "0158606f90b554722f453aefe05d76d2821eb784c62b82f6ba613101ad0516ff",
+          "pass": "a",
+          "rows": 300,
+          "schedule_seed": "0x13579bdf"
+        },
+        {
+          "log": "results/host/v3-fixed-key-timing-2026-09-04/official-b.log",
+          "log_sha256": "b9e39d5ca7ba74cabac36574c65f1bb9e6f7157683709540c7012690cf6d8086",
+          "pass": "b",
+          "rows": 300,
+          "schedule_seed": "0x2468ace1"
+        }
+      ],
+      "source": "/Users/hiro/workspace/sqisign/work/official-v3",
+      "source_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+      "tracked_dirty": false
+    },
+    {
+      "build": "/Users/hiro/workspace/sqisign/build-host-v3-d1",
+      "build_stdout": "ninja: no work to do.",
+      "compile_command": [
+        "/usr/bin/cc",
+        "-O2",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DENABLE_SIGN",
+        "-DRADIX_32",
+        "-DSQISIGN_BUILD_TYPE_REF",
+        "-DSQISIGN_GF_IMPL_REF",
+        "-DSQISIGN_VARIANT=p324_3",
+        "-DTARGET_ARM64",
+        "-I/Users/hiro/workspace/sqisign/work/v3-lowmem-d1/src/nistapi/p324_3",
+        "-I/Users/hiro/workspace/sqisign/work/v3-lowmem-d1/include",
+        "-I/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-fixed-key-xt2ja70e",
+        "/Users/hiro/workspace/sqisign/experiments/sca/v3_fixed_key_timing.c",
+        "-o",
+        "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-fixed-key-xt2ja70e/v3-fixed-key-d1",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/libsqisign_p324_3_test_nistapi.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/libsqisign_p324_3_test.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/signature/ref/p324_3/libsqisign_signature_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/verification/ref/p324_3/libsqisign_verification_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/id2iso/ref/p324_3/libsqisign_id2iso_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/quaternion/ref/p324_3/libsqisign_quaternion_p324_3.a",
+        "-lm",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/hd/ref/p324_3/libsqisign_hd_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/ec/ref/p324_3/libsqisign_ec_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/gf/ref/p324_3/libsqisign_gf_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/mp/ref/p324_3/libsqisign_mp_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/precomp/ref/p324_3/libsqisign_precomp_p324_3.a",
+        "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/common/generic/libsqisign_common_test.a"
+      ],
+      "compile_stderr": "",
+      "compile_stdout": "",
+      "executable_sha256": "b208dd7c0fc9046dc807d8fb86e431994b907b732e891c263131094d86762be8",
+      "label": "d1",
+      "linked_archives": [
+        {
+          "bytes": 5104,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/libsqisign_p324_3_test_nistapi.a",
+          "sha256": "d4bcdd16af23eb2214c19135eaddf0479d621ffc7b4cd5825cad5a39ca6f1776"
+        },
+        {
+          "bytes": 8864,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/libsqisign_p324_3_test.a",
+          "sha256": "6d8d61f7edeccc55503dfcdc9ea3f8e3d53bd67c0edfcb32654ca2b40792465f"
+        },
+        {
+          "bytes": 30312,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/signature/ref/p324_3/libsqisign_signature_p324_3.a",
+          "sha256": "394ab28d8adcd050e6a139b1baee69b5da19086abaadd49a97d54c4acdfa48e4"
+        },
+        {
+          "bytes": 21848,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/verification/ref/p324_3/libsqisign_verification_p324_3.a",
+          "sha256": "1196106f1a88e1ddb0dd58d0e9df486074c3a7b6fb841bf3c14f99a65aad8196"
+        },
+        {
+          "bytes": 20368,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/id2iso/ref/p324_3/libsqisign_id2iso_p324_3.a",
+          "sha256": "cb99cc7d38b3ce96db61f50df79757f3eb4ab30fe7a3b542f7afaa199b1d6b31"
+        },
+        {
+          "bytes": 218488,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/quaternion/ref/p324_3/libsqisign_quaternion_p324_3.a",
+          "sha256": "5b492a36c8b3f5ec358267df8f818c806651b5487cf9f7c2d1c24b3fe10c85c1"
+        },
+        {
+          "bytes": 48592,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/hd/ref/p324_3/libsqisign_hd_p324_3.a",
+          "sha256": "0084ff9fd81ec04cf4a21dc9eaff52f47de8ca9b8462b75fd83339d5230f8c56"
+        },
+        {
+          "bytes": 62880,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/ec/ref/p324_3/libsqisign_ec_p324_3.a",
+          "sha256": "8b119820e26119f04b9c00e65f801b3d11820e533491d3c8755a9ef5afebfe0d"
+        },
+        {
+          "bytes": 44224,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/gf/ref/p324_3/libsqisign_gf_p324_3.a",
+          "sha256": "9be1a25ec78682375527c644c991d473241e63be55e21675cf46e94bf9498007"
+        },
+        {
+          "bytes": 120408,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/mp/ref/p324_3/libsqisign_mp_p324_3.a",
+          "sha256": "6a742b03a8843e7dab869d21aab3555cad12fbb7e3adf42467bc6578e272f4b3"
+        },
+        {
+          "bytes": 15480,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/precomp/ref/p324_3/libsqisign_precomp_p324_3.a",
+          "sha256": "62eb0e6ab6c3ddc0fae6f16da9cb1d8264c4d4a193f59ff5c2e76e90231be123"
+        },
+        {
+          "bytes": 79888,
+          "path": "/Users/hiro/workspace/sqisign/build-host-v3-d1/src/common/generic/libsqisign_common_test.a",
+          "sha256": "3309a2de7c9af834c66179d3e58bf6326cec9d04004c9e002a79fe44f11d095a"
+        }
+      ],
+      "passes": [
+        {
+          "log": "results/host/v3-fixed-key-timing-2026-09-04/d1-a.log",
+          "log_sha256": "8bd9a292368ca9c2af45968645f7e8840d28ddb172fd4fcec2cb9d647fb773bb",
+          "pass": "a",
+          "rows": 300,
+          "schedule_seed": "0x13579bdf"
+        },
+        {
+          "log": "results/host/v3-fixed-key-timing-2026-09-04/d1-b.log",
+          "log_sha256": "3dc05621b14a59eb3ac421ff00f664e987d5a508156f6204a78467d4b5cf51c6",
+          "pass": "b",
+          "rows": 300,
+          "schedule_seed": "0x2468ace1"
+        }
+      ],
+      "source": "/Users/hiro/workspace/sqisign/work/v3-lowmem-d1",
+      "source_commit": "9293313fb58de4c5ce9dd27a5a9fde0058766c79",
+      "tracked_dirty": false
+    }
+  ],
+  "created_utc": "2026-09-03T20:07:30.462113+00:00",
+  "design": {
+    "fixed_key_buffer_address": true,
+    "fixed_message_bytes": 33,
+    "fixed_message_vector": 0,
+    "fixed_signing_rng_seed": "a5a4a7a6a1a0a3a2adacafaea9a8abaab5b4b7b6b1b0b3b2bdbcbfbeb9b8bbba85848786818083828d8c8f8e89888b8a",
+    "implementations": [
+      "official",
+      "d1"
+    ],
+    "key_count": 10,
+    "passes": [
+      "a",
+      "b"
+    ],
+    "repetitions_per_key_per_pass": 30,
+    "samples_per_implementation": 600,
+    "schedule": "deterministic Fisher-Yates shuffle; distinct public seed per pass",
+    "timed_region": "crypto_sign only; randombytes_init and verification excluded"
+  },
+  "host": {
+    "machine": "arm64",
+    "processor": "arm",
+    "release": "25.3.0",
+    "system": "Darwin"
+  },
+  "inputs": {
+    "generated_header_sha256": "0bf76a2ea7d14a390ecc400eae35e0d267fc43c506165baa7c6cb9b6b9e76d7d",
+    "harness": {
+      "path": "experiments/sca/v3_fixed_key_timing.c",
+      "sha256": "caaeb361a2d05a14be2d8a8e202264c67fef42c73b84b9ffe6a167df5ef91b9a"
+    },
+    "kat_generator": {
+      "path": "scripts/generate_v3_kat_subset.py",
+      "sha256": "2678bc4f0c68680e51e6f44a6f4b6c7f2f65da79a96f084dbd8686a3234e597b",
+      "stdout": "generated 10 KAT vectors; max_message=330; rsp_sha256=b632c926c72692f850a71b7f7bb338fb1aeee0d9f3362aa35a8ac6255ca3155b"
+    },
+    "official_rsp": {
+      "path": "/Users/hiro/workspace/sqisign/work/official-v3/KAT/PQCsignKAT_270_SQIsign_p324_3.rsp",
+      "sha256": "b632c926c72692f850a71b7f7bb338fb1aeee0d9f3362aa35a8ac6255ca3155b"
+    }
+  },
+  "outputs": {
+    "raw_csv": "results/host/v3-fixed-key-timing-2026-09-04/raw.csv",
+    "raw_csv_sha256": "93c7164c3ee7a3ca640e6fa0e1c31d8e983d48fa6d987582e32ee6f161b1bf8c"
+  },
+  "schema": "sqisign-v3-fixed-key-host-timing-campaign-v1"
+}

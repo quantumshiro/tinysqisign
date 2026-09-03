@@ -1,0 +1,412 @@
+{
+  "aggregate": {
+    "candidate_root_count": 4,
+    "compiler_dynamic_frame_function_count": 0,
+    "roots_with_complete_direct_graph_metadata": 4,
+    "roots_without_unresolved_indirect_calls": 1,
+    "roots_without_unresolved_indirect_calls_names": [
+      "usb_irq"
+    ],
+    "unique_missing_stack_metadata_count": 0,
+    "unique_unresolved_indirect_callsite_count": 18
+  },
+  "architectural_obligations_not_modeled": [
+    "handler-side exception frames for nested IRQ/fault entries on MSP",
+    "maximum enabled-IRQ and fault nesting under the configured priorities",
+    "MSP depth already live at each asynchronous entry point",
+    "runtime RAM-vector contents after all SDK initialization paths"
+  ],
+  "build_provenance": {
+    "cmake_cache_sha256": "dbc9dfc48da0b86d3998073340704c5070171c07ecc8b511e01859c600c527df",
+    "firmware_commit": "e564a6413766f1f299db3db1d706478c42f1cc96",
+    "firmware_dirty": 0,
+    "generated_tree_sha256": "7df287fc4e690b93459fa47c9bb6856a49712996ba348fba0abd0eb397383421",
+    "v3_source_commit": "cb94f242ba791a4ccb980b46c917830b309a9832",
+    "v3_source_dirty": 0
+  },
+  "candidate_root_basis": {
+    "interpretation": "These are the linked USB CDC and default alarm-pool handlers named by the linked dependency sources. Runtime RAM-vector installation means this source inventory is not by itself a proof of exhaustive enabled IRQs.",
+    "registration_sources": {
+      "alarm_pool": {
+        "path": "src/common/pico_time/time.c",
+        "required_patterns": [
+          "static void alarm_pool_irq_handler(void)",
+          "ta_enable_irq_handler(timer, hardware_alarm_num, alarm_pool_irq_handler);",
+          "delta = earliest_entry->callback(id, earliest_entry->user_data);"
+        ],
+        "sha256": "6eb199dd6b2b644fa47d1f2122b363e995f89cc611d3e08587c40fcfd5ea7d10"
+      },
+      "stdio_usb": {
+        "path": "src/rp2_common/pico_stdio_usb/stdio_usb.c",
+        "required_patterns": [
+          "irq_set_exclusive_handler(low_priority_irq_num, low_priority_worker_irq);",
+          "irq_add_shared_handler(USBCTRL_IRQ, usb_irq,",
+          "add_alarm_in_us(PICO_STDIO_USB_TASK_INTERVAL_US, timer_task, NULL, true)"
+        ],
+        "sha256": "d1ca4298b9142210aaa40dffe08d4bbefb13adccbba0f63b2c4072cb4a25eaab"
+      },
+      "tinyusb_device": {
+        "path": "lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c",
+        "required_patterns": [
+          "irq_add_shared_handler(USBCTRL_IRQ, dcd_rp2040_irq,",
+          "irq_set_enabled(USBCTRL_IRQ, true);"
+        ],
+        "sha256": "05910abe0b71c9c16894c797e4808ffc684ca17fc070524b83555f8449b720d0"
+      }
+    },
+    "roots": [
+      "dcd_rp2040_irq",
+      "usb_irq",
+      "low_priority_worker_irq",
+      "alarm_pool_irq_handler"
+    ]
+  },
+  "decision": {
+    "all_direct_graph_stack_metadata_closed": true,
+    "all_indirect_callback_targets_resolved": false,
+    "all_reachable_compiler_frames_static": true,
+    "exception_entry_and_nesting_bound_established": false,
+    "linked_candidate_handler_roots_enumerated": true,
+    "reason": "The linked direct-call metadata is closed for 4/4 candidate roots and no dynamic compiler frame is reachable, but 18 unique indirect callback sites remain. Handler-side exception frames, interrupt nesting, live MSP depth, and runtime vector exhaustiveness are also not bounded.",
+    "whole_program_worst_case_stack_bound_established": false
+  },
+  "elf": {
+    "bytes": 2022848,
+    "filename": "sqisign_rp2350_v3_d2_static.elf",
+    "sha256": "f862703e2937814d321d970ab9ea6286f1f1fbf1d27ebb45d6502eecf54e3ad3"
+  },
+  "roots": {
+    "alarm_pool_irq_handler": {
+      "compiler_dynamic_frame_functions": [],
+      "direct_graph_closure_complete": true,
+      "missing_stack_metadata": [],
+      "missing_stack_metadata_count": 0,
+      "reachable_functions": 2,
+      "recursive_sccs": [],
+      "resolved_literal_veneers_with_zero_local_frame": [],
+      "software_callgraph_closure_complete": false,
+      "unresolved_indirect_calls": [
+        {
+          "function": "alarm_pool_irq_handler",
+          "instructions": [
+            "10001124:\t4798      \tblx\tr3",
+            "1000130e:\t4798      \tblx\tr3"
+          ],
+          "path": [
+            "alarm_pool_irq_handler"
+          ]
+        }
+      ],
+      "unresolved_indirect_callsite_count": 2
+    },
+    "dcd_rp2040_irq": {
+      "compiler_dynamic_frame_functions": [],
+      "direct_graph_closure_complete": true,
+      "missing_stack_metadata": [],
+      "missing_stack_metadata_count": 0,
+      "reachable_functions": 42,
+      "recursive_sccs": [],
+      "resolved_literal_veneers_with_zero_local_frame": [
+        {
+          "literal": "2000148c:\t10001759 \t.word\t0x10001759",
+          "target": "best_effort_wfe_or_timeout",
+          "target_address": "0x10001758",
+          "veneer": "__best_effort_wfe_or_timeout_veneer"
+        },
+        {
+          "literal": "1002dd94:\t20000229 \t.word\t0x20000229",
+          "target": "mutex_enter_timeout_ms",
+          "target_address": "0x20000228",
+          "veneer": "__mutex_enter_timeout_ms_veneer"
+        },
+        {
+          "literal": "1002dd8c:\t20000261 \t.word\t0x20000261",
+          "target": "mutex_exit",
+          "target_address": "0x20000260",
+          "veneer": "__mutex_exit_veneer"
+        },
+        {
+          "literal": "1002dd34:\t200001f1 \t.word\t0x200001f1",
+          "target": "mutex_try_enter_block_until",
+          "target_address": "0x200001f0",
+          "veneer": "__mutex_try_enter_block_until_veneer"
+        },
+        {
+          "literal": "20001484:\t100009d9 \t.word\t0x100009d9",
+          "target": "panic",
+          "target_address": "0x100009d8",
+          "veneer": "__panic_veneer"
+        },
+        {
+          "literal": "20001474:\t100018b9 \t.word\t0x100018b9",
+          "target": "time_us_64",
+          "target_address": "0x100018b8",
+          "veneer": "__time_us_64_veneer"
+        },
+        {
+          "literal": "2000147c:\t10005c39 \t.word\t0x10005c39",
+          "target": "tu_fifo_write",
+          "target_address": "0x10005c38",
+          "veneer": "__tu_fifo_write_veneer"
+        },
+        {
+          "literal": "2000146c:\t100045f9 \t.word\t0x100045f9",
+          "target": "tud_event_hook_cb",
+          "target_address": "0x100045f8",
+          "veneer": "__tud_event_hook_cb_veneer"
+        }
+      ],
+      "software_callgraph_closure_complete": false,
+      "unresolved_indirect_calls": [
+        {
+          "function": "__wrap_puts",
+          "instructions": [
+            "10003a28:\t4798      \tblx\tr3"
+          ],
+          "path": [
+            "dcd_rp2040_irq",
+            "__panic_veneer",
+            "panic",
+            "__wrap_puts"
+          ]
+        },
+        {
+          "function": "dcd_event_handler",
+          "instructions": [
+            "20000c5c:\t4798      \tblx\tr3"
+          ],
+          "path": [
+            "dcd_rp2040_irq",
+            "dcd_event_handler"
+          ]
+        },
+        {
+          "function": "stdio_put_string",
+          "instructions": [
+            "100038b2:\t47b0      \tblx\tr6",
+            "100038f2:\t47b0      \tblx\tr6",
+            "10003900:\t47b0      \tblx\tr6"
+          ],
+          "path": [
+            "dcd_rp2040_irq",
+            "__panic_veneer",
+            "panic",
+            "__wrap_puts",
+            "stdio_put_string"
+          ]
+        },
+        {
+          "function": "weak_raw_vprintf",
+          "instructions": [
+            "100036de:\t47a0      \tblx\tr4"
+          ],
+          "path": [
+            "dcd_rp2040_irq",
+            "__panic_veneer",
+            "panic",
+            "weak_raw_vprintf"
+          ]
+        }
+      ],
+      "unresolved_indirect_callsite_count": 6
+    },
+    "low_priority_worker_irq": {
+      "compiler_dynamic_frame_functions": [],
+      "direct_graph_closure_complete": true,
+      "missing_stack_metadata": [],
+      "missing_stack_metadata_count": 0,
+      "reachable_functions": 75,
+      "recursive_sccs": [],
+      "resolved_literal_veneers_with_zero_local_frame": [
+        {
+          "literal": "1002dd44:\t20000ab1 \t.word\t0x20000ab1",
+          "target": "_hw_endpoint_buffer_control_update32",
+          "target_address": "0x20000ab0",
+          "veneer": "___hw_endpoint_buffer_control_update32_veneer"
+        },
+        {
+          "literal": "2000148c:\t10001759 \t.word\t0x10001759",
+          "target": "best_effort_wfe_or_timeout",
+          "target_address": "0x10001758",
+          "veneer": "__best_effort_wfe_or_timeout_veneer"
+        },
+        {
+          "literal": "1002dd5c:\t20000a55 \t.word\t0x20000a55",
+          "target": "e15_is_bulkin_ep",
+          "target_address": "0x20000a54",
+          "veneer": "__e15_is_bulkin_ep_veneer"
+        },
+        {
+          "literal": "1002dd4c:\t20000a7d \t.word\t0x20000a7d",
+          "target": "e15_is_critical_frame_period",
+          "target_address": "0x20000a7c",
+          "veneer": "__e15_is_critical_frame_period_veneer"
+        },
+        {
+          "literal": "1002dd74:\t20000af9 \t.word\t0x20000af9",
+          "target": "hw_endpoint_start_next_buffer",
+          "target_address": "0x20000af8",
+          "veneer": "__hw_endpoint_start_next_buffer_veneer"
+        },
+        {
+          "literal": "1002dd94:\t20000229 \t.word\t0x20000229",
+          "target": "mutex_enter_timeout_ms",
+          "target_address": "0x20000228",
+          "veneer": "__mutex_enter_timeout_ms_veneer"
+        },
+        {
+          "literal": "1002dd8c:\t20000261 \t.word\t0x20000261",
+          "target": "mutex_exit",
+          "target_address": "0x20000260",
+          "veneer": "__mutex_exit_veneer"
+        },
+        {
+          "literal": "1002dd34:\t200001f1 \t.word\t0x200001f1",
+          "target": "mutex_try_enter_block_until",
+          "target_address": "0x200001f0",
+          "veneer": "__mutex_try_enter_block_until_veneer"
+        },
+        {
+          "literal": "1002dd7c:\t20000111 \t.word\t0x20000111",
+          "target": "mutex_try_enter",
+          "target_address": "0x20000110",
+          "veneer": "__mutex_try_enter_veneer"
+        },
+        {
+          "literal": "20001484:\t100009d9 \t.word\t0x100009d9",
+          "target": "panic",
+          "target_address": "0x100009d8",
+          "veneer": "__panic_veneer"
+        },
+        {
+          "literal": "1002dd6c:\t200002a9 \t.word\t0x200002a9",
+          "target": "reset_non_control_endpoints",
+          "target_address": "0x200002a8",
+          "veneer": "__reset_non_control_endpoints_veneer"
+        },
+        {
+          "literal": "20001474:\t100018b9 \t.word\t0x100018b9",
+          "target": "time_us_64",
+          "target_address": "0x100018b8",
+          "veneer": "__time_us_64_veneer"
+        }
+      ],
+      "software_callgraph_closure_complete": false,
+      "unresolved_indirect_calls": [
+        {
+          "function": "__wrap_puts",
+          "instructions": [
+            "10003a28:\t4798      \tblx\tr3"
+          ],
+          "path": [
+            "low_priority_worker_irq",
+            "tud_task_ext",
+            "dcd_edpt_clear_stall",
+            "___hw_endpoint_buffer_control_update32_veneer",
+            "_hw_endpoint_buffer_control_update32",
+            "__panic_veneer",
+            "panic",
+            "__wrap_puts"
+          ]
+        },
+        {
+          "function": "configuration_reset",
+          "instructions": [
+            "1000458e:\t4798      \tblx\tr3"
+          ],
+          "path": [
+            "low_priority_worker_irq",
+            "tud_task_ext",
+            "configuration_reset"
+          ]
+        },
+        {
+          "function": "low_priority_worker_irq",
+          "instructions": [
+            "10003e04:\t4718      \tbx\tr3"
+          ],
+          "path": [
+            "low_priority_worker_irq"
+          ]
+        },
+        {
+          "function": "stdio_put_string",
+          "instructions": [
+            "100038b2:\t47b0      \tblx\tr6",
+            "100038f2:\t47b0      \tblx\tr6",
+            "10003900:\t47b0      \tblx\tr6"
+          ],
+          "path": [
+            "low_priority_worker_irq",
+            "tud_task_ext",
+            "dcd_edpt_clear_stall",
+            "___hw_endpoint_buffer_control_update32_veneer",
+            "_hw_endpoint_buffer_control_update32",
+            "__panic_veneer",
+            "panic",
+            "__wrap_puts",
+            "stdio_put_string"
+          ]
+        },
+        {
+          "function": "tud_task_ext",
+          "instructions": [
+            "1000479c:\t4798      \tblx\tr3",
+            "100047f2:\t47b8      \tblx\tr7",
+            "100049ac:\t4798      \tblx\tr3",
+            "100049fe:\t4798      \tblx\tr3",
+            "10004afe:\t47b8      \tblx\tr7",
+            "10004d0a:\t4798      \tblx\tr3"
+          ],
+          "path": [
+            "low_priority_worker_irq",
+            "tud_task_ext"
+          ]
+        },
+        {
+          "function": "usbd_control_xfer_cb",
+          "instructions": [
+            "100051c6:\t4798      \tblx\tr3",
+            "10005234:\t4798      \tblx\tr3"
+          ],
+          "path": [
+            "low_priority_worker_irq",
+            "tud_task_ext",
+            "usbd_control_xfer_cb"
+          ]
+        },
+        {
+          "function": "weak_raw_vprintf",
+          "instructions": [
+            "100036de:\t47a0      \tblx\tr4"
+          ],
+          "path": [
+            "low_priority_worker_irq",
+            "tud_task_ext",
+            "dcd_edpt_clear_stall",
+            "___hw_endpoint_buffer_control_update32_veneer",
+            "_hw_endpoint_buffer_control_update32",
+            "__panic_veneer",
+            "panic",
+            "weak_raw_vprintf"
+          ]
+        }
+      ],
+      "unresolved_indirect_callsite_count": 15
+    },
+    "usb_irq": {
+      "compiler_dynamic_frame_functions": [],
+      "direct_graph_closure_complete": true,
+      "missing_stack_metadata": [],
+      "missing_stack_metadata_count": 0,
+      "reachable_functions": 2,
+      "recursive_sccs": [],
+      "resolved_literal_veneers_with_zero_local_frame": [],
+      "software_callgraph_closure_complete": true,
+      "unresolved_indirect_calls": [],
+      "unresolved_indirect_callsite_count": 0
+    }
+  },
+  "schema": "sqisign-v3-async-stack-closure-audit-v1",
+  "status": "PARTIAL_BLOCKERS_ENUMERATED"
+}

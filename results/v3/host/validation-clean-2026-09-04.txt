@@ -1,0 +1,26 @@
+SQIsign v3 p324_3 clean-source host validation
+build_type=Release implementation=ref radix=32 strict=ON
+
+[official]
+source_commit=6d017708db403bf83977fa70770fc4f7f9e9ff21
+tracked_source_clean=1
+nist_api_exit=0
+nist_api_output_sha256=08ada4a67d0d640632381bb14c2ea5579a012834c182cd2243aba2465b8ee45e
+selftest_exit=0
+selftest_output_sha256=91ef3e1f35c007944d80ef68ed5c56721ffdee6efad5692353351bc56a9f8e34
+official_response_vectors=100
+official_kat_exit=0
+official_kat_result=Known Answer Tests PASSED. 
+
+[lifetime_overlay]
+source_commit=9293313fb58de4c5ce9dd27a5a9fde0058766c79
+tracked_source_clean=1
+nist_api_exit=0
+nist_api_output_sha256=20af6ef2dc53860d232bbdd390b9cca7cdd67bc250f25be920d9eb99429a441c
+selftest_exit=0
+selftest_output_sha256=00610f150638ad02bfb1e9ad70712de4db3af9420cd7f7a2ac864df489477c1a
+official_response_vectors=100
+official_kat_exit=0
+official_kat_result=Known Answer Tests PASSED. 
+
+status=PASS

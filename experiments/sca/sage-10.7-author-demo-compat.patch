@@ -1,0 +1,30 @@
+diff --git a/SQISign-attack-changes/ideals.py b/SQISign-attack-changes/ideals.py
+index ee64346..277e825 100644
+--- a/SQISign-attack-changes/ideals.py
++++ b/SQISign-attack-changes/ideals.py
+@@ -217,7 +217,7 @@ def equivalent_left_ideals(I, J):
+     TODO: write a function which does this without
+           conjugates?
+     """
+-    return I.conjugate().is_equivalent(J.conjugate())
++    return I.conjugate().is_right_equivalent(J.conjugate())
+ 
+ 
+ def equivalent_right_ideals(I, J):
+@@ -225,7 +225,7 @@ def equivalent_right_ideals(I, J):
+     Sage can do this for us already only making a
+     wrapped so it matches the above.
+     """
+-    return I.is_equivalent(J)
++    return I.is_right_equivalent(J)
+ 
+ 
+ def invert_ideal(I):
+@@ -464,6 +464,6 @@ def non_principal_ideal(O):
+         I = O.left_ideal(
+             [N * a for a in O.basis()] + [a * beta.conjugate() for a in O.basis()]
+         )
+-        if I.conjugate().is_equivalent(O.unit_ideal()):
++        if I.conjugate().is_right_equivalent(O.unit_ideal()):
+             continue
+         return I

@@ -1,0 +1,324 @@
+{
+  "archive_text": {
+    "baseline_bytes": 204153,
+    "d2_bytes": 206297,
+    "delta_bytes": 2144,
+    "delta_percent": 1.0501927475961657
+  },
+  "artifacts": {
+    "archive": {
+      "bytes": 2112094,
+      "filename": "libsqisign_v3_p324_3_m4f.a",
+      "sha256": "e68fd8a569d456249229f79a57bdadce0e4c7498af64352dc2772d6d5fa7378b"
+    },
+    "capture": {
+      "bytes": 916,
+      "filename": "vector-000-clean.txt",
+      "sha256": "32fac95954f81a9a7fe14a4a3abc0bbb2e3ae1eb95e24157f9b18d4beaa14583"
+    },
+    "elf": {
+      "bytes": 2032932,
+      "filename": "sqisign_rp2350_v3_d2_static.elf",
+      "sha256": "1bc492e162eb63d7b5d3472f6ad6dae34bfd5330764c93380e8b4bb5395ef560"
+    },
+    "elf_audit": {
+      "bytes": 336,
+      "filename": "elf-audit.txt",
+      "sha256": "e41d2905cc5255659a7d3b49b9deba608a682c09d1480f97243c95d7824b68ba"
+    },
+    "host_log": {
+      "bytes": 355,
+      "filename": "d2-static-validation-2026-09-04.txt",
+      "sha256": "aa8f8fe713021a0d07007c08f6863f76ecaec230922672dec798e67192c51cb4"
+    },
+    "manifest": {
+      "bytes": 1873,
+      "filename": "static-stack-prototype-manifest.json",
+      "sha256": "720d9f63520a8bb69ed71a75b22796fdf8511043892d54c02a0fdf1656e1b4c0"
+    },
+    "map": {
+      "bytes": 706621,
+      "filename": "sqisign_rp2350_v3_d2_static.elf.map",
+      "sha256": "810b36801fc0013dbd58cf1f9f815dafdaae20b2a0ff20b6eed05a59f7572583"
+    },
+    "patch": {
+      "bytes": 24071,
+      "filename": "0036-experiment-v3-d2-static-stack.patch",
+      "sha256": "e1fb2d4c6f4ca7e9096e3f2399960de429b0bb0fea63cf35c2766082375ba1a8"
+    },
+    "uf2": {
+      "bytes": 433152,
+      "filename": "sqisign_rp2350_v3_d2_static.uf2",
+      "sha256": "297ff100488147d80e3d848fb11a987322b6cebbab1bdd0d508f28f547d81ffc"
+    }
+  },
+  "baseline_archive": {
+    "bytes": 2087190,
+    "filename": "libsqisign_v3_p324_3_m4f.a",
+    "sha256": "1c7d7d52eb0934abc0f04f30afa30dce4245fecd54babdaa5430c737df36bd3a"
+  },
+  "d2_capture": {
+    "firmware_commit": "1343554178331b76a751970ea07821612e56b654",
+    "generated_tree_sha256": "7df287fc4e690b93459fa47c9bb6856a49712996ba348fba0abd0eb397383421",
+    "operations": {
+      "keygen": {
+        "psp_extent_bytes": 62096,
+        "time_us": 2242138
+      },
+      "sign": {
+        "psp_extent_bytes": 101060,
+        "time_us": 7108136
+      },
+      "verify": {
+        "psp_extent_bytes": 40252,
+        "time_us": 821917
+      }
+    },
+    "path": "results/v3/rp2350/d2-static-2026-09-04/vector-000-clean.txt",
+    "sha256": "32fac95954f81a9a7fe14a4a3abc0bbb2e3ae1eb95e24157f9b18d4beaa14583",
+    "source_commit": "cb94f242ba791a4ccb980b46c917830b309a9832"
+  },
+  "d2_source_commit": "cb94f242ba791a4ccb980b46c917830b309a9832",
+  "host_official_response_vectors": 100,
+  "materialized_bounds": {
+    "IBZ_NLIMBS_RADIX32": 60,
+    "max_chain_length": 326,
+    "max_chain_space": 10,
+    "max_dlog_levels": 10,
+    "max_encoded_digits": 11,
+    "max_fp2_batch": 12,
+    "max_theta_push_points": 3
+  },
+  "official_source_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+  "rp2350_vector_count": 1,
+  "schema": "sqisign-v3-d2-fixed-local-frame-audit-v1",
+  "scope": {
+    "established": [
+      "the 19 compiler-reported dynamic local-frame records in the p324_3/m4f crypto archive become 18 static records plus one inlined/eliminated function",
+      "the transformed regular source passes all 100 official response vectors on the host",
+      "one clean RP2350 vector-0 K/S/V path passes with zero dynamic stack records and fail-stop allocator symbols"
+    ],
+    "interpretation": "fixed local-frame closure and a bounded-input dynamic cross-check, not a whole-program stack proof",
+    "not_established": [
+      "a whole-program worst-case stack bound across recursive call depth and error paths",
+      "bounds for parameter sets other than p324_3/RADIX32",
+      "side-channel resistance"
+    ]
+  },
+  "stack_usage": {
+    "baseline_dynamic_records": 19,
+    "converted_records": [
+      {
+        "baseline_frame_bytes": 5776,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 7736,
+        "d2_qualifiers": "static",
+        "delta_bytes": 1960,
+        "function": "pairing_dlog_2_tate",
+        "source": "src/pqm4/sqisign_p324_3/m4f/biextension.c"
+      },
+      {
+        "baseline_frame_bytes": 192,
+        "baseline_qualifiers": "dynamic,bounded",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 72,
+        "d2_qualifiers": "static",
+        "delta_bytes": -120,
+        "function": "secret_key_to_bytes",
+        "source": "src/pqm4/sqisign_p324_3/m4f/encode_secret.c"
+      },
+      {
+        "baseline_frame_bytes": 200,
+        "baseline_qualifiers": "dynamic,bounded",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 72,
+        "d2_qualifiers": "static",
+        "delta_bytes": -128,
+        "function": "secret_key_from_bytes",
+        "source": "src/pqm4/sqisign_p324_3/m4f/encode_secret.c"
+      },
+      {
+        "baseline_frame_bytes": 248,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 2352,
+        "d2_qualifiers": "static",
+        "delta_bytes": 2104,
+        "function": "fp2_batched_inv",
+        "source": "src/pqm4/sqisign_p324_3/m4f/fp2.c"
+      },
+      {
+        "baseline_frame_bytes": 3120,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 16856,
+        "d2_qualifiers": "static",
+        "delta_bytes": 13736,
+        "function": "gluing_start_chain",
+        "source": "src/pqm4/sqisign_p324_3/m4f/gluing.c"
+      },
+      {
+        "baseline_frame_bytes": 664,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 2440,
+        "d2_qualifiers": "static",
+        "delta_bytes": 1776,
+        "function": "iso_isogeny_2chain_with_strategy",
+        "source": "src/pqm4/sqisign_p324_3/m4f/isog.c"
+      },
+      {
+        "baseline_frame_bytes": 72,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 1040,
+        "d2_qualifiers": "static",
+        "delta_bytes": 968,
+        "function": "mp_lehmer_combine",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 104,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 1288,
+        "d2_qualifiers": "static",
+        "delta_bytes": 1184,
+        "function": "mp_div_d2n1n",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 64,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 800,
+        "d2_qualifiers": "static",
+        "delta_bytes": 736,
+        "function": "mp_div_d3n2n",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 112,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "inlined_or_eliminated",
+        "d2_frame_bytes": null,
+        "d2_qualifiers": "not_emitted",
+        "delta_bytes": null,
+        "function": "mp_div_unsigned",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 304,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 544,
+        "d2_qualifiers": "static",
+        "delta_bytes": 240,
+        "function": "mp_mul_small_signed",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 632,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 2360,
+        "d2_qualifiers": "static",
+        "delta_bytes": 1728,
+        "function": "ibz_div",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 624,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 2336,
+        "d2_qualifiers": "static",
+        "delta_bytes": 1712,
+        "function": "ibz_mod",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 1096,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 2808,
+        "d2_qualifiers": "static",
+        "delta_bytes": 1712,
+        "function": "ibz_mod_ui",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 616,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 2856,
+        "d2_qualifiers": "static",
+        "delta_bytes": 2240,
+        "function": "ibz_gcd",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 3120,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 4408,
+        "d2_qualifiers": "static",
+        "delta_bytes": 1288,
+        "function": "ibz_xgcd",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 2096,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 3408,
+        "d2_qualifiers": "static",
+        "delta_bytes": 1312,
+        "function": "ibz_invmod",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 192,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 4584,
+        "d2_qualifiers": "static",
+        "delta_bytes": 4392,
+        "function": "ibz_sqrt_floor",
+        "source": "src/pqm4/sqisign_p324_3/m4f/mp.c"
+      },
+      {
+        "baseline_frame_bytes": 4624,
+        "baseline_qualifiers": "dynamic",
+        "d2_disposition": "static_local_frame",
+        "d2_frame_bytes": 12728,
+        "d2_qualifiers": "static",
+        "delta_bytes": 8104,
+        "function": "theta_chain_compute_impl",
+        "source": "src/pqm4/sqisign_p324_3/m4f/theta_isogenies.c"
+      }
+    ],
+    "d2_dynamic_records": 0,
+    "records_each": 481,
+    "translation_unit_files_each": 51
+  },
+  "status": "PASS",
+  "vector_0_psp_cross_campaign": {
+    "keygen": {
+      "baseline_bytes": 56972,
+      "d2_bytes": 62096,
+      "delta_bytes": 5124
+    },
+    "sign": {
+      "baseline_bytes": 101060,
+      "d2_bytes": 101060,
+      "delta_bytes": 0
+    },
+    "verify": {
+      "baseline_bytes": 37444,
+      "d2_bytes": 40252,
+      "delta_bytes": 2808
+    }
+  }
+}

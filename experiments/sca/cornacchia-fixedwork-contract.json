@@ -1,0 +1,50 @@
+{
+  "schema": "sqisign-cornacchia-fixedwork-contract-v1",
+  "objective": "Remove the published exponent-bit-dependent modular-exponentiation schedule from the Level-I production Cornacchia route without a legacy fallback.",
+  "scope": {
+    "security_level": "lvl1",
+    "source_baseline": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+    "protected_route": "Sign -> quat_represent_integer -> ibz_cornacchia_prime -> protected sqrt_mod_p",
+    "fixed_work_bits": 521,
+    "proven_level_i_modulus_bits": 492,
+    "margin_bits": 29
+  },
+  "accepted_path": {
+    "all_modular_exponentiations_use_fixedwork": true,
+    "all_tonelli_shanks_modular_multiplications_use_fixedwork": true,
+    "legacy_powmod_fallback": false,
+    "legacy_mulmod_fallback": false,
+    "output_aliases_radix_input": true,
+    "transactional_output_on_domain_rejection": true,
+    "workspace_cleared_on_return": true
+  },
+  "failure_contract": {
+    "ordinary_non_residue": "return no-root",
+    "invalid_or_out_of_range_modulus": "return fatal to the Cornacchia adapter",
+    "cornacchia_fatal_action": "fail-stop; never retry through the legacy implementation",
+    "valid_level_i_expectation": "the compiled 492-bit bound makes the fatal width guard unreachable for a conforming production invocation"
+  },
+  "compatibility": {
+    "feature_default": "off",
+    "normal_build_source_semantics": "unchanged",
+    "valid_protected_signatures": "must be byte-identical to the baseline for frozen seeds",
+    "rng_consumption": "must be byte-identical to the baseline for frozen seeds",
+    "status": "must be identical to the baseline for valid inputs"
+  },
+  "required_evidence": [
+    "direct protected-vs-legacy sqrt and Cornacchia differential tests",
+    "alias, no-root, domain rejection, canary, and workspace-clear tests",
+    "twelve-seed Sign signature and post-RNG differential",
+    "fatal ASan+UBSan run",
+    "Cortex-M33 stack-usage and disassembly gates",
+    "absence of accepted-path edges to ibz_pow_mod and ibz_mul_mod_positive",
+    "fixed exponent-loop and multiplier-loop bounds in the target object"
+  ],
+  "claims_withheld": [
+    "constant-time SQIsign",
+    "constant-power or constant-EM behavior",
+    "protection of Tonelli-Shanks loop counts, non-residue search, Cornacchia retries, Euclid/half-GCD, or the rest of Sign",
+    "resistance to the published key-recovery attack without analog traces and an exponent-recovery attempt",
+    "Level-III or Level-V coverage"
+  ]
+}

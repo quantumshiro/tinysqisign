@@ -1,0 +1,155 @@
+{
+  "schema": "sqisign-cornacchia-halfgcd-analog-plan-v1",
+  "status": "preregistered_waiting_for_acquisition_instrument",
+  "research_question": "Does replacing the secret-dependent Cornacchia Euclidean loop by a fixed 1421-round branch/address schedule remove coarse iteration leakage without leaving exploitable operand-, mask-, or state-dependent power/EM leakage?",
+  "literature_anchor": {
+    "timing_and_control_flow": "Ready to SQI? Safety First!, IACR ePrint 2023/807",
+    "power_attack_context": "Simple Power Analysis Attack on SQIsign, IACR ePrint 2025/830, AFRICACRYPT 2025",
+    "interpretation": "The fixed half-GCD directly targets the Euclidean control-flow surface discussed in timing work. The power paper demonstrates why regular control flow alone is not a resistance proof."
+  },
+  "candidate": {
+    "scheme": "SQIsign Level-I reference signer component",
+    "target": "RP2350 Cortex-M33 Arm-S, RADIX32, 150 MHz",
+    "firmware_build_evidence": "results/rp2350/sca-cornacchia-halfgcd-build.json",
+    "artifact_directory": "results/rp2350/artifacts/sca-cornacchia-halfgcd-ce228b15",
+    "elf_sha256": "8b2ce7d21c850df8af326f0ae199435481fd57c999e10235db19c3c0501a646c",
+    "uf2_sha256": "ce228b151a0c79234d9a51777a2b1ed3ac47388ab28f4dda4129a97f0086692f",
+    "trigger_gpio": 2,
+    "measured_window": "one interrupt-masked call to the fixed half-GCD adapter; public root/reference setup and serial I/O are outside",
+    "schedule": {
+      "rounds": 1421,
+      "independent_sufficient_active_rounds": 644,
+      "scheduled_freeze_margin_rounds": 777,
+      "bound_contract": "experiments/sca/cornacchia-halfgcd-bound-contract.json",
+      "conditional_branches": "one public loop back edge",
+      "register_indexed_memory": false,
+      "indirect_or_table_branches": false,
+      "legacy_division_calls": 0
+    },
+    "unprotected_properties": [
+      "unmasked secret-derived operands",
+      "data-dependent arithmetic masks and switching activity",
+      "no operand blinding or randomized projective representation",
+      "no power or EM measurement yet",
+      "full signer retains other variable-time and retry surfaces"
+    ]
+  },
+  "already_observed": {
+    "kind": "firmware-reported integer-microsecond timing only",
+    "capture": "results/rp2350/sca-cornacchia-halfgcd-30pairs-capture.json",
+    "summary": "results/rp2350/sca-cornacchia-halfgcd-30pairs-summary.json",
+    "legacy_positive_control_build": "results/rp2350/sca-cornacchia-euclid-legacy-build.json",
+    "legacy_positive_control_capture": "results/rp2350/sca-cornacchia-euclid-legacy-30pairs-capture.json",
+    "legacy_positive_control_summary": "results/rp2350/sca-cornacchia-euclid-legacy-30pairs-summary.json",
+    "matched_positive_control_comparison": "results/rp2350/sca-cornacchia-halfgcd-positive-control-comparison.json",
+    "fixed_same_input_control_B_minus_A_mean_us": -0.4666666666666667,
+    "legacy_variable_euclid_H_minus_L_mean_us": 1476.8666666666666,
+    "legacy_variable_euclid_H_minus_L_approximate_95pct_ci_us": [1474.9005184552461, 1478.832814878087],
+    "fixed_1421_round_H_minus_L_mean_us": 0.2,
+    "fixed_1421_round_H_minus_L_approximate_95pct_ci_us": [-0.5303481141319473, 0.9303481141319474],
+    "varying_minus_fixed_mean_us": 2.0,
+    "interpretation": "The matched variable-Euclid firmware resolves the public 95-versus-122-step class by about 1476.9 us, while the fixed 1421-round firmware resolves no H/L difference at 1-us timer resolution. This validates the coarse timer positive control and the removal of iteration-count timing at this granularity; it is not an equivalence test, an analog positive control, or a side-channel-resistance result."
+  },
+  "campaigns": [
+    {
+      "id": "HALFGCD-0",
+      "purpose": "instrument, trigger, clipping, alignment, and negative-control calibration",
+      "classes": [
+        "A: fixture 0 repeated",
+        "B: the identical fixture 0 repeated with an independently balanced label"
+      ],
+      "minimum_traces_per_class": 10000,
+      "acceptance": "stable trigger/alignment and no reproducible class separation in two independently acquired sessions",
+      "inconclusive": "clipping, trigger ambiguity, clock drift, label/order imbalance, or positive same-input control"
+    },
+    {
+      "id": "HALFGCD-1",
+      "purpose": "positive-control validation of measurement sensitivity",
+      "completed_coarse_timer_artifact": {
+        "build": "results/rp2350/sca-cornacchia-euclid-legacy-build.json",
+        "capture": "results/rp2350/sca-cornacchia-euclid-legacy-30pairs-capture.json",
+        "summary": "results/rp2350/sca-cornacchia-euclid-legacy-30pairs-summary.json",
+        "comparison": "results/rp2350/sca-cornacchia-halfgcd-positive-control-comparison.json",
+        "result": "legacy H-L mean +1476.8667 us with approximate 95% CI [1474.9005, 1478.8328] us; fixed H-L mean +0.2 us with approximate 95% CI [-0.5303, 0.9303] us"
+      },
+      "required_analog_artifact": "Acquire the matched legacy variable-Euclid firmware with the same shunt/current or EM setup, GPIO wrapper, clock, compiler and serial exclusion used for the protected firmware.",
+      "classes": [
+        "L: fixture 4, observed legacy Euclid count 95",
+        "H: fixture 7, observed legacy Euclid count 122"
+      ],
+      "acceptance": "the analog setup resolves the known variable-control difference before protected-firmware non-detection is interpreted",
+      "warning": "The coarse timer positive control has passed, but it does not validate power/EM sensitivity. Absence of an analog positive control makes protected analog non-detection inconclusive."
+    },
+    {
+      "id": "HALFGCD-2",
+      "purpose": "fixed-versus-varying leakage assessment of the protected component",
+      "classes": [
+        "F: fixture 0 repeated",
+        "R: balanced cycle over public fixtures 1 through 15"
+      ],
+      "minimum_traces_per_class": 10000,
+      "schedule": "balanced AB/BA order with independent random permutation; repeat as a second session after reacquisition and realignment",
+      "analysis": [
+        "point-wise first-order Welch t-test",
+        "point-wise centered-square second-order Welch t-test",
+        "effect sizes and confidence intervals",
+        "same-input A/B control analyzed with the identical pipeline",
+        "preprocessing sensitivity report with raw unfiltered data retained"
+      ],
+      "exploratory_threshold": "absolute t below 4.5 in both protected sessions and both corresponding same-input controls",
+      "warning": "TVLA-style non-detection is not proof against SPA, profiling, DPA, horizontal attacks, or key recovery"
+    },
+    {
+      "id": "HALFGCD-3",
+      "purpose": "attack-driven residual-mask and state classifier",
+      "preregistration_before_traces": [
+        "extend the public-fixture profiler to emit the 1421 per-round update/mask labels",
+        "freeze segmentation, features, classifier, train/test split, trace budgets, and failure handling",
+        "keep labels and ground truth outside production firmware"
+      ],
+      "trace_budgets_per_fixture": [1, 10, 100, 1000],
+      "minimum_public_fixtures": 16,
+      "evaluation": [
+        "held-out-fixture and held-out-session accuracy",
+        "per-round mask accuracy and Hamming distance",
+        "legacy-step-class classification",
+        "full decision-sequence exact recovery rate",
+        "all failed/no-candidate cells"
+      ],
+      "failure": "any reproducible recovery materially above the preregistered control/null distribution",
+      "warning": "public-fixture classification is a component leakage result, not signing-key recovery"
+    }
+  ],
+  "capture_requirements": {
+    "channels": [
+      "shunt power or calibrated current probe",
+      "near-field EM when available",
+      "GPIO 2 public trigger"
+    ],
+    "metadata": [
+      "ELF/UF2/BIN/map hashes",
+      "board revision and serial",
+      "probe and acquisition-instrument model, serial, settings, and calibration",
+      "target voltage, 150-MHz clock, compiler, SDK, interrupt policy",
+      "raw unfiltered traces, labels, acquisition order, and lossless instrument-native archive",
+      "all exclusions, dropped traces, alignment failures, and reruns"
+    ],
+    "trace_manifest": "experiments/sca/analog-trace-dataset-halfgcd-template.json"
+  },
+  "decision_rule": {
+    "fail": "reproducible leakage or classifier success in the protected firmware, or any exact/partial secret-derived decision recovery beyond the frozen null distribution",
+    "bounded_empirical_pass": "positive and negative controls behave as preregistered, no protected-firmware detection or attack succeeds in two independent sessions, and all raw artifacts are archived",
+    "inconclusive": "failed controls, one session only, insufficient traces, unstable acquisition, missing provenance, or analysis selected after viewing protected traces",
+    "claim_boundary_after_pass": "component-level bounded empirical evidence only; not constant power, not whole-Sign resistance, and not certification"
+  },
+  "current_decision": {
+    "source_recurrence_bound_machine_checked": true,
+    "compiled_program_formally_verified": false,
+    "legacy_timer_positive_control_run": true,
+    "legacy_timer_positive_control_detected": true,
+    "analog_positive_control_run": false,
+    "analog_capture_run": false,
+    "side_channel_resistance_established": false,
+    "physical_campaign_blocked_by_missing_instrument": true
+  }
+}

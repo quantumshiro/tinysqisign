@@ -14,7 +14,7 @@
   title   = {Round 3 Additional Digital Signature Schemes},
   year    = {2026},
   url     = {https://csrc.nist.gov/projects/pqc-dig-sig/round-3-additional-signatures},
-  urldate = {2026-09-03}
+  urldate = {2026-09-04}
 }
 
 @inproceedings{sqisign-2020,
@@ -36,7 +36,7 @@
   year    = {2025},
   month   = jul,
   url     = {https://sqisign.org/spec/sqisign-20250707.pdf},
-  urldate = {2026-09-03}
+  urldate = {2026-09-04}
 }
 
 @techreport{sqisign-spec-v3,
@@ -46,7 +46,7 @@
   year        = {2026},
   month       = sep,
   url         = {https://sqisign.org/spec/sqisign-20260901.pdf},
-  urldate     = {2026-09-03}
+  urldate     = {2026-09-04}
 }
 
 @online{sqisign-code-v3,
@@ -55,7 +55,7 @@
   year    = {2026},
   month   = sep,
   url     = {https://github.com/SQISign/the-sqisign/tree/nist-v3},
-  urldate = {2026-09-03},
+  urldate = {2026-09-04},
   note    = {Git tag \texttt{nist-v3}, commit \texttt{6d017708db403bf83977fa70770fc4f7f9e9ff21}}
 }
 
@@ -80,12 +80,18 @@
   doi       = {10.5555/314500.315082}
 }
 
-@article{fixed-precision-2025,
-  author  = {Kim, Won and Lee, Jeonghwan and Kim, Hyeonhak and Lee, Changmin},
-  title   = {{SQIsign} with Fixed-Precision Integer Arithmetic},
-  journal = {Cryptology ePrint Archive, Paper 2025/1649},
-  year    = {2025},
-  url     = {https://eprint.iacr.org/2025/1649}
+@inproceedings{fixed-precision-2025,
+  author    = {Kim, Won and Lee, Jeonghwan and Kim, Hyeonhak and Lee, Changmin},
+  title     = {{SQIsign} with Fixed-Precision Integer Arithmetic},
+  booktitle = {Public-Key Cryptography -- PKC 2026},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {16553},
+  pages     = {3--30},
+  publisher = {Springer},
+  year      = {2026},
+  doi       = {10.1007/978-3-032-26737-5_1},
+  url       = {https://doi.org/10.1007/978-3-032-26737-5_1},
+  note      = {Earlier version: Cryptology ePrint Archive, Paper 2025/1649}
 }
 
 @article{compact-quaternion-2026,
@@ -152,6 +158,36 @@
   url     = {https://eprint.iacr.org/2026/394}
 }
 
+@article{sqisign-32bit-2024,
+  author  = {Hu, Yue and Shen, Shiyu and Yang, Hao and Wang, Weize},
+  title   = {Paving the Way for {SQIsign}: Toward Efficient Deployment on 32-bit Embedded Devices},
+  journal = {Mathematics},
+  volume  = {12},
+  number  = {19},
+  pages   = {3147},
+  year    = {2024},
+  doi     = {10.3390/math12193147},
+  url     = {https://doi.org/10.3390/math12193147}
+}
+
+@article{sqisign-avx512-2026,
+  author  = {Wang, Weize and Wang, Chutong and Wu, Yu and Xue, Qifan and Zheng, Jieyu and Zhao, Yunlei},
+  title   = {Exposing {SIMD} Parallelism in {SQIsign}: An {AVX-512} Implementation},
+  journal = {arXiv preprint arXiv:2608.13948},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2608.13948},
+  url     = {https://arxiv.org/abs/2608.13948}
+}
+
+@online{sqisign-rs-2026,
+  author  = {{Anchorage Digital}},
+  title   = {{sqisign-rs}: A Pure {Rust} Implementation of {SQIsign} v2.0},
+  year    = {2026},
+  url     = {https://github.com/anchorageoss/sqisign-rs},
+  urldate = {2026-09-04},
+  note    = {Repository release 0.5.0}
+}
+
 @article{ct-integer-2025,
   author  = {Kouider, Fatna and Mukherjee, Anisha and Jacquemin, David and Kutas, P{\'e}ter},
   title   = {Constant-time Integer Arithmetic for {SQIsign}},
@@ -176,12 +212,18 @@
   url     = {https://eprint.iacr.org/2025/2192}
 }
 
-@article{spa-2025,
-  author  = {Mukherjee, Anisha and Czuprynko, Maciej and Jacquemin, David and Kutas, P{\'e}ter and Sinha Roy, Sujoy},
-  title   = {Simple Power Analysis Attack on {SQIsign}},
-  journal = {Cryptology ePrint Archive, Paper 2025/830},
-  year    = {2025},
-  url     = {https://eprint.iacr.org/2025/830}
+@inproceedings{spa-2025,
+  author    = {Mukherjee, Anisha and Czuprynko, Maciej and Jacquemin, David and Kutas, P{\'e}ter and Sinha Roy, Sujoy},
+  title     = {Simple Power Analysis Attack on {SQIsign}},
+  booktitle = {Progress in Cryptology -- AFRICACRYPT 2025},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {15651},
+  pages     = {245--269},
+  publisher = {Springer},
+  year      = {2025},
+  doi       = {10.1007/978-3-031-97260-7_12},
+  url       = {https://doi.org/10.1007/978-3-031-97260-7_12},
+  note      = {Earlier version: Cryptology ePrint Archive, Paper 2025/830}
 }
 
 @article{schneider-moradi-2016,
@@ -202,5 +244,24 @@
   edition = {6.3.0},
   year    = {2023},
   url     = {https://gmplib.org/gmp-man-6.3.0.pdf},
-  urldate = {2026-09-03}
+  urldate = {2026-09-04}
+}
+
+@online{arm-stack-sizing-2016,
+  author  = {Yiu, Joseph},
+  title   = {How Much Stack Memory Do I Need for My {Arm Cortex-M} Applications?},
+  year    = {2016},
+  month   = mar,
+  url     = {https://developer.arm.com/community/arm-community-blogs/b/architectures-and-processors-blog/posts/how-much-stack-memory-do-i-need-for-my-arm-cortex--m-applications},
+  urldate = {2026-09-04},
+  organization = {Arm}
+}
+
+@manual{rp2350-datasheet,
+  author  = {{Raspberry Pi Ltd}},
+  title   = {{RP2350} Datasheet: A Microcontroller by Raspberry Pi},
+  number  = {RP-008373-DS-2},
+  year    = {2025},
+  url     = {https://pip-assets.raspberrypi.com/categories/1214-rp2350/documents/RP-008373-DS-2-rp2350-datasheet.pdf?disposition=inline},
+  urldate = {2026-09-04}
 }

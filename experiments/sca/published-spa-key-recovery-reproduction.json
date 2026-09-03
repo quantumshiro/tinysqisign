@@ -1,0 +1,76 @@
+{
+  "author_repository": {
+    "commit": "3be37656c2b16ff048c8ca51512a7c2dea6f93a9",
+    "compatibility_patch": {
+      "path": "experiments/sca/sage-10.7-author-demo-compat.patch",
+        "scope": "Semantics-free CRLF/final-newline normalization followed by the Sage 10.7 quaternion-ideal API rename is_equivalent to is_right_equivalent.",
+      "sha256": "808db59b766f8f853ffb859fd2986ea74e07dbd3b1cd391d0aacdc13fc2c6634"
+    },
+    "source_sha256": {
+      "README.md": "6f56b5016cc58b6845108573fdb2c4aad4d1e08cad4c76b5a9d4040bf116e88f",
+      "SQISign-attack-changes/KLPT_attack.py": "e6ab49c493c2d91e7a7149ffdd4ad03256a3adc1ee569a5548ee6f196556f4d5",
+      "SQISign-attack-changes/README.md": "2a004801ea1f2c1fa68dc43b68d5c32bb774db998168acf210b92a017cf8b705",
+      "SQISign-attack-changes/SQISign.py": "398a90f1612f298991f76db89f27edac4bec21a3d00e49b288816348d9ac91d3",
+      "SQISign-attack-changes/example_signing_attack.sage": "6d2d9ceaeff25ca4e77084310909de54fe0f04acbdd96bf818bc5e04bf94665a",
+      "SQISign-attack-changes/ideals.py": "3f928127f15e630ab2a1ebb5c757887935b0f18b96c95a028d913e6e18a22140",
+      "SQISign-attack-changes/parameters.py": "8f7d1e4a2162849044cf12a4e4c2d34d34512ae4dee3fce4cc683d295950c9b5"
+    },
+    "url": "https://github.com/anishamukh/Key-Recovery-of-SQIsign"
+  },
+  "created_on": "2026-08-23",
+  "decision": {
+    "author_toy_represent_integer_reconstruction_observed": true,
+    "author_toy_signature_valid_after_attack_instrumentation": true,
+    "author_toy_strong_approximation_reconstruction_observed": true,
+    "current_c_or_rp2350_signing_key_recovery_reproduced": false,
+    "physical_trace_exponent_recovery_reproduced": false,
+    "published_attack_blocked": false,
+    "side_channel_resistance_established": false
+  },
+  "environment": {
+    "platform": "macOS-26.3.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.6",
+    "sage": "SageMath version 10.7, Release Date: 2025-08-09"
+  },
+  "literature": {
+    "paper": "Simple Power Analysis Attack on SQIsign",
+    "reference": "IACR ePrint 2025/830; AFRICACRYPT 2025",
+    "url": "https://eprint.iacr.org/2025/830"
+  },
+  "run": {
+    "elapsed_seconds_descriptive": 17.916177,
+    "markers": {
+      "represent_integer_recovered_m_values": [
+        4,
+        5,
+        10,
+        13,
+        17,
+        36,
+        40,
+        61,
+        356
+      ],
+      "represent_integer_success_count": 12,
+      "response_isogeny_completion_count": 1,
+      "strong_approximation_recovered_m_values": [
+        43054471850,
+        91692184781,
+        55700635610537707156,
+        26512523728028479719485,
+        252327617156442668060333,
+        568990023653845176381896,
+        5945767095791599465602646450
+      ],
+      "strong_approximation_success_count": 7,
+      "valid_signature_marker_count": 1
+    },
+    "raw_output": {
+      "bytes": 10399,
+      "path": "results/host/sca-published-spa-author-demo.txt",
+      "sha256": "78b8fab3a01dc6d5c1b958fc988278d345cfa20c2a82f59e0ce9b7545cb62d4e"
+    }
+  },
+  "schema": "sqisign-published-spa-key-recovery-reproduction-v1",
+  "scope": "Reproduction of the authors' nondeterministic 54-bit Sage toy demonstration with attack-relevant intermediate values available. Marker counts and recovered toy integers vary by run and are not performance evidence. This does not bridge physical exponent classification to the current C or RP2350 signer."
+}

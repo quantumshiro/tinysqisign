@@ -8,14 +8,12 @@ v3_root=${SQISIGN_V3_SOURCE_ROOT:-"$project_root/work/v3-static-stack-d2"}
 build_root=${SQISIGN_RP2350_V3_BUILD_ROOT:-"$project_root/build-rp2350-v3-d2-static"}
 toolchain_root=${ARM_TOOLCHAIN_ROOT:?Set ARM_TOOLCHAIN_ROOT to the Arm GNU Toolchain directory}
 picotool_cmake_dir=${PICOTOOL_CMAKE_DIR:?Set PICOTOOL_CMAKE_DIR to the picotool CMake package directory}
-expected_v3_base_commit=6d017708db403bf83977fa70770fc4f7f9e9ff21
+expected_v3_commit=cb94f242ba791a4ccb980b46c917830b309a9832
 
 v3_root=$(CDPATH= cd -- "$v3_root" && pwd -P)
 generated_root="$v3_root/src/pqm4/sqisign_p324_3/m4f"
 v3_commit=$(git -C "$v3_root" rev-parse HEAD)
-git -C "$v3_root" merge-base --is-ancestor \
-    "$expected_v3_base_commit" "$v3_commit"
-test "$(git -C "$v3_root" rev-list --count "$expected_v3_base_commit..$v3_commit")" -eq 1
+test "$v3_commit" = "$expected_v3_commit"
 test -f "$generated_root/pqm4_api.c"
 test -f "$sdk_root/pico_sdk_init.cmake"
 test -x "$toolchain_root/bin/arm-none-eabi-gcc"

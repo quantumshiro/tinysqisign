@@ -1,0 +1,172 @@
+{
+  "schema": "sqisign-random-ideal-fixed-budget-sampler-v1",
+  "status": "sampler_host_arm_distribution_and_sign_integration_verified_physical_pending",
+  "scope": {
+    "variant": "experimental Level-I RADIX32 low-memory commitment Sign route",
+    "normal_route": "built separately with the opt-in macro disabled and its frozen transcript preserved",
+    "protected_route": "opt-in fixed-budget generator sampling followed by the unchanged explicit ideal-construction route",
+    "established": [
+      "fixed entropy consumption and candidate schedule",
+      "functional success, exhaustion, nonpublication and full sampler-workspace clearing",
+      "fatal optimized ASan plus UBSan execution",
+      "frozen Cortex-M33 control/address structure under two individual-TU profiles",
+      "software output-ideal distribution bound",
+      "deterministic Level-I KeyGen plus protected Sign and Verify regression"
+    ],
+    "not_claimed": [
+      "legacy protected-Sign byte identity",
+      "constant power or masking",
+      "constant-time ideal construction or complete SQIsign signing",
+      "final linked Cortex-M33 trace equivalence",
+      "physical power or EM resistance",
+      "production signing approval"
+    ]
+  },
+  "sources": {
+    "header": {
+      "path": "experiments/sca/random_ideal_fixed_budget_sampler.h",
+      "sha256": "8cd01c6725c324d3feeaa93003b2da6bd804db3ddbd714378be1d744138dd8b8"
+    },
+    "implementation": {
+      "path": "experiments/sca/random_ideal_fixed_budget_sampler.c",
+      "sha256": "c8ff3fbddeeed09e18eb7e3bb94a8280dadcb05ac653ae3dff19ca7abe6094a0"
+    },
+    "test": {
+      "path": "experiments/sca/test_random_ideal_fixed_budget_sampler.c",
+      "sha256": "160b18a10d1fb921dbeb1379ea188fd01d582f01c0133eba7b4fd56df7673863"
+    },
+    "arm_checker": {
+      "path": "scripts/check_sca_random_ideal_fixed_budget_sampler_arm.py",
+      "sha256": "c3ef3d8c460612970c30d7afbca9c601f54b3c61d5c049b429aa053fbf7215f7"
+    },
+    "runner": {
+      "path": "scripts/run_sca_random_ideal_fixed_budget_sampler.sh",
+      "sha256": "c683751f4f3f256a83e381e0f11e4f98f9698a666e08c2fd8fb2d06c3d67c698"
+    },
+    "integration_runner": {
+      "path": "scripts/run_sca_random_ideal_fixed_budget_integration.sh",
+      "sha256": "cf7abe4bd89dc02ff944dd92d85f4fc6d51849e7535ab223b12bbd72ab066382"
+    },
+    "distribution": {
+      "path": "experiments/sca/random-ideal-output-distribution.json",
+      "sha256": "b2f4d21b4be2f968c102553049974613e91bc9ea591eab1f5d99eb81eb700863"
+    },
+    "distribution_checker": {
+      "path": "scripts/check_sca_random_ideal_distribution.py",
+      "sha256": "c21fc0aa1fd45f26d0aa7e29d7a731128d52fc36b6e27ad88bd7177096f36df1"
+    },
+    "component_contract": {
+      "path": "experiments/sca/random-ideal-fixed-budget-component-contract.json",
+      "sha256": "d7ebfa4b31bf8e7351498e359b76b857186d950989bb05682b7062fc3ed970f6"
+    },
+    "component_checker": {
+      "path": "scripts/check_sca_random_ideal_fixed_budget_components.py",
+      "sha256": "044c3a569669bfc70c6d7dffaa698949e1429c954801df39235c80de4831288d"
+    },
+    "integrated_test": {
+      "path": "work/compact-sca-ri/src/signature/ref/lvlx/test/test_keygen_workspace_closure.c",
+      "sha256": "9a5bd61a1534629e0b22d7ad0ab961732a5c8013bca51134cbe93b38dcfebe3a"
+    },
+    "integrated_sampler_owner": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/normeq.c",
+      "sha256": "e9b19d0d762152d1759cbb0defded151eeefc7bfdf4ba99fd119c39165b563fe"
+    },
+    "integrated_sign_route": {
+      "path": "work/compact-sca-ri/src/signature/ref/lvlx/sign.c",
+      "sha256": "464fe4ef97a10a244350979f48f8767d25436c1b708f703306f7ed9567cefc8b"
+    },
+    "integrated_overlay": {
+      "path": "work/compact-sca-ri/src/quaternion/ref/generic/include/ml2_workspace.h",
+      "sha256": "4ff597995223b7bd601ebd6d566ee5987cb299123f63d7466fc52ca7f0571c38"
+    },
+    "integrated_sign_workspace": {
+      "path": "work/compact-sca-ri/src/signature/ref/include/signature_lowmem.h",
+      "sha256": "de918f9bba85fb5fedb90982e449945fa94b9f39e10d7c4d7f6b9c42ce7a8b5e"
+    }
+  },
+  "fixed_schedule": {
+    "wide_bits": 769,
+    "wide_bytes": 97,
+    "gamma_candidates": 130,
+    "beta_candidates": 1,
+    "coordinate_draws": 394,
+    "entropy_bytes": 38218,
+    "conditional_branches_in_frozen_sampler_entry": 12,
+    "fixed_public_loop_branches_in_frozen_sampler_entry": 8
+  },
+  "abi": {
+    "sampler_phase_bytes": 6480,
+    "sampler_core_bytes": 12096,
+    "sampler_core_alignment": 4,
+    "entropy_plus_sampler_bytes": 50316,
+    "integrated_retry_union_bytes": 94912,
+    "integrated_retry_union_alignment": 8,
+    "level1_sign_arena_bytes": 172080,
+    "arena_growth_bytes": 0
+  },
+  "host_evidence": {
+    "optimized_profile": "C11 -O3 -fstrict-aliasing -Wall -Wextra -Werror",
+    "sanitizer_profile": "C11 -O1 fatal ASan plus UBSan, non-recovering",
+    "expected_output": "random-ideal fixed-budget sampler PASS: gamma=130 beta=1 coordinates=394 entropy=38218 workspace=12096 digest=f114ed1bf2f71f1e distribution-proof=separate physical=false"
+  },
+  "arm_evidence": {
+    "compiler": "Arm GNU Toolchain GCC 15.2.1",
+    "target": "Cortex-M33 little-endian AAPCS, standalone RADIX32 sampler TU",
+    "profiles": {
+      "os-soft": {
+        "optimization": "-Os",
+        "float_abi": "soft",
+        "frames": {
+          "sub_reduce": 24,
+          "mul_reduce": 24,
+          "add_reduce": 24,
+          "norm_mod": 40,
+          "sqisign_ri_sample_generator_level1": 200
+        },
+        "text_bytes": 1564
+      },
+      "pico-like": {
+        "optimization": "-O3",
+        "float_abi": "softfp",
+        "frames": {
+          "norm_mod": 56,
+          "sqisign_ri_sample_generator_level1": 320
+        },
+        "text_bytes": 2184
+      }
+    },
+    "structural_claim": "exact static frame/function set, exact call-edge multiset, four public null guards and eight fixed public loop branches; no indirect or table branch and no writable static payload in the sampler object",
+    "limitations": "individual-TU control/address evidence only; data-dependent switching, linked firmware, compiler-independent non-interference and analog leakage are outside this claim"
+  },
+  "distribution_evidence": {
+    "exact_uniform_model_output_ideal": true,
+    "joint_coordinate_input_tv_log2_upper_bound": -248.37794818054362,
+    "conditioned_output_ideal_tv_log2_upper_bound": -247.37794818054362,
+    "real_sampler_failure_strictly_below": "2^-128",
+    "primitive_lift_preserves_mod_n_class": true
+  },
+  "integration_evidence": {
+    "macro": "SQISIGN_SCA_RANDOM_IDEAL_FIXED_BUDGET",
+    "normal_and_protected_closures_built_separately": true,
+    "normal_keygen_and_sign_transcripts_preserved": true,
+    "protected_sign_transcript_sha256": "6bc629c02e07b2f875d7e72fbd43408bc82ae7050321466b58b53a1cd0043225",
+    "protected_sign_verify_and_open_pass": true,
+    "exact_fixed_vs_legacy_sqrt_residue_fixtures": 17,
+    "fixed_vs_legacy_nonresidue_failure_fixtures": 16,
+    "sampler_then_ml2_lifetime_overlay": true,
+    "sign_arena_growth_bytes": 0
+  },
+  "decision": {
+    "sampler_correctness_verified": true,
+    "sampler_control_address_structure_verified": true,
+    "software_output_ideal_distribution_bound_established": true,
+    "sign_commitment_route_integrated": true,
+    "normal_compatibility_route_preserved": true,
+    "legacy_protected_sign_byte_identity_established": false,
+    "constant_power_or_masking_established": false,
+    "target_physical_evidence": false,
+    "complete_signer_constant_time": false,
+    "side_channel_resistance_established": false,
+    "production_signing_approved": false
+  }
+}

@@ -1,0 +1,11 @@
+graph lifetime_interference {
+  graph [overlap=false];
+  node [shape=box];
+  lattice_state [label="lattice_state\n77168 B @ 0"];
+  lattice_mul [label="lattice_mul\n94912 B @ 77168"];
+  candidates [label="candidates\n14024 B @ 77168"];
+  fixed_degree [label="fixed_degree\n94912 B @ 77168"];
+  candidates -- lattice_state;
+  fixed_degree -- lattice_state;
+  lattice_mul -- lattice_state;
+}

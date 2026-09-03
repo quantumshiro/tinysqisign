@@ -1,0 +1,158 @@
+{
+  "schema": "sqisign-published-spa-attack-closure-v2",
+  "created_on": "2026-08-23",
+  "literature": {
+    "title": "Simple Power Analysis Attack on SQIsign",
+    "reference": "IACR ePrint 2025/830; AFRICACRYPT 2025; DOI 10.1007/978-3-031-97260-7_12",
+    "url": "https://eprint.iacr.org/2025/830",
+    "paper_claim_used_here": "A secret-derived ephemeral exponent used by Cornacchia modular exponentiation can be recovered by SPA and then used in signing-key recovery.",
+    "paper_pdf_sha256": "d34da06a031b4c1b7f1a9324c487a854f7ca2d7c195225c4e37ad2aa254aae15",
+    "claim_not_made_here": "This checkpoint does not reproduce the paper's physical trace acquisition or exponent classifier, and does not recover a signing key from the current C or RP2350 implementation."
+  },
+  "published_attack_algebraic_stages": {
+    "exponent_to_input": {
+      "contract": "experiments/sca/published-spa-input-recovery-contract.json",
+      "contract_sha256": "a96512637d524697c4646d43c3ebf5b7576f05be9c996edac770c19a0b7edfa3",
+      "checker": "scripts/check_sca_published_spa_input_recovery.py",
+      "checker_sha256": "26128fc89105be7c68687f64e9dbae3d4d5f35c9d73eb14aa229a9832d4ab0a7",
+      "branch_2_exact_fixture_recoveries": 24,
+      "paper_formula_matches_on_legendre_fixture_exponents": 0,
+      "current_c_legendre_direct_fixture_recoveries": 16,
+      "scope": "Exact public-fixture algebra: paper branch-2 inverse formulas plus the current C Legendre relation m=2e+1; no observed analog exponent or secret input."
+    },
+    "author_toy_reproduction": {
+      "evidence": "experiments/sca/published-spa-key-recovery-reproduction.json",
+      "evidence_sha256": "adaa8b315bb468405f334da6efa3e4400ef8425971bbbddfadaf280f41ce2c94",
+      "checker": "scripts/check_sca_published_key_recovery_reproduction.py",
+      "checker_sha256": "3bc20a5e33aa6f146bee9f98f658207584b4fb08ac75ec46e1839599367cd9db",
+      "runner": "scripts/run_sca_published_key_recovery_demo.py",
+      "runner_sha256": "c2a72a6cc727978f681a71dd34a452d9a55e77b2ed5942e579a1f7c69a10cf67",
+      "raw_output": "results/host/sca-published-spa-author-demo.txt",
+      "raw_output_sha256": "78b8fab3a01dc6d5c1b958fc988278d345cfa20c2a82f59e0ce9b7545cb62d4e",
+      "scope": "Authors' nondeterministic 54-bit Sage toy algebraic backtracking with intermediate attack values; not a physical trace attack or current-C key recovery."
+    },
+    "physical_exponent_scoring": {
+      "campaign_template": "experiments/sca/exponent-recovery-campaign-template.json",
+      "campaign_template_sha256": "28353d320d229e52f2f1d9f16d971b862ac781b18706a34400cde40138b1f82a",
+      "scorer": "scripts/score_sca_exponent_recovery.py",
+      "scorer_sha256": "e5da0608c0f6491c444415ac1ba6bd95e277c77ff7ae86316c2e93dac799d800",
+      "tooling_checker": "scripts/check_sca_exponent_recovery_tooling.py",
+      "tooling_checker_sha256": "e8834e800f595cc08691cdaef1b622de54c3cb0413f7e480ba60560ffe686afa",
+      "ground_truth_semantics": "The isolated target scores Legendre e=(m-1)/2 and current-C m=2e+1, not the paper branch-2 exponent formulas; integrated secret-modulus and complete-key recovery remain separate gates."
+    }
+  },
+  "normal_d13_route": {
+    "nested_git_head": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+    "status": "published_attack_prerequisite_structurally_reachable",
+    "chain": [
+      "quat_represent_integer",
+      "ibz_cornacchia_prime",
+      "ibz_sqrt_mod_p",
+      "ibz_pow_mod"
+    ],
+    "sources": {
+      "work/compact-d13/src/quaternion/ref/generic/normeq.c": "3fa1480eb2ce031f96a40539be550a1f364c48b0c6a30fb735f63b13afee770e",
+      "work/compact-d13/src/quaternion/ref/generic/integers.c": "5788563d2e9fe4a111ce717b616c7c4f775e9d0e699b854d300ebfd505f1db37",
+      "work/compact-d13/src/quaternion/ref/generic/intbig.c": "9f7bb4222684374912cffe15001d89f74a3e8c9b71f759225fdd652f3d4b1a31"
+    },
+    "expected_arm_edges": {
+      "quat_represent_integer_to_ibz_cornacchia_prime": 1,
+      "ibz_cornacchia_prime_to_ibz_sqrt_mod_p": 1,
+      "ibz_cornacchia_prime_to_ibz_div": 2,
+      "ibz_sqrt_mod_p_to_ibz_pow_mod": 3,
+      "ibz_pow_mod_to_ibz_mul_mod_positive": 6
+    },
+    "legacy_exponent_loop": {
+      "loop_bound_is_exponent_bitsize": true,
+      "multiply_is_conditioned_on_exponent_bit": true,
+      "frozen_arm_profile_note": "The C source has one exponent-bit-conditioned result multiply and one loop-progress square; Arm GNU 15.2.1 -O3 specializes and partially unrolls those two sites into six total relocation sites, with the exponent-bit tests compiled as left-shift/sign-branch sequences.",
+      "operation_count_and_control_flow_depend_on_secret_derived_exponent": true
+    }
+  },
+  "experimental_protected_route": {
+    "nested_git_head": "c2a80712e32891c5228da3f49f0148993a4ec560",
+    "status": "legacy_schedule_edge_removed_but_value_leakage_open",
+    "chain": [
+      "quat_represent_integer",
+      "ibz_cornacchia_prime",
+      "sqisign_sca_sqrt_mod_p_fixedwork_521",
+      "sqisign_sca_powmod_fixedwork_521_with_workspace"
+    ],
+    "sources": {
+      "work/compact-sca-ct3/src/quaternion/ref/generic/normeq.c": "3fa1480eb2ce031f96a40539be550a1f364c48b0c6a30fb735f63b13afee770e",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/integers.c": "f28278b531fd6ddc2d4b12120e9cfa9e8ebbb8e5102bae2b197ad834aa524c8b",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/intbig.c": "9f7bb4222684374912cffe15001d89f74a3e8c9b71f759225fdd652f3d4b1a31",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/sqrt_mod_fixedwork_521.c": "f63849130c935a781c6e0e99990fbe81a0ff246d492875a9ef46d65971f345fc",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/powmod_fixedwork_521.c": "d1047647bc0df65a480443d16b1dac4e115e6804084998ccf4f19bb2417630fe"
+    },
+    "expected_arm_edges": {
+      "quat_represent_integer_to_ibz_cornacchia_prime": 1,
+      "ibz_cornacchia_prime_to_sqisign_sca_sqrt_mod_p_fixedwork_521": 1,
+      "ibz_cornacchia_prime_to_sqisign_sca_cornacchia_halfgcd_492": 1,
+      "ibz_cornacchia_prime_to_ibz_sqrt_mod_p": 0,
+      "ibz_cornacchia_prime_to_ibz_div": 1,
+      "sqisign_sca_sqrt_mod_p_fixedwork_521_to_fixedwork_pow": 5,
+      "fixedwork_pow_to_multiply_mod_words": 2,
+      "fixedwork_pow_to_ibz_pow_mod": 0
+    },
+    "legacy_symbol_retention": {
+      "ibz_pow_mod_remains_defined_in_shared_intbig_object": true,
+      "interpretation": "The result is accepted-path edge exclusion, not whole-object or whole-firmware removal of every legacy arithmetic symbol."
+    },
+    "residual_value_leakage": {
+      "exponent_bit_is_loaded_unmasked": true,
+      "selector_is_all_zero_or_all_one": true,
+      "prefix_dependent_square_and_product_operands_are_unmasked": true,
+      "fixed_schedule_is_not_a_power_or_em_resistance_proof": true
+    }
+  },
+  "runtime_observation_ground_truth": {
+    "integration_evidence": {
+      "path": "experiments/sca/cornacchia-halfgcd-integration.json",
+      "sha256": "c97597e52f16011a74672c044e43148706e4d91641c46a4ca2f36b656850fe6f"
+    },
+    "profile_csv": {
+      "path": "results/host/sca-d13-cornacchia-fixedwork-profile.csv",
+      "sha256": "41d3b61e832bb2745dad496d8fe7e21a3a0e32259fe5f9b6b4367b7cf218f300"
+    },
+    "frozen_signed_output": {
+      "path": "results/host/sca-d13-cornacchia-fixedwork-protected-output.txt",
+      "sha256": "e6827174fb9d4ea1cccd606632271dbc932f2bad8a5d041f1c4a4c08882ac696"
+    },
+    "frozen_sign_seeds": [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144],
+    "sign_count": 12,
+    "cornacchia_square_root_calls_total": 361,
+    "cornacchia_square_root_calls_per_sign_min": 13,
+    "cornacchia_square_root_calls_per_sign_max": 72,
+    "fixedwork_pow_calls_total": 2180,
+    "fixedwork_pow_calls_per_sign_min": 75,
+    "fixedwork_pow_calls_per_sign_max": 409,
+    "fixed_exponent_rounds_per_pow": 521,
+    "fixed_exponent_rounds_total": 1135780,
+    "interpretation": "These counts define the frozen experimental Sign observation budget. They do not establish the exact trace count needed by the published attack or a universal retry bound."
+  },
+  "arm_profile": {
+    "compiler": "Arm GNU Toolchain 15.2.Rel1, gcc 15.2.1",
+    "target": "arm-none-eabi Cortex-M33, little-endian, RADIX32 Level-I",
+    "optimization": "-O3",
+    "float_abi": "softfp",
+    "lto": false,
+    "vla_policy": "-Wvla remains enabled, but the unrelated legacy ibz_print VLA is nonfatal; this is not a VLA-free closure gate",
+    "scope": "fresh individual objects; linked firmware dataflow and physical leakage are separate gates"
+  },
+  "decision": {
+    "author_toy_algebraic_backtracking_reproduced": true,
+    "current_c_legendre_input_relation_fixture_checked": true,
+    "normal_d13_has_published_attack_prerequisite": true,
+    "paper_exponent_to_input_mapping_fixture_checked": true,
+    "experimental_route_removes_legacy_exponent_operation_count_branch": true,
+    "experimental_route_removes_legacy_euclid_loop": true,
+    "experimental_route_has_no_legacy_fallback_on_accepted_path": true,
+    "experimental_route_is_first_order_masked": false,
+    "physical_spa_exponent_recovery_tested": false,
+    "physical_signing_key_recovery_tested": false,
+    "published_attack_blocked": false,
+    "whole_sign_side_channel_resistant": false,
+    "production_signing_approved": false
+  }
+}

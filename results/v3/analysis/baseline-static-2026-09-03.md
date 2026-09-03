@@ -21,7 +21,8 @@
   not evidence that a successful K/S/V path allocated heap memory; the linked
   heap section is zero bytes.
 
-The aligned, isolated-worktree target transcript is
-`results/v3/rp2350/baseline-official-kat-2026-09-03.txt`.  The earlier
-`baseline-kat-2026-09-03.txt` transcript is retained as provenance for the
-first successful run before the build-root separation was finalized.
+The original development transcripts are omitted from the current artifact
+tree because their firmware harness was dirty. Current target evidence is the
+clean official capture series under
+`results/v3/rp2350/interleaved-clean-2026-09-04/`; this file is retained only
+for the compiler/static baseline inventory.

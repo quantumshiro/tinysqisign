@@ -1,4 +1,5 @@
-% Normalized trade-off profile; the full-norm build is the baseline at ratio 1.
+% Normalized trade-off profile; all data values come from generated evidence
+% macros, while the coordinate transform is local to this figure.
 \begin{tikzpicture}[
   x=1mm,y=1mm,
   lab/.style={font=\sffamily\footnotesize},
@@ -8,6 +9,17 @@
   host/.style={circle,fill=black,draw=black,inner sep=1.5pt},
   target/.style={circle,fill=white,draw=black,line width=.75pt,inner sep=1.7pt}
 ]
+  \pgfmathsetmacro{\xArena}{75.1+(\VTwoArenaRatio-1)*96.4}
+  \pgfmathsetmacro{\xExclusive}{75.1+(\VTwoExclusiveSramRatio-1)*96.4}
+  \pgfmathsetmacro{\xPsp}{75.1+(\VTwoPspReservationRatio-1)*96.4}
+  \pgfmathsetmacro{\xBin}{75.1+(\VTwoBinRatio-1)*96.4}
+  \pgfmathsetmacro{\xHostKeygenOne}{112+(\VTwoHostKeygenRatioOne-1)*1150}
+  \pgfmathsetmacro{\xHostKeygenTwo}{112+(\VTwoHostKeygenRatioTwo-1)*1150}
+  \pgfmathsetmacro{\xHostSignOne}{112+(\VTwoHostSignRatioOne-1)*1150}
+  \pgfmathsetmacro{\xHostSignTwo}{112+(\VTwoHostSignRatioTwo-1)*1150}
+  \pgfmathsetmacro{\xTargetKeygen}{112+(\VTwoTargetKeygenRatio-1)*1150}
+  \pgfmathsetmacro{\xTargetSign}{112+(\VTwoTargetSignRatio-1)*1150}
+  \pgfmathsetmacro{\xTargetVerify}{112+(\VTwoTargetVerifyRatio-1)*1150}
   \node[strong,anchor=west] at (0,0) {(a) resource ratio（v2提案/全精度表）};
   \draw[axis] (22,-43) -- (78,-43);
   \foreach \x/\v in {26.8/{0.50},51.0/{0.75},75.1/{1.00}} {
@@ -19,10 +31,10 @@
   \foreach \y/\name in {-11/{arena payload},-19/{排他的SRAM},-27/{PSP予約},-35/{BIN image}} {
     \node[lab,anchor=east] at (20,\y) {\name};
   }
-  \node[host] at (25.6,-11) {}; \node[lab,anchor=west] at (28,-11) {\num{0.4875}};
-  \node[host] at (40.3,-19) {}; \node[lab,anchor=west] at (42.7,-19) {\num{0.6398}};
-  \node[host] at (75.1,-27) {}; \node[lab,anchor=west] at (77.5,-27) {\num{1.0000}};
-  \node[host] at (75.4,-35) {}; \node[lab,anchor=west] at (77.8,-35) {\num{1.0031}};
+  \node[host] at (\xArena,-11) {}; \node[lab,anchor=west] at (28,-11) {\num{\VTwoArenaRatio}};
+  \node[host] at (\xExclusive,-19) {}; \node[lab,anchor=west] at (42.7,-19) {\num{\VTwoExclusiveSramRatio}};
+  \node[host] at (\xPsp,-27) {}; \node[lab,anchor=west] at (77.5,-27) {\num{\VTwoPspReservationRatio}};
+  \node[host] at (\xBin,-35) {}; \node[lab,anchor=west] at (77.8,-35) {\num{\VTwoBinRatio}};
 
   \node[strong,anchor=west] at (91,0) {(b) time ratio（v2提案/全精度表）};
   \draw[axis] (106,-43) -- (159,-43);
@@ -35,15 +47,15 @@
     \node[lab,anchor=east] at (104,\y) {\name};
   }
   % Two reversed-order host runs, shown separately.
-  \node[host] at (116.25,-10) {}; \node[host] at (119.43,-10) {};
-  \draw[line width=.45pt] (116.25,-10) -- (119.43,-10);
-  \node[lab,anchor=west] at (121.2,-10) {\num{1.0037}, \num{1.0065}};
-  \node[host] at (110.83,-17) {}; \node[host] at (111.40,-17) {};
-  \node[lab,anchor=west] at (114,-17) {\num{0.9990}, \num{0.9995}};
+  \node[host] at (\xHostKeygenOne,-10) {}; \node[host] at (\xHostKeygenTwo,-10) {};
+  \draw[line width=.45pt] (\xHostKeygenOne,-10) -- (\xHostKeygenTwo,-10);
+  \node[lab,anchor=west] at (121.2,-10) {\num{\VTwoHostKeygenRatioOne}, \num{\VTwoHostKeygenRatioTwo}};
+  \node[host] at (\xHostSignTwo,-17) {}; \node[host] at (\xHostSignOne,-17) {};
+  \node[lab,anchor=west] at (114,-17) {\num{\VTwoHostSignRatioTwo}, \num{\VTwoHostSignRatioOne}};
   % One target observation per operation: hollow markers.
-  \node[target] at (112.81,-25) {}; \node[lab,anchor=west] at (115.5,-25) {\num{1.0007}};
-  \node[target] at (154.90,-32) {}; \node[lab,anchor=east] at (152.2,-32) {\num{1.0373}};
-  \node[target] at (112.68,-39) {}; \node[lab,anchor=west] at (115.5,-39) {\num{1.0006}};
+  \node[target] at (\xTargetKeygen,-25) {}; \node[lab,anchor=west] at (115.5,-25) {\num{\VTwoTargetKeygenRatio}};
+  \node[target] at (\xTargetSign,-32) {}; \node[lab,anchor=east] at (152.2,-32) {\num{\VTwoTargetSignRatio}};
+  \node[target] at (\xTargetVerify,-39) {}; \node[lab,anchor=west] at (115.5,-39) {\num{\VTwoTargetVerifyRatio}};
 
   \node[host] at (101,-51) {}; \node[lab,anchor=west] at (104,-51) {host反復};
   \node[target] at (132,-51) {}; \node[lab,anchor=west] at (135,-51) {target単一観測};

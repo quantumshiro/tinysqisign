@@ -1,0 +1,9 @@
+SQIsign v3 p324_3 D2 static-stack host validation
+source_base_commit=6d017708db403bf83977fa70770fc4f7f9e9ff21
+source_commit=cb94f242ba791a4ccb980b46c917830b309a9832
+tracked_source_clean=1
+build_type=Release implementation=ref radix=32 strict=ON
+official_response_vectors=100
+official_kat_exit=0
+official_kat_result=Known Answer Tests PASSED. 
+status=PASS

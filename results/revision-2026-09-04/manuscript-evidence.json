@@ -1,0 +1,72 @@
+{
+  "inputs": {
+    "results/host/d13-certified-norm-sketch-runtime.json": {
+      "bytes": 2186,
+      "sha256": "89ebb6b63359f03c3df9ccf205d08aaa2d3868c97c4bb4bcb50ea7cb677c667a"
+    },
+    "results/host/v3-fixed-key-structural-trace-2026-09-04/summary.json": {
+      "bytes": 71064,
+      "sha256": "f1c3942374727a6d27d10a60e9172c3b1917f6e74d0277c0f6f21bd873916fdb"
+    },
+    "results/host/v3-fixed-key-timing-2026-09-04/summary.json": {
+      "bytes": 4604,
+      "sha256": "ad26b6953594d7792ba9d427e1f0e7052dfbced10f8dd28247931974cb2def8f"
+    },
+    "results/rp2350/ksv-cb888f8-manifest.json": {
+      "bytes": 6222,
+      "sha256": "fd6a9e59e906ccfe5649d2f49c6498d4e7b4bd793dadda7120c8b38aa8778f63"
+    },
+    "results/rp2350/ksv-d13-dc3289a-manifest.json": {
+      "bytes": 6227,
+      "sha256": "63444a4e47d609ae8dc1506529607dc76955c520dc9a67d52e2a3cf413b1d0ca"
+    },
+    "results/rp2350/ksv-d13-repeat-2026-09-04-summary.json": {
+      "bytes": 3317,
+      "sha256": "a0d2a79dfce7c98c877de2890632e3edd0bafc6ddda8d602f488642a82390671"
+    },
+    "results/v3/analysis/d2-linked-stack-bound-audit-2026-09-04.json": {
+      "bytes": 32080,
+      "sha256": "79933686eccdae17fec8b895d647991f6d406cc9227e7b252784a7103017b9d4"
+    },
+    "results/v3/rp2350/d2-static-2026-09-04/summary.json": {
+      "bytes": 10844,
+      "sha256": "446f9a20e98d50da114f1b9d0bf3952033495bdbb0161b48d876d874c8a96c79"
+    },
+    "results/v3/rp2350/fixed-key-timing-clean-2026-09-04/summary.json": {
+      "bytes": 75570,
+      "sha256": "9c5975d6ae6b91c27eb21a0539c12d37baf7a1dde4b82974567f6c4d66ff16d5"
+    },
+    "results/v3/rp2350/interleaved-clean-2026-09-04/summary.json": {
+      "bytes": 17514,
+      "sha256": "304c11361ee5e80758d6ca567c60e6816cc8b2d36f3997f236938a49c09446dc"
+    },
+    "results/v3/rp2350/multi-input-placement-clean-2026-09-04/summary.json": {
+      "bytes": 36926,
+      "sha256": "5e1d1cd821e83de58ce9cafaa5912dcddb4953cf2367d973fdf8d0728d1c0c88"
+    },
+    "results/v3/rp2350/static-closure-clean-2026-09-04/summary.json": {
+      "bytes": 4466,
+      "sha256": "6b8e3fdb6518379cdfdd99f2d21229af835147207a6633cd6b33ea31c69e87ea"
+    }
+  },
+  "outputs": [
+    "manuscript/generated/evidence-macros.tex",
+    "manuscript/generated/v2-memory-rows.tex",
+    "manuscript/generated/v2-runtime-rows.tex",
+    "manuscript/generated/v3-static-psp-bound-rows.tex",
+    "results/revision-2026-09-04/resource-time-pareto.json",
+    "results/revision-2026-09-04/resource-time-pareto.csv"
+  ],
+  "schema": "tinysqisign-manuscript-evidence-generation-v1",
+  "status": "PASS",
+  "validated_relations": [
+    "reserved plus unreserved equals 532480 bytes for both v2 images",
+    "arena, exclusive-SRAM, and unreserved-SRAM deltas are all 180928 bytes",
+    "the proposed BIN growth is 880 bytes",
+    "150 MHz cycle values are exact elapsed-microsecond products",
+    "the four normalized resource coordinates are regenerated from the two manifests",
+    "clean v3, multi-input placement, fixed-frame, fixed-key timing, and structural-trace campaigns report PASS",
+    "linked p324_3/RADIX32 operation PSP bounds fit the 131072-byte reservation",
+    "when present, the v2 repeat reproduces transcripts and PSP extents across two boots"
+  ]
+}

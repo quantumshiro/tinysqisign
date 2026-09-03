@@ -1,0 +1,100 @@
+{
+  "schema": "sqisign-cornacchia-halfgcd-bound-v1",
+  "recorded_on": "2026-08-22",
+  "scope": "Independent exact-integer derivation for the hash-pinned Level-I 492-bit shift/subtract recurrence. This checks the mathematical source recurrence and reduced/full-width executable models; it is not a formal C/assembly proof, a whole-Sign constant-time proof, or physical side-channel evidence.",
+  "literature_context": {
+    "sqisign_countermeasure": "David Jacquemin, Anisha Mukherjee, Peter Kutas, and Sujoy Sinha Roy, Ready to SQI? Safety First!, Cryptology ePrint 2023/807, Algorithm 8 and Theorem 4",
+    "sqisign_countermeasure_url": "https://eprint.iacr.org/2023/807",
+    "generic_iteration_source": "Daniel J. Bernstein and Bo-Yin Yang, Fast constant-time gcd computation and modular inversion, Theorem 11.2",
+    "generic_iteration_source_url": "https://gcd.cr.yp.to/safegcd-20190413.pdf",
+    "distinction": "The scheduled floor((49*k+57)/17) count comes from the Bernstein-Yang divstep bound. The independent proof below does not assume that divstep theorem applies to Algorithm 8; it proves a stronger sufficient bound directly for the frozen shift/subtract recurrence."
+  },
+  "frozen_source": {
+    "component_c": {
+      "path": "experiments/sca/ctint1728_32.c",
+      "sha256": "6934d65c4475a86365664fa89a979d200670e8ace1464244d3d08560583987e6",
+      "bytes": 34938
+    },
+    "component_h": {
+      "path": "experiments/sca/ctint1728_32.h",
+      "sha256": "af7864d1ce0ffc3b8bf2ceea2680bec3bdfb18f5e59ac150bfc061d58446dc8b",
+      "bytes": 13224
+    },
+    "integrated_c": {
+      "path": "work/compact-sca-ct3/src/quaternion/ref/generic/ctint1728_32.c",
+      "sha256": "6934d65c4475a86365664fa89a979d200670e8ace1464244d3d08560583987e6",
+      "bytes": 34938
+    },
+    "integrated_h": {
+      "path": "work/compact-sca-ct3/src/quaternion/ref/generic/internal_quaternion_headers/ctint1728_32.h",
+      "sha256": "af7864d1ce0ffc3b8bf2ceea2680bec3bdfb18f5e59ac150bfc061d58446dc8b",
+      "bytes": 13224
+    }
+  },
+  "source_to_model_mapping": {
+    "state": "a,b are nonnegative magnitudes; every active round sorts them as maximum>=minimum",
+    "transition": "difference=bitlen(maximum)-bitlen(minimum); alpha=max(difference-1,0); next=maximum-(minimum<<alpha); (a,b)=(next,minimum)",
+    "freeze": "active is minimum>=ceil(sqrt(original modulus)); inactive rounds retain a,b by conditional move",
+    "publication": "after all scheduled rounds, publish min(a,b) only if it is below the threshold",
+    "euclid_equivalence": "The selected power-of-two multiplier never exceeds floor(maximum/minimum). If next<minimum, it is therefore the exact Euclidean remainder; the first next below the threshold is the same remainder returned by the legacy division loop.",
+    "required_c_tokens": [
+      "for (uint32_t remaining = CTINT1728_CORNACCHIA_HALFGCD_ROUNDS;",
+      "const uint32_t difference = maximum_bits - minimum_bits;",
+      "const uint32_t alpha =\n            (difference - 1u) & (0u - difference_nonzero);",
+      "&workspace->shifted,\n            &workspace->minimum,\n            alpha,",
+      "&workspace->next,\n            &workspace->maximum,\n            &workspace->shifted,",
+      "ctint1728_32_cmp_unsigned(&workspace->minimum,\n                                      &workspace->threshold) >= 0",
+      "ctint1728_32_cmov(&workspace->a, &workspace->next, active);",
+      "ctint1728_32_cmov(&workspace->b, &workspace->minimum, active);",
+      "ctint1728_32_cmp_unsigned(&workspace->minimum,\n                                  &workspace->threshold) < 0"
+    ],
+    "required_h_tokens": [
+      "#define CTINT1728_CORNACCHIA_MAX_BITS 492u",
+      "((49u * CTINT1728_CORNACCHIA_MAX_BITS + 57u) / 17u)",
+      "_Static_assert(CTINT1728_CORNACCHIA_HALFGCD_ROUNDS == 1421,"
+    ]
+  },
+  "proof": {
+    "maximum_modulus_bits": 492,
+    "scheduled_rounds": 1421,
+    "squared_norm": "S=a^2+b^2",
+    "squared_norm_contraction_numerator": 10,
+    "squared_norm_contraction_denominator": 17,
+    "one_round_lemma": "For every active state, S_next <= (10/17)*S. For alpha=0 this factors as 24*(r-1/4)*(7/6-r)>=0. For alpha>=1, x=2^alpha*r lies in (1/4,1), r^2<=x^2/4, and the remaining concave quadratic is positive at both interval endpoints.",
+    "threshold_lemma": "An active state has min(a,b)>=ceil(sqrt(M)), hence S>=M. Initially S<2*M^2 and M<2^492.",
+    "exact_sufficiency_test": "2^493 * 10^t < 17^t",
+    "independent_sufficient_active_rounds": 644,
+    "previous_round_insufficient_for_this_proof": 643,
+    "scheduled_inactive_round_margin": 777
+  },
+  "model_validation": {
+    "exhaustive_reduced_domain": {
+      "maximum_bits": 10,
+      "cases": 523776,
+      "maximum_active_updates": 10,
+      "maximum_fixture": {
+        "modulus": 797,
+        "root": 765,
+        "result": 3
+      }
+    },
+    "deterministic_full_width": {
+      "maximum_bits": 492,
+      "cases": 10000,
+      "seed": 23451798438758222,
+      "maximum_active_updates": 334,
+      "maximum_case_index": 3437
+    },
+    "role": "Regression and source/model cross-check only; the all-input guarantee comes from the exact contraction proof, not these samples."
+  },
+  "decision": {
+    "scheduled_1421_rounds_cover_frozen_source_recurrence": true,
+    "independent_sufficient_bound_is_644_active_rounds": true,
+    "source_recurrence_matches_legacy_half_euclid": true,
+    "compiled_binary_formally_verified": false,
+    "whole_sign_constant_time": false,
+    "physical_power_or_em_resistance": false,
+    "published_attack_blocked": false,
+    "production_signing_approved": false
+  }
+}

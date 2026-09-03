@@ -18,10 +18,8 @@ test -f "$sdk_root/pico_sdk_init.cmake"
 test -x "$toolchain_root/bin/arm-none-eabi-gcc"
 test -f "$picotool_cmake_dir/picotoolConfig.cmake"
 
+test -z "$(git -C "$v3_root" status --porcelain --untracked-files=no)"
 v3_dirty=0
-if test -n "$(git -C "$v3_root" status --porcelain --untracked-files=no)"; then
-    v3_dirty=1
-fi
 firmware_commit=$(git -C "$project_root" rev-parse HEAD)
 firmware_dirty=0
 if test -n "$(git -C "$project_root" status --porcelain)"; then

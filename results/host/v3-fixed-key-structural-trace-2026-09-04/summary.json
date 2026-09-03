@@ -1,0 +1,1960 @@
+{
+  "claim_boundary": "Two native host processes per implementation; ten official p324_3 keys; one fixed public message and signing RNG stream.  Keys are copied into one fixed-address buffer before tracing.  SanitizerCoverage observes compiled edge IDs and load/store effective addresses during Sign only.  It does not observe values, register switching, Cortex-M33 code generation, power/EM, or key recovery; trace equality would not prove constant time.",
+  "decision": {
+    "all_primary_control_flow_event_counts_differ": true,
+    "all_primary_effective_address_event_counts_differ": true,
+    "constant_time_established": false,
+    "key_recovery_established": false,
+    "physical_leakage_established": false,
+    "repeatable_fixed_key_associated_control_flow_observed": true,
+    "repeatable_fixed_key_associated_effective_address_observed": true,
+    "same_key_negative_controls_stable": true,
+    "side_channel_resistance_established": false
+  },
+  "design": {
+    "coverage_flags": "-fsanitize-coverage=trace-pc-guard,trace-loads,trace-stores -fno-omit-frame-pointer -gline-tables-only",
+    "different_key_pairs_per_run": 9,
+    "edge_capture_limit": 2000000,
+    "fixed_key_buffer_address": true,
+    "fixed_message_vector": 0,
+    "fixed_signing_rng_seed": "a5-sequence-v1",
+    "full_stream_dual_hash": true,
+    "implementations": [
+      "official",
+      "d1"
+    ],
+    "memory_capture_limit": 2000000,
+    "official_key_count": 10,
+    "process_runs_per_implementation": 2,
+    "same_key_control_pairs_per_run": 2,
+    "traced_region": "crypto_sign only"
+  },
+  "provenance": {
+    "campaign_manifest": "results/host/v3-fixed-key-structural-trace-2026-09-04/manifest.json",
+    "campaign_manifest_sha256": "e18db7feb242b41fc6d88f4f7cb889bb9d0ffdf3ed25b65a95935e0bb25b1c01",
+    "compiler": "Apple clang version 17.0.0 (clang-1700.6.3.2)",
+    "conditions": [
+      {
+        "build_command": [
+          "cmake",
+          "--build",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official",
+          "--parallel",
+          "--target",
+          "sqisign_p324_3_test_nistapi"
+        ],
+        "build_stdout_tail": "[45/66] Building C object src/quaternion/ref/p324_3/CMakeFiles/sqisign_quaternion_p324_3.dir/__/lvlx/lll/gaussian_xgcd.c.o\n[46/66] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/__/ref/randombytes_ctrdrbg.c.o\n[47/66] Building C object src/signature/ref/p324_3/CMakeFiles/sqisign_signature_p324_3.dir/__/lvlx/encode_secret.c.o\n[48/66] Building C object src/signature/ref/p324_3/CMakeFiles/sqisign_signature_p324_3.dir/__/lvlx/keygen.c.o\n[49/66] Building C object src/CMakeFiles/sqisign_p324_3_test_nistapi.dir/nistapi/p324_3/api.c.o\n[50/66] Building C object src/signature/ref/p324_3/CMakeFiles/sqisign_signature_p324_3.dir/__/lvlx/sign.c.o\n[51/66] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/fips202.c.o\n[52/66] Building C object src/CMakeFiles/sqisign_p324_3_test.dir/sqisign.c.o\n[53/66] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/__/ref/aes_c.c.o\n[54/66] Building C object src/quaternion/ref/p324_3/CMakeFiles/sqisign_quaternion_p324_3.dir/__/lvlx/lll/lll_dim4.c.o\n[55/66] Linking C static library src/common/generic/libsqisign_common_test.a\n[56/66] Building C object src/mp/ref/p324_3/CMakeFiles/sqisign_mp_p324_3.dir/__/lvlx/mp.c.o\n[57/66] Linking C static library src/mp/ref/p324_3/libsqisign_mp_p324_3.a\n[58/66] Linking C static library src/gf/ref/p324_3/libsqisign_gf_p324_3.a\n[59/66] Linking C static library src/quaternion/ref/p324_3/libsqisign_quaternion_p324_3.a\n[60/66] Linking C static library src/ec/ref/p324_3/libsqisign_ec_p324_3.a\n[61/66] Linking C static library src/hd/ref/p324_3/libsqisign_hd_p324_3.a\n[62/66] Linking C static library src/verification/ref/p324_3/libsqisign_verification_p324_3.a\n[63/66] Linking C static library src/id2iso/ref/p324_3/libsqisign_id2iso_p324_3.a\n[64/66] Linking C static library src/signature/ref/p324_3/libsqisign_signature_p324_3.a\n[65/66] Linking C static library src/libsqisign_p324_3_test.a\n[66/66] Linking C static library src/libsqisign_p324_3_test_nistapi.a\n",
+        "compile_command": [
+          "/usr/bin/clang",
+          "-O2",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-DENABLE_SIGN",
+          "-DRADIX_32",
+          "-DSQISIGN_BUILD_TYPE_REF",
+          "-DSQISIGN_GF_IMPL_REF",
+          "-DSQISIGN_VARIANT=p324_3",
+          "-DTARGET_ARM64",
+          "-I/Users/hiro/workspace/sqisign/work/official-v3/src/nistapi/p324_3",
+          "-I/Users/hiro/workspace/sqisign/work/official-v3/include",
+          "-I/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb",
+          "/Users/hiro/workspace/sqisign/experiments/sca/v3_fixed_key_structural_trace.c",
+          "-o",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/v3-structural-official",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/libsqisign_p324_3_test_nistapi.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/libsqisign_p324_3_test.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/signature/ref/p324_3/libsqisign_signature_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/verification/ref/p324_3/libsqisign_verification_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/id2iso/ref/p324_3/libsqisign_id2iso_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/quaternion/ref/p324_3/libsqisign_quaternion_p324_3.a",
+          "-lm",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/hd/ref/p324_3/libsqisign_hd_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/ec/ref/p324_3/libsqisign_ec_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/gf/ref/p324_3/libsqisign_gf_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/mp/ref/p324_3/libsqisign_mp_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/precomp/ref/p324_3/libsqisign_precomp_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official/src/common/generic/libsqisign_common_test.a"
+        ],
+        "compile_stderr": "",
+        "compile_stdout": "",
+        "configure_command": [
+          "cmake",
+          "-S",
+          "/Users/hiro/workspace/sqisign/work/official-v3",
+          "-B",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official",
+          "-G",
+          "Ninja",
+          "-DCMAKE_C_COMPILER=/usr/bin/clang",
+          "-DCMAKE_BUILD_TYPE=Release",
+          "-DSQISIGN_BUILD_TYPE=ref",
+          "-DGF_RADIX=32",
+          "-DENABLE_SIGN=ON",
+          "-DENABLE_TESTS=ON",
+          "-DBUILD_TESTING=ON",
+          "-DCMAKE_C_FLAGS=-fsanitize-coverage=trace-pc-guard,trace-loads,trace-stores -fno-omit-frame-pointer -gline-tables-only"
+        ],
+        "configure_stdout_tail": "-- The C compiler identification is AppleClang 17.0.0.17000603\n-- The ASM compiler identification is AppleClang\n-- Found assembler: /usr/bin/clang\n-- Detecting C compiler ABI info\n-- Detecting C compiler ABI info - done\n-- Check for working C compiler: /usr/bin/clang - skipped\n-- Detecting C compile features\n-- Detecting C compile features - done\n-- Using 32-bit radix for gf module\n-- Configuring done (0.3s)\n-- Generating done (0.1s)\n-- Build files have been written to: /var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-official\n",
+        "executable_sha256": "784236ded712710eec04790ae512ff3c759d334485893a4314930be9c667e655",
+        "label": "official",
+        "linked_archives": [
+          {
+            "bytes": 10960,
+            "filename": "libsqisign_p324_3_test_nistapi.a",
+            "sha256": "ade8186e3ec21dcbada66dbf1738d73960e9dfb409dcc7663569ff4993ec95e3"
+          },
+          {
+            "bytes": 16224,
+            "filename": "libsqisign_p324_3_test.a",
+            "sha256": "2800a5d79bb94163cdb5dfc5b5bc08eb65fdd799ef8dbdf37a9ce81c99ae8dae"
+          },
+          {
+            "bytes": 55912,
+            "filename": "libsqisign_signature_p324_3.a",
+            "sha256": "e3762cba21aa2198b4bedd4c5d6f1a750e8e44e7966e7cd792ca4fedb82056fd"
+          },
+          {
+            "bytes": 45128,
+            "filename": "libsqisign_verification_p324_3.a",
+            "sha256": "9e5025afc833208da862c2e240dab15909ed6642a61263fa3259b71d53ee0746"
+          },
+          {
+            "bytes": 38272,
+            "filename": "libsqisign_id2iso_p324_3.a",
+            "sha256": "16d8644c5b3f185b029001c419dcac8eaa3517b7a114fea568b30364b469c371"
+          },
+          {
+            "bytes": 439592,
+            "filename": "libsqisign_quaternion_p324_3.a",
+            "sha256": "9032ff5981cf0b9dfe0443189deb7a0968d1f57b8c77c5d34250e25903b40ade"
+          },
+          {
+            "bytes": 98288,
+            "filename": "libsqisign_hd_p324_3.a",
+            "sha256": "93ce62ff76257c8e705fce766004b5e429cd29e2c82d00528aac3ca4edd253a7"
+          },
+          {
+            "bytes": 127488,
+            "filename": "libsqisign_ec_p324_3.a",
+            "sha256": "ba23eee0b5be69179d09c4c4e49f9092c39ce7167a12c8b582bc3858e45f0832"
+          },
+          {
+            "bytes": 111488,
+            "filename": "libsqisign_gf_p324_3.a",
+            "sha256": "6a935d007e9feaac6a2110492d4f76e8258104794270824f01b77bc6a847897d"
+          },
+          {
+            "bytes": 325208,
+            "filename": "libsqisign_mp_p324_3.a",
+            "sha256": "60a35acfbe9e3af38ffe711ae69df5f1e4b72a6e699a13ffbffc72fb295510e7"
+          },
+          {
+            "bytes": 30120,
+            "filename": "libsqisign_precomp_p324_3.a",
+            "sha256": "9ca55676ad479ae3150f5dd4a2db3202f44d7400e374c0d3ddcdf6e717528a3e"
+          },
+          {
+            "bytes": 190928,
+            "filename": "libsqisign_common_test.a",
+            "sha256": "ad8888f618a86693a994d0b02772ee5ec1d116452a83d7bcb37a910997546967"
+          }
+        ],
+        "runs": [
+          {
+            "rows": 22,
+            "run": "a",
+            "stderr_log": "results/host/v3-fixed-key-structural-trace-2026-09-04/official-a.log",
+            "stderr_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "rows": 22,
+            "run": "b",
+            "stderr_log": "results/host/v3-fixed-key-structural-trace-2026-09-04/official-b.log",
+            "stderr_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "source": "/Users/hiro/workspace/sqisign/work/official-v3",
+        "source_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+        "tracked_dirty": false
+      },
+      {
+        "build_command": [
+          "cmake",
+          "--build",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1",
+          "--parallel",
+          "--target",
+          "sqisign_p324_3_test_nistapi"
+        ],
+        "build_stdout_tail": "[45/66] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/__/ref/randombytes_ctrdrbg.c.o\n[46/66] Building C object src/quaternion/ref/p324_3/CMakeFiles/sqisign_quaternion_p324_3.dir/__/lvlx/lll/gaussian_xgcd.c.o\n[47/66] Building C object src/signature/ref/p324_3/CMakeFiles/sqisign_signature_p324_3.dir/__/lvlx/keygen.c.o\n[48/66] Building C object src/signature/ref/p324_3/CMakeFiles/sqisign_signature_p324_3.dir/__/lvlx/sign.c.o\n[49/66] Building C object src/signature/ref/p324_3/CMakeFiles/sqisign_signature_p324_3.dir/__/lvlx/encode_secret.c.o\n[50/66] Building C object src/CMakeFiles/sqisign_p324_3_test_nistapi.dir/nistapi/p324_3/api.c.o\n[51/66] Building C object src/CMakeFiles/sqisign_p324_3_test.dir/sqisign.c.o\n[52/66] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/__/ref/aes_c.c.o\n[53/66] Building C object src/quaternion/ref/p324_3/CMakeFiles/sqisign_quaternion_p324_3.dir/__/lvlx/lll/lll_dim4.c.o\n[54/66] Building C object src/common/generic/CMakeFiles/sqisign_common_test.dir/fips202.c.o\n[55/66] Linking C static library src/common/generic/libsqisign_common_test.a\n[56/66] Building C object src/mp/ref/p324_3/CMakeFiles/sqisign_mp_p324_3.dir/__/lvlx/mp.c.o\n[57/66] Linking C static library src/mp/ref/p324_3/libsqisign_mp_p324_3.a\n[58/66] Linking C static library src/gf/ref/p324_3/libsqisign_gf_p324_3.a\n[59/66] Linking C static library src/quaternion/ref/p324_3/libsqisign_quaternion_p324_3.a\n[60/66] Linking C static library src/ec/ref/p324_3/libsqisign_ec_p324_3.a\n[61/66] Linking C static library src/hd/ref/p324_3/libsqisign_hd_p324_3.a\n[62/66] Linking C static library src/id2iso/ref/p324_3/libsqisign_id2iso_p324_3.a\n[63/66] Linking C static library src/verification/ref/p324_3/libsqisign_verification_p324_3.a\n[64/66] Linking C static library src/signature/ref/p324_3/libsqisign_signature_p324_3.a\n[65/66] Linking C static library src/libsqisign_p324_3_test.a\n[66/66] Linking C static library src/libsqisign_p324_3_test_nistapi.a\n",
+        "compile_command": [
+          "/usr/bin/clang",
+          "-O2",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-DENABLE_SIGN",
+          "-DRADIX_32",
+          "-DSQISIGN_BUILD_TYPE_REF",
+          "-DSQISIGN_GF_IMPL_REF",
+          "-DSQISIGN_VARIANT=p324_3",
+          "-DTARGET_ARM64",
+          "-I/Users/hiro/workspace/sqisign/work/v3-lowmem-d1/src/nistapi/p324_3",
+          "-I/Users/hiro/workspace/sqisign/work/v3-lowmem-d1/include",
+          "-I/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb",
+          "/Users/hiro/workspace/sqisign/experiments/sca/v3_fixed_key_structural_trace.c",
+          "-o",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/v3-structural-d1",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/libsqisign_p324_3_test_nistapi.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/libsqisign_p324_3_test.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/signature/ref/p324_3/libsqisign_signature_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/verification/ref/p324_3/libsqisign_verification_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/id2iso/ref/p324_3/libsqisign_id2iso_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/quaternion/ref/p324_3/libsqisign_quaternion_p324_3.a",
+          "-lm",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/hd/ref/p324_3/libsqisign_hd_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/ec/ref/p324_3/libsqisign_ec_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/gf/ref/p324_3/libsqisign_gf_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/mp/ref/p324_3/libsqisign_mp_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/precomp/ref/p324_3/libsqisign_precomp_p324_3.a",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1/src/common/generic/libsqisign_common_test.a"
+        ],
+        "compile_stderr": "",
+        "compile_stdout": "",
+        "configure_command": [
+          "cmake",
+          "-S",
+          "/Users/hiro/workspace/sqisign/work/v3-lowmem-d1",
+          "-B",
+          "/var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1",
+          "-G",
+          "Ninja",
+          "-DCMAKE_C_COMPILER=/usr/bin/clang",
+          "-DCMAKE_BUILD_TYPE=Release",
+          "-DSQISIGN_BUILD_TYPE=ref",
+          "-DGF_RADIX=32",
+          "-DENABLE_SIGN=ON",
+          "-DENABLE_TESTS=ON",
+          "-DBUILD_TESTING=ON",
+          "-DCMAKE_C_FLAGS=-fsanitize-coverage=trace-pc-guard,trace-loads,trace-stores -fno-omit-frame-pointer -gline-tables-only"
+        ],
+        "configure_stdout_tail": "-- The C compiler identification is AppleClang 17.0.0.17000603\n-- The ASM compiler identification is AppleClang\n-- Found assembler: /usr/bin/clang\n-- Detecting C compiler ABI info\n-- Detecting C compiler ABI info - done\n-- Check for working C compiler: /usr/bin/clang - skipped\n-- Detecting C compile features\n-- Detecting C compile features - done\n-- Using 32-bit radix for gf module\n-- Configuring done (0.4s)\n-- Generating done (0.1s)\n-- Build files have been written to: /var/folders/3p/gfm98p9j5wbc54yb5n0kz8lr0000gn/T/sqisign-v3-structural-uwfd6xeb/build-d1\n",
+        "executable_sha256": "45c547141d2ad204a5df43d3e4aa9af956c709ca226ef74094b14e043a06da39",
+        "label": "d1",
+        "linked_archives": [
+          {
+            "bytes": 10960,
+            "filename": "libsqisign_p324_3_test_nistapi.a",
+            "sha256": "1fec96bacdd0d16a5bf6cd2bc7bf520f63fe4efbedc7a99f9cfa82a5dceb8d3e"
+          },
+          {
+            "bytes": 16224,
+            "filename": "libsqisign_p324_3_test.a",
+            "sha256": "66ec646b71e1fe5bb7fc5f81594bb035bc553ae3c6aa8aa6a73796f6153ecdb7"
+          },
+          {
+            "bytes": 55928,
+            "filename": "libsqisign_signature_p324_3.a",
+            "sha256": "c7c11cbbf01c88b95785f5144be304fefc248c1e7aea71cb63bcddeca17b4ced"
+          },
+          {
+            "bytes": 45128,
+            "filename": "libsqisign_verification_p324_3.a",
+            "sha256": "7d8b5e2f786a75c23503709b769cfb91ab7c5df4170c46967c7de8453f5b6113"
+          },
+          {
+            "bytes": 38272,
+            "filename": "libsqisign_id2iso_p324_3.a",
+            "sha256": "f7d5d21489f44522e8d3d6593f047a9f0757aab333a04dd45fc14ea1d5f494e0"
+          },
+          {
+            "bytes": 439256,
+            "filename": "libsqisign_quaternion_p324_3.a",
+            "sha256": "53f8ca8ba1fe4a74a60c4898e03d2e130b2f2d2dab4d54019f148de0942d71ab"
+          },
+          {
+            "bytes": 98288,
+            "filename": "libsqisign_hd_p324_3.a",
+            "sha256": "6c3fdb742bf9166aed3d7b498435d249c720a0d6588413b4b25fa7a5ad401bb0"
+          },
+          {
+            "bytes": 127472,
+            "filename": "libsqisign_ec_p324_3.a",
+            "sha256": "2751c7ec0cb4c7e7e4ec2087699102f6f6adb27adf800a719dc7560eea6d1e54"
+          },
+          {
+            "bytes": 111472,
+            "filename": "libsqisign_gf_p324_3.a",
+            "sha256": "04b9902b0fedaa98bd81fde75bddfd36f273cd56ae1c0351fde8889c72f690b4"
+          },
+          {
+            "bytes": 325208,
+            "filename": "libsqisign_mp_p324_3.a",
+            "sha256": "4fb9fd0c12fb6795463a33da7861937bc3ed46ce080fb66587065a99a99a50a4"
+          },
+          {
+            "bytes": 30104,
+            "filename": "libsqisign_precomp_p324_3.a",
+            "sha256": "6626b4c8930c3eb6a89d7909c1f3968a444a20f9dd2d2d51bac96b973eb15207"
+          },
+          {
+            "bytes": 190896,
+            "filename": "libsqisign_common_test.a",
+            "sha256": "9707ddd92c03ff258aeaf7ea4f3d1471c089804391bca887e155cf648e0e5ede"
+          }
+        ],
+        "runs": [
+          {
+            "rows": 22,
+            "run": "a",
+            "stderr_log": "results/host/v3-fixed-key-structural-trace-2026-09-04/d1-a.log",
+            "stderr_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "rows": 22,
+            "run": "b",
+            "stderr_log": "results/host/v3-fixed-key-structural-trace-2026-09-04/d1-b.log",
+            "stderr_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "source": "/Users/hiro/workspace/sqisign/work/v3-lowmem-d1",
+        "source_commit": "9293313fb58de4c5ce9dd27a5a9fde0058766c79",
+        "tracked_dirty": false
+      }
+    ],
+    "harness": {
+      "path": "experiments/sca/v3_fixed_key_structural_trace.c",
+      "sha256": "0b90a249501d80c4ed6bc6ddb813dbc1b8eeb708892a563e7a0f851166971b8e"
+    },
+    "raw_csv": "results/host/v3-fixed-key-structural-trace-2026-09-04/raw.csv",
+    "raw_csv_sha256": "8dd1293f89c3cb3abc480c074d5fb5bfc28db74a59b5072d7e98cffa213ac6d8"
+  },
+  "results": {
+    "implementations": {
+      "d1": {
+        "repeatable_control_flow_different_keys": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "repeatable_effective_address_different_keys": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "runs": {
+          "a": {
+            "control_flow_difference_count": 9,
+            "control_flow_different_keys": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "control_pairs_stable": 2,
+            "different_key_pairs": 9,
+            "effective_address_difference_count": 9,
+            "effective_address_different_keys": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "b": {
+            "control_flow_difference_count": 9,
+            "control_flow_different_keys": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "control_pairs_stable": 2,
+            "different_key_pairs": 9,
+            "effective_address_difference_count": 9,
+            "effective_address_different_keys": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          }
+        }
+      },
+      "official": {
+        "repeatable_control_flow_different_keys": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "repeatable_effective_address_different_keys": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "runs": {
+          "a": {
+            "control_flow_difference_count": 9,
+            "control_flow_different_keys": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "control_pairs_stable": 2,
+            "different_key_pairs": 9,
+            "effective_address_difference_count": 9,
+            "effective_address_different_keys": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "b": {
+            "control_flow_difference_count": 9,
+            "control_flow_different_keys": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "control_pairs_stable": 2,
+            "different_key_pairs": 9,
+            "effective_address_difference_count": 9,
+            "effective_address_different_keys": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          }
+        }
+      }
+    },
+    "pairs": [
+      {
+        "control_flow_equal": true,
+        "control_flow_event_count_equal": true,
+        "dataset": "control",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 69998022,
+        "effective_address_equal": true,
+        "effective_address_event_count_equal": true,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 0,
+        "load_events_a": 280913764,
+        "load_events_b": 280913764,
+        "memory_capture_truncated": true,
+        "pair": 0,
+        "run": "a",
+        "signature_equal": true,
+        "store_events_a": 77375529,
+        "store_events_b": 77375529
+      },
+      {
+        "control_flow_equal": true,
+        "control_flow_event_count_equal": true,
+        "dataset": "control",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 69998022,
+        "effective_address_equal": true,
+        "effective_address_event_count_equal": true,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 0,
+        "load_events_a": 280913764,
+        "load_events_b": 280913764,
+        "memory_capture_truncated": true,
+        "pair": 1,
+        "run": "a",
+        "signature_equal": true,
+        "store_events_a": 77375529,
+        "store_events_b": 77375529
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 24145027,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 1,
+        "load_events_a": 280913764,
+        "load_events_b": 199798428,
+        "memory_capture_truncated": true,
+        "pair": 0,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72273399
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 30840868,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 2,
+        "load_events_a": 280913764,
+        "load_events_b": 212285813,
+        "memory_capture_truncated": true,
+        "pair": 1,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72374815
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 33220211,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 3,
+        "load_events_a": 280913764,
+        "load_events_b": 216340272,
+        "memory_capture_truncated": true,
+        "pair": 2,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 73046896
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 24319185,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 4,
+        "load_events_a": 280913764,
+        "load_events_b": 200070764,
+        "memory_capture_truncated": true,
+        "pair": 3,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72226728
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 40555423,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 5,
+        "load_events_a": 280913764,
+        "load_events_b": 229657994,
+        "memory_capture_truncated": true,
+        "pair": 4,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 73622590
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 22947011,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 6,
+        "load_events_a": 280913764,
+        "load_events_b": 198478967,
+        "memory_capture_truncated": true,
+        "pair": 5,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 71290903
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 31955580,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 7,
+        "load_events_a": 280913764,
+        "load_events_b": 214510298,
+        "memory_capture_truncated": true,
+        "pair": 6,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72387104
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 22853500,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 8,
+        "load_events_a": 280913764,
+        "load_events_b": 199034747,
+        "memory_capture_truncated": true,
+        "pair": 7,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 70818013
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 23504339,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 9,
+        "load_events_a": 280913764,
+        "load_events_b": 200230485,
+        "memory_capture_truncated": true,
+        "pair": 8,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 70864235
+      },
+      {
+        "control_flow_equal": true,
+        "control_flow_event_count_equal": true,
+        "dataset": "control",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 69998022,
+        "effective_address_equal": true,
+        "effective_address_event_count_equal": true,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 0,
+        "load_events_a": 280913764,
+        "load_events_b": 280913764,
+        "memory_capture_truncated": true,
+        "pair": 0,
+        "run": "b",
+        "signature_equal": true,
+        "store_events_a": 77375529,
+        "store_events_b": 77375529
+      },
+      {
+        "control_flow_equal": true,
+        "control_flow_event_count_equal": true,
+        "dataset": "control",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 69998022,
+        "effective_address_equal": true,
+        "effective_address_event_count_equal": true,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 0,
+        "load_events_a": 280913764,
+        "load_events_b": 280913764,
+        "memory_capture_truncated": true,
+        "pair": 1,
+        "run": "b",
+        "signature_equal": true,
+        "store_events_a": 77375529,
+        "store_events_b": 77375529
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 24145027,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 1,
+        "load_events_a": 280913764,
+        "load_events_b": 199798428,
+        "memory_capture_truncated": true,
+        "pair": 0,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72273399
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 30840868,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 2,
+        "load_events_a": 280913764,
+        "load_events_b": 212285813,
+        "memory_capture_truncated": true,
+        "pair": 1,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72374815
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 33220211,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 3,
+        "load_events_a": 280913764,
+        "load_events_b": 216340272,
+        "memory_capture_truncated": true,
+        "pair": 2,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 73046896
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 24319185,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 4,
+        "load_events_a": 280913764,
+        "load_events_b": 200070764,
+        "memory_capture_truncated": true,
+        "pair": 3,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72226728
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 40555423,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 5,
+        "load_events_a": 280913764,
+        "load_events_b": 229657994,
+        "memory_capture_truncated": true,
+        "pair": 4,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 73622590
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 22947011,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 6,
+        "load_events_a": 280913764,
+        "load_events_b": 198478967,
+        "memory_capture_truncated": true,
+        "pair": 5,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 71290903
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 31955580,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 7,
+        "load_events_a": 280913764,
+        "load_events_b": 214510298,
+        "memory_capture_truncated": true,
+        "pair": 6,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72387104
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 22853500,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 8,
+        "load_events_a": 280913764,
+        "load_events_b": 199034747,
+        "memory_capture_truncated": true,
+        "pair": 7,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 70818013
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 23504339,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "d1",
+        "key_a": 0,
+        "key_b": 9,
+        "load_events_a": 280913764,
+        "load_events_b": 200230485,
+        "memory_capture_truncated": true,
+        "pair": 8,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 70864235
+      },
+      {
+        "control_flow_equal": true,
+        "control_flow_event_count_equal": true,
+        "dataset": "control",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 69998022,
+        "effective_address_equal": true,
+        "effective_address_event_count_equal": true,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 0,
+        "load_events_a": 280913764,
+        "load_events_b": 280913764,
+        "memory_capture_truncated": true,
+        "pair": 0,
+        "run": "a",
+        "signature_equal": true,
+        "store_events_a": 77375529,
+        "store_events_b": 77375529
+      },
+      {
+        "control_flow_equal": true,
+        "control_flow_event_count_equal": true,
+        "dataset": "control",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 69998022,
+        "effective_address_equal": true,
+        "effective_address_event_count_equal": true,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 0,
+        "load_events_a": 280913764,
+        "load_events_b": 280913764,
+        "memory_capture_truncated": true,
+        "pair": 1,
+        "run": "a",
+        "signature_equal": true,
+        "store_events_a": 77375529,
+        "store_events_b": 77375529
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 24145027,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 1,
+        "load_events_a": 280913764,
+        "load_events_b": 199798428,
+        "memory_capture_truncated": true,
+        "pair": 0,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72273399
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 30840868,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 2,
+        "load_events_a": 280913764,
+        "load_events_b": 212285813,
+        "memory_capture_truncated": true,
+        "pair": 1,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72374815
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 33220211,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 3,
+        "load_events_a": 280913764,
+        "load_events_b": 216340272,
+        "memory_capture_truncated": true,
+        "pair": 2,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 73046896
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 24319185,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 4,
+        "load_events_a": 280913764,
+        "load_events_b": 200070764,
+        "memory_capture_truncated": true,
+        "pair": 3,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72226728
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 40555423,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 5,
+        "load_events_a": 280913764,
+        "load_events_b": 229657994,
+        "memory_capture_truncated": true,
+        "pair": 4,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 73622590
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 22947011,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 6,
+        "load_events_a": 280913764,
+        "load_events_b": 198478967,
+        "memory_capture_truncated": true,
+        "pair": 5,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 71290903
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 31955580,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 7,
+        "load_events_a": 280913764,
+        "load_events_b": 214510298,
+        "memory_capture_truncated": true,
+        "pair": 6,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72387104
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 22853500,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 8,
+        "load_events_a": 280913764,
+        "load_events_b": 199034747,
+        "memory_capture_truncated": true,
+        "pair": 7,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 70818013
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 23504339,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 9,
+        "load_events_a": 280913764,
+        "load_events_b": 200230485,
+        "memory_capture_truncated": true,
+        "pair": 8,
+        "run": "a",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 70864235
+      },
+      {
+        "control_flow_equal": true,
+        "control_flow_event_count_equal": true,
+        "dataset": "control",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 69998022,
+        "effective_address_equal": true,
+        "effective_address_event_count_equal": true,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 0,
+        "load_events_a": 280913764,
+        "load_events_b": 280913764,
+        "memory_capture_truncated": true,
+        "pair": 0,
+        "run": "b",
+        "signature_equal": true,
+        "store_events_a": 77375529,
+        "store_events_b": 77375529
+      },
+      {
+        "control_flow_equal": true,
+        "control_flow_event_count_equal": true,
+        "dataset": "control",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 69998022,
+        "effective_address_equal": true,
+        "effective_address_event_count_equal": true,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 0,
+        "load_events_a": 280913764,
+        "load_events_b": 280913764,
+        "memory_capture_truncated": true,
+        "pair": 1,
+        "run": "b",
+        "signature_equal": true,
+        "store_events_a": 77375529,
+        "store_events_b": 77375529
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 24145027,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 1,
+        "load_events_a": 280913764,
+        "load_events_b": 199798428,
+        "memory_capture_truncated": true,
+        "pair": 0,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72273399
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 30840868,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 2,
+        "load_events_a": 280913764,
+        "load_events_b": 212285813,
+        "memory_capture_truncated": true,
+        "pair": 1,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72374815
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 33220211,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 3,
+        "load_events_a": 280913764,
+        "load_events_b": 216340272,
+        "memory_capture_truncated": true,
+        "pair": 2,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 73046896
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 24319185,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 4,
+        "load_events_a": 280913764,
+        "load_events_b": 200070764,
+        "memory_capture_truncated": true,
+        "pair": 3,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72226728
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 40555423,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 5,
+        "load_events_a": 280913764,
+        "load_events_b": 229657994,
+        "memory_capture_truncated": true,
+        "pair": 4,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 73622590
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 22947011,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 6,
+        "load_events_a": 280913764,
+        "load_events_b": 198478967,
+        "memory_capture_truncated": true,
+        "pair": 5,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 71290903
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 31955580,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 7,
+        "load_events_a": 280913764,
+        "load_events_b": 214510298,
+        "memory_capture_truncated": true,
+        "pair": 6,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 72387104
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 22853500,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 1,
+        "execution_order_b": 0,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 8,
+        "load_events_a": 280913764,
+        "load_events_b": 199034747,
+        "memory_capture_truncated": true,
+        "pair": 7,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 70818013
+      },
+      {
+        "control_flow_equal": false,
+        "control_flow_event_count_equal": false,
+        "dataset": "different-key",
+        "edge_capture_truncated": true,
+        "edge_events_a": 69998022,
+        "edge_events_b": 23504339,
+        "effective_address_equal": false,
+        "effective_address_event_count_equal": false,
+        "execution_order_a": 0,
+        "execution_order_b": 1,
+        "first_edge_difference": {
+          "a_pc": "0000000000000000",
+          "b_pc": "0000000000000000",
+          "event_index": -1
+        },
+        "first_memory_difference": {
+          "a_event": "0000000000000000",
+          "b_event": "0000000000000000",
+          "event_index": -1
+        },
+        "implementation": "official",
+        "key_a": 0,
+        "key_b": 9,
+        "load_events_a": 280913764,
+        "load_events_b": 200230485,
+        "memory_capture_truncated": true,
+        "pair": 8,
+        "run": "b",
+        "signature_equal": false,
+        "store_events_a": 77375529,
+        "store_events_b": 70864235
+      }
+    ],
+    "rows": 88
+  },
+  "schema": "sqisign-v3-fixed-key-structural-trace-analysis-v1",
+  "status": "PASS"
+}

@@ -109,7 +109,7 @@ def parse_capture(
     lines = path.read_text(encoding="ascii").splitlines()
     label = "BASELINE" if implementation == "baseline" else "D1"
     banner = f"SQISIGN_RP2350_V3_{label}_SCA_KEY v1"
-    if not lines or lines[0] != banner:
+    if not lines or lines[0] != banner or lines.count(banner) != 1:
         raise ValueError(f"{path}: wrong or missing banner")
 
     require(
@@ -140,6 +140,7 @@ def parse_capture(
                 OFFICIAL_COMMIT if implementation == "baseline" else expected_d1_commit
             ),
             "v3_dirty": "0",
+            "cpuid": "0x411fd210",
             "clock_sys_hz": "150000000",
         },
         str(path),
@@ -162,7 +163,15 @@ def parse_capture(
         },
         str(path),
     )
-    require(kv_line(lines, "bss_end="), {"heap_section_bytes": "0"}, str(path))
+    require(
+        kv_line(lines, "bss_end="),
+        {
+            "stack_limit": "0x20080000",
+            "stack_top": "0x20082000",
+            "heap_section_bytes": "0",
+        },
+        str(path),
+    )
     require(
         kv_line(lines, "warmup_sign="),
         {"warmup_sign": "0", "warmup_verify": "0", "warmup_status": "PASS"},
@@ -215,7 +224,16 @@ def parse_capture(
     )
     msp = kv_line(lines, "msp_reserved_bytes=")
     require(msp, {"msp_reserved_bytes": "8192"}, str(path))
+    if int(msp["msp_written_upper_bytes"]) >= 8192:
+        raise ValueError(f"{path}: MSP canary extent exceeds its reservation")
+    if (
+        int(summary["sign_psp_max"]) >= 131072
+        or int(summary["verify_psp_max"]) >= 131072
+    ):
+        raise ValueError(f"{path}: PSP canary extent exceeds its reservation")
     require(kv_line(lines, "status="), {"status": "PASS"}, str(path))
+    if lines[-1] != "status=PASS":
+        raise ValueError(f"{path}: terminal PASS is absent")
 
     return {
         "implementation": implementation,
@@ -647,7 +665,7 @@ def main() -> int:
             "buffer, an XIP-cache invalidation immediately before each timed operation, "
             "one fixed public message, "
             "one fixed signing RNG stream, two deterministic randomized schedules, "
-            "and two samples per key per schedule.  This bounded screen can expose "
+            "and five samples per key per schedule.  This bounded screen can expose "
             "repeatable key-associated wall-clock time on this target; it is not a "
             "physical leakage test, a control/address trace, an attack, a worst-case "
             "timing claim, or evidence of side-channel resistance."

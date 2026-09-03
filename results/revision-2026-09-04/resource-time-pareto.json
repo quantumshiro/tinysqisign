@@ -1,0 +1,114 @@
+{
+  "baseline": "full-norm-table implementation",
+  "claim_boundary": "Static resource coordinates are exact for the frozen images. Host timing is a bounded paired campaign, whereas each target timing coordinate is one deterministic observation. The profile is not a statistical target slowdown estimate.",
+  "decision": {
+    "flash_growth_established": true,
+    "large_operation_ram_reduction_established": true,
+    "proposed_dominates_all_dimensions": false,
+    "target_timing_distribution_established": false
+  },
+  "proposed": "certified-norm-sketch implementation",
+  "rows": [
+    {
+      "baseline": 353008,
+      "dimension": "operation_arena_payload",
+      "environment": "RP2350 layout",
+      "evidence_class": "exact type/layout value",
+      "proposed": 172080,
+      "proposed_over_baseline": 0.487467706114309,
+      "sample": "static"
+    },
+    {
+      "baseline": 502336,
+      "dimension": "exclusive_reserved_sram",
+      "environment": "RP2350 linked image",
+      "evidence_class": "exact linker/type value",
+      "proposed": 321408,
+      "proposed_over_baseline": 0.639826729519684,
+      "sample": "static"
+    },
+    {
+      "baseline": 131072,
+      "dimension": "psp_reservation",
+      "environment": "RP2350 linked image",
+      "evidence_class": "exact linker reservation; not observed use",
+      "proposed": 131072,
+      "proposed_over_baseline": 1.0,
+      "sample": "static"
+    },
+    {
+      "baseline": 287504,
+      "dimension": "bin_image",
+      "environment": "RP2350 linked image",
+      "evidence_class": "exact linked image extent",
+      "proposed": 288384,
+      "proposed_over_baseline": 1.0030608269797985,
+      "sample": "static"
+    },
+    {
+      "baseline": 228702000.0,
+      "dimension": "keygen_time",
+      "environment": "native host",
+      "evidence_class": "finite paired timing campaign",
+      "proposed": 229547000.0,
+      "proposed_over_baseline": 1.003694764365856,
+      "sample": "reversed-order-run-1"
+    },
+    {
+      "baseline": 228092500.0,
+      "dimension": "keygen_time",
+      "environment": "native host",
+      "evidence_class": "finite paired timing campaign",
+      "proposed": 229567000.0,
+      "proposed_over_baseline": 1.0064644826112212,
+      "sample": "reversed-order-run-2"
+    },
+    {
+      "baseline": 588781000.0,
+      "dimension": "sign_time",
+      "environment": "native host",
+      "evidence_class": "finite paired timing campaign",
+      "proposed": 588475500.0,
+      "proposed_over_baseline": 0.9994811313544425,
+      "sample": "reversed-order-run-1"
+    },
+    {
+      "baseline": 585649000.0,
+      "dimension": "sign_time",
+      "environment": "native host",
+      "evidence_class": "finite paired timing campaign",
+      "proposed": 585051500.0,
+      "proposed_over_baseline": 0.9989797643298289,
+      "sample": "reversed-order-run-2"
+    },
+    {
+      "baseline": 2696250983,
+      "dimension": "keygen_time",
+      "environment": "RP2350",
+      "evidence_class": "single observation; no population slowdown claim",
+      "proposed": 2698150029,
+      "proposed_over_baseline": 1.000704328347759,
+      "sample": "one deterministic path per image"
+    },
+    {
+      "baseline": 7337481041,
+      "dimension": "sign_time",
+      "environment": "RP2350",
+      "evidence_class": "single observation; no population slowdown claim",
+      "proposed": 7611258527,
+      "proposed_over_baseline": 1.037312189901439,
+      "sample": "one deterministic path per image"
+    },
+    {
+      "baseline": 813858,
+      "dimension": "verify_time",
+      "environment": "RP2350",
+      "evidence_class": "single observation; no population slowdown claim",
+      "proposed": 814341,
+      "proposed_over_baseline": 1.0005934696224648,
+      "sample": "one deterministic path per image"
+    }
+  ],
+  "schema": "tinysqisign-v2-resource-time-pareto-v1",
+  "status": "PASS"
+}

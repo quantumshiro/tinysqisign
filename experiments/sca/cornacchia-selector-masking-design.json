@@ -1,0 +1,94 @@
+{
+  "schema": "sqisign-cornacchia-selector-masking-design-v1",
+  "status": "naive_two_share_selector_masking_rejected_transition_leakage",
+  "target_surface": "The fixed-work exponentiation forms an all-zero/all-one 32-bit selector mask directly from each secret-derived exponent bit.",
+  "primary_masking_literature": [
+    {
+      "id": "PAPER-TRANSITION-2014-413",
+      "title": "On the Cost of Lazy Engineering for Masked Software Implementations",
+      "url": "https://eprint.iacr.org/2014/413",
+      "relevance": "Defines value- versus transition-based leakage and experimentally shows why careless assembly/share reuse can reduce masking order.",
+      "not_a_drop_in": "It supplies a leakage-model and engineering warning, not a masked SQIsign or modular-exponentiation implementation."
+    },
+    {
+      "id": "PAPER-TI-SOFTWARE-2022-1546",
+      "title": "Threshold Implementations in Software: Micro-architectural Leakages in Algorithms",
+      "url": "https://eprint.iacr.org/2022/1546",
+      "relevance": "Derives share-placement conditions for scalar processors and validates transition/glitch-aware implementations on RISC-V and ARM Cortex-M4.",
+      "not_a_drop_in": "Its PRESENT/Keccak constructions do not supply masked big-integer Montgomery arithmetic for SQIsign."
+    },
+    {
+      "id": "PAPER-MASKED-SOFTWARE-2024-755",
+      "title": "Efficient Second-Order Masked Software Implementations of Ascon in Theory and Practice",
+      "url": "https://eprint.iacr.org/2024/755",
+      "relevance": "Uses share rotations and final-assembly/netlist plus physical validation to harden masked software against unintended share combination.",
+      "not_a_drop_in": "The optimized Ascon/Keccak gadgets are algorithm-specific and do not establish security for SQIsign arithmetic."
+    }
+  ],
+  "candidate": {
+    "secret_bit": "b in {0,1}",
+    "secret_selector": "M=0-b modulo 2^w",
+    "shares": "choose uniform S; share0=S and share1=S XOR M",
+    "correctness": "share0 XOR share1=M",
+    "attraction": "each individual share and its static Hamming weight have the same marginal distribution for b=0 and b=1"
+  },
+  "source": {
+    "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/source/protected/src/quaternion/ref/generic/montgomery_fixedwork_521.c",
+    "sha256": "2c867bd1d32beda6b9ce94c4e285292de1daf73917107ebce4b149924a5050f6",
+    "bytes": 16664,
+    "required_markers": [
+      "const uint32_t one_mask = UINT32_C(0) - choose_one;",
+      "const uint32_t exponent_bit =",
+      "select_words(scratch->result,",
+      "exponent_bit);"
+    ]
+  },
+  "leakage_models": {
+    "static_hamming_weight": "Observe one share value or its Hamming weight in isolation.",
+    "sequential_hamming_distance": "Observe the data/register-bus transition share0 -> share1 when both shares are processed serially on one core.",
+    "scope_warning": "The HD result is an architectural software-masking hazard, not proof that a particular compiler places both shares in one register or that an external probe resolves the transition."
+  },
+  "reduced_exhaustive_model": {
+    "word_bits": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "assignments": 16380,
+    "width_results": [
+      {"word_bits": 1, "assignments": 4, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 1, "transition_classifier_exact_recoveries": 4},
+      {"word_bits": 2, "assignments": 8, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 2, "transition_classifier_exact_recoveries": 8},
+      {"word_bits": 3, "assignments": 16, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 3, "transition_classifier_exact_recoveries": 16},
+      {"word_bits": 4, "assignments": 32, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 4, "transition_classifier_exact_recoveries": 32},
+      {"word_bits": 5, "assignments": 64, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 5, "transition_classifier_exact_recoveries": 64},
+      {"word_bits": 6, "assignments": 128, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 6, "transition_classifier_exact_recoveries": 128},
+      {"word_bits": 7, "assignments": 256, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 7, "transition_classifier_exact_recoveries": 256},
+      {"word_bits": 8, "assignments": 512, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 8, "transition_classifier_exact_recoveries": 512},
+      {"word_bits": 9, "assignments": 1024, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 9, "transition_classifier_exact_recoveries": 1024},
+      {"word_bits": 10, "assignments": 2048, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 10, "transition_classifier_exact_recoveries": 2048},
+      {"word_bits": 11, "assignments": 4096, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 11, "transition_classifier_exact_recoveries": 4096},
+      {"word_bits": 12, "assignments": 8192, "individual_share_value_distributions_equal": true, "individual_share_hw_distributions_equal": true, "secret_0_transition_hamming_distance": 0, "secret_1_transition_hamming_distance": 12, "transition_classifier_exact_recoveries": 8192}
+    ]
+  },
+  "full_word_symbolic_result": {
+    "word_bits": 32,
+    "individual_share_marginals_secret_independent": true,
+    "recombined_mask": "share0 XOR share1 = 0x00000000 for b=0 and 0xffffffff for b=1",
+    "sequential_share_transition_hamming_distance": {
+      "b=0": 0,
+      "b=1": 32
+    },
+    "transition_observation_recovers_bit_exactly": true
+  },
+  "required_next_design": [
+    "Use a reviewed software masking gadget and composable leakage model for the selector and arithmetic state, not only secret-independent share marginals.",
+    "Account for register reuse, bus transitions, glitches, compiler spills, share ordering and randomness refresh on Cortex-M33.",
+    "Keep shares separated in source and final assembly and test transition-aware first-/higher-order leakage physically.",
+    "Mask or hide the exponent-prefix-dependent Montgomery state as well as the selector bit; selector-only masking cannot close the published attack surface."
+  ],
+  "decision": {
+    "naive_two_share_selector_masking_adopted": false,
+    "first_order_masking_established": false,
+    "transition_leakage_addressed": false,
+    "physical_resistance_established": false,
+    "published_attack_blocked": false,
+    "production_signing_approved": false
+  },
+  "claim_boundary": "This artifact is an exact abstract HW/HD check for a naive selector-share representation. It is not a masked Montgomery implementation, compiler proof, probing-security proof, physical measurement, or claim that every two-share gadget fails."
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "sqisign-v3-clean-build-provenance-v1",
+  "campaign": "interleaved-clean-2026-09-04",
+  "firmware": {
+    "commit": "467ca5b61a5f6810218ee173850862d629cf07a7",
+    "clean_at_build": true,
+    "repository": "https://github.com/quantumshiro/tinysqisign"
+  },
+  "sqisign_v3": {
+    "commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+    "official_tracked_diff": "none",
+    "d1_tracked_diff_sha256": "44e089298a330b7019b8d9c82110b2d26d0dad1dce5d494098fd667e6f4853a6",
+    "d1_patch": "patches/0035-experiment-v3-d1-lifetime-overlays.patch",
+    "repository": "https://github.com/SQIsign/the-sqisign/tree/nist-v3"
+  },
+  "toolchain": {
+    "arm_gnu": "15.2.Rel1 (GCC 15.2.1 20251203)",
+    "pico_sdk": "2.3.0",
+    "pico_sdk_commit": "98a542c1a62fb549ffb5d66a3e5892b06276b670"
+  },
+  "target": {
+    "board": "Raspberry Pi Pico 2",
+    "platform": "rp2350-arm-s",
+    "clock_hz": 150000000,
+    "board_count": 1
+  },
+  "measurement": {
+    "paired_rounds": 5,
+    "captures": 10,
+    "workload": "official SQIsign v3.0 p324_3 known-answer vector 0",
+    "order": "odd official-d1; even d1-official",
+    "summary": "summary.json",
+    "normalized_measurements": "measurements.csv"
+  }
+}

@@ -1,0 +1,506 @@
+{
+  "schema": "sqisign-sca-resistance-plan-v8",
+  "assets": [
+    "long-term SQIsign signing key",
+    "secret-derived ephemeral exponents and Cornacchia inputs",
+    "secret ideals, lattices, responses and retry state",
+    "signing RNG state and output"
+  ],
+  "deployment_decision": {
+    "constant_time": false,
+    "production_signing_approved": false,
+    "side_channel_resistant": false,
+    "status": "combined_controls_integrated_residual_control_and_address_differences_reproduced_physical_pending"
+  },
+  "published_spa_attack_closure": {
+    "path": "experiments/sca/published-spa-attack-closure.json",
+    "sha256": "009896049203ae500577d9b27cdd9e63f58768b0f567350003e77a538d560691",
+    "bytes": 9287,
+    "checker": "scripts/check_sca_published_spa_attack_closure.py",
+    "checker_sha256": "9f11df9d1badff5295e70ff0b4129bf875163fae8f6d305c496c177623ae2d32",
+    "arm_runner": "scripts/run_sca_published_spa_attack_closure_arm.sh",
+    "arm_runner_sha256": "c87c0e9a19596411051a2043d23f352615212359f0e704ffd258cb5e5a6207c1",
+    "status": "algebraic_attack_chain_reproduced_physical_attack_pending",
+    "paper_formula_input_recoveries": 24,
+    "current_c_legendre_input_recoveries": 16,
+    "author_toy_valid_signature": true,
+    "claim_boundary": "public-fixture exponent-to-input algebra plus the authors' 54-bit Sage toy backtracking demo; no physical trace, current-C secret exponent, current-C signing key, or resistance result"
+  },
+  "whole_sign_structural_trace": {
+    "first_raw": {
+      "path": "results/host/sca-d13-full-sign-control-address.csv",
+      "sha256": "262f443e39ab434191c4e2a784119aa416772e2bf776255229d91fe6cb71058a",
+      "bytes": 3631
+    },
+    "first_summary": {
+      "path": "results/host/sca-d13-full-sign-control-address.json",
+      "sha256": "725bcff2bdcae234da7b0ae3535bf97028053ba0834bee673560a75a6bb24378",
+      "bytes": 8639
+    },
+    "second_raw": {
+      "path": "results/host/sca-d13-full-sign-control-address-rerun.csv",
+      "sha256": "e88f93b5eeec8b9d79a5d967c5ebfe91261509813870116553333c2b9857707e",
+      "bytes": 3631
+    },
+    "second_summary": {
+      "path": "results/host/sca-d13-full-sign-control-address-rerun.json",
+      "sha256": "db2bb774c9f6178fe7818dac5b0a04be6df036dbb34fc364a45d1df365249b25",
+      "bytes": 8645
+    },
+    "binary": {
+      "path": "results/host/artifacts/sca-d13-full-sign-control-address",
+      "sha256": "a928eb337a07fd5e50c141733167c44114846f142eb4632a0e3a27d6188c615a",
+      "bytes": 1495512
+    },
+    "checker": "scripts/check_sca_control_flow_trace_artifacts.py",
+    "checker_sha256": "f24bc5084654fd6d40c928c52f58f642693f9bdf5bf2dba0e60d94d1dffc7a35",
+    "status": "host_full_sign_control_and_address_difference_reproduced_target_and_physical_pending",
+    "control_pairs_per_run": 2,
+    "primary_pairs_per_run": 4,
+    "independent_process_runs": 2,
+    "claim_boundary": "positive frozen-host structural screen only; no formal trace equivalence proof, loaded/stored values, register switching, final Cortex-M33 trace, physical power/EM or key recovery"
+  },
+  "whole_sign_edge_localization": {
+    "first_raw": {
+      "path": "results/host/sca-d13-full-sign-edge-localization.csv",
+      "sha256": "c90a198708277d41a15dbb4ea8b6bef25d66718e06dd14505d7e8b6d075469b3",
+      "bytes": 1708
+    },
+    "first_summary": {
+      "path": "results/host/sca-d13-full-sign-edge-localization.json",
+      "sha256": "43418a05fe689f10265b4ba503c89865da391192aa4371729ec69cf55141c8d6",
+      "bytes": 10606
+    },
+    "first_binary": {
+      "path": "results/host/artifacts/sca-d13-full-sign-edge-localization",
+      "sha256": "86e78a1835b59ee96687c10440936a64da61a622c3cf334fd9fcee5821a05971",
+      "bytes": 1327872
+    },
+    "first_debug": {
+      "path": "results/host/artifacts/sca-d13-full-sign-edge-localization.dwarf",
+      "sha256": "495da7c5d21979573157f851588b631db051e55cf3ea9d7a09cc3263f92270f7",
+      "bytes": 1108476
+    },
+    "second_raw": {
+      "path": "results/host/sca-d13-full-sign-edge-localization-rerun.csv",
+      "sha256": "c5dd0c3f78dc5d064a815f6a15d8708a4c871c570fbe50c0d9ce6a6470627d34",
+      "bytes": 1708
+    },
+    "second_summary": {
+      "path": "results/host/sca-d13-full-sign-edge-localization-rerun.json",
+      "sha256": "17590a3e68a077f7ce61f845fb9208ac6b2806e342cc33fc36b16951b85d8000",
+      "bytes": 10696
+    },
+    "second_binary": {
+      "path": "results/host/artifacts/sca-d13-full-sign-edge-localization-rerun",
+      "sha256": "5934becade2d8a444fbec1fb7c13af042572575b62db08c66266580fc8cb9772",
+      "bytes": 1327872
+    },
+    "second_debug": {
+      "path": "results/host/artifacts/sca-d13-full-sign-edge-localization-rerun.dwarf",
+      "sha256": "67375bf7ea043ef959168332f8ab2c1578fb62435b222c9e4a4ecf39b802e8df",
+      "bytes": 1108476
+    },
+    "harness": {
+      "path": "experiments/sca/localize_sign_control_flow.c",
+      "sha256": "e5bfabbf1644bc49fc57dacb3d56d1ddaae34f482857dce62a41489e9f3fc908",
+      "bytes": 9031
+    },
+    "analyzer": {
+      "path": "scripts/analyze_sca_edge_localization.py",
+      "sha256": "c9d6cc6f09b811e484cae42766995b179ad0b3862649bf18e8a37f143362a614",
+      "bytes": 11587
+    },
+    "runner": {
+      "path": "scripts/run_sca_edge_localization.sh",
+      "sha256": "c0810f438d551560894c9db06a75cb58b12ff32b24ce3f92f33528dcbd73d848",
+      "bytes": 3476
+    },
+    "checker": {
+      "path": "scripts/check_sca_edge_localization_artifacts.py",
+      "sha256": "d0f4d7348d0c8410b2f74cdc6a26cd20a88f893a7a04a1a133b3ba246ee3e168",
+      "bytes": 12061
+    },
+    "source": {
+      "path": "work/compact-d13/src/quaternion/ref/generic/intbig.c",
+      "sha256": "9f7bb4222684374912cffe15001d89f74a3e8c9b71f759225fdd652f3d4b1a31"
+    },
+    "independent_clean_build_runs": 2,
+    "control_pairs_per_run": 1,
+    "primary_pairs_per_run": 4,
+    "status": "first_host_control_divergences_localized_to_variable_integer_control",
+    "claim_boundary": "the first edge divergence in four fixed-key/message deterministic-RNG comparisons is reproducibly localized to a used-limb scan or early-exit comparison; this does not enumerate later divergences, prove long-term-key leakage, reproduce the final Cortex-M33 trace, provide power/EM evidence, or complete remediation"
+  },
+  "whole_sign_first_divergence_stack": {
+    "first_raw": {
+      "path": "results/host/sca-d13-full-sign-first-divergence-stack.csv",
+      "sha256": "7aa904a205d24bf4f1c5b5e142fea19dc603f7a5d148ae762f4edb11b932c912",
+      "bytes": 8636
+    },
+    "first_summary": {
+      "path": "results/host/sca-d13-full-sign-first-divergence-stack.json",
+      "sha256": "9210a1a484724aafdffa1daf180a55af5ca0c6fc4834654ba9847d1b04fe2727",
+      "bytes": 30493
+    },
+    "first_binary": {
+      "path": "results/host/artifacts/sca-d13-full-sign-first-divergence-stack",
+      "sha256": "af095a60e73fc6ff2a0b13b9453022b08e00d28566e26facf16b52238f957c94",
+      "bytes": 561264
+    },
+    "first_debug": {
+      "path": "results/host/artifacts/sca-d13-full-sign-first-divergence-stack.dwarf",
+      "sha256": "513704f0d6fe171059b1dd8a9d50749d9ed618e8ef3b4679289c3b87be4173d1",
+      "bytes": 365724
+    },
+    "second_raw": {
+      "path": "results/host/sca-d13-full-sign-first-divergence-stack-rerun.csv",
+      "sha256": "1415624b76974b5cae460a6415cbaeac736067b0b91150a4a1a0022ca55c44ca",
+      "bytes": 8636
+    },
+    "second_summary": {
+      "path": "results/host/sca-d13-full-sign-first-divergence-stack-rerun.json",
+      "sha256": "f486c5b56d5bf2da1eaae5eebbb4b822a91fa5b9bf7ac5c21e6649f4f4278dce",
+      "bytes": 31015
+    },
+    "second_binary": {
+      "path": "results/host/artifacts/sca-d13-full-sign-first-divergence-stack-rerun",
+      "sha256": "df126e5dc1f0977953fee069f63dc138bb9347751bf686a783e034d85ac9ea0e",
+      "bytes": 561264
+    },
+    "second_debug": {
+      "path": "results/host/artifacts/sca-d13-full-sign-first-divergence-stack-rerun.dwarf",
+      "sha256": "e1f1d303e9ec02c6f134c8f23c57a3e08b80c90731502347d49974aef75b7cd7",
+      "bytes": 365724
+    },
+    "harness": {
+      "path": "experiments/sca/trace_sign_first_divergence_stack.c",
+      "sha256": "f6799072361c31eeb796ffc18a36791e7ffa3798cbc848cf18fca63a224349b0",
+      "bytes": 3625
+    },
+    "analyzer": {
+      "path": "scripts/analyze_sca_first_divergence_stack.py",
+      "sha256": "7ee9ca2b68e56db58ef5ca3d0c844605413c0522b85fb292aca01749c695ebcc",
+      "bytes": 9690
+    },
+    "runner": {
+      "path": "scripts/run_sca_first_divergence_stack.sh",
+      "sha256": "1dbc96907afa60ab67f2643809774bc3836fc2435b3cb95f8b17fa3e957eece6",
+      "bytes": 3413
+    },
+    "checker": {
+      "path": "scripts/check_sca_first_divergence_stack_artifacts.py",
+      "sha256": "baa27a2d19c78e59d0ac17ce0c2b88bf02bd811eb119909fca482f27828ace47",
+      "bytes": 13927
+    },
+    "independent_clean_build_runs": 2,
+    "captured_groups_per_run": 8,
+    "common_owner": "quat_sampling_random_ideal_O0_given_norm_impl",
+    "status": "first_host_divergence_callers_localized_to_random_ideal_sampling",
+    "claim_boundary": "caller stacks identify the shared random-ideal-sampling owner for the first four measured divergences; this is not an all-input proof, long-term-key leakage, target trace, physical leakage result or completed remediation"
+  },
+  "residual_surface_inventory": {
+    "path": "experiments/sca/residual-surface-inventory.json",
+    "sha256": "5e925f75009e189fc8fbcf416da4c4410fed4ca17a3f5e2dd64876e918d6b672",
+    "bytes": 33720,
+    "checker": "scripts/check_sca_residual_surfaces.py",
+    "checker_sha256": "eafc0e3b6325b655474f0e8ef278326e52e9a7586d003dab0290436737586fae",
+    "open_surfaces": 12,
+    "claim_boundary": "machine-audited residual-risk inventory, idealized selector model, positive host whole-Sign control/address trace, first-divergence source localization and shared-owner caller stacks; not final-target, long-term-key-leakage or physical power/EM evidence"
+  },
+  "published_countermeasure_comparison": {
+    "path": "experiments/sca/published-countermeasure-comparison.json",
+    "sha256": "477b0a48a2d599defcf0dfc7ce6d2e2b20ae1065729b0c76a5ae6029c108fc15",
+    "bytes": 31400,
+    "checker": "scripts/check_sca_countermeasure_comparison.py",
+    "checker_sha256": "adcded4b2b50362f066559432a1ceee0f0aace7facdd7dd3722a2de4970eebae",
+    "reviewed_papers": 5,
+    "candidate_families": 8,
+    "selected_first_work_package": "WP-CORNACCHIA",
+    "claim_boundary": "literature-to-residual-surface mapping plus a structurally integrated fixed half-GCD checkpoint, algebraic replay of the published SPA chain, positive host full-Sign control/address screen, first-divergence source localization and shared-owner caller stacks; no final-target constant-time, constant-power, physical power/EM, long-term-key-leakage or current-C key-recovery closure has been established"
+  },
+  "random_ideal_constant_work_design": {
+    "path": "experiments/sca/random-ideal-constant-work-design.json",
+    "sha256": "2a34f4970ac0bcacc11ce82366f446b3b3f31874d7f6a5ac268e9800774cc950",
+    "bytes": 11094,
+    "checker": "scripts/check_sca_random_ideal_constant_work_design.py",
+    "checker_sha256": "48073de6bd045892b9024b3ba59964349e490c4a97045a5af72988369b62b1c3",
+    "status": "fixed_budget_sampler_integrated_software_distribution_bounded_physical_pending",
+    "coordinate_wide_bits": 769,
+    "gamma_candidate_budget": 130,
+    "beta_candidate_budget": 1,
+    "claim_boundary": "the fixed-budget sampler, same-residue primitive lift, software output-ideal distribution bound and protected Sign commitment route are verified; the subsequent ideal construction, remaining Sign routes, final-target traces, analog leakage and physical resistance remain open"
+  },
+  "combined_sign_protection": {
+    "path": "experiments/sca/combined-sign-protection-contract.json",
+    "sha256": "2a1e2e5ac46fa335b81a670a278aff22a25304e4f0ce1d5006038b4d1030dd9a",
+    "bytes": 7338,
+    "checker": "scripts/check_sca_combined_sign_protection.py",
+    "checker_sha256": "f493d6db0eb0c9bd5f60e6d2ab88a79e2f6cdd7e41bec4028b866baa88fb0bbe",
+    "checker_bytes": 8004,
+    "runner": "scripts/run_sca_combined_sign_protection.sh",
+    "runner_sha256": "8bcbcc2fa01de9915a0b21d79431f049364661004772057b16a812ce38641b89",
+    "runner_bytes": 10898,
+    "status": "combined_software_protection_verified_physical_pending",
+    "claim_boundary": "fixed-budget commitment sampling and fixed-schedule Cornacchia exponentiation/half-GCD execute in one Level-I low-memory closure with frozen transcripts, sanitizer and Cortex-M33 control/address diagnostics; constant power, operand masking, remaining Sign non-interference and physical resistance are false"
+  },
+  "combined_residual_structural_trace": {
+    "path": "experiments/sca/combined-residual-trace-contract.json",
+    "sha256": "2500440cd1090716a5e9c54bbf299d09cb4e85a28aff9a71857064ffa7623796",
+    "bytes": 9888,
+    "checker": "scripts/check_sca_combined_residual_trace.py",
+    "checker_sha256": "ea80c3e227cc60c6f484cc3bf7ba587eeeec8932c8949076524ca5d7edcfd78b",
+    "checker_bytes": 11834,
+    "status": "residual_control_and_address_differences_reproduced_physical_pending",
+    "independent_process_runs": 2,
+    "control_pairs_per_run": 1,
+    "primary_pairs_per_run": 4,
+    "primary_control_flow_differences_per_run": 4,
+    "primary_address_differences_per_run": 4,
+    "claim_boundary": "the protected host Sign route still has reproducible bounded-prefix control-flow and selected effective-address differences in ideal.c/intbig.c; no long-term-key leakage, physical leakage, current-protected-C key recovery, all-input non-interference or side-channel resistance is established"
+  },
+  "exponent_blinding_design": {
+    "path": "experiments/sca/cornacchia-exponent-blinding-design.json",
+    "sha256": "f5dd9ccabec6f43a777b115e97ba185b73ca0be2e67eedff8ad103fd89fafc9d",
+    "bytes": 8930,
+    "checker": "scripts/check_cornacchia_exponent_blinding.py",
+    "checker_sha256": "2ff4e473f5d25da1e7faf888fc5535a2d2a91594b296c99b984e1de4c703cde8",
+    "status": "standalone_exponent_blinding_rejected_pending_cryptanalysis",
+    "claim_boundary": "algebra, width, randomness and reduced-domain design rejection only; no masking implementation, cryptographic reduction, physical resistance or published-attack closure"
+  },
+  "selector_masking_design": {
+    "path": "experiments/sca/cornacchia-selector-masking-design.json",
+    "sha256": "524b0781b82d079796266867aff327c60893eaaf74c6fcf94bd49ff930305d73",
+    "bytes": 8078,
+    "checker": "scripts/check_cornacchia_selector_masking.py",
+    "checker_sha256": "80cd49c0d8be19cfc7e8c83e2c0280a6c670adc1c99b5e0c7da32c97de5c4de4",
+    "status": "naive_two_share_selector_masking_rejected_transition_leakage",
+    "claim_boundary": "abstract HW/HD design rejection only; no masked arithmetic implementation, compiler/register proof, physical transition measurement or first-order resistance claim"
+  },
+  "masked_montgomery_scope": {
+    "path": "experiments/sca/cornacchia-masked-montgomery-scope.json",
+    "sha256": "2683dd5f223caa43c1d523d8d871696a828b56c72a8909e0e9db054518b6c004",
+    "bytes": 13002,
+    "checker": "scripts/check_cornacchia_masked_montgomery_scope.py",
+    "checker_sha256": "1f41a1e51bd07fb11303e0930864194284426282b79885eb9beb7ba556d2ca48",
+    "status": "required_scope_frozen_no_masked_candidate_approved",
+    "secret_reachable_values": 18,
+    "rejected_partial_candidates": 6,
+    "claim_boundary": "source-backed dependency and partial-scope rejection only; no masked implementation, probing proof, physical observability or resistance claim"
+  },
+  "masked_arithmetic_design": {
+    "path": "experiments/sca/cornacchia-masked-arithmetic-design.json",
+    "sha256": "f82e70aed6eb93734db09b81add740e507f6eb37e5380770e47164d61fbb0265",
+    "bytes": 7893,
+    "checker": "scripts/check_cornacchia_masked_arithmetic_design.py",
+    "checker_sha256": "e057b93463a54a921999056c8c2508ecd35106564f3a1d7e625b1bdfc124b99a",
+    "status": "word_arithmetic_functional_prototype_implemented_transition_assembly_pending",
+    "secure_and_assignments": 32,
+    "full_adder_assignments": 256,
+    "claim_boundary": "abstract one-bit correctness and individual-wire marginal checks plus a naive Boolean cost proxy and a functional two-limb oracle; no transition-safe assembly, 521-bit implementation, physical resistance or attack closure"
+  },
+  "masked_word_prototype": {
+    "path": "experiments/sca/cornacchia-masked-word-prototype.json",
+    "sha256": "0216b9f53f874719d2351bc72d785254c3dc337c7aa2631e5611868daa68cc3d",
+    "bytes": 5986,
+    "checker": "scripts/check_cornacchia_masked_word_prototype.py",
+    "checker_sha256": "384dc074e78e506dd831ab3194c329d729ac076eb079489f3f3b27e98706a675",
+    "status": "two_limb_functional_and_reduced_value_model_checked_transition_assembly_pending",
+    "reduced_assignments": 1082400,
+    "direct_adjacent_share_channels_rejected": 5,
+    "claim_boundary": "functional Z/(2^64) arithmetic and reduced single-value/abstract-HD evidence only; no composable proof, transition-approved assembly, masked Montgomery or physical resistance"
+  },
+  "masked_refresh_m33": {
+    "path": "experiments/sca/cornacchia-masked-refresh-m33.json",
+    "sha256": "7decd795ee515e65cdc6793413e099a9d4255e9670be0687944ab1513f4dfee9",
+    "bytes": 7984,
+    "checker": "scripts/check_cornacchia_masked_refresh_m33.py",
+    "checker_sha256": "9fd8eeb7e41a44d09d6e137fba70d8b1f1a17ffe6bc090b07a8618dc8705a193",
+    "status": "one_word_transition_controlled_assembly_frozen_qemu_and_rp2350_functional_abstract_hd_pass_physical_pending",
+    "function_size_bytes": 66,
+    "qemu_cases": 10036,
+    "reduced_assignments": 299592,
+    "rp2350_serial_records": 12,
+    "claim_boundary": "exact one-word Cortex-M33 assembly, instruction-set functionality and reduced first-order HW/HD modeling only; no physical, composable, masked-multiplication, Montgomery, Cornacchia or SQIsign resistance"
+  },
+  "ctint1728_foundation": {
+    "path": "experiments/sca/ctint1728-foundation-contract.json",
+    "sha256": "7f1c02ccbc953f41e77c27ed6cca6374b30d7955b481d4a94dcd81a7dca25496",
+    "bytes": 10401,
+    "checker": "scripts/check_ctint1728_foundation.py",
+    "checker_sha256": "603a120aa70fcddbf47ee3e2a681a3dc14a43e6461cdab8f138171ecd9cf6b79",
+    "implemented_primitives": 21,
+    "remaining_primitives": 0,
+    "status": "experimental_fixed_width_integer_and_cornacchia_halfgcd_component_complete_not_integrated",
+    "claim_boundary": "constant-control-flow/address component diagnostic with an independently machine-checked source-recurrence round bound; no compiled-program formal verification, production integration, whole-Sign, masking, power or EM claim"
+  },
+  "gates": [
+    {
+      "id": "SCA-0",
+      "requirement": "Arena sizes, offsets and overlay choices depend only on public parameters and fixed phases",
+      "status": "met",
+      "evidence": "SECURITY_NOTES.md memory-scheduling policy and frozen D13 ELF policy"
+    },
+    {
+      "id": "SCA-1",
+      "requirement": "No heap/GMP/secret-dependent allocation in the selected RP2350 K/S/V closure",
+      "status": "met",
+      "evidence": "D13 one-boot Level-I/RADIX32 ELF and closure audit"
+    },
+    {
+      "id": "SCA-2",
+      "requirement": "Full Sign fixed-vs-random timing screen has stable controls and no resolved leakage",
+      "status": "unmet",
+      "evidence": "results/host/sca-d13-sign-summary.json and reversed rerun retain reproducible whole-Sign timing dependence"
+    },
+    {
+      "id": "SCA-3",
+      "requirement": "Remove the published exponent-bit operation-count branch from the executed Level-I Cornacchia modular exponentiation",
+      "status": "met_on_experimental_cornacchia_route",
+      "evidence": "c2a807 base plus fixed-Montgomery WIP; Arm ELF has a 521-round square-and-multiply-always route and no legacy sqrt/pow fallback"
+    },
+    {
+      "id": "SCA-4",
+      "requirement": "Replace variable-work modular multiplication, reduction, division and outer square-root schedules on the protected calibration path",
+      "status": "met_structurally_target_timing_nonpositive_on_frozen_corpus",
+      "evidence": "results/rp2350/sca-ct3-fixed-reduce-timing-summary.json: prior L/H +14.7667 us, t=6.637997 becomes -2.5333 us, t=-0.332420 after fixed signed reduction; not an equivalence or analog result"
+    },
+    {
+      "id": "SCA-5",
+      "requirement": "Two independent fixed-vs-fixed and fixed-vs-random analog power or EM campaigns pass preregistered quality, pointwise and cross-time second-order leakage screens",
+      "status": "pending_instrument",
+      "evidence": "a 62-ms one-protected-pow RP2350 image, exact firmware hashes and experiments/sca/cornacchia-analog-plan.json are ready; current machine inventory finds no analog acquisition instrument"
+    },
+    {
+      "id": "SCA-6",
+      "requirement": "Two attack-driven campaigns fail to recover either the isolated current-C Legendre exponent and m=2e+1 input or the integrated paper-mapped Cornacchia exponent and input under frozen 1, 10 and 100-trace budgets",
+      "status": "pending_instrument",
+      "evidence": "synthetic negative controls fail closed; exact fixture exponents recover 16/16 current-C moduli and the paper's three relations recover 24/24 fixture inputs; the authors' 54-bit Sage toy backtracking reaches a valid signature, but no physical power/EM trace, current-C exponent prediction or current-C key recovery exists"
+    },
+    {
+      "id": "SCA-7",
+      "requirement": "Integrate protected arithmetic into full Sign and repeat correctness, target timing, analog and key-recovery gates",
+      "status": "partial_correctness_local_target_timing_and_positive_host_structure",
+      "evidence": "12-seed frozen PK/SK/SM/post-RNG transcripts pass and the local RP2350 sqrt timing effect is unresolved; two independent host full-Sign structural runs show 4/4 fixed/random edge/address differences with stable controls, two clean source-localization builds map their first differences to variable integer control, and two clean caller-stack builds identify the random-ideal sampler as their common owner; final-target structural, physical analog and key-recovery closure remain open"
+    },
+    {
+      "id": "SCA-8",
+      "requirement": "Audit the complete signing path and eliminate or protect secret-dependent control flow, iteration counts, memory-address sequences and table/index choices",
+      "status": "positive_host_control_address_trace_random_ideal_owner_localized_target_and_remediation_pending",
+      "evidence": "the frozen host tracer has 2/2 identical fixed/fixed controls and 4/4 fixed/random differences in both edge and memory-address streams in each of two independent runs; two clean source-localization builds map the first edge differences to intbig.c:163-164 used-limb scanning or intbig.c:992-996 early-exit comparison, and two clean caller-stack builds show the norm-mod/division and interval-rejection paths share quat_sampling_random_ideal_O0_given_norm_impl. A single branchless comparison is therefore insufficient: fixed-width norm arithmetic plus fixed-budget sampling/RNG/failure semantics are required. Later divergences, remediation, final Cortex-M33 traces and physical traces remain open"
+    },
+    {
+      "id": "SCA-9",
+      "requirement": "Bind analog decisions to raw traces, acquisition order, instrument metadata, exact firmware and attack predictions; reject missing or synthetic evidence",
+      "status": "met_tooling_only",
+      "evidence": "neutral trace/attack manifests, frozen one-pow firmware, independently checked public exponent truth, exact exponent-to-input scorers with corruption/no-candidate controls, and raw-evidence eligibility gates; no physical analog campaign has executed"
+    },
+    {
+      "id": "SCA-10",
+      "requirement": "Map primary published attacks and countermeasures onto every open surface, preserve component and physical claim boundaries, and enforce the implementation dependency order",
+      "status": "met_planning_only",
+      "evidence": "experiments/sca/published-countermeasure-comparison.json maps five primary papers and eight candidate families onto all twelve open surfaces; the published SPA algebraic chain, positive host full-Sign structure, first variable-integer divergences and their shared random-ideal owner are frozen while physical/current-C recovery and resistance remain false"
+    },
+    {
+      "id": "SCA-11",
+      "requirement": "Implement fixed-width compare/select/shift/add/subtract/multiply/square/signed-truncating-division/signed-modular-reduction/fixed-round modular exponentiation/exact and floor integer square roots/fixed Cornacchia half-GCD with differential, malformed-input, sanitizer and exact Cortex-M33 branch/address gates",
+      "status": "met_experimental_integer_and_halfgcd_component_complete",
+      "evidence": "experiments/sca/ctint1728-foundation-contract.json freezes all 21 required operations through fixed exact/floor square roots and a fixed 1421-round half-GCD; the component contract itself remains non-production and all physical gates remain open"
+    },
+    {
+      "id": "SCA-12",
+      "requirement": "Integrate the fixed half-GCD on the experimental Level-I Sign route, preserve transcripts and workspace semantics, isolate it on RP2350, and keep physical-resistance claims false until analog testing",
+      "status": "met_structurally_and_matched_timer_positive_control_only",
+      "evidence": "experiments/sca/cornacchia-halfgcd-integration.json, experiments/sca/cornacchia-halfgcd-bound-contract.json, the fixed and legacy build manifests, and results/rp2350/sca-cornacchia-halfgcd-positive-control-comparison.json establish one fixed 1421-round component route, an independent 644-active-round sufficient source-recurrence bound, and a detected variable-Euclid timer positive control; no analog samples, compiled-program formal proof, or resistance result exist"
+    },
+    {
+      "id": "SCA-13",
+      "requirement": "Demonstrate that the measurement design detects a known variable-iteration Cornacchia leak with matched public fixtures before interpreting protected non-detection",
+      "status": "met_coarse_timer_only_analog_pending",
+      "evidence": "On the same RP2350/150-MHz/30-pair design, the legacy 95-versus-122-step H/L mean is +1476.8667 us with an approximate 95% CI wholly above zero, while the fixed H/L mean is +0.2 us with an approximate CI crossing zero. The analog positive-control run remains pending."
+    },
+    {
+      "id": "SCA-14",
+      "requirement": "Reject ad hoc exponent blinding unless its algebraic residual structure, formation leakage, fixed-width cost, fresh-randomness budget and attack work factor are explicitly analyzed",
+      "status": "met_design_rejection_only",
+      "evidence": "experiments/sca/cornacchia-exponent-blinding-design.json verifies correctness and k2*E-(k1+1)=(1+k2*r)*(p-1), shows why 128-bit blind entropy is not 128-bit attack security, and finds that four exactly recovered independently blinded powers reveal p-1 by direct GCD in over 98% of the frozen 128- and 896-bit-blind trials. Adoption, physical resistance and published-attack closure remain false."
+    },
+    {
+      "id": "SCA-15",
+      "requirement": "Reject software masking candidates that protect only individual share marginals while leaking the secret through sequential register/bus transitions",
+      "status": "met_design_rejection_only",
+      "evidence": "experiments/sca/cornacchia-selector-masking-design.json exhausts 16,380 reduced assignments: both individual Boolean shares have secret-independent value/HW distributions, but share0-to-share1 Hamming distance recovers every selector bit. No masking implementation or physical-resistance claim is made."
+    },
+    {
+      "id": "SCA-16",
+      "requirement": "Require any masking or hiding candidate to cover the complete secret-derived dynamic-modulus Montgomery state and the outer Tonelli--Shanks composition rather than only the selector, exponent, base, context or accumulator",
+      "status": "met_scope_definition_only_implementation_pending",
+      "evidence": "experiments/sca/cornacchia-masked-montgomery-scope.json binds 18 secret-reachable values to the frozen source and rejects six partial scopes. The temporary modulus, Montgomery inverse/radix residues, exponent/selector, arithmetic state and outer square-root composition remain unprotected; no candidate or resistance result exists."
+    },
+    {
+      "id": "SCA-17",
+      "requirement": "Select a masking prototype direction only after reduced correctness, individual-wire leakage, transition counterexamples and target-scale randomness/cost are explicit",
+      "status": "met_design_and_functional_prototype_only_transition_assembly_pending",
+      "evidence": "experiments/sca/cornacchia-masked-arithmetic-design.json exhausts 32 two-share secure-AND and 256 full-adder assignments. Single-wire marginals pass, adjacent-share transitions reconstruct sensitive outputs, and a deliberately naive 544-bit Boolean pow proxy consumes 183.800 MiB fresh randomness. A two-limb Z/(2^64) functional oracle passes differential and reduced value-model checks; one refresh subprimitive is frozen under SCA-19, but a complete transition-controlled arithmetic suite is absent."
+    },
+    {
+      "id": "SCA-18",
+      "requirement": "Reject a functional arithmetic-sharing implementation until direct adjacent-share HD channels are removed in frozen target assembly and physical experiments",
+      "status": "met_rejection_and_abstract_precharge_model_only",
+      "evidence": "experiments/sca/cornacchia-masked-word-prototype.json exhausts 1,082,400 reduced-ring assignments. Five direct adjacent-share channels are secret-dependent at every checked width; an ideal zero-precharge abstraction passes, while the complete word-arithmetic suite and physical resistance remain explicitly unapproved."
+    },
+    {
+      "id": "SCA-19",
+      "requirement": "Freeze and execute one transition-controlled Cortex-M33 arithmetic-share primitive before accepting any larger masked arithmetic construction",
+      "status": "met_instruction_functionality_and_abstract_model_only_physical_pending",
+      "evidence": "experiments/sca/cornacchia-masked-refresh-m33.json pins the exact 66-byte/23-instruction refresh, passes 10,036 functional cases in QEMU and exhausts 299,592 reduced assignments. Direct adjacent-share HD leaks in the rejected schedule, while the frozen zero-precharge abstraction passes. The ANALOG-5 scorer now detects a synthetic cross-time-only centered-product leak that pointwise first-order and square screens miss, but physical ANALOG-5, composability, multiplication and end-to-end protection remain pending."
+    },
+    {
+      "id": "SCA-20",
+      "requirement": "Treat the first shared random-ideal-sampling owner as one remediation boundary, including norm modular arithmetic, interval sampling, outer gamma/beta budgets, RNG consumption, first-success publication and failure semantics",
+      "status": "partial_fixed_budget_components_full_sampler_pending",
+      "evidence": "experiments/sca/random-ideal-constant-work-design.json rejects a branchless-comparison-only patch. A 12-seed LLDB corpus measures legacy gamma 1..4 and beta 1 attempts descriptively, while exact finite-field point counts—not the corpus—prove a public budget of 130 gamma and 1 beta candidates. Fixed 769-bit coordinate reduction gives a joint coordinate-distribution bias bound; outer exhaustion plus that bias is strictly below 2^-128. The reducer, fixed Level-I modular square root and primitive-lift correction components now pass host, fatal ASan+UBSan and frozen two-profile Cortex-M33 control/address gates. The complete first-success sampler, output-ideal distribution/security equivalence, integration and every physical-resistance claim remain blocked."
+    }
+  ],
+  "known_attack_mapping": [
+    {
+      "reference": "ePrint 2025/830, Simple Power Analysis Attack on SQIsign",
+      "surface": "secret-derived Cornacchia modular-exponentiation behavior",
+      "candidate_effect": "The experimental Level-I route removes exponent-bit operation-count variation and known coarse input-reduction timing, but the bit-dependent selection mask and arithmetic operands can still leak switching activity.",
+      "current_evidence": "Fixed schedules, 12 transcript equivalence, a nonpositive public-fixture target timing screen and a frozen 62-ms one-pow acquisition image. Exact public-fixture exponent input gives 24/24 paper-formula and 16/16 current-C m=2e+1 input recovery, and the authors' 54-bit Sage toy backtracking reaches a valid signature. Two independent host full-Sign runs show reproducible edge/address differences for 4/4 fixed/random pairs with stable fixed/fixed controls; two clean source-localization builds map their first edge divergences to a used-limb scan or early-exit integer comparison, and two clean caller-stack builds show both share the random-ideal sampler. No long-term-key leakage from those first divergences, physical power/EM exponent prediction or current-C signing-key recovery has been demonstrated."
+    },
+    {
+      "reference": "ePrint 2023/807, Ready to SQI? Safety First!",
+      "surface": "Euclid/half-GCD and variable-time integer arithmetic",
+      "candidate_effect": "The experimental Level-I route replaces the secret-dependent Euclidean loop with a fixed 1421-round shift/subtract half-GCD, but does not hide operand/mask switching or regularize the rest of Sign.",
+      "current_evidence": "Twelve frozen Sign transcripts and Cortex-M33 branch/address checks pass. An exact-integer contraction proof establishes that 644 active rounds suffice for the frozen 492-bit source recurrence inside the scheduled 1421 rounds. A matched variable-Euclid RP2350 image resolves the 95-versus-122-step H/L classes by +1476.8667 us, while the fixed image's +0.2-us H/L mean is unresolved at 1-us resolution. No power/EM trace has been captured."
+    }
+  ],
+  "threats": [
+    {
+      "id": "T-TIME",
+      "adversary": "remote or local caller measuring end-to-end latency",
+      "status": "observed_on_full_sign_local_sqrt_effect_reduced"
+    },
+    {
+      "id": "T-SPA",
+      "adversary": "local physical attacker collecting one or a few power/EM traces",
+      "status": "schedule_regularized_but_not_physically_evaluated"
+    },
+    {
+      "id": "T-DPA",
+      "adversary": "local physical attacker collecting many aligned traces",
+      "status": "not_evaluated"
+    },
+    {
+      "id": "T-TRACE",
+      "adversary": "observer of allocation, address, branch or memory-access traces",
+      "status": "host_edge_address_variation_random_ideal_owner_localized_target_pending"
+    }
+  ],
+  "out_of_scope_for_current_gate": [
+    "fault injection and combined fault/side-channel attacks",
+    "multi-core or DMA adversaries",
+    "production entropy certification",
+    "formal constant-time verification of the full signer"
+  ]
+}

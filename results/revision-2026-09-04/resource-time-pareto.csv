@@ -1,0 +1,12 @@
+dimension,environment,sample,baseline,proposed,proposed_over_baseline,evidence_class
+operation_arena_payload,RP2350 layout,static,353008,172080,0.487467706114309,exact type/layout value
+exclusive_reserved_sram,RP2350 linked image,static,502336,321408,0.639826729519684,exact linker/type value
+psp_reservation,RP2350 linked image,static,131072,131072,1.0,exact linker reservation; not observed use
+bin_image,RP2350 linked image,static,287504,288384,1.0030608269797985,exact linked image extent
+keygen_time,native host,reversed-order-run-1,228702000.0,229547000.0,1.003694764365856,finite paired timing campaign
+keygen_time,native host,reversed-order-run-2,228092500.0,229567000.0,1.0064644826112212,finite paired timing campaign
+sign_time,native host,reversed-order-run-1,588781000.0,588475500.0,0.9994811313544425,finite paired timing campaign
+sign_time,native host,reversed-order-run-2,585649000.0,585051500.0,0.9989797643298289,finite paired timing campaign
+keygen_time,RP2350,one deterministic path per image,2696250983,2698150029,1.000704328347759,single observation; no population slowdown claim
+sign_time,RP2350,one deterministic path per image,7337481041,7611258527,1.037312189901439,single observation; no population slowdown claim
+verify_time,RP2350,one deterministic path per image,813858,814341,1.0005934696224648,single observation; no population slowdown claim

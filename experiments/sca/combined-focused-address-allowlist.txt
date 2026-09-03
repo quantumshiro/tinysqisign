@@ -1,0 +1,9 @@
+# SanitizerCoverage special-case list for the first residual surfaces found by
+# the combined whole-Sign edge-prefix screen.  Keep this deliberately narrow:
+# full-Sign trace-loads/trace-stores callbacks make the protected RADIX32
+# signer impractically slow and do not improve localization.
+src:*/src/quaternion/ref/generic/ideal.c
+src:*/src/quaternion/ref/generic/intbig.c
+fun:*quat_lideal_create_with_norm_with_workspace*
+fun:*ibz_bitsize*
+fun:*ibz_mul*

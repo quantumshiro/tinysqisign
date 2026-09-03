@@ -1,0 +1,229 @@
+{
+  "schema": "sqisign-cornacchia-masked-montgomery-scope-v1",
+  "status": "required_scope_frozen_no_masked_candidate_approved",
+  "attack_anchor": {
+    "title": "Simple Power Analysis Attack on SQIsign",
+    "url": "https://eprint.iacr.org/2025/830",
+    "relevance": "The published attack targets a secret-derived exponent used by modular square root inside Cornacchia and connects exponent recovery to signing-key recovery."
+  },
+  "threat_model": {
+    "temporary_modulus": "The Cornacchia modular-square-root modulus M is secret-derived on the signing route. It must not be treated as a public Montgomery modulus without a separate proof.",
+    "observations": [
+      "value-based leakage from registers, ALU operands/results, loads, stores and spills",
+      "transition-based leakage between consecutive values on registers, buses and memory paths",
+      "horizontal observations across the 521 repeated exponent rounds in one trace",
+      "multi-call observations across the several exponentiations used by one modular-square-root invocation"
+    ],
+    "scope_boundary": "This source-level model identifies values that a countermeasure must cover. It does not prove that any one value is externally observable on RP2350, nor that masking is the only possible countermeasure."
+  },
+  "primary_masking_literature": [
+    {
+      "id": "PAPER-TRANSITION-2014-413",
+      "title": "On the Cost of Lazy Engineering for Masked Software Implementations",
+      "url": "https://eprint.iacr.org/2014/413",
+      "relevance": "Separates value-based from transition-based leakage and shows why source-level share marginals do not suffice.",
+      "not_a_drop_in": "It does not provide masked SQIsign or masked dynamic-modulus Montgomery arithmetic."
+    },
+    {
+      "id": "PAPER-ARITH-BOOL-2022-158",
+      "title": "Bitslicing Arithmetic/Boolean Masking Conversions for Fun and Profit",
+      "url": "https://eprint.iacr.org/2022/158",
+      "relevance": "Provides composable arithmetic/Boolean masking gadgets and demonstrates that plain-C share transitions can create first-order leakage on a Cortex-M4-class target.",
+      "not_a_drop_in": "Its small-modulus lattice-KEM conversions do not cover 521-bit secret dynamic moduli, Montgomery context generation or SQIsign Tonelli--Shanks state."
+    },
+    {
+      "id": "PAPER-TI-SOFTWARE-2022-1546",
+      "title": "Threshold Implementations in Software: Micro-architectural Leakages in Algorithms",
+      "url": "https://eprint.iacr.org/2022/1546",
+      "relevance": "Makes final share placement and micro-architectural transitions part of the security argument on scalar embedded processors.",
+      "not_a_drop_in": "Its symmetric gadgets are not a masked big-integer Montgomery implementation."
+    }
+  ],
+  "frozen_sources": [
+    {
+      "role": "implementation",
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/source/protected/src/quaternion/ref/generic/montgomery_fixedwork_521.c",
+      "sha256": "2c867bd1d32beda6b9ce94c4e285292de1daf73917107ebce4b149924a5050f6",
+      "bytes": 16664,
+      "required_markers": [
+        "load_u521(context->modulus, modulus);",
+        "negative_inverse_mod_2_32(context->modulus[0]);",
+        "copy_words(context->one_montgomery, scratch->result);",
+        "copy_words(context->r_squared, scratch->result);",
+        "scratch->product[i] * context->negative_modulus_inverse;",
+        "(uint64_t)factor * context->modulus[j] +",
+        "const uint32_t exponent_bit =",
+        "montgomery_multiply_words(scratch->square,",
+        "montgomery_multiply_words(scratch->multiplied,",
+        "select_words(scratch->result,"
+      ]
+    },
+    {
+      "role": "state_layout",
+      "path": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/source/protected/src/quaternion/ref/generic/internal_quaternion_headers/montgomery_fixedwork_521.h",
+      "sha256": "541200c14fe5586fa089ea6f8d260ea32c6a8e373b2193cdea681d0f351c2d48",
+      "bytes": 2974,
+      "required_markers": [
+        "sqisign_sca_mont_u521_t modulus;",
+        "sqisign_sca_mont_u521_t one_montgomery;",
+        "sqisign_sca_mont_u521_t r_squared;",
+        "uint32_t negative_modulus_inverse;",
+        "uint32_t product[SQISIGN_SCA_MONT_PRODUCT_WORDS];",
+        "sqisign_sca_mont_u521_t exponent;",
+        "sqisign_sca_mont_u521_t result;",
+        "sqisign_sca_mont_u521_t square;",
+        "sqisign_sca_mont_u521_t multiplied;"
+      ]
+    }
+  ],
+  "dependency_graph": {
+    "secret_roots": [
+      "temporary_modulus",
+      "base_or_radicand",
+      "secret_exponent"
+    ],
+    "sensitive_nodes": [
+      "temporary_modulus",
+      "modulus_words",
+      "negative_modulus_inverse",
+      "one_montgomery",
+      "r_squared",
+      "base_or_radicand",
+      "converted_base",
+      "secret_exponent",
+      "exponent_bit",
+      "selector_mask",
+      "accumulator_prefix",
+      "square_candidate",
+      "multiply_candidate",
+      "schoolbook_product",
+      "reduction_factor",
+      "carry_chain",
+      "borrow_difference",
+      "reduced_output"
+    ],
+    "edges": [
+      ["temporary_modulus", "modulus_words"],
+      ["modulus_words", "negative_modulus_inverse"],
+      ["modulus_words", "one_montgomery"],
+      ["modulus_words", "r_squared"],
+      ["base_or_radicand", "converted_base"],
+      ["r_squared", "converted_base"],
+      ["secret_exponent", "exponent_bit"],
+      ["exponent_bit", "selector_mask"],
+      ["one_montgomery", "accumulator_prefix"],
+      ["accumulator_prefix", "square_candidate"],
+      ["square_candidate", "multiply_candidate"],
+      ["converted_base", "multiply_candidate"],
+      ["square_candidate", "schoolbook_product"],
+      ["multiply_candidate", "schoolbook_product"],
+      ["modulus_words", "reduction_factor"],
+      ["negative_modulus_inverse", "reduction_factor"],
+      ["reduction_factor", "schoolbook_product"],
+      ["schoolbook_product", "carry_chain"],
+      ["carry_chain", "borrow_difference"],
+      ["modulus_words", "borrow_difference"],
+      ["borrow_difference", "reduced_output"],
+      ["reduced_output", "square_candidate"],
+      ["reduced_output", "multiply_candidate"],
+      ["selector_mask", "accumulator_prefix"],
+      ["square_candidate", "accumulator_prefix"],
+      ["multiply_candidate", "accumulator_prefix"]
+    ]
+  },
+  "current_implementation": {
+    "fixed_control_and_address_schedule": true,
+    "secret_dependent_branch_on_exponent_bit": false,
+    "shared_or_randomized_sensitive_values": [],
+    "unshared_sensitive_values": [
+      "temporary_modulus",
+      "modulus_words",
+      "negative_modulus_inverse",
+      "one_montgomery",
+      "r_squared",
+      "base_or_radicand",
+      "converted_base",
+      "secret_exponent",
+      "exponent_bit",
+      "selector_mask",
+      "accumulator_prefix",
+      "square_candidate",
+      "multiply_candidate",
+      "schoolbook_product",
+      "reduction_factor",
+      "carry_chain",
+      "borrow_difference",
+      "reduced_output"
+    ],
+    "interpretation": "The fixed schedule removes one control-flow channel but does not hide the values or transitions of the secret-derived modulus, exponent, Montgomery constants or arithmetic state."
+  },
+  "rejected_partial_candidates": [
+    {
+      "id": "fixed_schedule_only",
+      "intended_coverage": [],
+      "uncovered_sensitive_nodes": [
+        "temporary_modulus", "modulus_words", "negative_modulus_inverse", "one_montgomery", "r_squared", "base_or_radicand", "converted_base", "secret_exponent", "exponent_bit", "selector_mask", "accumulator_prefix", "square_candidate", "multiply_candidate", "schoolbook_product", "reduction_factor", "carry_chain", "borrow_difference", "reduced_output"
+      ],
+      "reason": "Constant work and addresses do not imply constant power."
+    },
+    {
+      "id": "selector_only_masking",
+      "intended_coverage": ["exponent_bit", "selector_mask"],
+      "uncovered_sensitive_nodes": [
+        "temporary_modulus", "modulus_words", "negative_modulus_inverse", "one_montgomery", "r_squared", "base_or_radicand", "converted_base", "secret_exponent", "accumulator_prefix", "square_candidate", "multiply_candidate", "schoolbook_product", "reduction_factor", "carry_chain", "borrow_difference", "reduced_output"
+      ],
+      "reason": "It leaves the exponent words, secret modulus/context and exponent-prefix-dependent arithmetic state unshared; a naive sequential two-share selector also leaks under the frozen HD model."
+    },
+    {
+      "id": "exponent_only_randomization",
+      "intended_coverage": ["secret_exponent", "exponent_bit", "selector_mask"],
+      "uncovered_sensitive_nodes": [
+        "temporary_modulus", "modulus_words", "negative_modulus_inverse", "one_montgomery", "r_squared", "base_or_radicand", "converted_base", "accumulator_prefix", "square_candidate", "multiply_candidate", "schoolbook_product", "reduction_factor", "carry_chain", "borrow_difference", "reduced_output"
+      ],
+      "reason": "It leaves the secret modulus/context and arithmetic values exposed, and the checked E=e+r*(M-1) candidate retains exploitable multi-call algebraic structure."
+    },
+    {
+      "id": "accumulator_only_masking",
+      "intended_coverage": ["accumulator_prefix", "square_candidate", "multiply_candidate", "schoolbook_product", "carry_chain", "borrow_difference", "reduced_output"],
+      "uncovered_sensitive_nodes": [
+        "temporary_modulus", "modulus_words", "negative_modulus_inverse", "one_montgomery", "r_squared", "base_or_radicand", "converted_base", "secret_exponent", "exponent_bit", "selector_mask", "reduction_factor"
+      ],
+      "reason": "Every reduction still combines shared state with unshared modulus words and the unshared Montgomery inverse; exponent and selector surfaces also remain."
+    },
+    {
+      "id": "context_only_masking",
+      "intended_coverage": ["temporary_modulus", "modulus_words", "negative_modulus_inverse", "one_montgomery", "r_squared", "reduction_factor", "borrow_difference"],
+      "uncovered_sensitive_nodes": [
+        "base_or_radicand", "converted_base", "secret_exponent", "exponent_bit", "selector_mask", "accumulator_prefix", "square_candidate", "multiply_candidate", "schoolbook_product", "carry_chain", "reduced_output"
+      ],
+      "reason": "It leaves the exponent, selector and exponent-prefix-dependent Montgomery operands/results exposed."
+    },
+    {
+      "id": "base_only_blinding",
+      "intended_coverage": ["base_or_radicand", "converted_base"],
+      "uncovered_sensitive_nodes": [
+        "temporary_modulus", "modulus_words", "negative_modulus_inverse", "one_montgomery", "r_squared", "secret_exponent", "exponent_bit", "selector_mask", "accumulator_prefix", "square_candidate", "multiply_candidate", "schoolbook_product", "reduction_factor", "carry_chain", "borrow_difference", "reduced_output"
+      ],
+      "reason": "It leaves the secret-derived modulus, exponent, selector and reduction state exposed."
+    }
+  ],
+  "required_end_to_end_scope": [
+    "Represent the temporary modulus and every derived Montgomery constant under a reviewed sharing or independently validated hiding discipline before they enter arithmetic.",
+    "Use composable gadgets for 521-bit addition, subtraction, comparison/selection, schoolbook multiplication, Montgomery reduction and arithmetic/Boolean conversion; account for carry, borrow and reduction-factor state.",
+    "Protect exponent storage, bit extraction, selector logic, base/radicand conversion, accumulator prefixes and final unmasking; no secret-dependent value may be silently reintroduced at an API boundary.",
+    "Extend the protection through Tonelli--Shanks setup, repeated powers, state updates, retries, status handling and the Cornacchia consumer rather than approving an isolated pow call.",
+    "Freeze final Cortex-M33 assembly and verify share separation across registers, spills, ALU and memory transitions for each compiler build.",
+    "Account for fresh randomness, refresh boundaries, failure behavior, zeroization, SRAM and cycle overhead without reusing masks across repeated horizontal observations.",
+    "Require first- and higher-order leakage assessment plus attack-driven exponent/modulus/state recovery on independent physical sessions; a negative TVLA alone is not approval."
+  ],
+  "decision": {
+    "complete_masked_montgomery_candidate_exists": false,
+    "secret_dynamic_modulus_protected": false,
+    "transition_leakage_addressed": false,
+    "tonelli_shanks_end_to_end_protected": false,
+    "physical_resistance_established": false,
+    "published_attack_blocked": false,
+    "production_signing_approved": false
+  },
+  "claim_boundary": "This contract proves only that the frozen source directly manipulates a connected set of secret-derived Montgomery values and that six partial countermeasure scopes leave named nodes uncovered. It is not a leakage measurement, probing-security proof, masked implementation or impossibility result for masking/hiding."
+}

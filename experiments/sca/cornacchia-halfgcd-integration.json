@@ -1,0 +1,153 @@
+{
+  "schema": "sqisign-cornacchia-fixed-halfgcd-integration-v1",
+  "status": "experimental_sqisign_sign_path_integrated_not_physical_sca_validated",
+  "created_on": "2026-08-22",
+  "scope": {
+    "scheme": "SQIsign Level-I reference signer",
+    "backend": "RADIX32 fixed 27x64-bit ibz representation bridged to 54x32-bit limbs",
+    "change": "replace the secret-dependent Cornacchia Euclidean loop with a fixed 1421-round shift/subtract half-GCD",
+    "literature_basis": "ePrint 2023/807 Algorithm 8 plus an independent exact squared-norm contraction proof for the frozen recurrence; the scheduled 1421 count remains the conservative Bernstein-Yang-derived value",
+    "exclusions": [
+      "The source recurrence bound is machine-checked, but the compiled C/assembly has not been formally verified against that model.",
+      "Fixed control flow and addresses do not imply constant power or EM leakage.",
+      "The operands are unmasked and no blinding construction is present.",
+      "This component result does not make the complete signer constant-time.",
+      "No physical trace, TVLA, exponent-recovery, or signing-key-recovery campaign has been run on this integration."
+    ]
+  },
+  "source_snapshot": {
+    "nested_git_head": "c2a80712e32891c5228da3f49f0148993a4ec560",
+    "state": "hash-pinned_relevant_dirty_worktree_files",
+    "relevant_sources": {
+      "work/compact-sca-ct3/CMakeLists.txt": "79d52c882527a33884c9485a7b8af7cef6142ac337f1bb00328c556c70ec021a",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/CMakeLists.txt": "6015aa67920ce670fc54a4afb5f566bc247eccd840df0761199ec8f0681d439c",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/integers.c": "f28278b531fd6ddc2d4b12120e9cfa9e8ebbb8e5102bae2b197ad834aa524c8b",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/ctint1728_32.c": "6934d65c4475a86365664fa89a979d200670e8ace1464244d3d08560583987e6",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/internal_quaternion_headers/ctint1728_32.h": "af7864d1ce0ffc3b8bf2ceea2680bec3bdfb18f5e59ac150bfc061d58446dc8b",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/cornacchia_halfgcd_fixed_492.c": "1ee4ed8f5d516fab0303f353b72d3280f326147b0b448db4d2ea5447b7f5c12e",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/internal_quaternion_headers/cornacchia_halfgcd_fixed_492.h": "946b2dbc0421f6c85cda678750b22a19a1340b1c6f30e3c320de46b4df1eecf3",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/powmod_fixedwork_521.c": "d1047647bc0df65a480443d16b1dac4e115e6804084998ccf4f19bb2417630fe",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/internal_quaternion_headers/powmod_fixedwork_521.h": "c27e458379b64194cc8994920e48fd4903d0cdd09f956f995eacc58aba4967a9",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/sqrt_mod_fixedwork_521.c": "f63849130c935a781c6e0e99990fbe81a0ff246d492875a9ef46d65971f345fc",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/internal_quaternion_headers/sqrt_mod_fixedwork_521.h": "1a0de79294ba25519f45f8b29bee8747a18493d4d9cb700e41bee6d2528dc2b2",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/montgomery_fixedwork_521.c": "2c867bd1d32beda6b9ce94c4e285292de1daf73917107ebce4b149924a5050f6",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/internal_quaternion_headers/montgomery_fixedwork_521.h": "541200c14fe5586fa089ea6f8d260ea32c6a8e373b2193cdea681d0f351c2d48",
+      "work/compact-sca-ct3/src/quaternion/ref/generic/test/test_cornacchia_fixedwork_521.c": "d8c984ab943415566bcb7d83ff82530774523af966a54b539f7dd6f519cf0eaa"
+    },
+    "ctint_copy_is_byte_identical_to_foundation": true
+  },
+  "configuration": {
+    "control_macros": [
+      "SQISIGN_CORNACCHIA_FIXEDWORK_521"
+    ],
+    "protected_macros": [
+      "SQISIGN_CORNACCHIA_FIXEDWORK_521",
+      "SQISIGN_CORNACCHIA_FIXED_HALFGCD_492"
+    ],
+    "host_compiler": "Apple clang version 17.0.0 (clang-1700.6.3.2)",
+    "arm_compiler": "Arm GNU Toolchain 15.2.Rel1, gcc 15.2.1",
+    "arm_profile": "Cortex-M33 -O3 -mfloat-abi=softfp -mcmse -ffreestanding RADIX32 Level-I individual objects"
+  },
+  "workspace": {
+    "ct_core_bytes": 3456,
+    "adapter_bytes": 4320,
+    "existing_square_root_bytes": 4344,
+    "phase_union_bytes": 4344,
+    "outer_workspace_growth_bytes": 0,
+    "adapter_clear_bytes_per_call": 8640,
+    "core_clear_bytes_per_call": 6912,
+    "total_logical_secure_clear_bytes_per_call": 15552
+  },
+  "correctness": {
+    "component_foundation_contract": "experiments/sca/ctint1728-foundation-contract.json",
+    "adapter_valid_cases": 14,
+    "adapter_invalid_cases": 3,
+    "adapter_output_aliases_per_valid_case": 3,
+    "adapter_guards_and_full_clear_checked": true,
+    "fatal_asan_ubsan_adapter_test": true,
+    "frozen_sign_seeds": [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144],
+    "frozen_sign_transcript_sha256": "e6827174fb9d4ea1cccd606632271dbc932f2bad8a5d041f1c4a4c08882ac696",
+    "signed_message_verify_and_post_rng_byte_identical": true,
+    "cornacchia_calls_in_frozen_corpus": 361,
+    "cornacchia_calls_per_sign_min": 13,
+    "cornacchia_calls_per_sign_max": 72,
+    "fixed_rounds_per_call": 1421,
+    "fixed_rounds_in_frozen_corpus": 512981,
+    "logical_secure_clear_bytes_in_frozen_corpus": 5614272,
+    "independent_sufficient_active_rounds": 644,
+    "scheduled_inactive_round_margin": 777
+  },
+  "cortex_m33": {
+    "outer_cornacchia_frame_bytes_control": 5480,
+    "outer_cornacchia_frame_bytes_protected": 5480,
+    "adapter_frame_bytes": 32,
+    "core_frame_bytes": 64,
+    "legacy_ibz_div_call_sites_control": 2,
+    "legacy_ibz_div_call_sites_protected": 1,
+    "outer_cornacchia_text_bytes_control": 424,
+    "outer_cornacchia_text_bytes_protected": 368,
+    "adapter_text_bytes": 776,
+    "core_halfgcd_text_bytes": 504,
+    "core_conditional_branches": 1,
+    "core_branch_is_public_1421_round_backedge": true,
+    "core_register_indexed_memory": false,
+    "core_indirect_or_table_branches": false,
+    "linked_flash_delta_measured": false,
+    "whole_sign_stack_peak_measured": false
+  },
+  "reproduction": {
+    "harness": {
+      "path": "experiments/sca/test_cornacchia_fixedwork_sign.c",
+      "sha256": "529eab77e45f41e37150b90fe600b24c0c00229737c2daa6c8b1ec3520848a2c"
+    },
+    "harness_builder": {
+      "path": "scripts/build_sca_timing_harness.py",
+      "sha256": "73431beb4d77386fde5b309513c0e5b5535ba1eb100ba0bb9b22d0194a53f99e"
+    },
+    "arm_checker": {
+      "path": "scripts/check_cornacchia_halfgcd_arm.py",
+      "sha256": "394123a444223673846d42be02112ea02f9b84fde7169a952388467556fff720"
+    },
+    "arm_runner": {
+      "path": "scripts/run_cornacchia_halfgcd_arm.sh",
+      "sha256": "213462c68a1641f25f1781c16e25a50e2ef93e5c8cbb1a1845d8e15f56395364"
+    },
+    "integration_checker": {
+      "path": "scripts/check_cornacchia_halfgcd_integration.py",
+      "sha256": "fd9bedd13cade6cd19334be6720d05a1a539688cb4f13004f306d3177c58b62f"
+    },
+    "integration_runner": {
+      "path": "scripts/run_cornacchia_halfgcd_integration.sh",
+      "sha256": "8694b3c5c2e3a5927c15d03b017dd6997e2f840765f8a423d3aea5c49f2eb34e"
+    },
+    "frozen_transcript": {
+      "path": "results/host/sca-d13-cornacchia-fixedwork-protected-output.txt",
+      "sha256": "e6827174fb9d4ea1cccd606632271dbc932f2bad8a5d041f1c4a4c08882ac696"
+    },
+    "frozen_profile": {
+      "path": "results/host/sca-d13-cornacchia-fixedwork-profile.csv",
+      "sha256": "41d3b61e832bb2745dad496d8fe7e21a3a0e32259fe5f9b6b4367b7cf218f300"
+    },
+    "bound_contract": {
+      "path": "experiments/sca/cornacchia-halfgcd-bound-contract.json",
+      "sha256": "7b54b3ede32e14a530d7d19b3be2f5f3e825a103bdeb1660b0cffc2fc5b571a4"
+    },
+    "bound_checker": {
+      "path": "scripts/check_cornacchia_halfgcd_bound.py",
+      "sha256": "090fc36d42bee38ca43514cc9c78857aaa16ab8472746c75fe935192fe30aedf"
+    }
+  },
+  "decision": {
+    "fixed_secret_dependent_euclid_loop_removed_on_experimental_sign_route": true,
+    "legacy_euclid_fallback_allowed": false,
+    "sign_transcript_changed": false,
+    "outer_workspace_grew": false,
+    "iteration_bound_independently_machine_checked_for_frozen_source_recurrence": true,
+    "compiled_c_or_binary_formally_verified": false,
+    "whole_sign_constant_time": false,
+    "constant_power_or_em_resistance": false,
+    "masking_or_blinding_present": false,
+    "published_key_recovery_attack_blocked": false,
+    "production_signing_approved": false
+  }
+}

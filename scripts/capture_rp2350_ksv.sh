@@ -7,14 +7,23 @@ capture_alive=${SQISIGN_KSV_CAPTURE_ALIVE:-SQISIGN_RP2350_KSV alive}
 export SQISIGN_KSV_CAPTURE_BANNER="$capture_banner"
 export SQISIGN_KSV_CAPTURE_ALIVE="$capture_alive"
 attempts=0
-while test -z "$device" && test "$attempts" -lt 60; do
-    for candidate in /dev/cu.usbmodem*; do
-        if test -c "$candidate"; then
-            device=$candidate
+while test "$attempts" -lt 60; do
+    if test -n "$device"; then
+        if test -c "$device"; then
             break
         fi
-    done
-    if test -z "$device"; then
+    else
+        for candidate in /dev/cu.usbmodem*; do
+            if test -c "$candidate"; then
+                device=$candidate
+                break
+            fi
+        done
+        if test -n "$device"; then
+            break
+        fi
+    fi
+    if test -z "$device" || test ! -c "$device"; then
         sleep 1
         attempts=$((attempts + 1))
     fi

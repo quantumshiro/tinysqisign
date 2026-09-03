@@ -1,0 +1,156 @@
+{
+  "schema": "sqisign-cornacchia-exponent-blinding-design-v1",
+  "status": "standalone_exponent_blinding_rejected_pending_cryptanalysis",
+  "literature": {
+    "attack": "Simple Power Analysis Attack on SQIsign, IACR ePrint 2025/830, AFRICACRYPT 2025",
+    "paper_countermeasure_direction": "regular exponentiation plus exponent randomization",
+    "scope": "preimplementation analysis of exponent randomization for the frozen Level-I Cornacchia route"
+  },
+  "inputs": {
+    "maximum_modulus_bits": 492,
+    "current_fixed_schedule_bits": 521,
+    "frozen_pow_calls": 2180,
+    "frozen_sign_calls": 12,
+    "blind_mapping": "R is a uniform b-bit string and r=R+1, avoiding a zero blind without a rejection loop"
+  },
+  "algebra": {
+    "secret_exponent_relation": "e=(p+k1)/k2 for small public k1,k2 on the attacked Cornacchia square-root paths",
+    "candidate": "E=e+r*(p-1)",
+    "correctness": "for prime p and positive e, a^E mod p equals a^e mod p for every residue a, including zero",
+    "factorization_identity": "k2*E-(k1+1)=(1+k2*r)*(p-1)",
+    "security_consequence": "If SPA recovers E, the direct affine recovery of p is replaced by a structured factorization problem. The blind entropy is not itself a lower bound on attack work.",
+    "formation_leakage": "Constructing r*(p-1) processes the same secret-derived p together with fresh r and is itself a power/EM surface. It must be included inside the threat model rather than placed outside the trigger and ignored."
+  },
+  "artifacts": {
+    "ground_truth": "experiments/sca/cornacchia-pow-segment-ground-truth.json",
+    "ground_truth_sha256": "b2f2ad5aefa13c628e4d6b32a035a598a8683db8a30de76c6f988454a7de9d52",
+    "fixedwork_integration": "results/host/sca-d13-cornacchia-fixedwork-integration.json",
+    "fixedwork_integration_sha256": "ea5433ca1169221613cb92e2932eb1acdfc74ff42a168c976446b2213923c55b",
+    "fixedwork_integration_bytes": 5189,
+    "fixedwork_sqrt_source": "results/rp2350/artifacts/sca-cornacchia-pow-segment-1f8b6ddc/source/protected/src/quaternion/ref/generic/sqrt_mod_fixedwork_521.c",
+    "fixedwork_sqrt_source_sha256": "f63849130c935a781c6e0e99990fbe81a0ff246d492875a9ef46d65971f345fc",
+    "fixedwork_sqrt_source_bytes": 19377,
+    "checker": "scripts/check_cornacchia_exponent_blinding.py"
+  },
+  "candidate_costs": [
+    {
+      "blind_entropy_bits": 32,
+      "maximum_blinded_exponent_bits": 525,
+      "fixed_schedule_bits": 544,
+      "schedule_ratio_vs_521": 1.0441458733205373,
+      "fresh_random_bytes_per_pow": 4,
+      "mean_frozen_random_bytes_per_sign": 726.6666666666666,
+      "ecm_leading_term_proxy_bits_for_blind_sized_factor": 16.916233390785507
+    },
+    {
+      "blind_entropy_bits": 64,
+      "maximum_blinded_exponent_bits": 557,
+      "fixed_schedule_bits": 576,
+      "schedule_ratio_vs_521": 1.1055662188099808,
+      "fresh_random_bytes_per_pow": 8,
+      "mean_frozen_random_bytes_per_sign": 1453.3333333333333,
+      "ecm_leading_term_proxy_bits_for_blind_sized_factor": 26.46352025455142
+    },
+    {
+      "blind_entropy_bits": 128,
+      "maximum_blinded_exponent_bits": 621,
+      "fixed_schedule_bits": 640,
+      "schedule_ratio_vs_521": 1.2284069097888675,
+      "fresh_random_bytes_per_pow": 16,
+      "mean_frozen_random_bytes_per_sign": 2906.6666666666665,
+      "ecm_leading_term_proxy_bits_for_blind_sized_factor": 40.70179122011839
+    },
+    {
+      "blind_entropy_bits": 256,
+      "maximum_blinded_exponent_bits": 749,
+      "fixed_schedule_bits": 768,
+      "schedule_ratio_vs_521": 1.4740882917466411,
+      "fresh_random_bytes_per_pow": 32,
+      "mean_frozen_random_bytes_per_sign": 5813.333333333333,
+      "ecm_leading_term_proxy_bits_for_blind_sized_factor": 61.848780239000774
+    },
+    {
+      "blind_entropy_bits": 512,
+      "maximum_blinded_exponent_bits": 1004,
+      "fixed_schedule_bits": 1024,
+      "schedule_ratio_vs_521": 1.965451055662188,
+      "fresh_random_bytes_per_pow": 64,
+      "mean_frozen_random_bytes_per_sign": 11626.666666666666,
+      "ecm_leading_term_proxy_bits_for_blind_sized_factor": 93.13722797090551
+    },
+    {
+      "blind_entropy_bits": 768,
+      "maximum_blinded_exponent_bits": 1260,
+      "fixed_schedule_bits": 1280,
+      "schedule_ratio_vs_521": 2.456813819577735,
+      "fresh_random_bytes_per_pow": 96,
+      "mean_frozen_random_bytes_per_sign": 17440.0,
+      "ecm_leading_term_proxy_bits_for_blind_sized_factor": 117.94200800505448
+    },
+    {
+      "blind_entropy_bits": 896,
+      "maximum_blinded_exponent_bits": 1388,
+      "fixed_schedule_bits": 1408,
+      "schedule_ratio_vs_521": 2.7024952015355086,
+      "fresh_random_bytes_per_pow": 112,
+      "mean_frozen_random_bytes_per_sign": 20346.666666666668,
+      "ecm_leading_term_proxy_bits_for_blind_sized_factor": 128.94661949818604
+    },
+    {
+      "blind_entropy_bits": 1024,
+      "maximum_blinded_exponent_bits": 1516,
+      "fixed_schedule_bits": 1536,
+      "schedule_ratio_vs_521": 2.9481765834932823,
+      "fresh_random_bytes_per_pow": 128,
+      "mean_frozen_random_bytes_per_sign": 23253.333333333332,
+      "ecm_leading_term_proxy_bits_for_blind_sized_factor": 139.2734234095251
+    }
+  ],
+  "multi_observation_gcd_attack": {
+    "assumption": "SPA recovers the exact independently blinded exponent from each observed modular-power call under one Tonelli-Shanks modulus; this model does not estimate that physical recovery probability.",
+    "executed_structure": "Each successful frozen square root performs at least one Legendre power followed by c=z^q, x=n^((q+1)/2), and t=n^q under the same p. The frozen 12-Sign corpus has pow_calls=legendre_calls+3*sqrt_calls=2180.",
+    "transformation": "For each recovered E_i compute N_i=k2_i*E_i-(k1_i+1)=t_i*(p-1), then take GCDs across calls sharing p.",
+    "trials_per_fixture": 256,
+    "fixtures": 16,
+    "deterministic_blind_derivation": "SHAKE256('sqisign-gcd-blind-v1:' || bits || fixture || trial || call-label), mapped to r=R+1; research model only",
+    "results": [
+      {
+        "blind_entropy_bits": 128,
+        "fixture_trials": 4096,
+        "two_repeated_q_direct_recoveries": 3330,
+        "two_repeated_q_direct_recovery_rate": 0.81298828125,
+        "four_pow_direct_recoveries": 4017,
+        "four_pow_direct_recovery_rate": 0.980712890625,
+        "maximum_two_q_residual_multiplier": 775,
+        "maximum_four_pow_residual_multiplier": 7
+      },
+      {
+        "blind_entropy_bits": 896,
+        "fixture_trials": 4096,
+        "two_repeated_q_direct_recoveries": 3345,
+        "two_repeated_q_direct_recovery_rate": 0.816650390625,
+        "four_pow_direct_recoveries": 4032,
+        "four_pow_direct_recovery_rate": 0.984375,
+        "maximum_two_q_residual_multiplier": 9615,
+        "maximum_four_pow_residual_multiplier": 11
+      }
+    ],
+    "interpretation": "Under exact multi-call exponent recovery, fresh independent exponent blinding commonly makes p-1 the direct GCD regardless of whether the blind is 128 or 896 bits. This strengthens rejection of the standalone construction; it is not evidence that the current physical setup can recover those exponents."
+  },
+  "interpretation": {
+    "ecm_metric": "log2 of the leading exp(sqrt(2*ln(q)*ln(ln(q)))) term for a q=2^b factor; this is a heuristic comparison proxy, not a concrete security estimate",
+    "128_bit_blind": "Rejected as a standalone 128-bit countermeasure: its factor-sized ECM proxy is only about 40.7 bits, and the exact blinded exponent retains the displayed factorization identity.",
+    "896_bit_row": "The leading-term proxy first exceeds 128 bits in this frozen candidate table, but this does not establish 128-bit security. Known structure in p-1, multiple traces, formation leakage and more specialized attacks remain unanalysed.",
+    "performance": "A 896-bit blind raises the fixed exponent schedule from 521 to 1408 rounds (2.7025x) and would consume about 20.35 KiB of fresh randomness per Sign on the frozen average 2180-pow/12-Sign corpus before RNG and formation costs.",
+    "preferred_next_step": "Run the preregistered analog attack first, including multi-call scoring grouped by modulus, then evaluate a reviewed masking/blinding construction with an explicit leakage model. Do not merge ad hoc exponent blinding based only on blind entropy or single-call analysis."
+  },
+  "decision": {
+    "standalone_exponent_blinding_adopted": false,
+    "factorization_identity_blocks_naive_entropy_claim": true,
+    "masking_design_available": false,
+    "physical_resistance_established": false,
+    "published_attack_blocked": false,
+    "production_signing_approved": false
+  },
+  "claim_boundary": "This artifact checks algebraic correctness, exact width/randomness arithmetic, a reduced domain and the 16 public acquisition fixtures. It is not a cryptographic reduction, an ECM benchmark, a C implementation, a physical measurement or evidence that any blinding width is secure."
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "sqisign-cornacchia-masked-word-prototype-v1",
+  "status": "two_limb_functional_and_reduced_value_model_checked_transition_assembly_pending",
+  "parent_design": {
+    "path": "experiments/sca/cornacchia-masked-arithmetic-design.json",
+    "sha256": "f82e70aed6eb93734db09b81add740e507f6eb37e5380770e47164d61fbb0265",
+    "status": "word_arithmetic_functional_prototype_implemented_transition_assembly_pending"
+  },
+  "implementation": {
+    "header": "experiments/sca/masked_word_arithmetic_prototype.h",
+    "header_sha256": "92d51e76b27662affb95156e7baf1982d82d0eee8a85e062608d9813dfc9f8f7",
+    "source": "experiments/sca/masked_word_arithmetic_prototype.c",
+    "source_sha256": "1fc23474200552111a94ba7245627ba5a903644280e551d0513d66b3ba8376d1",
+    "test": "experiments/sca/test_masked_word_arithmetic_prototype.c",
+    "test_sha256": "0d299d8216f27539e3d781a56d7c7b80fa17f99afa01e07f4ff047c331af32a3",
+    "runner": "scripts/run_cornacchia_masked_word_prototype.sh",
+    "runner_sha256": "2b57796ca0c7316b903b555f7f45ca27e73f9f2dffbb2530bebea0300ef80e6e",
+    "ring": "Z/(2^64)",
+    "limbs": 2,
+    "limb_bits": 32,
+    "sharing": "x = x0 + x1 mod 2^64",
+    "operations": [
+      "share",
+      "recombine",
+      "sharewise_add",
+      "refresh",
+      "two_share_ring_multiply"
+    ],
+    "fresh_random_bytes_per_multiply": 8,
+    "fresh_random_bytes_per_refresh": 8,
+    "host_release_edge_pairs": 64,
+    "host_release_deterministic_random_pairs": 200000,
+    "host_release_checksum": "ffa2febdd10c5801",
+    "host_fatal_asan_ubsan": true,
+    "cortex_m33_compiler": "Arm GNU Toolchain 15.2.1",
+    "cortex_m33_profile": "cortex-m33/thumb/softfp/O3/freestanding/strict-alias",
+    "cortex_m33_mul_frame_bytes": 48,
+    "cortex_m33_mul_frame_kind": "static",
+    "cortex_m33_undefined_symbols": 0
+  },
+  "ring_multiplication_equations": {
+    "random_domain": "r uniform in Z/(2^w)",
+    "cross_schedule": "t0=-r; t1=t0+a0*b1; t2=t1+a1*b0",
+    "output_share_0": "c0=a0*b0+r",
+    "output_share_1": "c1=a1*b1+t2",
+    "correctness_identity": "c0+c1=(a0+a1)*(b0+b1) mod 2^w"
+  },
+  "reduced_exhaustive_model": {
+    "ring_widths_bits": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "assignments": 1082400,
+    "secret_pairs_per_width": [
+      4,
+      16,
+      64,
+      256
+    ],
+    "correctness_for_share_add_refresh_multiply": true,
+    "all_individual_wire_marginals_secret_independent": true,
+    "claim": "exhaustive first-order single-value model only; no NI/SNI/PINI composition proof"
+  },
+  "transition_model": {
+    "leakage_function": "Hamming distance of two consecutive values in one abstract datapath",
+    "direct_adjacent_share_channels_secret_dependent": [
+      "input_a_share0_to_share1",
+      "input_b_share0_to_share1",
+      "add_output_share0_to_share1",
+      "refresh_output_share0_to_share1",
+      "multiply_output_share0_to_share1"
+    ],
+    "direct_adjacent_share_channels_fail_every_width": true,
+    "reviewed_internal_lane_transitions": [
+      "random_to_negative_random",
+      "negative_random_to_first_masked_cross_accumulator",
+      "first_to_second_masked_cross_accumulator",
+      "product00_to_output_share0",
+      "product11_to_output_share1",
+      "input_a0_to_product00",
+      "input_a1_to_product11",
+      "input_b0_to_product00",
+      "input_b1_to_product11",
+      "cross01_to_first_masked_cross_accumulator",
+      "cross10_to_second_masked_cross_accumulator"
+    ],
+    "reviewed_internal_lane_hd_distributions_secret_independent": true,
+    "zero_precharge_every_wire_to_and_from_zero_hd_distributions_secret_independent": true,
+    "zero_precharge_interpretation": "abstract necessary scheduling evidence only; it does not model Cortex-M33 pipeline, register file, ALU, memory bus, glitches or compiler allocation",
+    "plain_c_transition_approved": false,
+    "cortex_m33_assembly_transition_approved": false,
+    "physical_transition_result_exists": false
+  },
+  "scope_gaps": [
+    "no arithmetic-to-Boolean or Boolean-to-arithmetic conversion",
+    "no carry/borrow/comparison/selector gadget",
+    "no secret dynamic-modulus Montgomery reduction",
+    "no masked Montgomery inverse or radix-residue construction",
+    "no 17-limb composition or randomness/cycle estimate",
+    "no Tonelli--Shanks composition",
+    "no hand-controlled Cortex-M33 share-touching assembly",
+    "no TVLA, horizontal attack or key-recovery experiment"
+  ],
+  "next_checkpoint": {
+    "name": "masked_word_transition_controlled_assembly",
+    "requirements": [
+      "write a one-word share-touching Cortex-M33 primitive with explicit dummy loads/stores and register erasure",
+      "freeze exact disassembly and map every register, ALU input/output and memory transition",
+      "extend the reduced exhaustive checker to the frozen instruction schedule",
+      "run first-order fixed-versus-random and fixed-versus-fixed TVLA plus direct HD prediction",
+      "only then extend multiplication and A2B/B2A across two limbs"
+    ]
+  },
+  "decision": {
+    "functional_two_limb_prototype_implemented": true,
+    "reduced_first_order_value_model_checked": true,
+    "direct_adjacent_share_schedule_rejected": true,
+    "abstract_zero_precharge_schedule_checked": true,
+    "composable_masking_proof_exists": false,
+    "transition_safe_assembly_exists": false,
+    "complete_masked_montgomery_implemented": false,
+    "physical_resistance_established": false,
+    "published_attack_blocked": false,
+    "production_signing_approved": false
+  },
+  "claim_boundary": "This checkpoint implements and differentially checks two-limb arithmetic sharing over Z/(2^64), and exhaustively checks correctness plus individual-wire marginals for rings through four bits. It rejects direct adjacent-share schedules and shows only that an ideal zero-precharge abstraction removes those modeled HD channels. It is not a composable proof, final-assembly result, masked Montgomery implementation or physical side-channel result."
+}

@@ -1,0 +1,74 @@
+{
+  "schema": "tinysqisign-lifetime-layout-v1",
+  "layout_name": "find_uv_workspace_generated",
+  "terminal_exits": ["success", "not_found", "fatal"],
+  "expected_extent_bytes": 172080,
+  "expected_offsets": {
+    "lattice_state": 0,
+    "lattice_mul": 77168,
+    "candidates": 77168,
+    "fixed_degree": 77168
+  },
+  "existing_c_layout": {
+    "type": "find_uv_workspace_t",
+    "extent_bytes": 172080,
+    "members": {
+      "lattice_state": "lattice_state",
+      "lattice_mul": "phase.lattice_mul",
+      "candidates": "phase.candidates",
+      "fixed_degree": "phase.fixed_degree"
+    }
+  },
+  "objects": [
+    {
+      "name": "lattice_state",
+      "c_type": "find_uv_lattice_state_t",
+      "size_bytes": 77168,
+      "alignment_bytes": 8,
+      "phases": ["prepare_lattice", "validate_rows", "search_rows", "construct_ideal", "publish"],
+      "secret": true,
+      "pointer_escape": false,
+      "clear_on": ["success", "not_found", "fatal"],
+      "transition_clear": [],
+      "source_contract": "long-lived state; never overlaps another object at its bytes"
+    },
+    {
+      "name": "lattice_mul",
+      "c_type": "quat_lattice_mul_workspace_t",
+      "size_bytes": 94912,
+      "alignment_bytes": 8,
+      "phases": ["prepare_lattice"],
+      "secret": true,
+      "pointer_escape": false,
+      "clear_on": ["success", "not_found", "fatal"],
+      "transition_clear": ["prepare_lattice->validate_rows"],
+      "source_contract": "cleared before candidate phase activation"
+    },
+    {
+      "name": "candidates",
+      "c_type": "find_uv_candidate_workspace_t",
+      "size_bytes": 14024,
+      "alignment_bytes": 8,
+      "phases": ["validate_rows", "search_rows", "publish"],
+      "secret": true,
+      "pointer_escape": false,
+      "clear_on": ["success", "not_found", "fatal"],
+      "transition_clear": [],
+      "source_contract": "reuses the retired lattice-multiplication slot"
+    },
+    {
+      "name": "fixed_degree",
+      "c_type": "fixed_degree_isogeny_workspace_t",
+      "size_bytes": 94912,
+      "alignment_bytes": 8,
+      "phases": ["construct_ideal"],
+      "secret": true,
+      "pointer_escape": false,
+      "clear_on": ["success", "not_found", "fatal"],
+      "transition_clear": [],
+      "source_contract": "reuses the retired lattice-multiplication and candidate slot"
+    }
+  ],
+  "forced_interference": [],
+  "claim_boundary": "The annotations are a reviewable contract. The generator validates that contract and its layout; it is not a sound whole-program C alias analysis."
+}

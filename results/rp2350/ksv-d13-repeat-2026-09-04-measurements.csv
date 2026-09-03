@@ -1,0 +1,7 @@
+boot,operation,time_us,psp_extent_bytes
+1,keygen,2698150029,91980
+2,keygen,2698150324,91980
+1,sign,7611258527,120452
+2,sign,7611257377,120452
+1,verify,814341,20768
+2,verify,814356,20768

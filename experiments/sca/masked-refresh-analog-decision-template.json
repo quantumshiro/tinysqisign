@@ -1,0 +1,66 @@
+{
+  "schema": "sqisign-masked-refresh-m33-analog-decision-v2",
+  "status": "template_not_executed",
+  "path_base": "project_root",
+  "purposes": [
+    "fixed_vs_random",
+    "fixed_a_vs_fixed_b",
+    "fixed_vs_fixed_control"
+  ],
+  "reports": {
+    "fixed_vs_random": [
+      {
+        "path": "replace-with-campaign-1-report",
+        "sha256": "replace",
+        "bytes": 0
+      },
+      {
+        "path": "replace-with-campaign-2-report",
+        "sha256": "replace",
+        "bytes": 0
+      }
+    ],
+    "fixed_a_vs_fixed_b": [
+      {
+        "path": "replace-with-campaign-1-report",
+        "sha256": "replace",
+        "bytes": 0
+      },
+      {
+        "path": "replace-with-campaign-2-report",
+        "sha256": "replace",
+        "bytes": 0
+      }
+    ],
+    "fixed_vs_fixed_control": [
+      {
+        "path": "replace-with-campaign-1-report",
+        "sha256": "replace",
+        "bytes": 0
+      },
+      {
+        "path": "replace-with-campaign-2-report",
+        "sha256": "replace",
+        "bytes": 0
+      }
+    ]
+  },
+  "analysis": {
+    "alignment_tolerance_samples": 3,
+    "comparator": "scripts/compare_masked_refresh_m33_campaigns.py",
+    "repeated_attack_signal": "the same secret-attack model exceeds |t|=4.5 at sample indices within three samples in both independent campaigns",
+    "repeated_tvla_signal": "first- or centered-square second-order TVLA exceeds |t|=4.5 at sample indices within three samples, or cross-time centered-product second-order TVLA exceeds it at pairs whose two coordinates are each within three samples, in both primary campaigns",
+    "negative_control": "fixed_vs_fixed_control attack-model correlations, pointwise and cross-time TVLA, and every permuted null-model correlation remain below threshold; failure makes the campaign inconclusive and never rejects the primitive",
+    "raw_separation": "all six reports, campaign identifiers and raw-trace hashes must be distinct while the UF2 hash remains identical"
+  },
+  "decision": {
+    "six_physical_reports_present": false,
+    "reproducible_leakage_observed": false,
+    "primitive_rejected": false,
+    "bounded_negative_evidence": false,
+    "composable_masking_established": false,
+    "cornacchia_or_sqisign_resistance_established": false,
+    "production_approved": false
+  },
+  "scope": "Preregistered two-campaign comparison only. Reproducible positive evidence rejects the exact primitive. Complete negative evidence remains bounded to that function/build and cannot approve masked multiplication, Montgomery arithmetic, Cornacchia, Sign or SQIsign."
+}

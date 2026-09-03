@@ -1,0 +1,995 @@
+{
+  "architectural_psp_exception_certificate": {
+    "boundary": "This allowance closes the hardware frame charged to the interrupted operation PSP. It does not bound the handler software frames, enabled-IRQ set, priority nesting, runtime vector table, or live MSP depth.",
+    "handler_mode_stack": "MSP",
+    "linked_psp_write_instructions": [
+      {
+        "function": "sqisign_call_on_psp",
+        "instruction": "100001f4:\tf382 8809 \tmsr\tPSP, r2"
+      },
+      {
+        "function": "sqisign_call_on_psp",
+        "instruction": "10000218:\tf387 8809 \tmsr\tPSP, r7"
+      }
+    ],
+    "linked_psp_write_sites_confined_to_trampoline": true,
+    "maximum_alignment_padding_words": 1,
+    "maximum_secure_exception_frame_words": 52,
+    "platform": "rp2350-arm-s",
+    "platform_interpretation": "Secure Arm code on RP2350",
+    "processor": "Arm Cortex-M33 with single-precision FPU and Security Extension",
+    "psp_allowance_bytes": 212,
+    "sources": [
+      {
+        "facts_used": "Secure Armv8-M exception-frame table, alignment padding, and Handler-mode MSP use",
+        "title": "How much stack memory do I need for my Arm Cortex-M applications?",
+        "url": "https://developer.arm.com/community/arm-community-blogs/b/architectures-and-processors-blog/posts/how-much-stack-memory-do-i-need-for-my-arm-cortex--m-applications"
+      },
+      {
+        "facts_used": "Cortex-M33 single-precision FPU and Security Extension configuration",
+        "title": "RP2350 Datasheet",
+        "url": "https://pip-assets.raspberrypi.com/categories/1214-rp2350/documents/RP-008373-DS-2-rp2350-datasheet.pdf?disposition=inline"
+      }
+    ],
+    "word_bytes": 4
+  },
+  "build_provenance": {
+    "cmake_cache_sha256": "dbc9dfc48da0b86d3998073340704c5070171c07ecc8b511e01859c600c527df",
+    "firmware_commit": "e564a6413766f1f299db3db1d706478c42f1cc96",
+    "firmware_dirty": 0,
+    "generated_tree_sha256": "7df287fc4e690b93459fa47c9bb6856a49712996ba348fba0abd0eb397383421",
+    "pico_platform": "rp2350-arm-s",
+    "v3_source_commit": "cb94f242ba791a4ccb980b46c917830b309a9832",
+    "v3_source_dirty": 0
+  },
+  "compiler_stack_usage": {
+    "dynamic_records": 0,
+    "files": 127,
+    "records": 1139
+  },
+  "cross_symbol_conditional_branch_certificate": {
+    "interpretation": "all are DCP floating-point wrapper continuations; their maximum save area is included in the corresponding manual frame bound",
+    "records": [
+      {
+        "fallback_peak_derivation": "max(4-byte saved LR + 32-byte generic_save_state, 4-byte saved LR + 24-byte retained state + 8-byte body) <= 36 bytes; manual frame bound rounds this to 40 bytes",
+        "fallback_prefix_instructions": [
+          "10001dd8:\tb500      \tpush\t{lr}",
+          "10001dda:\tf7ff ffb7 \tbl\t10001d4c <generic_save_state>",
+          "10001dde:\te002      \tb.n\t10001de6 <__wrap___aeabi_dmul+0x6>"
+        ],
+        "function": "__wrap___aeabi_dmul",
+        "instruction": "10001de4:\td4f8      \tbmi.n\t10001dd8 <__wrap___aeabi_dsub+0x20>",
+        "opcode": "bmi.n",
+        "target": "__wrap___aeabi_dsub",
+        "target_address": "0x10001dd8",
+        "target_expression": "__wrap___aeabi_dsub+0x20"
+      },
+      {
+        "fallback_peak_derivation": "max(4-byte saved LR + 32-byte generic_save_state, 4-byte saved LR + 24-byte retained state + 8-byte body) <= 36 bytes; manual frame bound rounds this to 40 bytes",
+        "fallback_prefix_instructions": [
+          "10001ebc:\tb500      \tpush\t{lr}",
+          "10001ebe:\tf7ff ff45 \tbl\t10001d4c <generic_save_state>",
+          "10001ec2:\te002      \tb.n\t10001eca <__wrap___aeabi_i2d+0x6>"
+        ],
+        "function": "__wrap___aeabi_i2d",
+        "instruction": "10001ec8:\td4f8      \tbmi.n\t10001ebc <__wrap___aeabi_ddiv+0x94>",
+        "opcode": "bmi.n",
+        "target": "__wrap___aeabi_ddiv",
+        "target_address": "0x10001ebc",
+        "target_expression": "__wrap___aeabi_ddiv+0x94"
+      },
+      {
+        "fallback_peak_derivation": "max(4-byte saved LR + 32-byte generic_save_state, 4-byte saved LR + 24-byte retained state + 8-byte body) <= 36 bytes; manual frame bound rounds this to 40 bytes",
+        "fallback_prefix_instructions": [
+          "10001f04:\tb500      \tpush\t{lr}",
+          "10001f06:\tf7ff ff21 \tbl\t10001d4c <generic_save_state>",
+          "10001f0a:\te002      \tb.n\t10001f12 <double2int_z_entry>"
+        ],
+        "function": "__wrap___aeabi_d2iz",
+        "instruction": "10001f10:\td4f8      \tbmi.n\t10001f04 <__wrap___aeabi_ui2d+0x1c>",
+        "opcode": "bmi.n",
+        "target": "__wrap___aeabi_ui2d",
+        "target_address": "0x10001f04",
+        "target_expression": "__wrap___aeabi_ui2d+0x1c"
+      }
+    ]
+  },
+  "decision": {
+    "all_compiler_local_frames_static": true,
+    "all_recursive_sccs_have_rank_bound": true,
+    "linked_psp_metadata_and_calls_closed": true,
+    "next_proof_obligations": [
+      "resolve the linked handler callback targets and runtime vector table",
+      "bound enabled-interrupt priority nesting and live MSP depth",
+      "compare the resulting static bound with guarded multi-input PSP watermarks"
+    ],
+    "operation_psp_bounds_established": true,
+    "reason": "The linked Thread-mode operation roots have conservative PSP bounds, including source-ranked recursion, ELF-bound manual assembly frames, and one maximum Secure Armv8-M exception-entry frame with alignment. A whole-program bound is still withheld because handler call chains, the enabled-interrupt/vector set, asynchronous nesting, and live MSP depth are outside this analysis.",
+    "whole_program_worst_case_stack_bound_established": false
+  },
+  "elf": {
+    "bytes": 2022848,
+    "filename": "sqisign_rp2350_v3_d2_static.elf",
+    "sha256": "f862703e2937814d321d970ab9ea6286f1f1fbf1d27ebb45d6502eecf54e3ad3"
+  },
+  "indirect_pc_load_certificate": {
+    "all_are_resolved_literal_veneers": true,
+    "records": [
+      {
+        "function": "____aeabi_uldivmod_veneer",
+        "instruction": "1002dd80:\tf85f f000 \tldr.w\tpc, [pc]\t@ 1002dd84 <____aeabi_uldivmod_veneer+0x4>"
+      },
+      {
+        "function": "____clrsbdi2_veneer",
+        "instruction": "1002dda0:\tf85f f000 \tldr.w\tpc, [pc]\t@ 1002dda4 <____clrsbdi2_veneer+0x4>"
+      },
+      {
+        "function": "__memcpy_veneer",
+        "instruction": "1002dd50:\tf85f f000 \tldr.w\tpc, [pc]\t@ 1002dd54 <__memcpy_veneer+0x4>"
+      },
+      {
+        "function": "__memmove_veneer",
+        "instruction": "1002dd38:\tf85f f000 \tldr.w\tpc, [pc]\t@ 1002dd3c <__memmove_veneer+0x4>"
+      },
+      {
+        "function": "__memset_veneer",
+        "instruction": "1002dd60:\tf85f f000 \tldr.w\tpc, [pc]\t@ 1002dd64 <__memset_veneer+0x4>"
+      }
+    ]
+  },
+  "literal_veneer_resolutions": [
+    {
+      "literal": "1002dd34:\t200001f1 \t.word\t0x200001f1",
+      "target": "mutex_try_enter_block_until",
+      "target_address": "0x200001f0",
+      "veneer": "__mutex_try_enter_block_until_veneer"
+    },
+    {
+      "literal": "1002dd3c:\t200011cd \t.word\t0x200011cd",
+      "target": "memmove",
+      "target_address": "0x200011cc",
+      "veneer": "__memmove_veneer"
+    },
+    {
+      "literal": "1002dd44:\t20000ab1 \t.word\t0x20000ab1",
+      "target": "_hw_endpoint_buffer_control_update32",
+      "target_address": "0x20000ab0",
+      "veneer": "___hw_endpoint_buffer_control_update32_veneer"
+    },
+    {
+      "literal": "1002dd4c:\t20000a7d \t.word\t0x20000a7d",
+      "target": "e15_is_critical_frame_period",
+      "target_address": "0x20000a7c",
+      "veneer": "__e15_is_critical_frame_period_veneer"
+    },
+    {
+      "literal": "1002dd54:\t20001379 \t.word\t0x20001379",
+      "target": "memcpy",
+      "target_address": "0x20001378",
+      "veneer": "__memcpy_veneer"
+    },
+    {
+      "literal": "1002dd5c:\t20000a55 \t.word\t0x20000a55",
+      "target": "e15_is_bulkin_ep",
+      "target_address": "0x20000a54",
+      "veneer": "__e15_is_bulkin_ep_veneer"
+    },
+    {
+      "literal": "1002dd64:\t200012f1 \t.word\t0x200012f1",
+      "target": "memset",
+      "target_address": "0x200012f0",
+      "veneer": "__memset_veneer"
+    },
+    {
+      "literal": "1002dd6c:\t200002a9 \t.word\t0x200002a9",
+      "target": "reset_non_control_endpoints",
+      "target_address": "0x200002a8",
+      "veneer": "__reset_non_control_endpoints_veneer"
+    },
+    {
+      "literal": "1002dd74:\t20000af9 \t.word\t0x20000af9",
+      "target": "hw_endpoint_start_next_buffer",
+      "target_address": "0x20000af8",
+      "veneer": "__hw_endpoint_start_next_buffer_veneer"
+    },
+    {
+      "literal": "1002dd7c:\t20000111 \t.word\t0x20000111",
+      "target": "mutex_try_enter",
+      "target_address": "0x20000110",
+      "veneer": "__mutex_try_enter_veneer"
+    },
+    {
+      "literal": "1002dd84:\t20000dad \t.word\t0x20000dad",
+      "target": "__aeabi_uldivmod",
+      "target_address": "0x20000dac",
+      "veneer": "____aeabi_uldivmod_veneer"
+    },
+    {
+      "literal": "1002dd8c:\t20000261 \t.word\t0x20000261",
+      "target": "mutex_exit",
+      "target_address": "0x20000260",
+      "veneer": "__mutex_exit_veneer"
+    },
+    {
+      "literal": "1002dd94:\t20000229 \t.word\t0x20000229",
+      "target": "mutex_enter_timeout_ms",
+      "target_address": "0x20000228",
+      "veneer": "__mutex_enter_timeout_ms_veneer"
+    },
+    {
+      "literal": "1002dd9c:\t2000114d \t.word\t0x2000114d",
+      "target": "memcmp",
+      "target_address": "0x2000114c",
+      "veneer": "__memcmp_veneer"
+    },
+    {
+      "literal": "1002dda4:\t20000ddd \t.word\t0x20000ddd",
+      "target": "__clrsbdi2",
+      "target_address": "0x20000ddc",
+      "veneer": "____clrsbdi2_veneer"
+    },
+    {
+      "literal": "2000146c:\t100045f9 \t.word\t0x100045f9",
+      "target": "tud_event_hook_cb",
+      "target_address": "0x100045f8",
+      "veneer": "__tud_event_hook_cb_veneer"
+    },
+    {
+      "literal": "20001474:\t100018b9 \t.word\t0x100018b9",
+      "target": "time_us_64",
+      "target_address": "0x100018b8",
+      "veneer": "__time_us_64_veneer"
+    },
+    {
+      "literal": "2000147c:\t10005c39 \t.word\t0x10005c39",
+      "target": "tu_fifo_write",
+      "target_address": "0x10005c38",
+      "veneer": "__tu_fifo_write_veneer"
+    },
+    {
+      "literal": "20001484:\t100009d9 \t.word\t0x100009d9",
+      "target": "panic",
+      "target_address": "0x100009d8",
+      "veneer": "__panic_veneer"
+    },
+    {
+      "literal": "2000148c:\t10001759 \t.word\t0x10001759",
+      "target": "best_effort_wfe_or_timeout",
+      "target_address": "0x10001758",
+      "veneer": "__best_effort_wfe_or_timeout_veneer"
+    }
+  ],
+  "manual_frame_certificates": {
+    "functions": {
+      "____aeabi_uldivmod_veneer": {
+        "body_sha256": "fa11cf732619a8a520c7f5ac912b81814b93b549b563f22de14499bfbf73c7e4",
+        "frame_bytes": 0,
+        "objdump_body_symbols": [
+          "____aeabi_uldivmod_veneer"
+        ],
+        "required_instruction_fragments": [
+          "ldr.w\tpc, [pc]",
+          ".word\t0x"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": []
+      },
+      "____clrsbdi2_veneer": {
+        "body_sha256": "d108bad64bec296917a1d4df63268441bc99b9fa13530a8f5477299d55e267e5",
+        "frame_bytes": 0,
+        "objdump_body_symbols": [
+          "____clrsbdi2_veneer"
+        ],
+        "required_instruction_fragments": [
+          "ldr.w\tpc, [pc]",
+          ".word\t0x"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": []
+      },
+      "__aeabi_idiv0": {
+        "body_sha256": "fc59b478580c406ad26533b4b1e5a7e7adb8e43ab108dd42c3cd152b7381868c",
+        "frame_bytes": 0,
+        "objdump_body_symbols": [
+          "__aeabi_idiv0"
+        ],
+        "required_instruction_fragments": [
+          "bx\tlr"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": []
+      },
+      "__aeabi_uldivmod": {
+        "body_sha256": "9668d640041dbde78f74a51cbca4cd6521a50f389ebb9e34c82da665e10be0d8",
+        "frame_bytes": 16,
+        "objdump_body_symbols": [
+          "__aeabi_uldivmod"
+        ],
+        "required_instruction_fragments": [
+          "strd\tip, lr, [sp, #-16]!",
+          "bl\t",
+          "add\tsp, #16"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": [
+          "strd\tip, lr, [sp, #-16]!"
+        ]
+      },
+      "__clrsbdi2": {
+        "body_sha256": "ca339ae76663efdf8a15a622c7d1be0e88506e76be1003a80da1e2701cb8f91c",
+        "frame_bytes": 0,
+        "objdump_body_symbols": [
+          "__clrsbdi2"
+        ],
+        "required_instruction_fragments": [
+          "clz\t",
+          "bx\tlr"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": []
+      },
+      "__memcpy_veneer": {
+        "body_sha256": "f7f672ad699589eb4aa1d82503bcef25f0dc7c2c1670f8c5205bc20748f3a262",
+        "frame_bytes": 0,
+        "objdump_body_symbols": [
+          "__memcpy_veneer"
+        ],
+        "required_instruction_fragments": [
+          "ldr.w\tpc, [pc]",
+          ".word\t0x"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": []
+      },
+      "__memmove_veneer": {
+        "body_sha256": "fec3d0a2584fabdca8b7ecaada45dd3c83f25e3842494ac733315967572a5fcf",
+        "frame_bytes": 0,
+        "objdump_body_symbols": [
+          "__memmove_veneer"
+        ],
+        "required_instruction_fragments": [
+          "ldr.w\tpc, [pc]",
+          ".word\t0x"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": []
+      },
+      "__memset_veneer": {
+        "body_sha256": "15ef4759a16284f575e0c58a83631e6981e35a83a991e328a314cf43c348202e",
+        "frame_bytes": 0,
+        "objdump_body_symbols": [
+          "__memset_veneer"
+        ],
+        "required_instruction_fragments": [
+          "ldr.w\tpc, [pc]",
+          ".word\t0x"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": []
+      },
+      "__udivmoddi4": {
+        "body_sha256": "128d60233ac0a4829d48cf8d0490f07e3c3a976a9eabddc2a1582b0bec6a2f1e",
+        "frame_bytes": 40,
+        "objdump_body_symbols": [
+          "__udivmoddi4"
+        ],
+        "required_instruction_fragments": [
+          "stmdb\tsp!",
+          "sub\tsp, #8",
+          "add\tsp, #8"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": [
+          "stmdb\tsp!, {r4, r5, r6, r7, r8, r9, sl, lr}",
+          "sub\tsp, #8"
+        ]
+      },
+      "__wrap___aeabi_d2iz": {
+        "body_sha256": "ea35ff48f71c432e83a8ef428a21ff5eaff7854443b78fa696263753f0868645",
+        "frame_bytes": 40,
+        "objdump_body_symbols": [
+          "__wrap___aeabi_d2iz",
+          "double2int_z_entry"
+        ],
+        "required_instruction_fragments": [
+          "mrc2\t",
+          "bmi.n\t",
+          "push\t{lr}",
+          "bl\t"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": [
+          "push\t{lr}"
+        ]
+      },
+      "__wrap___aeabi_dmul": {
+        "body_sha256": "470a0354e1aa25c34ec41b42042d51e6aa74bc81756c4e9050ac6e8cebbb5392",
+        "frame_bytes": 40,
+        "objdump_body_symbols": [
+          "__wrap___aeabi_dmul"
+        ],
+        "required_instruction_fragments": [
+          "push\t{r4, lr}",
+          "push\t{lr}",
+          "bl\t"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": [
+          "push\t{r4, lr}",
+          "push\t{lr}"
+        ]
+      },
+      "__wrap___aeabi_i2d": {
+        "body_sha256": "8ba28f16a38afd0381ece8187b5016726544614257d665f12f008d28c2c18b3c",
+        "frame_bytes": 40,
+        "objdump_body_symbols": [
+          "__wrap___aeabi_i2d"
+        ],
+        "required_instruction_fragments": [
+          "push\t{lr}",
+          "bl\t"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": [
+          "push\t{lr}"
+        ]
+      },
+      "generic_save_state": {
+        "body_sha256": "4974f13df131afda4a57a93e83dc00804dcb4fb26db3530b813ee2f3d29db341",
+        "frame_bytes": 32,
+        "objdump_body_symbols": [
+          "generic_save_state"
+        ],
+        "required_instruction_fragments": [
+          "sub\tsp, #24",
+          "push\t{r0, r1}",
+          "blx\tlr"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": [
+          "sub\tsp, #24",
+          "push\t{r0, r1}"
+        ]
+      },
+      "memcpy": {
+        "body_sha256": "b0f40a10665709affaf2f00e8d2819e2b0fe1089a84a88f9d325c078455274c5",
+        "frame_bytes": 0,
+        "objdump_body_symbols": [
+          "memcpy"
+        ],
+        "required_instruction_fragments": [
+          "mov\tip, r0",
+          "bx\tlr"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": []
+      },
+      "memmove": {
+        "body_sha256": "8f394c6a22d253234bdc40fc152eddeb725b4fc3d2ffeda19adf57f4e8c55362",
+        "frame_bytes": 16,
+        "objdump_body_symbols": [
+          "memmove"
+        ],
+        "required_instruction_fragments": [
+          "push\t{r4, r5, r6, lr}",
+          "pop\t{r4, r5, r6, pc}"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": [
+          "push\t{r4, r5, r6, lr}"
+        ]
+      },
+      "memset": {
+        "body_sha256": "b0ab5693782d302d2f61de52842716aed4c6cec004b41d79e99672a0f5db83b3",
+        "frame_bytes": 12,
+        "objdump_body_symbols": [
+          "memset"
+        ],
+        "required_instruction_fragments": [
+          "push\t{r4, r5, lr}",
+          "pop\t{r4, r5, pc}"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": [
+          "push\t{r4, r5, lr}"
+        ]
+      },
+      "strlen": {
+        "body_sha256": "e2cb50bbe40ffbf3d8bf595e5db1d06f7bee700304b309fa1a0db4f5967f18f0",
+        "frame_bytes": 0,
+        "objdump_body_symbols": [
+          "strlen"
+        ],
+        "required_instruction_fragments": [
+          "clz\t",
+          "bx\tlr"
+        ],
+        "scope": "this linked ELF body only",
+        "sp_decrementing_instructions": []
+      }
+    },
+    "generic_save_state_blx_lr": "the BL sets LR to the wrapper continuation; generic_save_state saves 32 bytes and BLX LR enters that continuation, so it is not an unknown callback",
+    "method": "manual conservative inspection of all SP-decrementing instructions; instruction fragments and normalized objdump-body digests bind the result"
+  },
+  "recursion_bound_certificates": {
+    "all_linked_recursive_sccs_recognized": true,
+    "all_recursive_sccs_have_rank_bound": true,
+    "burnikel_ziegler_division": {
+      "compiler_frame_bytes": {
+        "mp_div_d2n1n": 1288,
+        "mp_div_d3n2n": 800
+      },
+      "maximum_active_source_frames": 11,
+      "maximum_entry_limbs": 60,
+      "radix": 32,
+      "rank": "D2 parameter n; every D2->D3->D2 cycle replaces n by n/2",
+      "recursive_frame_bytes_on_witness": 11728,
+      "source": {
+        "path": "src/pqm4/sqisign_p324_3/m4f/mp.c",
+        "sha256": "62bbbe839451ae34caf937b66fbdc279ae9a69fa0023d96fe988a78f9c4f5f93"
+      },
+      "symbols": [
+        "mp_div_d2n1n",
+        "mp_div_d3n2n"
+      ],
+      "witness_path": [
+        {
+          "function": "mp_div_d2n1n",
+          "n": 32
+        },
+        {
+          "function": "mp_div_d3n2n",
+          "n": 16
+        },
+        {
+          "function": "mp_div_d2n1n",
+          "n": 16
+        },
+        {
+          "function": "mp_div_d3n2n",
+          "n": 8
+        },
+        {
+          "function": "mp_div_d2n1n",
+          "n": 8
+        },
+        {
+          "function": "mp_div_d3n2n",
+          "n": 4
+        },
+        {
+          "function": "mp_div_d2n1n",
+          "n": 4
+        },
+        {
+          "function": "mp_div_d3n2n",
+          "n": 2
+        },
+        {
+          "function": "mp_div_d2n1n",
+          "n": 2
+        },
+        {
+          "function": "mp_div_d3n2n",
+          "n": 1
+        },
+        {
+          "function": "mp_div_d2n1n",
+          "n": 1
+        }
+      ]
+    },
+    "dlog": {
+      "conservative_recursive_frame_bytes": 45504,
+      "entry_lengths": {
+        "KeyGen": 130,
+        "Sign": 198
+      },
+      "maximum_active_source_frames": 9,
+      "maximum_compiler_frame_bytes_among_linked_variants": 5056,
+      "maximum_entry_length": 198,
+      "rank": "positive len; each child is floor(len/2) or ceil(len/2)",
+      "source": {
+        "path": "src/pqm4/sqisign_p324_3/m4f/biextension.c",
+        "sha256": "5802dd157ab9e160354e75e9282454ed73c11f2b1b43d5034c73fbc1369c30c6"
+      },
+      "symbols": [
+        "fp2_dlog_2e_rec",
+        "fp2_dlog_2e_rec.constprop.0"
+      ]
+    },
+    "false_positive_guard": "B/B.W to the current symbol plus an offset is treated as an intra-function branch; BL/BLX and cross-symbol tail calls remain graph edges",
+    "scope": "source-level recursion depth for the p324_3 RADIX_32 D2 linked K/S/V roots; not a whole-program stack bound",
+    "status": "ESTABLISHED_FOR_LINKED_CONFIGURATION"
+  },
+  "roots": {
+    "keygen_thunk": {
+      "indirect_calls": [],
+      "indirect_callsite_count": 0,
+      "missing_stack_metadata": [],
+      "missing_stack_metadata_count": 0,
+      "reachable_dynamic_frame_functions": [],
+      "reachable_functions": 315,
+      "recursive_scc_count": 3,
+      "recursive_sccs": [
+        [
+          "fp2_dlog_2e_rec"
+        ],
+        [
+          "fp2_dlog_2e_rec.constprop.0"
+        ],
+        [
+          "mp_div_d2n1n",
+          "mp_div_d3n2n"
+        ]
+      ]
+    },
+    "sign_thunk": {
+      "indirect_calls": [],
+      "indirect_callsite_count": 0,
+      "missing_stack_metadata": [],
+      "missing_stack_metadata_count": 0,
+      "reachable_dynamic_frame_functions": [],
+      "reachable_functions": 355,
+      "recursive_scc_count": 3,
+      "recursive_sccs": [
+        [
+          "fp2_dlog_2e_rec"
+        ],
+        [
+          "fp2_dlog_2e_rec.constprop.0"
+        ],
+        [
+          "mp_div_d2n1n",
+          "mp_div_d3n2n"
+        ]
+      ]
+    },
+    "verify_thunk": {
+      "indirect_calls": [],
+      "indirect_callsite_count": 0,
+      "missing_stack_metadata": [],
+      "missing_stack_metadata_count": 0,
+      "reachable_dynamic_frame_functions": [],
+      "reachable_functions": 139,
+      "recursive_scc_count": 0,
+      "recursive_sccs": []
+    }
+  },
+  "schema": "sqisign-v3-linked-stack-bound-audit-v4",
+  "static_psp_bounds": {
+    "keygen_thunk": {
+      "bound_bytes": 108300,
+      "exception_entry_allowance_bytes": 212,
+      "fits_reservation": true,
+      "psp_reservation_bytes": 131072,
+      "reservation_margin_bytes": 22772,
+      "scope": "linked p324_3/RADIX32 Thread-mode call graph rooted at the operation thunk, with rank-bounded recursive SCCs and one maximum architectural exception-entry frame charged to PSP; excludes handler call chains and asynchronous MSP nesting",
+      "software_call_bound_bytes": 108088,
+      "witness": [
+        {
+          "basis": "local frame",
+          "component": [
+            "keygen_thunk"
+          ],
+          "local_or_recursive_frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "crypto_sign_keypair"
+          ],
+          "local_or_recursive_frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_keypair"
+          ],
+          "local_or_recursive_frame_bound_bytes": 2968
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "protocols_keygen"
+          ],
+          "local_or_recursive_frame_bound_bytes": 792
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "id2iso_change_of_basis_matrix_tate"
+          ],
+          "local_or_recursive_frame_bound_bytes": 216
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "pairing_dlog_2_tate"
+          ],
+          "local_or_recursive_frame_bound_bytes": 7736
+        },
+        {
+          "basis": "dlog rank certificate",
+          "component": [
+            "fp2_dlog_2e_rec.constprop.0"
+          ],
+          "local_or_recursive_frame_bound_bytes": 45504
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "fp2_dlog_2e_rec.constprop.4"
+          ],
+          "local_or_recursive_frame_bound_bytes": 5056
+        },
+        {
+          "basis": "dlog rank certificate",
+          "component": [
+            "fp2_dlog_2e_rec"
+          ],
+          "local_or_recursive_frame_bound_bytes": 45504
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "fp2_is_equal"
+          ],
+          "local_or_recursive_frame_bound_bytes": 24
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "fp_is_equal"
+          ],
+          "local_or_recursive_frame_bound_bytes": 152
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "modmul_p324_3_ct"
+          ],
+          "local_or_recursive_frame_bound_bytes": 136
+        },
+        {
+          "basis": "maximum Secure Armv8-M exception frame plus alignment",
+          "component": [
+            "<architectural-exception-entry>"
+          ],
+          "local_or_recursive_frame_bound_bytes": 212
+        }
+      ]
+    },
+    "sign_thunk": {
+      "bound_bytes": 127932,
+      "exception_entry_allowance_bytes": 212,
+      "fits_reservation": true,
+      "psp_reservation_bytes": 131072,
+      "reservation_margin_bytes": 3140,
+      "scope": "linked p324_3/RADIX32 Thread-mode call graph rooted at the operation thunk, with rank-bounded recursive SCCs and one maximum architectural exception-entry frame charged to PSP; excludes handler call chains and asynchronous MSP nesting",
+      "software_call_bound_bytes": 127720,
+      "witness": [
+        {
+          "basis": "local frame",
+          "component": [
+            "sign_thunk"
+          ],
+          "local_or_recursive_frame_bound_bytes": 16
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "crypto_sign"
+          ],
+          "local_or_recursive_frame_bound_bytes": 32
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_sign"
+          ],
+          "local_or_recursive_frame_bound_bytes": 40
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_sign_signature"
+          ],
+          "local_or_recursive_frame_bound_bytes": 3296
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "protocols_sign"
+          ],
+          "local_or_recursive_frame_bound_bytes": 20008
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "id2iso_change_of_basis_matrix_tate_invert"
+          ],
+          "local_or_recursive_frame_bound_bytes": 216
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "pairing_dlog_2_tate"
+          ],
+          "local_or_recursive_frame_bound_bytes": 7736
+        },
+        {
+          "basis": "dlog rank certificate",
+          "component": [
+            "fp2_dlog_2e_rec.constprop.0"
+          ],
+          "local_or_recursive_frame_bound_bytes": 45504
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "fp2_dlog_2e_rec.constprop.4"
+          ],
+          "local_or_recursive_frame_bound_bytes": 5056
+        },
+        {
+          "basis": "dlog rank certificate",
+          "component": [
+            "fp2_dlog_2e_rec"
+          ],
+          "local_or_recursive_frame_bound_bytes": 45504
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "fp2_is_equal"
+          ],
+          "local_or_recursive_frame_bound_bytes": 24
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "fp_is_equal"
+          ],
+          "local_or_recursive_frame_bound_bytes": 152
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "modmul_p324_3_ct"
+          ],
+          "local_or_recursive_frame_bound_bytes": 136
+        },
+        {
+          "basis": "maximum Secure Armv8-M exception frame plus alignment",
+          "component": [
+            "<architectural-exception-entry>"
+          ],
+          "local_or_recursive_frame_bound_bytes": 212
+        }
+      ]
+    },
+    "verify_thunk": {
+      "bound_bytes": 40468,
+      "exception_entry_allowance_bytes": 212,
+      "fits_reservation": true,
+      "psp_reservation_bytes": 131072,
+      "reservation_margin_bytes": 90604,
+      "scope": "linked p324_3/RADIX32 Thread-mode call graph rooted at the operation thunk, with rank-bounded recursive SCCs and one maximum architectural exception-entry frame charged to PSP; excludes handler call chains and asynchronous MSP nesting",
+      "software_call_bound_bytes": 40256,
+      "witness": [
+        {
+          "basis": "local frame",
+          "component": [
+            "verify_thunk"
+          ],
+          "local_or_recursive_frame_bound_bytes": 16
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "crypto_sign_open"
+          ],
+          "local_or_recursive_frame_bound_bytes": 32
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_open"
+          ],
+          "local_or_recursive_frame_bound_bytes": 704
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "protocols_verify"
+          ],
+          "local_or_recursive_frame_bound_bytes": 4312
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "theta_chain_compute_and_eval_verify"
+          ],
+          "local_or_recursive_frame_bound_bytes": 24
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "theta_chain_compute_impl"
+          ],
+          "local_or_recursive_frame_bound_bytes": 12728
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "gluing_start_chain"
+          ],
+          "local_or_recursive_frame_bound_bytes": 16856
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "gluing_compute"
+          ],
+          "local_or_recursive_frame_bound_bytes": 2776
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "gluing_basis_compute"
+          ],
+          "local_or_recursive_frame_bound_bytes": 1984
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "compute_symmetric_element"
+          ],
+          "local_or_recursive_frame_bound_bytes": 576
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "fp2_mul"
+          ],
+          "local_or_recursive_frame_bound_bytes": 112
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "fp_mul"
+          ],
+          "local_or_recursive_frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "modmul_p324_3_ct"
+          ],
+          "local_or_recursive_frame_bound_bytes": 136
+        },
+        {
+          "basis": "maximum Secure Armv8-M exception frame plus alignment",
+          "component": [
+            "<architectural-exception-entry>"
+          ],
+          "local_or_recursive_frame_bound_bytes": 212
+        }
+      ]
+    }
+  },
+  "status": "PSP_BOUND_ESTABLISHED",
+  "unique_recursive_sccs": [
+    [
+      "fp2_dlog_2e_rec"
+    ],
+    [
+      "fp2_dlog_2e_rec.constprop.0"
+    ],
+    [
+      "mp_div_d2n1n",
+      "mp_div_d3n2n"
+    ]
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schema": "sqisign-lifetime-certificate-check-v1",
+  "status": "PASS",
+  "commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+  "record_count": 11,
+  "scope": "schema, frozen source anchors, Arm layout, terminal clearing, and obvious pointer-sink scan; not sound whole-program alias analysis",
+  "checks": [
+    {
+      "check": "D13 commit is frozen",
+      "status": "PASS"
+    },
+    {
+      "check": "D13 worktree is clean",
+      "status": "PASS"
+    },
+    {
+      "check": "certificate has every required audit column",
+      "status": "PASS"
+    },
+    {
+      "check": "certificate has eleven principal lifetime records",
+      "status": "PASS"
+    },
+    {
+      "check": "certificate has no empty required field",
+      "status": "PASS"
+    },
+    {
+      "check": "certificate object names are unique",
+      "status": "PASS"
+    },
+    {
+      "check": "Arm layout probe reproduces certified extents",
+      "status": "PASS"
+    },
+    {
+      "check": "find_uv ownership and non-alias contract is present",
+      "status": "PASS"
+    },
+    {
+      "check": "top-level operation unions and ownership contract are present",
+      "status": "PASS"
+    },
+    {
+      "check": "Verify phase union and clearing contract are present",
+      "status": "PASS"
+    },
+    {
+      "check": "KeyGen/find_uv target static assertions are present",
+      "status": "PASS"
+    },
+    {
+      "check": "Sign union offsets and terminal whole-owner clear are present",
+      "status": "PASS"
+    },
+    {
+      "check": "Verify union offsets and terminal clear are present",
+      "status": "PASS"
+    },
+    {
+      "check": "encoded API operation union layout is present",
+      "status": "PASS"
+    },
+    {
+      "check": "find_uv phase transition and terminal failure clear are present",
+      "status": "PASS"
+    },
+    {
+      "check": "Sign retry loop is located",
+      "status": "PASS"
+    },
+    {
+      "check": "certificate correctly states no whole-owner clear inside each Sign retry",
+      "status": "PASS"
+    },
+    {
+      "check": "bounded scan finds no obvious global/static workspace-pointer sink",
+      "status": "PASS"
+    }
+  ]
+}

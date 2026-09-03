@@ -1,0 +1,1387 @@
+{
+  "address_checks": {
+    "baseline": {
+      "observed_delta_bytes": {
+        "crypto_sign": 1024,
+        "crypto_sign_keypair": 1024,
+        "crypto_sign_open": 1024,
+        "placement_anchor": 0
+      },
+      "passed": true
+    },
+    "d1": {
+      "observed_delta_bytes": {
+        "crypto_sign": 1024,
+        "crypto_sign_keypair": 1024,
+        "crypto_sign_open": 1024,
+        "placement_anchor": 0
+      },
+      "passed": true
+    }
+  },
+  "all_trees_clean": true,
+  "all_trials_passed": true,
+  "artifacts": {
+    "baseline-a": {
+      "files": {
+        "archive": {
+          "bytes": 2087190,
+          "filename": "libsqisign_v3_p324_3_m4f.a",
+          "sha256": "1c7d7d52eb0934abc0f04f30afa30dce4245fecd54babdaa5430c737df36bd3a"
+        },
+        "elf": {
+          "bytes": 2028448,
+          "filename": "sqisign_rp2350_v3_baseline_multi_a.elf",
+          "sha256": "8e07f5a6d991344cf4893a3ea9a7d8b7580e3e4b6ebf6b2534e22ea072b35f7b"
+        },
+        "uf2": {
+          "bytes": 448000,
+          "filename": "sqisign_rp2350_v3_baseline_multi_a.uf2",
+          "sha256": "020169c22008c069307c9dd58cb7e373f06c1003855675bf70cdb74fb0c6457b"
+        }
+      },
+      "logical_build": "baseline-a",
+      "size": {
+        "bss_bytes": 135648,
+        "data_bytes": 0,
+        "text_bytes": 225672
+      },
+      "stack_usage": {
+        "dynamic_records": 19,
+        "records": 1135
+      }
+    },
+    "baseline-b": {
+      "files": {
+        "archive": {
+          "bytes": 2087190,
+          "filename": "libsqisign_v3_p324_3_m4f.a",
+          "sha256": "4c24063d4bb02979020b8dffe0ac6045c153fcdf7192bde08096756c7dcf0546"
+        },
+        "elf": {
+          "bytes": 2029480,
+          "filename": "sqisign_rp2350_v3_baseline_multi_b.elf",
+          "sha256": "2a6b7b30cd6c744abb45c4a9e36b3986a0c51c7d43ebf60fbc7f626f591a1166"
+        },
+        "uf2": {
+          "bytes": 450048,
+          "filename": "sqisign_rp2350_v3_baseline_multi_b.uf2",
+          "sha256": "b2bf6602df603ff80b402d612229587c98b1aca2db90f2f88c7fe6c3c188ae03"
+        }
+      },
+      "logical_build": "baseline-b",
+      "size": {
+        "bss_bytes": 135648,
+        "data_bytes": 0,
+        "text_bytes": 226696
+      },
+      "stack_usage": {
+        "dynamic_records": 19,
+        "records": 1135
+      }
+    },
+    "d1-a": {
+      "files": {
+        "archive": {
+          "bytes": 2085258,
+          "filename": "libsqisign_v3_p324_3_m4f.a",
+          "sha256": "22d54f102f878325c92224e4f44400132cd2f78893f53ddf368b06d9323a925b"
+        },
+        "elf": {
+          "bytes": 2026832,
+          "filename": "sqisign_rp2350_v3_d1_multi_a.elf",
+          "sha256": "9c6972d879b44a2797305e4507a9d60fba88ce8c2ea9b5956145d200e90172b4"
+        },
+        "uf2": {
+          "bytes": 447488,
+          "filename": "sqisign_rp2350_v3_d1_multi_a.uf2",
+          "sha256": "c9e885cc8a1f618ac6d8daab78e63ae3f2d06d17a858c238c1666021d7e4c6e9"
+        }
+      },
+      "logical_build": "d1-a",
+      "size": {
+        "bss_bytes": 135648,
+        "data_bytes": 0,
+        "text_bytes": 225456
+      },
+      "stack_usage": {
+        "dynamic_records": 19,
+        "records": 1135
+      }
+    },
+    "d1-b": {
+      "files": {
+        "archive": {
+          "bytes": 2085258,
+          "filename": "libsqisign_v3_p324_3_m4f.a",
+          "sha256": "11ed30eb143d6b6da077d78d0b00c8af96f7e449f344e708efddf3cb365e9646"
+        },
+        "elf": {
+          "bytes": 2027856,
+          "filename": "sqisign_rp2350_v3_d1_multi_b.elf",
+          "sha256": "69d97ad547214dce7a0dae02e6f00edbf54327e34133414e30b0ea484176b8be"
+        },
+        "uf2": {
+          "bytes": 449536,
+          "filename": "sqisign_rp2350_v3_d1_multi_b.uf2",
+          "sha256": "eb41b3fa343bb69d6fbca7ef0e3c33c456fa2f226ef850a8f925fd643d3e2e27"
+        }
+      },
+      "logical_build": "d1-b",
+      "size": {
+        "bss_bytes": 135648,
+        "data_bytes": 0,
+        "text_bytes": 226480
+      },
+      "stack_usage": {
+        "dynamic_records": 19,
+        "records": 1135
+      }
+    }
+  },
+  "campaign": "multi-input-placement-clean-2026-09-04",
+  "d1_source_commit": "9293313fb58de4c5ce9dd27a5a9fde0058766c79",
+  "design": {
+    "board_count": 1,
+    "capture_count": 4,
+    "implementations": [
+      "official baseline",
+      "D1 lifetime overlay"
+    ],
+    "interpretation": "bounded multi-input and linked-placement robustness check; not a worst-case stack proof",
+    "negative_verify_trials": 40,
+    "placement_shift_bytes": 1024,
+    "placements": 2,
+    "positive_ksv_trials": 40,
+    "vectors_per_condition": 10,
+    "workload": "official v3 response vectors 0--9 in one boot per condition"
+  },
+  "firmware_commit": "76f88dccf6ce9ba1b4d12fc20724b47e03a5f6ab",
+  "official_source_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+  "placement_psp_mismatch_count": 0,
+  "records": {
+    "baseline-a": {
+      "addresses": {
+        "crypto_sign": 268460297,
+        "crypto_sign_keypair": 268460289,
+        "crypto_sign_open": 268460353,
+        "placement_anchor": 268436035
+      },
+      "bss_end": 537012424,
+      "capture": "baseline-a.txt",
+      "capture_sha256": "61ea6e1ac567d2a738827fc925708d602365a9e35d36644ac03e04a58e4b5c6b",
+      "condition": "baseline-a",
+      "generated_tree_sha256": "38ee7ae007db2de0366cdb66dfe22f83f66ee5ce3d99f7f6260dc9ab24c3328a",
+      "kind": "baseline",
+      "msp_written_upper_bytes": 2380,
+      "placement": "a",
+      "vectors": [
+        {
+          "message_bytes": 33,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2256550
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 429007
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 7144930
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 827483
+            }
+          },
+          "signed_message_bytes": 233,
+          "vector": 0
+        },
+        {
+          "message_bytes": 66,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2083354
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 429775
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 8439468
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 827878
+            }
+          },
+          "signed_message_bytes": 266,
+          "vector": 1
+        },
+        {
+          "message_bytes": 99,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2383828
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 427971
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 7004863
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 826225
+            }
+          },
+          "signed_message_bytes": 299,
+          "vector": 2
+        },
+        {
+          "message_bytes": 132,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2559726
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 430866
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 7124844
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 829290
+            }
+          },
+          "signed_message_bytes": 332,
+          "vector": 3
+        },
+        {
+          "message_bytes": 165,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2162248
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 426366
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 6215622
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 824799
+            }
+          },
+          "signed_message_bytes": 365,
+          "vector": 4
+        },
+        {
+          "message_bytes": 198,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2854694
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 460189
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 8852872
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 858652
+            }
+          },
+          "signed_message_bytes": 398,
+          "vector": 5
+        },
+        {
+          "message_bytes": 231,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2271947
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 461875
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 6098362
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 860421
+            }
+          },
+          "signed_message_bytes": 431,
+          "vector": 6
+        },
+        {
+          "message_bytes": 264,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2171395
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 460808
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 7627215
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 859442
+            }
+          },
+          "signed_message_bytes": 464,
+          "vector": 7
+        },
+        {
+          "message_bytes": 297,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2808426
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 461929
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 8992085
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 860600
+            }
+          },
+          "signed_message_bytes": 497,
+          "vector": 8
+        },
+        {
+          "message_bytes": 330,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2106774
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 461564
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 6448854
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 860221
+            }
+          },
+          "signed_message_bytes": 530,
+          "vector": 9
+        }
+      ]
+    },
+    "baseline-b": {
+      "addresses": {
+        "crypto_sign": 268461321,
+        "crypto_sign_keypair": 268461313,
+        "crypto_sign_open": 268461377,
+        "placement_anchor": 268436035
+      },
+      "bss_end": 537012424,
+      "capture": "baseline-b.txt",
+      "capture_sha256": "2991b483cd9556decd6605d3c6d4c69bd0bdc09146c665da7c1163fcf8fcc3d7",
+      "condition": "baseline-b",
+      "generated_tree_sha256": "38ee7ae007db2de0366cdb66dfe22f83f66ee5ce3d99f7f6260dc9ab24c3328a",
+      "kind": "baseline",
+      "msp_written_upper_bytes": 2432,
+      "placement": "b",
+      "vectors": [
+        {
+          "message_bytes": 33,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2255843
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 429085
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 7145262
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 827444
+            }
+          },
+          "signed_message_bytes": 233,
+          "vector": 0
+        },
+        {
+          "message_bytes": 66,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2083338
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 429836
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 8439461
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 828218
+            }
+          },
+          "signed_message_bytes": 266,
+          "vector": 1
+        },
+        {
+          "message_bytes": 99,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2384078
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 427906
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 7005161
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 826355
+            }
+          },
+          "signed_message_bytes": 299,
+          "vector": 2
+        },
+        {
+          "message_bytes": 132,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2559580
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 430751
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 7124514
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 829328
+            }
+          },
+          "signed_message_bytes": 332,
+          "vector": 3
+        },
+        {
+          "message_bytes": 165,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2161928
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 426473
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 6214791
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 824745
+            }
+          },
+          "signed_message_bytes": 365,
+          "vector": 4
+        },
+        {
+          "message_bytes": 198,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2854633
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 460331
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 8852248
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 858776
+            }
+          },
+          "signed_message_bytes": 398,
+          "vector": 5
+        },
+        {
+          "message_bytes": 231,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2271386
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 461990
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 6097837
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 860522
+            }
+          },
+          "signed_message_bytes": 431,
+          "vector": 6
+        },
+        {
+          "message_bytes": 264,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2171254
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 460915
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 7627591
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 859417
+            }
+          },
+          "signed_message_bytes": 464,
+          "vector": 7
+        },
+        {
+          "message_bytes": 297,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2808133
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 462031
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 8991613
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 860731
+            }
+          },
+          "signed_message_bytes": 497,
+          "vector": 8
+        },
+        {
+          "message_bytes": 330,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2107166
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 461669
+            },
+            "sign": {
+              "psp_extent_bytes": 101060,
+              "time_us": 6447518
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 860237
+            }
+          },
+          "signed_message_bytes": 530,
+          "vector": 9
+        }
+      ]
+    },
+    "d1-a": {
+      "addresses": {
+        "crypto_sign": 268460297,
+        "crypto_sign_keypair": 268460289,
+        "crypto_sign_open": 268460353,
+        "placement_anchor": 268436035
+      },
+      "bss_end": 537012424,
+      "capture": "d1-a.txt",
+      "capture_sha256": "c5cb6f47760b521dcabefa630ad986651f2d0bacbe7dadf156c71b1542987ee5",
+      "condition": "d1-a",
+      "generated_tree_sha256": "57e1ae2d0d1a16d40f44f5fbcda91b4e588eca5c2f40dda04377bb61e3077ae2",
+      "kind": "d1",
+      "msp_written_upper_bytes": 2380,
+      "placement": "a",
+      "vectors": [
+        {
+          "message_bytes": 33,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2284727
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 425918
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 7240739
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 821568
+            }
+          },
+          "signed_message_bytes": 233,
+          "vector": 0
+        },
+        {
+          "message_bytes": 66,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2113144
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 426552
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 8535393
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 822527
+            }
+          },
+          "signed_message_bytes": 266,
+          "vector": 1
+        },
+        {
+          "message_bytes": 99,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2412602
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 424654
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 7101811
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 820285
+            }
+          },
+          "signed_message_bytes": 299,
+          "vector": 2
+        },
+        {
+          "message_bytes": 132,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2588806
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 427632
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 7219119
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 823618
+            }
+          },
+          "signed_message_bytes": 332,
+          "vector": 3
+        },
+        {
+          "message_bytes": 165,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2191642
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 423284
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 6311638
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 819077
+            }
+          },
+          "signed_message_bytes": 365,
+          "vector": 4
+        },
+        {
+          "message_bytes": 198,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2883257
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 455569
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 8953216
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 851327
+            }
+          },
+          "signed_message_bytes": 398,
+          "vector": 5
+        },
+        {
+          "message_bytes": 231,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2301014
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 457406
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 6192461
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 853329
+            }
+          },
+          "signed_message_bytes": 431,
+          "vector": 6
+        },
+        {
+          "message_bytes": 264,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2200736
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 456357
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 7722171
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 852012
+            }
+          },
+          "signed_message_bytes": 464,
+          "vector": 7
+        },
+        {
+          "message_bytes": 297,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2834643
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 457427
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 9093985
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 853504
+            }
+          },
+          "signed_message_bytes": 497,
+          "vector": 8
+        },
+        {
+          "message_bytes": 330,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2136774
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 457039
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 6540998
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 852973
+            }
+          },
+          "signed_message_bytes": 530,
+          "vector": 9
+        }
+      ]
+    },
+    "d1-b": {
+      "addresses": {
+        "crypto_sign": 268461321,
+        "crypto_sign_keypair": 268461313,
+        "crypto_sign_open": 268461377,
+        "placement_anchor": 268436035
+      },
+      "bss_end": 537012424,
+      "capture": "d1-b.txt",
+      "capture_sha256": "b6eae2aa7e6fd30503463abe3983765b2049a4cb8d3534fd7823f42d0da0025d",
+      "condition": "d1-b",
+      "generated_tree_sha256": "57e1ae2d0d1a16d40f44f5fbcda91b4e588eca5c2f40dda04377bb61e3077ae2",
+      "kind": "d1",
+      "msp_written_upper_bytes": 2380,
+      "placement": "b",
+      "vectors": [
+        {
+          "message_bytes": 33,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2284798
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 425981
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 7240340
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 821690
+            }
+          },
+          "signed_message_bytes": 233,
+          "vector": 0
+        },
+        {
+          "message_bytes": 66,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2112904
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 426793
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 8535150
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 822244
+            }
+          },
+          "signed_message_bytes": 266,
+          "vector": 1
+        },
+        {
+          "message_bytes": 99,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2412716
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 424722
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 7101982
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 820544
+            }
+          },
+          "signed_message_bytes": 299,
+          "vector": 2
+        },
+        {
+          "message_bytes": 132,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2588298
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 427677
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 7219558
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 823561
+            }
+          },
+          "signed_message_bytes": 332,
+          "vector": 3
+        },
+        {
+          "message_bytes": 165,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2192010
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 423272
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 6311690
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 818976
+            }
+          },
+          "signed_message_bytes": 365,
+          "vector": 4
+        },
+        {
+          "message_bytes": 198,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2883029
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 455672
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 8952515
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 851403
+            }
+          },
+          "signed_message_bytes": 398,
+          "vector": 5
+        },
+        {
+          "message_bytes": 231,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2301034
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 457611
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 6192133
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 853251
+            }
+          },
+          "signed_message_bytes": 431,
+          "vector": 6
+        },
+        {
+          "message_bytes": 264,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2200751
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 456383
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 7722580
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 852168
+            }
+          },
+          "signed_message_bytes": 464,
+          "vector": 7
+        },
+        {
+          "message_bytes": 297,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2834021
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 457462
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 9094563
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 853498
+            }
+          },
+          "signed_message_bytes": 497,
+          "vector": 8
+        },
+        {
+          "message_bytes": 330,
+          "operations": {
+            "keygen": {
+              "psp_extent_bytes": 56972,
+              "time_us": 2136700
+            },
+            "negative": {
+              "psp_extent_bytes": 35196,
+              "time_us": 456985
+            },
+            "sign": {
+              "psp_extent_bytes": 97132,
+              "time_us": 6541535
+            },
+            "verify": {
+              "psp_extent_bytes": 37444,
+              "time_us": 853006
+            }
+          },
+          "signed_message_bytes": 530,
+          "vector": 9
+        }
+      ]
+    }
+  },
+  "schema": "sqisign-v3-rp2350-multi-input-placement-v1",
+  "summary": {
+    "keygen": {
+      "baseline": {
+        "psp_extent_bytes": {
+          "max": 56972,
+          "mean": 56972,
+          "median": 56972.0,
+          "min": 56972,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 2854694,
+          "mean": 2365814.05,
+          "median": 2263968.0,
+          "min": 2083338,
+          "n": 20,
+          "sample_stdev": 275232.1572648835
+        }
+      },
+      "d1": {
+        "psp_extent_bytes": {
+          "max": 56972,
+          "mean": 56972,
+          "median": 56972.0,
+          "min": 56972,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 2883257,
+          "mean": 2394680.3,
+          "median": 2292906.0,
+          "min": 2112904,
+          "n": 20,
+          "sample_stdev": 274394.82059253694
+        }
+      },
+      "paired_d1_minus_baseline": {
+        "n": 20,
+        "psp_delta_bytes": {
+          "max": 0,
+          "mean": 0,
+          "median": 0.0,
+          "min": 0,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_delta_percent": {
+          "max": 1.4299058153343118,
+          "mean": 1.238459816195524,
+          "median": 1.2814714383712626,
+          "min": 0.9218936567463151,
+          "n": 20,
+          "sample_stdev": 0.1684946916635439
+        }
+      }
+    },
+    "negative": {
+      "baseline": {
+        "psp_extent_bytes": {
+          "max": 35196,
+          "mean": 35196,
+          "median": 35196.0,
+          "min": 35196,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 462031,
+          "mean": 445066.85,
+          "median": 445527.5,
+          "min": 426366,
+          "n": 20,
+          "sample_stdev": 16729.129166233557
+        }
+      },
+      "d1": {
+        "psp_extent_bytes": {
+          "max": 35196,
+          "mean": 35196,
+          "median": 35196.0,
+          "min": 35196,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 457611,
+          "mean": 441219.8,
+          "median": 441623.0,
+          "min": 423272,
+          "n": 20,
+          "sample_stdev": 16022.774825721963
+        }
+      },
+      "paired_d1_minus_baseline": {
+        "n": 20,
+        "psp_delta_bytes": {
+          "max": 0,
+          "mean": 0,
+          "median": 0.0,
+          "min": 0,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_delta_percent": {
+          "max": -0.7079444253157018,
+          "mean": -0.8598590265399683,
+          "median": -0.8614542647199801,
+          "min": -1.0145797097054383,
+          "n": 20,
+          "sample_stdev": 0.12896347024541954
+        }
+      }
+    },
+    "sign": {
+      "baseline": {
+        "psp_extent_bytes": {
+          "max": 101060,
+          "mean": 101060,
+          "median": 101060.0,
+          "min": 101060,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 8992085,
+          "mean": 7394755.55,
+          "median": 7134887.0,
+          "min": 6097837,
+          "n": 20,
+          "sample_stdev": 1029934.1796394193
+        }
+      },
+      "d1": {
+        "psp_extent_bytes": {
+          "max": 97132,
+          "mean": 97132,
+          "median": 97132.0,
+          "min": 97132,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 9094563,
+          "mean": 7491178.85,
+          "median": 7229949.0,
+          "min": 6192133,
+          "n": 20,
+          "sample_stdev": 1032063.061893954
+        }
+      },
+      "paired_d1_minus_baseline": {
+        "n": 20,
+        "psp_delta_bytes": {
+          "max": -3928,
+          "mean": -3928,
+          "median": -3928.0,
+          "min": -3928,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_delta_percent": {
+          "max": 1.559167476428411,
+          "mean": 1.3240187352481436,
+          "median": 1.3323429358348755,
+          "min": 1.132672740302802,
+          "n": 20,
+          "sample_stdev": 0.15609513919814805
+        }
+      }
+    },
+    "verify": {
+      "baseline": {
+        "psp_extent_bytes": {
+          "max": 37444,
+          "mean": 37444,
+          "median": 37444.0,
+          "min": 37444,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 860731,
+          "mean": 843539.2,
+          "median": 843990.0,
+          "min": 824745,
+          "n": 20,
+          "sample_stdev": 16833.646584335664
+        }
+      },
+      "d1": {
+        "psp_extent_bytes": {
+          "max": 37444,
+          "mean": 37444,
+          "median": 37444.0,
+          "min": 37444,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_us": {
+          "max": 853504,
+          "mean": 837028.05,
+          "median": 837472.5,
+          "min": 818976,
+          "n": 20,
+          "sample_stdev": 16076.252995203498
+        }
+      },
+      "paired_d1_minus_baseline": {
+        "n": 20,
+        "psp_delta_bytes": {
+          "max": 0,
+          "mean": 0,
+          "median": 0.0,
+          "min": 0,
+          "n": 20,
+          "sample_stdev": 0.0
+        },
+        "time_delta_percent": {
+          "max": -0.6463512739799826,
+          "mean": -0.7704719585766875,
+          "median": -0.7727776699191844,
+          "min": -0.8645144174941416,
+          "n": 20,
+          "sample_stdev": 0.07708478333495562
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+/Users/hiro/workspace/sqisign/work/v3-lowmem-d1/src/pqm4/sqisign_p324_3/m4f/lll_dim4.c:498:1:ct_mk_eval_norm	520	static
+/Users/hiro/workspace/sqisign/work/v3-lowmem-d1/src/pqm4/sqisign_p324_3/m4f/lll_dim4.c:129:1:fp_update_block.constprop	9096	static
+/Users/hiro/workspace/sqisign/work/v3-lowmem-d1/src/pqm4/sqisign_p324_3/m4f/lll_dim4.c:355:1:fp_size_reduce_from.constprop	808	static
+/Users/hiro/workspace/sqisign/work/v3-lowmem-d1/src/pqm4/sqisign_p324_3/m4f/lll_dim4.c:857:1:quat_lll_dual_reduce_ideal	30888	static

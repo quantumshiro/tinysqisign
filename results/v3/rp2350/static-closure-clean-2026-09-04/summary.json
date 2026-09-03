@@ -1,0 +1,117 @@
+{
+  "artifacts": {
+    "archive": {
+      "bytes": 2113026,
+      "filename": "libsqisign_v3_p324_3_m4f.a",
+      "sha256": "6892ba8c8c7486d27e2bd7de533801e815365afec14b120e8d58e44057bc6589"
+    },
+    "async_stack_audit": {
+      "bytes": 14360,
+      "filename": "d2-async-stack-closure-audit-2026-09-04.json",
+      "sha256": "02e1d59a67dcb81060e9ab08c0c1c2f3f30f8511866e89a24b69cd21ab1e4ec0"
+    },
+    "capture": {
+      "bytes": 916,
+      "filename": "capture.txt",
+      "sha256": "0f3c878f22b2f13549dbaee0e27c5c307b9564d562da84dbbbb605a37d1f85b2"
+    },
+    "cmake_cache": {
+      "bytes": 33394,
+      "filename": "CMakeCache.txt",
+      "sha256": "dbc9dfc48da0b86d3998073340704c5070171c07ecc8b511e01859c600c527df"
+    },
+    "elf": {
+      "bytes": 2022848,
+      "filename": "sqisign_rp2350_v3_d2_static.elf",
+      "sha256": "f862703e2937814d321d970ab9ea6286f1f1fbf1d27ebb45d6502eecf54e3ad3"
+    },
+    "elf_audit": {
+      "bytes": 368,
+      "filename": "elf-audit.txt",
+      "sha256": "3d9e4a2d6a2aec3218e4b5a7b880cf95d09703b3b5a42707a280c8bd764eb95e"
+    },
+    "map": {
+      "bytes": 686694,
+      "filename": "sqisign_rp2350_v3_d2_static.elf.map",
+      "sha256": "9254c4f31671e181ccab975343701d2f525476dcf1b8c70a21afdf90d8efd0c5"
+    },
+    "stack_bound": {
+      "bytes": 32080,
+      "filename": "d2-linked-stack-bound-audit-2026-09-04.json",
+      "sha256": "79933686eccdae17fec8b895d647991f6d406cc9227e7b252784a7103017b9d4"
+    },
+    "uf2": {
+      "bytes": 425984,
+      "filename": "sqisign_rp2350_v3_d2_static.uf2",
+      "sha256": "f00186922e2e8f55bd0ff69eeae53a8047fde96681379bb47696688d79b4dd30"
+    },
+    "uf2_info": {
+      "bytes": 972,
+      "filename": "uf2-info.txt",
+      "sha256": "8d38aaed123b2dcc0457f4d6f50283bffc96856e257723ae70579ee7b4c9aa06"
+    }
+  },
+  "campaign": "static-closure-clean-2026-09-04",
+  "claim_boundary": "The clean p324_3/RADIX32 D2 image passed one official vector-0 K/S/V path, and every observed Thread-mode PSP extent was below its linked conservative software-call bound plus one maximum Secure Armv8-M exception-entry frame. The result is image-specific and excludes handler call chains and asynchronous interrupt/MSP nesting; the companion audit leaves 18 unique indirect callback sites unresolved. It also excludes other parameter sets and side-channel resistance.",
+  "linked_size": {
+    "bss_bytes": 135668,
+    "data_bytes": 0,
+    "text_bytes": 214568
+  },
+  "operations": {
+    "keygen": {
+      "bound_minus_observed_bytes": 46204,
+      "elapsed_us": 2242986,
+      "exception_entry_allowance_bytes": 212,
+      "observed_psp_bytes": 62096,
+      "reservation_bytes": 131072,
+      "reservation_margin_bytes": 22772,
+      "software_call_bound_bytes": 108088,
+      "static_psp_bound_bytes": 108300
+    },
+    "sign": {
+      "bound_minus_observed_bytes": 26872,
+      "elapsed_us": 7107261,
+      "exception_entry_allowance_bytes": 212,
+      "observed_psp_bytes": 101060,
+      "reservation_bytes": 131072,
+      "reservation_margin_bytes": 3140,
+      "software_call_bound_bytes": 127720,
+      "static_psp_bound_bytes": 127932
+    },
+    "verify": {
+      "bound_minus_observed_bytes": 216,
+      "elapsed_us": 819058,
+      "exception_entry_allowance_bytes": 212,
+      "observed_psp_bytes": 40252,
+      "reservation_bytes": 131072,
+      "reservation_margin_bytes": 90604,
+      "software_call_bound_bytes": 40256,
+      "static_psp_bound_bytes": 40468
+    }
+  },
+  "provenance": {
+    "firmware_commit": "e564a6413766f1f299db3db1d706478c42f1cc96",
+    "firmware_dirty": 0,
+    "generated_tree_sha256": "7df287fc4e690b93459fa47c9bb6856a49712996ba348fba0abd0eb397383421",
+    "v3_source_commit": "cb94f242ba791a4ccb980b46c917830b309a9832",
+    "v3_source_dirty": 0
+  },
+  "schema": "sqisign-v3-rp2350-static-psp-closure-v1",
+  "status": "PASS",
+  "validation": {
+    "all_synchronous_operation_metadata_and_calls_closed": true,
+    "async_candidate_roots_audited": 4,
+    "async_direct_call_missing_stack_metadata": 0,
+    "async_unresolved_indirect_callback_sites": 18,
+    "compiler_dynamic_stack_records": 0,
+    "heap_section_bytes": 0,
+    "maximum_exception_entry_charged_to_psp": true,
+    "msp_canary_within_reservation": true,
+    "observed_msp_upper_bytes": 2188,
+    "observed_psp_within_static_bounds": true,
+    "official_vector_0_ksv_passed": true,
+    "operation_psp_bounds_established": true,
+    "whole_program_worst_case_stack_bound_established": false
+  }
+}

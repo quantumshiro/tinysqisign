@@ -1,0 +1,51 @@
+SQISIGN_RP2350_V3_BASELINE_MULTI_A v1
+scheme=SQIsign-v3.0 variant=p324_3 implementation=m4f image=baseline-multi placement=a
+board=pico2 platform=rp2350-arm-s sdk=2.3.0 firmware=76f88dccf6ce9ba1b4d12fc20724b47e03a5f6ab firmware_dirty=0
+v3_source=6d017708db403bf83977fa70770fc4f7f9e9ff21 v3_dirty=0 cpuid=0x411fd210 clock_sys_hz=150000000
+v3_generated_tree_sha256=38ee7ae007db2de0366cdb66dfe22f83f66ee5ce3d99f7f6260dc9ab24c3328a
+kat_rsp_sha256=b632c926c72692f850a71b7f7bb338fb1aeee0d9f3362aa35a8ac6255ca3155b kat_first=0 kat_count=10 max_mlen=330
+placement_anchor=0x10000243 crypto_sign_keypair=0x10006101 crypto_sign=0x10006109 crypto_sign_open=0x10006141
+bss_end=0x200228c8 stack_limit=0x20080000 stack_top=0x20082000 heap_section_bytes=0
+vector=0 mlen=33 keygen_result=0 keygen_match=1 keygen_us=2256550 keygen_psp=56972
+vector=0 sign_result=0 sign_match=1 sign_us=7144930 sign_psp=101060 smlen=233
+vector=0 verify_result=0 verify_match=1 verify_us=827483 verify_psp=37444 negative_result=-1 negative_rejected=1 negative_us=429007 negative_psp=35196
+vector=0 vector_status=PASS
+vector=1 mlen=66 keygen_result=0 keygen_match=1 keygen_us=2083354 keygen_psp=56972
+vector=1 sign_result=0 sign_match=1 sign_us=8439468 sign_psp=101060 smlen=266
+vector=1 verify_result=0 verify_match=1 verify_us=827878 verify_psp=37444 negative_result=-1 negative_rejected=1 negative_us=429775 negative_psp=35196
+vector=1 vector_status=PASS
+vector=2 mlen=99 keygen_result=0 keygen_match=1 keygen_us=2383828 keygen_psp=56972
+vector=2 sign_result=0 sign_match=1 sign_us=7004863 sign_psp=101060 smlen=299
+vector=2 verify_result=0 verify_match=1 verify_us=826225 verify_psp=37444 negative_result=-1 negative_rejected=1 negative_us=427971 negative_psp=35196
+vector=2 vector_status=PASS
+vector=3 mlen=132 keygen_result=0 keygen_match=1 keygen_us=2559726 keygen_psp=56972
+vector=3 sign_result=0 sign_match=1 sign_us=7124844 sign_psp=101060 smlen=332
+vector=3 verify_result=0 verify_match=1 verify_us=829290 verify_psp=37444 negative_result=-1 negative_rejected=1 negative_us=430866 negative_psp=35196
+vector=3 vector_status=PASS
+vector=4 mlen=165 keygen_result=0 keygen_match=1 keygen_us=2162248 keygen_psp=56972
+vector=4 sign_result=0 sign_match=1 sign_us=6215622 sign_psp=101060 smlen=365
+vector=4 verify_result=0 verify_match=1 verify_us=824799 verify_psp=37444 negative_result=-1 negative_rejected=1 negative_us=426366 negative_psp=35196
+vector=4 vector_status=PASS
+vector=5 mlen=198 keygen_result=0 keygen_match=1 keygen_us=2854694 keygen_psp=56972
+vector=5 sign_result=0 sign_match=1 sign_us=8852872 sign_psp=101060 smlen=398
+vector=5 verify_result=0 verify_match=1 verify_us=858652 verify_psp=37444 negative_result=-1 negative_rejected=1 negative_us=460189 negative_psp=35196
+vector=5 vector_status=PASS
+vector=6 mlen=231 keygen_result=0 keygen_match=1 keygen_us=2271947 keygen_psp=56972
+vector=6 sign_result=0 sign_match=1 sign_us=6098362 sign_psp=101060 smlen=431
+vector=6 verify_result=0 verify_match=1 verify_us=860421 verify_psp=37444 negative_result=-1 negative_rejected=1 negative_us=461875 negative_psp=35196
+vector=6 vector_status=PASS
+vector=7 mlen=264 keygen_result=0 keygen_match=1 keygen_us=2171395 keygen_psp=56972
+vector=7 sign_result=0 sign_match=1 sign_us=7627215 sign_psp=101060 smlen=464
+vector=7 verify_result=0 verify_match=1 verify_us=859442 verify_psp=37444 negative_result=-1 negative_rejected=1 negative_us=460808 negative_psp=35196
+vector=7 vector_status=PASS
+vector=8 mlen=297 keygen_result=0 keygen_match=1 keygen_us=2808426 keygen_psp=56972
+vector=8 sign_result=0 sign_match=1 sign_us=8992085 sign_psp=101060 smlen=497
+vector=8 verify_result=0 verify_match=1 verify_us=860600 verify_psp=37444 negative_result=-1 negative_rejected=1 negative_us=461929 negative_psp=35196
+vector=8 vector_status=PASS
+vector=9 mlen=330 keygen_result=0 keygen_match=1 keygen_us=2106774 keygen_psp=56972
+vector=9 sign_result=0 sign_match=1 sign_us=6448854 sign_psp=101060 smlen=530
+vector=9 verify_result=0 verify_match=1 verify_us=860221 verify_psp=37444 negative_result=-1 negative_rejected=1 negative_us=461564 negative_psp=35196
+vector=9 vector_status=PASS
+summary vectors=10 passed=10 mode_ok=1 msp_pattern_ok=1 keygen_psp_max=56972 sign_psp_max=101060 verify_psp_max=37444 negative_psp_max=35196 psp_reserved_bytes=131072
+msp_reserved_bytes=8192 msp_written_upper_bytes=2380 msplim=0x20080000
+status=PASS

@@ -1,0 +1,222 @@
+{
+  "schema": "sqisign-combined-residual-structural-trace-v1",
+  "generated_utc": "2026-08-23",
+  "status": "residual_control_and_address_differences_reproduced_physical_pending",
+  "scope": {
+    "variant": "Level-I",
+    "radix": 32,
+    "operation": "encoded low-memory Sign",
+    "source_root": "work/compact-sca-ri",
+    "class_a": "fixed signing RNG seed 0",
+    "class_b_control": "the same signing RNG seed 0",
+    "class_b_primary": [1, 2, 3, 5],
+    "software_controls": [
+      "fixed-budget commitment-ideal sampling",
+      "521-round fixed-schedule Cornacchia modular square root",
+      "1421-round fixed Cornacchia half-GCD"
+    ]
+  },
+  "protected_closure": {
+    "path": "experiments/sca/combined-sign-protection-contract.json",
+    "sha256": "2a1e2e5ac46fa335b81a670a278aff22a25304e4f0ce1d5006038b4d1030dd9a",
+    "bytes": 7338
+  },
+  "whole_sign_control_flow": {
+    "capture_bound_edges_per_sign": 4000000,
+    "independent_process_runs": 2,
+    "control_pairs_per_run": 1,
+    "primary_pairs_per_run": 4,
+    "primary_differences_per_run": 4,
+    "expected_first_differences": {
+      "1": [1767715, "src/quaternion/ref/generic/ideal.c", 168, "src/quaternion/ref/generic/ideal.c", 169],
+      "2": [1767695, "src/quaternion/ref/generic/ideal.c", 168, "src/quaternion/ref/generic/ideal.c", 169],
+      "3": [1767695, "src/quaternion/ref/generic/ideal.c", 168, "src/quaternion/ref/generic/ideal.c", 169],
+      "5": [1769252, "src/quaternion/ref/generic/intbig.c", 385, "src/quaternion/ref/generic/intbig.c", 428]
+    },
+    "records": {
+      "first_raw": {
+        "path": "results/host/sca-combined-full-sign-control-flow.csv",
+        "sha256": "a4edccc6818481be797bcb88242243bcc92fd63fea7a91f0b0a683ab93939bfd",
+        "bytes": 2867
+      },
+      "first_summary": {
+        "path": "results/host/sca-combined-full-sign-control-flow.json",
+        "sha256": "22aa8a22728e65f346a9b940aa5243499ab2872b8e5df00397c5267a4a37e54e",
+        "bytes": 10845
+      },
+      "second_raw": {
+        "path": "results/host/sca-combined-full-sign-control-flow-rerun.csv",
+        "sha256": "356177234f69e52a116b4022cc1b2feeda03bb63fbbad2eed56dbe61f4d5238f",
+        "bytes": 2867
+      },
+      "second_summary": {
+        "path": "results/host/sca-combined-full-sign-control-flow-rerun.json",
+        "sha256": "e27ba06855dca941338f6669c8d6662ac2517099580eee46eebf1a11605b9c9c",
+        "bytes": 10851
+      },
+      "reproducibility": {
+        "path": "results/host/sca-combined-full-sign-control-flow-reproducibility.json",
+        "sha256": "5fc2aa4234ad5f0fe0effe6fb93b36761e6cae4113e2fe5233bd3b041e142168",
+        "bytes": 855
+      },
+      "binary": {
+        "path": "results/host/artifacts/sca-combined-full-sign-control-flow",
+        "sha256": "14e39998df5714d9c83ada0d074cb985b0938fe7b6048cda3227b652c415bbea",
+        "bytes": 699376
+      },
+      "debug": {
+        "path": "results/host/artifacts/sca-combined-full-sign-control-flow.dwarf",
+        "sha256": "c52eac8bd854096d8f1a0666e7dcf8a46ea13aecd6b9ef3d95f21badd055bea9",
+        "bytes": 439124
+      }
+    }
+  },
+  "focused_address_trace": {
+    "allowlisted_source_families": [
+      "ideal.c",
+      "intbig.c"
+    ],
+    "capture_bound_memory_events_per_sign": 4000000,
+    "independent_process_runs": 2,
+    "control_pairs_per_run": 1,
+    "primary_pairs_per_run": 4,
+    "primary_control_flow_differences_per_run": 4,
+    "primary_address_differences_per_run": 4,
+    "all_memory_captures_truncated_at_bound": true,
+    "expected_first_differences": {
+      "1": [668249, "src/quaternion/ref/generic/ideal.c", 171, "src/quaternion/ref/generic/ideal.c", 168, 3026431, "src/quaternion/ref/generic/intbig.c", 401, "src/quaternion/ref/generic/intbig.c", 401, "image:__TEXT", "non-image"],
+      "2": [668229, "src/quaternion/ref/generic/ideal.c", 171, "src/quaternion/ref/generic/ideal.c", 168, 3026298, "src/quaternion/ref/generic/intbig.c", 401, "src/quaternion/ref/generic/intbig.c", 401, "image:__TEXT", "non-image"],
+      "3": [668229, "src/quaternion/ref/generic/ideal.c", 171, "src/quaternion/ref/generic/ideal.c", 168, 3026298, "src/quaternion/ref/generic/intbig.c", 401, "src/quaternion/ref/generic/intbig.c", 401, "image:__TEXT", "non-image"],
+      "5": [669440, "src/quaternion/ref/generic/intbig.c", 385, "src/quaternion/ref/generic/intbig.c", 428, 3033316, "src/quaternion/ref/generic/intbig.c", 840, "src/quaternion/ref/generic/intbig.c", 839, "non-image", "non-image"]
+    },
+    "records": {
+      "first_raw": {
+        "path": "results/host/sca-combined-focused-address.csv",
+        "sha256": "d4276e35fa5e9bfb14acb8f7dbfc612c11e125d3229e5fc1375097a5447864fc",
+        "bytes": 3415
+      },
+      "first_summary": {
+        "path": "results/host/sca-combined-focused-address.json",
+        "sha256": "9b335d1cb63e74f38488a2d90b30fc30daf1f942402877ecc946aed37514544e",
+        "bytes": 16740
+      },
+      "second_raw": {
+        "path": "results/host/sca-combined-focused-address-rerun.csv",
+        "sha256": "9559d2e49b2ba6fd10ac8ac5137c3214445eb9b6f45da39b1a3411404b709d22",
+        "bytes": 3415
+      },
+      "second_summary": {
+        "path": "results/host/sca-combined-focused-address-rerun.json",
+        "sha256": "b818801310ba5e102abc73939dde12a1a8e4572f7925cf51740d9556fe523c7a",
+        "bytes": 16746
+      },
+      "reproducibility": {
+        "path": "results/host/sca-combined-focused-address-reproducibility.json",
+        "sha256": "1b44394c980182105c99b78a4e15570ce426c93af310cb47ec1969c53b121e64",
+        "bytes": 781
+      },
+      "binary": {
+        "path": "results/host/artifacts/sca-combined-focused-address",
+        "sha256": "f74ba88de44f5e2439765bce61e035d1dae4970e7e133b4f16f415ee85ce02ab",
+        "bytes": 527048
+      },
+      "debug": {
+        "path": "results/host/artifacts/sca-combined-focused-address.dwarf",
+        "sha256": "3706330d564bfeafbccb9d210341994e8ce33dec23b6c1c8602f524d301c7fb5",
+        "bytes": 415308
+      }
+    }
+  },
+  "tooling": {
+    "base_harness": {
+      "path": "experiments/sca/trace_sign_control_flow.c",
+      "sha256": "1296c971d41bc06332cf20b055c0c458de47be1d90f0d38615383901856ca31f",
+      "bytes": 18930
+    },
+    "control_flow_harness": {
+      "path": "experiments/sca/trace_sign_control_flow_prefix.c",
+      "sha256": "d063ce12f1ff3cd0f4e57b65da6a40d06ec7364eaea8d0ee6e60e53698b1049c",
+      "bytes": 7606
+    },
+    "focused_harness": {
+      "path": "experiments/sca/trace_sign_focused_address.c",
+      "sha256": "4989bb78a9c42d129fadf9e38bdf4668b78b592691fd9df26b1b81e59645a784",
+      "bytes": 10147
+    },
+    "focused_allowlist": {
+      "path": "experiments/sca/combined-focused-address-allowlist.txt",
+      "sha256": "822dd262890855c1c373b8648c76fbb0baeb5215c0ae212800bfb9fe8b087772",
+      "bytes": 457
+    },
+    "builder": {
+      "path": "scripts/build_sca_lowmem_control_flow_harness.py",
+      "sha256": "c98907438c5ccab6d8173a8c24c85b1275e1c1f82146c310bc0e8c32acfad15e",
+      "bytes": 3538
+    },
+    "blackbox_recompiler": {
+      "path": "scripts/recompile_sca_trace_blackboxes.py",
+      "sha256": "089dea7b83ecd0b0d4dd8bc04660e01b3c6e5b65e77b2af9d08bb8f950ed9497",
+      "bytes": 1879
+    },
+    "control_flow_analyzer": {
+      "path": "scripts/analyze_sca_combined_control_flow_trace.py",
+      "sha256": "0d6ecc013b8f83d31041d2e0d587bd100a233ba415823b442bd7b37a7863c1f9",
+      "bytes": 16670
+    },
+    "control_flow_comparator": {
+      "path": "scripts/compare_sca_combined_control_flow_runs.py",
+      "sha256": "3c5753805b350a414d62eea4cd0f0086b58f7a8bae2a0a15c1eb16a74eeb17b3",
+      "bytes": 4367
+    },
+    "control_flow_runner": {
+      "path": "scripts/run_sca_combined_control_flow_trace.sh",
+      "sha256": "9c506ae7770ab8f0cd3a96899e8c5f2733ab65f7964598e209669df07c7b93a8",
+      "bytes": 7216
+    },
+    "focused_analyzer": {
+      "path": "scripts/analyze_sca_combined_focused_address.py",
+      "sha256": "dc64178e190c05d280e35415869e0c87b5b18629bf386601191a8b5af691dea3",
+      "bytes": 15826
+    },
+    "focused_comparator": {
+      "path": "scripts/compare_sca_combined_focused_address_runs.py",
+      "sha256": "24a6b578d815bebb1cea2cdef120aedb7d36e80afeb7d1305329d2521d4b8ac4",
+      "bytes": 4990
+    },
+    "focused_runner": {
+      "path": "scripts/run_sca_combined_focused_address.sh",
+      "sha256": "393840a58c0283076ca00caf8d90b1628e01f7ac3b700bcccf22dfdd08e699bf",
+      "bytes": 5981
+    }
+  },
+  "interpretation": {
+    "published_cornacchia_exponent_schedule_removed_on_measured_route": true,
+    "residual_variable_integer_control_observed": true,
+    "residual_selected_effective_address_behavior_observed": true,
+    "localized_sources": [
+      "ideal.c bit-length maximum scan",
+      "intbig.c sign handling and used-limb scans in ibz_bitsize/ibz_mul"
+    ],
+    "long_term_key_leakage_demonstrated": false,
+    "physical_leakage_demonstrated": false,
+    "published_key_recovery_reproduced_on_current_protected_c": false
+  },
+  "claims": {
+    "fixed_fixed_negative_control_stable": true,
+    "residual_structural_difference_reproduced": true,
+    "whole_sign_constant_time": false,
+    "all_input_noninterference": false,
+    "constant_power": false,
+    "masked": false,
+    "physical_tvla_pass": false,
+    "physical_spa_key_recovery_resisted": false,
+    "side_channel_resistant": false,
+    "production_signing_approved": false
+  },
+  "next_required": [
+    "replace or refactor the generic fixed-width integer operations so sign, used-limb length and loop trip counts do not select control flow or effective addresses on secret-reachable inputs",
+    "repeat the bounded whole-Sign and focused structural traces on the refactored source",
+    "capture RP2350 fixed-vs-random physical power or EM traces",
+    "run preregistered TVLA, component classification, exponent-recovery and end-to-end key-recovery scoring"
+  ]
+}

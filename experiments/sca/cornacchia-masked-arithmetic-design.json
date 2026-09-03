@@ -1,0 +1,133 @@
+{
+  "schema": "sqisign-cornacchia-masked-arithmetic-design-v1",
+  "status": "word_arithmetic_functional_prototype_implemented_transition_assembly_pending",
+  "scope_contract": {
+    "path": "experiments/sca/cornacchia-masked-montgomery-scope.json",
+    "sha256": "2683dd5f223caa43c1d523d8d871696a828b56c72a8909e0e9db054518b6c004",
+    "checker": "scripts/check_cornacchia_masked_montgomery_scope.py",
+    "checker_sha256": "1f41a1e51bd07fb11303e0930864194284426282b79885eb9beb7ba556d2ca48",
+    "secret_reachable_values": 18
+  },
+  "literature_basis": [
+    {
+      "id": "PAPER-ARITH-BOOL-2022-158",
+      "title": "Bitslicing Arithmetic/Boolean Masking Conversions for Fun and Profit",
+      "url": "https://eprint.iacr.org/2022/158",
+      "used_for": "Composable arithmetic/Boolean gadget structure and the requirement to harden software against transition leakage.",
+      "boundary": "The paper targets small public moduli in lattice KEMs; it does not establish this secret 521-bit dynamic-modulus construction."
+    },
+    {
+      "id": "PAPER-TRANSITION-2014-413",
+      "title": "On the Cost of Lazy Engineering for Masked Software Implementations",
+      "url": "https://eprint.iacr.org/2014/413",
+      "used_for": "Value- versus transition-based leakage distinction.",
+      "boundary": "The abstract leakage model is not a Cortex-M33 implementation proof."
+    },
+    {
+      "id": "PAPER-HORIZONTAL-2016-540",
+      "title": "Horizontal Side-Channel Attacks and Countermeasures on the ISW Masking Scheme",
+      "url": "https://eprint.iacr.org/2016/540",
+      "used_for": "Horizontal attacks remain an explicit adversary even for probing-secure multiplication gadgets.",
+      "boundary": "Its results do not quantify attack success for this SQIsign component."
+    }
+  ],
+  "candidate_families": [
+    {
+      "id": "FULL_BOOLEAN_CIRCUIT",
+      "role": "correctness_and_first_order_value_model_oracle",
+      "selected_for_production": false,
+      "reason": "It can express shared secret modulus, carries and comparisons uniformly, but a direct 544-bit schoolbook realization has prohibitive randomness and operation cost."
+    },
+    {
+      "id": "WORD_ARITHMETIC_WITH_BOOLEAN_BOUNDARIES",
+      "role": "selected_reduced_functional_prototype_direction",
+      "selected_for_production": false,
+      "reason": "Addition can remain share-wise while multiplication, carry, comparison and selection use reviewed non-linear and A2B/B2A gadgets; this is the only candidate advanced to a reduced prototype, not an approved implementation."
+    },
+    {
+      "id": "ALGEBRAIC_BLINDING_ONLY",
+      "role": "rejected_standalone",
+      "selected_for_production": false,
+      "reason": "Exponent/base/context randomization alone does not cover the 18-node scope, and the checked exponent-blinding construction has a multi-call GCD failure."
+    },
+    {
+      "id": "DUAL_UNSHARED_EXECUTION",
+      "role": "rejected_standalone",
+      "selected_for_production": false,
+      "reason": "Splitting a secret but executing or storing the shares sequentially exposes exact share transitions and lacks composable non-linear gadgets."
+    }
+  ],
+  "reduced_boolean_gadget_model": {
+    "sharing": "For bit x choose uniform x0 and set x1=x XOR x0.",
+    "secure_and_schedule": "Fresh r; z0=(x0 AND y0) XOR r; start z1=r and XOR x1*y1, x0*y1 and x1*y0 one at a time.",
+    "isw_and_assignments": 32,
+    "isw_and_individual_wire_marginals_secret_independent": true,
+    "isw_and_correct_for_all_assignments": true,
+    "full_adder": "a=x XOR y; sum=a XOR carry_in; carry_out=(x AND y) XOR (carry_in AND a), using two independently randomized secure-AND gadgets.",
+    "full_adder_assignments": 256,
+    "full_adder_individual_wire_marginals_secret_independent": true,
+    "full_adder_correct_for_all_assignments": true,
+    "transition_counterexamples": {
+      "x0_to_x1": "Hamming distance equals x",
+      "y0_to_y1": "Hamming distance equals y",
+      "z0_to_z1": "Hamming distance equals x AND y",
+      "sum0_to_sum1": "Hamming distance equals the full-adder sum",
+      "carry0_to_carry1": "Hamming distance equals the full-adder carry"
+    },
+    "transition_safe_without_final_assembly_controls": false
+  },
+  "straight_line_boolean_cost_proxy": {
+    "word_bits": 32,
+    "limbs": 17,
+    "padded_bits": 544,
+    "full_adder_secure_ands": 2,
+    "fresh_random_bits_per_secure_and": 1,
+    "secure_ands_per_544_bit_add": 1088,
+    "fresh_random_bytes_per_544_bit_add": 136,
+    "schoolbook_product_model": "544^2 partial-product secure ANDs plus 544 additions of 1088 bits, each at two secure ANDs per bit",
+    "secure_ands_per_naive_product": 1479680,
+    "fresh_random_bytes_per_naive_product": 184960,
+    "fixed_pow_montgomery_multiplications": 1042,
+    "fresh_random_bytes_per_pow_proxy": 192728320,
+    "fresh_random_mib_per_pow_proxy": 183.800048828125,
+    "exclusions": [
+      "Montgomery reduction and context formation",
+      "mask refresh beyond one bit per secure AND",
+      "transition-hardening instructions",
+      "Tonelli--Shanks composition",
+      "any optimized multiplication circuit"
+    ],
+    "interpretation": "This is a reproducible cost proxy for the deliberately naive Boolean reference, not a lower bound or estimate for the selected word-arithmetic prototype."
+  },
+  "selected_prototype_obligations": [
+    "Define two-share word arithmetic over 2^32/2^64 with a reviewed multiplication gadget and fresh randomness for every non-linear composition.",
+    "Provide composable A2B/B2A conversion for carry, borrow, comparison and selector bits without recombining the secret modulus or operands.",
+    "Accept the temporary modulus already shared, derive the Montgomery inverse and radix residues without an unshared copy, and identify the upstream point where sharing begins.",
+    "Implement a reduced 2- or 3-limb C/assembly prototype first and exhaustively compare it with ordinary Montgomery multiplication, including aliases and failures.",
+    "Freeze final Cortex-M33 registers/spills and reject adjacent share transitions, unmasked temporaries, indirect recombination and compiler-dependent regressions.",
+    "Measure randomness, cycles, stack/SRAM and code size before scaling to 17 limbs; do not infer feasibility from the reduced prototype.",
+    "After scaling, compose all repeated Tonelli--Shanks powers and run ANALOG-4 first-/higher-order and horizontal attack campaigns."
+  ],
+  "next_checkpoint": {
+    "name": "masked_word_transition_controlled_assembly",
+    "width": "2 or 3 32-bit limbs",
+    "deliverables": [
+      "freeze the implemented two-limb functional oracle and its exhaustive reduced-ring value model",
+      "hand-controlled Cortex-M33 assembly for share-touching primitives",
+      "instruction-schedule HD checker plus cycle/randomness/SRAM measurement",
+      "first-order TVLA and direct transition-model attack on the frozen primitive"
+    ],
+    "production_integration_allowed": false
+  },
+  "decision": {
+    "reference_boolean_gadgets_value_model_checked": true,
+    "reference_boolean_gadgets_transition_safe": false,
+    "word_arithmetic_functional_prototype_implemented": true,
+    "word_arithmetic_transition_safe_assembly_implemented": false,
+    "complete_masked_montgomery_implemented": false,
+    "physical_resistance_established": false,
+    "published_attack_blocked": false,
+    "production_signing_approved": false
+  },
+  "claim_boundary": "The reduced exhaustive check establishes correctness and single-wire marginal independence only for abstract one-bit gadgets. A separate two-limb functional C oracle now exists, but it is not transition-approved. The abstract check simultaneously proves unsafe adjacent-share transitions and the cost table remains a naive reference proxy. No 521-bit masked arithmetic, composable probing proof, assembly hardening or physical result exists."
+}

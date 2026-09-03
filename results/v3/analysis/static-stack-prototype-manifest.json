@@ -1,0 +1,44 @@
+{
+  "schema": "sqisign-v3-p3243-static-stack-materialization-v1",
+  "status": "PASS",
+  "scope": "generated p324_3/m4f source prototype; not an upstream patch or whole-program stack proof",
+  "bounds": {
+    "IBZ_NLIMBS_RADIX32": 60,
+    "max_chain_length": 326,
+    "max_chain_space": 10,
+    "max_theta_push_points": 3,
+    "max_fp2_batch": 12,
+    "max_dlog_levels": 10,
+    "max_encoded_digits": 11
+  },
+  "files": {
+    "isog.c": {
+      "before_sha256": "b83aae0dd85b7d43dc1d413cb56cf8f9a7d762007d13ba0a106cf74988a092cd",
+      "after_sha256": "e47b5edeedd750a4b4b34cb7761f18691a0279fa83197f53c721e6b83152da4e"
+    },
+    "theta_isogenies.c": {
+      "before_sha256": "6cfd8e5e397cc611e62786183038a2214ac4bb9bd125f97623c517ef6248cf9f",
+      "after_sha256": "35658ab36d647ce3b0e963523dd77d43dd5822291abdc84da0ba47d69baefd15"
+    },
+    "fp2.c": {
+      "before_sha256": "e08ce4b2fa3935ba6230a29829c1834864dce0fc1be7f6462870d734fd12704b",
+      "after_sha256": "22b28f24023d3bad13f949632ff0fb3ae1fa26347b992bbf80085c9012651c59"
+    },
+    "gluing.c": {
+      "before_sha256": "4e33062d338ed81073aaeb110326e45becc81f1499fd116480639c51cc99b2a5",
+      "after_sha256": "07123dbbccb0417372ac586deca69ca3b49e8aeda4f7bf42db4cf51d1d9f10a4"
+    },
+    "biextension.c": {
+      "before_sha256": "c0a9a5b6eb6d08922802f596729a95417c7a3435000aea11b523cc7aa08520e0",
+      "after_sha256": "5802dd157ab9e160354e75e9282454ed73c11f2b1b43d5034c73fbc1369c30c6"
+    },
+    "encode_secret.c": {
+      "before_sha256": "2e47ab585a63451aa6d3bf162329a4c502d04c44edbc9ab7055a7cd2cd150c16",
+      "after_sha256": "ae62e07eaf1de957a24c88a05a9907b106f1162300d011f633664931f54cff13"
+    },
+    "mp.c": {
+      "before_sha256": "08da97fe30cd2c2801f580502557013015722c1897f18c5db58dbcbca99ed318",
+      "after_sha256": "62bbbe839451ae34caf937b66fbdc279ae9a69fa0023d96fe988a78f9c4f5f93"
+    }
+  }
+}

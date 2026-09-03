@@ -1,0 +1,110 @@
+{
+  "schema": "sqisign-random-ideal-fixed-budget-components-v3",
+  "status": "components_verified_sampler_separately_integrated",
+  "scope": {
+    "implemented": [
+      "fixed 769-bit little-endian coordinate decoding and reduction",
+      "fixed Level-I modular square root with a 521-round exponentiation schedule and fixed verification",
+      "masked first-nonzero same-residue primitive-lift correction"
+    ],
+    "integrated_and_gated_separately": [
+      "130-candidate gamma and one-candidate beta sampler",
+      "fixed-work modular square root in every gamma candidate",
+      "mask-selected first valid gamma and fixed entropy consumption",
+      "Level-I opt-in SQIsign commitment Sign route",
+      "software output-ideal distribution argument"
+    ],
+    "not_claimed": [
+      "legacy byte identity",
+      "masking or constant-power behavior",
+      "physical power or EM resistance",
+      "complete constant-time SQIsign",
+      "production signing approval"
+    ]
+  },
+  "sources": {
+    "header": {
+      "path": "experiments/sca/random_ideal_fixed_budget.h",
+      "sha256": "0f0eb82313eb5cd0e8a9c1c650e190949524829d5a4d41da6231e7752b52bf12"
+    },
+    "implementation": {
+      "path": "experiments/sca/random_ideal_fixed_budget.c",
+      "sha256": "58053a26b1fe0c355747e19397c25bc2ca71b55b85aeca2a8da9eb645469d63b"
+    },
+    "test": {
+      "path": "experiments/sca/test_random_ideal_fixed_budget.c",
+      "sha256": "18162e25efc3f58f7a060a62daba5ac1a5f2e36234e233ccb573bb2740f61121"
+    },
+    "arm_checker": {
+      "path": "scripts/check_sca_random_ideal_fixed_budget_arm.py",
+      "sha256": "4184f8ecf74f189f3507a986b2571accf58a5c0141f0a1c93e046644fcb7ae8b"
+    },
+    "runner": {
+      "path": "scripts/run_sca_random_ideal_fixed_budget_components.sh",
+      "sha256": "094be5455410a39a5863c53f4d4a483eb7f2f100bfaf28cd78aae4e1bf2d0360"
+    }
+  },
+  "fixed_schedule": {
+    "wide_bits": 769,
+    "wide_bytes": 97,
+    "gamma_candidates": 130,
+    "beta_candidates": 1,
+    "coordinate_draws_per_prime_ideal": 394,
+    "fixed_random_bytes_per_prime_ideal": 38218
+  },
+  "abi": {
+    "coordinate_workspace_bytes": 2808,
+    "coordinate_workspace_alignment": 4,
+    "sqrt_workspace_bytes": 4320,
+    "sqrt_workspace_alignment": 4,
+    "primitive_workspace_bytes": 6480,
+    "primitive_workspace_alignment": 4
+  },
+  "host_evidence": {
+    "optimized_profile": "C11 -O3 -fstrict-aliasing -Wall -Wextra -Werror",
+    "sanitizer_profile": "C11 -O1 ASan+UBSan fatal non-recovering",
+    "expected_output": "random-ideal fixed-budget components PASS: wide_random=256 wide_level1=5 primitive_corrected=64 primitive_alias=1 sqrt_residue=9 sqrt_nonresidue=8 invalid=2 null_contract=8 gamma_budget=130 beta_budget=1"
+  },
+  "arm_evidence": {
+    "compiler": "Arm GNU Toolchain GCC 15.2.1",
+    "target": "Cortex-M33 little-endian AAPCS, RADIX32 substrate",
+    "profiles": {
+      "os-soft": {
+        "optimization": "-Os",
+        "float_abi": "soft",
+        "frames": {
+          "compute_form": 48,
+          "sqisign_ri_reduce_wide_coordinate": 32,
+          "sqisign_ri_sqrt_mod_level1": 48,
+          "sqisign_ri_correct_primitive_lift": 88
+        },
+        "text_bytes": 1104
+      },
+      "pico-like": {
+        "optimization": "-O3",
+        "float_abi": "softfp",
+        "frames": {
+          "compute_form": 48,
+          "sqisign_ri_reduce_wide_coordinate": 32,
+          "sqisign_ri_sqrt_mod_level1": 56,
+          "sqisign_ri_correct_primitive_lift": 80
+        },
+        "text_bytes": 1172
+      }
+    },
+    "structural_claim": "fixed public loop bounds and no secret-dependent conditional branch in the three component entry points under the frozen individual-TU profiles",
+    "limitations": "not linked firmware, formal non-interference, analog leakage, masking, or whole-Sign evidence"
+  },
+  "decision": {
+    "component_correctness_verified": true,
+    "component_control_address_structure_verified": true,
+    "fixed_level1_sqrt_verified": true,
+    "complete_fixed_budget_sampler_implemented": true,
+    "sign_commitment_route_integrated": true,
+    "output_ideal_distribution_bound_established": true,
+    "legacy_byte_identity_established": false,
+    "target_physical_evidence": false,
+    "side_channel_resistance_established": false,
+    "production_signing_approved": false
+  }
+}

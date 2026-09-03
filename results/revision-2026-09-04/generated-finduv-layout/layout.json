@@ -1,0 +1,64 @@
+{
+  "schema": "tinysqisign-lifetime-layout-result-v1",
+  "status": "PASS",
+  "annotation": "experiments/memory/finduv-lifetime-layout.json",
+  "layout_name": "find_uv_workspace_generated",
+  "extent_bytes": 172080,
+  "offsets": {
+    "lattice_state": 0,
+    "lattice_mul": 77168,
+    "candidates": 77168,
+    "fixed_degree": 77168
+  },
+  "interference_edges": [
+    [
+      "candidates",
+      "lattice_state"
+    ],
+    [
+      "fixed_degree",
+      "lattice_state"
+    ],
+    [
+      "lattice_mul",
+      "lattice_state"
+    ]
+  ],
+  "overlay_pairs": [
+    [
+      "lattice_mul",
+      "candidates"
+    ],
+    [
+      "lattice_mul",
+      "fixed_degree"
+    ],
+    [
+      "candidates",
+      "fixed_degree"
+    ]
+  ],
+  "terminal_clear_obligations": {
+    "lattice_state": [
+      "success",
+      "not_found",
+      "fatal"
+    ],
+    "lattice_mul": [
+      "success",
+      "not_found",
+      "fatal"
+    ],
+    "candidates": [
+      "success",
+      "not_found",
+      "fatal"
+    ],
+    "fixed_degree": [
+      "success",
+      "not_found",
+      "fatal"
+    ]
+  },
+  "claim_boundary": "The annotations are a reviewable contract. The generator validates that contract and its layout; it is not a sound whole-program C alias analysis."
+}

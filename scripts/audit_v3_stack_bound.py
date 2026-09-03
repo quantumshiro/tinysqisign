@@ -34,6 +34,31 @@ CONDITIONAL_BRANCH_RE = re.compile(
 INSTRUCTION_ADDRESS_RE = re.compile(r"^\s*([0-9a-fA-F]+):\s")
 INDIRECT_PC_LOAD_RE = re.compile(r"\sldr(?:\.w)?\s+pc\s*,")
 ROOTS = ("keygen_thunk", "sign_thunk", "verify_thunk")
+
+# Arm's Cortex-M stack-sizing guidance gives a maximum 52-word exception
+# frame for Secure Armv8-M software when the FPU context is active and the
+# exception is Non-Secure.  A further word covers the permitted 8-byte stack
+# alignment padding.  RP2350's ``rp2350-arm-s`` platform is Secure Arm code
+# and its Cortex-M33 has the single-precision FPU, so 53 words is the most
+# conservative row applicable to this linked image.  Handler mode uses MSP;
+# therefore only the first exception entry while the operation runs on PSP is
+# charged to the operation PSP bound.  Handler call chains and nesting remain
+# separate MSP obligations.
+ARCH_EXCEPTION_FRAME_WORDS_MAX = 52
+ARCH_EXCEPTION_ALIGNMENT_WORDS_MAX = 1
+ARCH_WORD_BYTES = 4
+ARCH_EXCEPTION_PSP_ALLOWANCE_BYTES = (
+    ARCH_EXCEPTION_FRAME_WORDS_MAX + ARCH_EXCEPTION_ALIGNMENT_WORDS_MAX
+) * ARCH_WORD_BYTES
+ARM_STACK_GUIDANCE_URL = (
+    "https://developer.arm.com/community/arm-community-blogs/b/architectures-and-"
+    "processors-blog/posts/how-much-stack-memory-do-i-need-for-my-arm-cortex--m-"
+    "applications"
+)
+RP2350_DATASHEET_URL = (
+    "https://pip-assets.raspberrypi.com/categories/1214-rp2350/documents/"
+    "RP-008373-DS-2-rp2350-datasheet.pdf?disposition=inline"
+)
 CERTIFIED_CROSS_SYMBOL_CONDITIONALS = {
     ("__wrap___aeabi_dmul", "__wrap___aeabi_dsub+0x20"),
     ("__wrap___aeabi_i2d", "__wrap___aeabi_ddiv+0x94"),
@@ -730,17 +755,28 @@ def static_psp_bound(
         memo[component_index] = result
         return result
 
-    total, witness = visit(component_of[root])
+    software_total, witness = visit(component_of[root])
+    total = software_total + ARCH_EXCEPTION_PSP_ALLOWANCE_BYTES
+    witness = witness + [
+        {
+            "component": ["<architectural-exception-entry>"],
+            "local_or_recursive_frame_bound_bytes": ARCH_EXCEPTION_PSP_ALLOWANCE_BYTES,
+            "basis": "maximum Secure Armv8-M exception frame plus alignment",
+        }
+    ]
     return {
+        "software_call_bound_bytes": software_total,
+        "exception_entry_allowance_bytes": ARCH_EXCEPTION_PSP_ALLOWANCE_BYTES,
         "bound_bytes": total,
         "psp_reservation_bytes": 128 * 1024,
         "reservation_margin_bytes": 128 * 1024 - total,
         "fits_reservation": total <= 128 * 1024,
         "witness": witness,
         "scope": (
-            "linked p324_3/RADIX32 synchronous Thread-mode call graph rooted at the "
-            "operation thunk, with rank-bounded recursive SCCs; excludes exception-entry "
-            "stacking and asynchronous MSP use"
+            "linked p324_3/RADIX32 Thread-mode call graph rooted at the operation "
+            "thunk, with rank-bounded recursive SCCs and one maximum architectural "
+            "exception-entry frame charged to PSP; excludes handler call chains and "
+            "asynchronous MSP nesting"
         ),
     }
 
@@ -761,6 +797,8 @@ def main() -> int:
         raise ValueError("stack-bound ELF was not built from a clean firmware tree")
     if cache.get("SQISIGN_V3_SOURCE_DIRTY") != "0":
         raise ValueError("stack-bound ELF was not built from a clean v3 source tree")
+    if cache.get("PICO_PLATFORM") != "rp2350-arm-s":
+        raise ValueError("exception-frame certificate expects Secure Arm RP2350")
     firmware_commit = cache.get("SQISIGN_FIRMWARE_GIT_COMMIT")
     if args.expected_firmware_commit is not None and firmware_commit != args.expected_firmware_commit:
         raise ValueError(
@@ -856,6 +894,18 @@ def main() -> int:
             f"{sorted(observed_conditional_pairs)}"
         )
     manual_frame_certificates = certify_manual_frames(bodies, all_reachable)
+    psp_write_records = [
+        {"function": function, "instruction": line}
+        for function, lines in sorted(bodies.items())
+        for line in lines
+        if re.search(r"\bmsr\s+PSP\b", line, re.IGNORECASE)
+    ]
+    if (
+        len(psp_write_records) != 2
+        or {row["function"] for row in psp_write_records}
+        != {"sqisign_call_on_psp"}
+    ):
+        raise ValueError(f"linked PSP-write inventory changed: {psp_write_records}")
     recursion_certificates = derive_recursion_certificates(
         args.source_dir, args.build_dir, stack_records, unique_cycles
     )
@@ -881,7 +931,7 @@ def main() -> int:
         report["fits_reservation"] for report in psp_bounds.values()
     )
     result = {
-        "schema": "sqisign-v3-linked-stack-bound-audit-v3",
+        "schema": "sqisign-v3-linked-stack-bound-audit-v4",
         "status": "PSP_BOUND_ESTABLISHED" if all_psp_bounds_fit else "PARTIAL",
         "elf": {
             "filename": args.elf.name,
@@ -891,6 +941,7 @@ def main() -> int:
         "build_provenance": {
             "firmware_commit": firmware_commit,
             "firmware_dirty": 0,
+            "pico_platform": cache.get("PICO_PLATFORM"),
             "v3_source_commit": cache.get("SQISIGN_V3_SOURCE_COMMIT"),
             "v3_source_dirty": 0,
             "generated_tree_sha256": cache.get("SQISIGN_V3_GENERATED_TREE_SHA256"),
@@ -917,6 +968,35 @@ def main() -> int:
                 "save area is included in the corresponding manual frame bound"
             ),
         },
+        "architectural_psp_exception_certificate": {
+            "platform": "rp2350-arm-s",
+            "platform_interpretation": "Secure Arm code on RP2350",
+            "processor": "Arm Cortex-M33 with single-precision FPU and Security Extension",
+            "maximum_secure_exception_frame_words": ARCH_EXCEPTION_FRAME_WORDS_MAX,
+            "maximum_alignment_padding_words": ARCH_EXCEPTION_ALIGNMENT_WORDS_MAX,
+            "word_bytes": ARCH_WORD_BYTES,
+            "psp_allowance_bytes": ARCH_EXCEPTION_PSP_ALLOWANCE_BYTES,
+            "handler_mode_stack": "MSP",
+            "linked_psp_write_instructions": psp_write_records,
+            "linked_psp_write_sites_confined_to_trampoline": True,
+            "sources": [
+                {
+                    "title": "How much stack memory do I need for my Arm Cortex-M applications?",
+                    "url": ARM_STACK_GUIDANCE_URL,
+                    "facts_used": "Secure Armv8-M exception-frame table, alignment padding, and Handler-mode MSP use",
+                },
+                {
+                    "title": "RP2350 Datasheet",
+                    "url": RP2350_DATASHEET_URL,
+                    "facts_used": "Cortex-M33 single-precision FPU and Security Extension configuration",
+                },
+            ],
+            "boundary": (
+                "This allowance closes the hardware frame charged to the interrupted "
+                "operation PSP. It does not bound the handler software frames, enabled-IRQ "
+                "set, priority nesting, runtime vector table, or live MSP depth."
+            ),
+        },
         "static_psp_bounds": psp_bounds,
         "decision": {
             "all_compiler_local_frames_static": len(dynamic_rows) == 0,
@@ -927,16 +1007,19 @@ def main() -> int:
             "operation_psp_bounds_established": all_psp_bounds_fit,
             "whole_program_worst_case_stack_bound_established": False,
             "reason": (
-                "The linked synchronous Thread-mode operation roots have conservative PSP bounds, "
-                "including source-ranked recursion and ELF-bound manual assembly frames. "
-                "A whole-program bound is still withheld because exception-entry stacking, "
-                "asynchronous interrupt nesting, and MSP call chains are outside this analysis."
+                "The linked Thread-mode operation roots have conservative PSP bounds, "
+                "including source-ranked recursion, ELF-bound manual assembly frames, "
+                "and one maximum Secure Armv8-M exception-entry frame with alignment. "
+                "A whole-program bound is still withheld because handler call chains, "
+                "the enabled-interrupt/vector set, asynchronous nesting, and live MSP "
+                "depth are outside this analysis."
                 if all_psp_bounds_fit
                 else "The linked operation-root closure is incomplete or one conservative "
                 "PSP bound exceeds its reservation."
             ),
             "next_proof_obligations": [
-                "add exception-entry and interrupt/MSP bounds separately from the synchronous operation PSP bound",
+                "resolve the linked handler callback targets and runtime vector table",
+                "bound enabled-interrupt priority nesting and live MSP depth",
                 "compare the resulting static bound with guarded multi-input PSP watermarks",
             ],
         },
@@ -953,6 +1036,7 @@ def main() -> int:
         f"dynamic_records=0 recursive_sccs={len(all_cycles)} "
         "recursive_rank_bounds=true "
         f"operation_psp_bounds={str(all_psp_bounds_fit).lower()} "
+        f"exception_psp_allowance={ARCH_EXCEPTION_PSP_ALLOWANCE_BYTES} "
         "whole_program_bound=false"
     )
     for root, report in root_reports.items():
