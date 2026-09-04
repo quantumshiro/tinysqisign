@@ -11,13 +11,23 @@ picotool_cmake_dir=${PICOTOOL_CMAKE_DIR:?Set PICOTOOL_CMAKE_DIR to the picotool 
 expected_v3_commit=874658c64aa2e20f53b1f4d696144723d558ed5c
 
 v3_root=$(CDPATH= cd -- "$v3_root" && pwd -P)
+generated_root="$v3_root/src/pqm4/sqisign_p324_3/m4f"
 v3_commit=$(git -C "$v3_root" rev-parse HEAD)
 test "$v3_commit" = "$expected_v3_commit"
-test -f "$v3_root/src/pqm4/sqisign_p324_3/m4f/pqm4_api.c"
+test -f "$generated_root/pqm4_api.c"
 test -f "$sdk_root/pico_sdk_init.cmake"
 test -x "$toolchain_root/bin/arm-none-eabi-gcc"
 test -f "$picotool_cmake_dir/picotoolConfig.cmake"
 test -z "$(git -C "$v3_root" status --porcelain --untracked-files=no)"
+
+# Generated pqm4 sources are not part of the upstream commit. Bind the complete
+# materialized tree separately and print the digest in the target transcript.
+generated_digest=$(
+    CDPATH= cd -- "$generated_root"
+    find . -type f -print | LC_ALL=C sort | while IFS= read -r file; do
+        shasum -a 256 "$file"
+    done | shasum -a 256 | awk '{print $1}'
+)
 
 firmware_commit=$(git -C "$project_root" rev-parse HEAD)
 firmware_dirty=0
@@ -40,6 +50,7 @@ cmake \
     -DSQISIGN_V3_SOURCE_ROOT="$v3_root" \
     -DSQISIGN_V3_SOURCE_COMMIT="$v3_commit" \
     -DSQISIGN_V3_SOURCE_DIRTY=0 \
+    -DSQISIGN_V3_GENERATED_TREE_SHA256="$generated_digest" \
     -DSQISIGN_FIRMWARE_GIT_COMMIT="$firmware_commit" \
     -DSQISIGN_FIRMWARE_DIRTY="$firmware_dirty" \
     -DCMAKE_BUILD_TYPE=Release
@@ -55,5 +66,5 @@ test -f "$elf"
     "$toolchain_root/bin/arm-none-eabi-size" \
     "$elf"
 
-printf 'RP2350 SQIsign v3 D3 build PASS\nelf=%s\nuf2=%s\nmap=%s.map\n' \
-    "$elf" "${elf%.elf}.uf2" "$elf"
+printf 'RP2350 SQIsign v3 D3 build PASS\nelf=%s\nuf2=%s\nmap=%s.map\ngenerated_tree_sha256=%s\n' \
+    "$elf" "${elf%.elf}.uf2" "$elf" "$generated_digest"
