@@ -1,0 +1,996 @@
+{
+  "analysis_rebuild": {
+    "bytes": 2042512,
+    "filename": "sqisign_rp2350_ksv.elf",
+    "sha256": "85cd51239fdf56cc25e969c643e14570c34ae7c2a9925bebd80e2d55237fff60",
+    "text_identical_to_observed_elf": true,
+    "text_sha256": "fe4d2ad64fda28d45c913fa8ef0aedb55d5c88b7a1f707384a22ec8fc1344cdb"
+  },
+  "architectural_exception_allowance_bytes": 212,
+  "compiler_stack_usage": {
+    "dynamic_records": 0,
+    "files": 126,
+    "records": 1154
+  },
+  "cross_symbol_conditional_branches": [
+    {
+      "function": "bss_fill_test",
+      "instruction": "10000180:\td1fc      \tbne.n\t1000017c <bss_fill_loop>",
+      "opcode": "bne.n",
+      "target": "bss_fill_loop",
+      "target_address": "0x1000017c",
+      "target_expression": "bss_fill_loop"
+    },
+    {
+      "function": "data_cpy",
+      "instruction": "10000198:\td3fb      \tbcc.n\t10000192 <data_cpy_loop>",
+      "opcode": "bcc.n",
+      "target": "data_cpy_loop",
+      "target_address": "0x10000192",
+      "target_expression": "data_cpy_loop"
+    },
+    {
+      "function": "__wrap___aeabi_dadd",
+      "instruction": "1000225c:\td4f8      \tbmi.n\t10002250 <generic_restore_state+0x1c>",
+      "opcode": "bmi.n",
+      "target": "generic_restore_state",
+      "target_address": "0x10002250",
+      "target_expression": "generic_restore_state+0x1c"
+    },
+    {
+      "function": "__wrap___aeabi_dsub",
+      "instruction": "10002284:\td4f8      \tbmi.n\t10002278 <__wrap___aeabi_dadd+0x20>",
+      "opcode": "bmi.n",
+      "target": "__wrap___aeabi_dadd",
+      "target_address": "0x10002278",
+      "target_expression": "__wrap___aeabi_dadd+0x20"
+    },
+    {
+      "fallback_peak_derivation": "max(4-byte saved LR + 32-byte generic_save_state, 4-byte saved LR + 24-byte retained state + 8-byte body) <= 36 bytes; manual frame bound rounds this to 40 bytes",
+      "fallback_prefix_instructions": [
+        "100022a0:\tb500      \tpush\t{lr}",
+        "100022a2:\tf7ff ffb7 \tbl\t10002214 <generic_save_state>",
+        "100022a6:\te002      \tb.n\t100022ae <__wrap___aeabi_dmul+0x6>"
+      ],
+      "function": "__wrap___aeabi_dmul",
+      "instruction": "100022ac:\td4f8      \tbmi.n\t100022a0 <__wrap___aeabi_dsub+0x20>",
+      "opcode": "bmi.n",
+      "target": "__wrap___aeabi_dsub",
+      "target_address": "0x100022a0",
+      "target_expression": "__wrap___aeabi_dsub+0x20"
+    },
+    {
+      "function": "__wrap___aeabi_ddiv",
+      "instruction": "100022f4:\td4f8      \tbmi.n\t100022e8 <__wrap___aeabi_dmul+0x40>",
+      "opcode": "bmi.n",
+      "target": "__wrap___aeabi_dmul",
+      "target_address": "0x100022e8",
+      "target_expression": "__wrap___aeabi_dmul+0x40"
+    },
+    {
+      "fallback_peak_derivation": "max(4-byte saved LR + 32-byte generic_save_state, 4-byte saved LR + 24-byte retained state + 8-byte body) <= 36 bytes; manual frame bound rounds this to 40 bytes",
+      "fallback_prefix_instructions": [
+        "10002384:\tb500      \tpush\t{lr}",
+        "10002386:\tf7ff ff45 \tbl\t10002214 <generic_save_state>",
+        "1000238a:\te002      \tb.n\t10002392 <__wrap___aeabi_i2d+0x6>"
+      ],
+      "function": "__wrap___aeabi_i2d",
+      "instruction": "10002390:\td4f8      \tbmi.n\t10002384 <__wrap___aeabi_ddiv+0x94>",
+      "opcode": "bmi.n",
+      "target": "__wrap___aeabi_ddiv",
+      "target_address": "0x10002384",
+      "target_expression": "__wrap___aeabi_ddiv+0x94"
+    },
+    {
+      "function": "__wrap___aeabi_ui2d",
+      "instruction": "100023b4:\td4f8      \tbmi.n\t100023a8 <__wrap___aeabi_i2d+0x1c>",
+      "opcode": "bmi.n",
+      "target": "__wrap___aeabi_i2d",
+      "target_address": "0x100023a8",
+      "target_expression": "__wrap___aeabi_i2d+0x1c"
+    },
+    {
+      "fallback_peak_derivation": "max(4-byte saved LR + 32-byte generic_save_state, 4-byte saved LR + 24-byte retained state + 8-byte body) <= 36 bytes; manual frame bound rounds this to 40 bytes",
+      "fallback_prefix_instructions": [
+        "100023cc:\tb500      \tpush\t{lr}",
+        "100023ce:\tf7ff ff21 \tbl\t10002214 <generic_save_state>",
+        "100023d2:\te002      \tb.n\t100023da <double2int_z_entry>"
+      ],
+      "function": "__wrap___aeabi_d2iz",
+      "instruction": "100023d8:\td4f8      \tbmi.n\t100023cc <__wrap___aeabi_ui2d+0x1c>",
+      "opcode": "bmi.n",
+      "target": "__wrap___aeabi_ui2d",
+      "target_address": "0x100023cc",
+      "target_expression": "__wrap___aeabi_ui2d+0x1c"
+    },
+    {
+      "function": "__wrap___aeabi_d2uiz",
+      "instruction": "100023fc:\td4f8      \tbmi.n\t100023f0 <double2int_z_entry+0x16>",
+      "opcode": "bmi.n",
+      "target": "double2int_z_entry",
+      "target_address": "0x100023f0",
+      "target_expression": "double2int_z_entry+0x16"
+    },
+    {
+      "function": "__wrap___aeabi_dcmpun",
+      "instruction": "10002420:\td4f8      \tbmi.n\t10002414 <double2uint_z_entry+0x16>",
+      "opcode": "bmi.n",
+      "target": "double2uint_z_entry",
+      "target_address": "0x10002414",
+      "target_expression": "double2uint_z_entry+0x16"
+    },
+    {
+      "function": "__wrap___aeabi_dcmpeq",
+      "instruction": "10002444:\td4f8      \tbmi.n\t10002438 <__wrap___aeabi_dcmpun+0x1c>",
+      "opcode": "bmi.n",
+      "target": "__wrap___aeabi_dcmpun",
+      "target_address": "0x10002438",
+      "target_expression": "__wrap___aeabi_dcmpun+0x1c"
+    },
+    {
+      "function": "__wrap___aeabi_dcmplt",
+      "instruction": "10002468:\td4f8      \tbmi.n\t1000245c <__wrap___aeabi_dcmpeq+0x1c>",
+      "opcode": "bmi.n",
+      "target": "__wrap___aeabi_dcmpeq",
+      "target_address": "0x1000245c",
+      "target_expression": "__wrap___aeabi_dcmpeq+0x1c"
+    },
+    {
+      "function": "__wrap___aeabi_dcmple",
+      "instruction": "10002490:\td4f8      \tbmi.n\t10002484 <__wrap___aeabi_dcmplt+0x20>",
+      "opcode": "bmi.n",
+      "target": "__wrap___aeabi_dcmplt",
+      "target_address": "0x10002484",
+      "target_expression": "__wrap___aeabi_dcmplt+0x20"
+    },
+    {
+      "function": "__wrap___aeabi_dcmpge",
+      "instruction": "100024b8:\td4f8      \tbmi.n\t100024ac <__wrap___aeabi_dcmple+0x20>",
+      "opcode": "bmi.n",
+      "target": "__wrap___aeabi_dcmple",
+      "target_address": "0x100024ac",
+      "target_expression": "__wrap___aeabi_dcmple+0x20"
+    },
+    {
+      "function": "__wrap___aeabi_dcmpgt",
+      "instruction": "100024e0:\td4f8      \tbmi.n\t100024d4 <__wrap___aeabi_dcmpge+0x20>",
+      "opcode": "bmi.n",
+      "target": "__wrap___aeabi_dcmpge",
+      "target_address": "0x100024d4",
+      "target_expression": "__wrap___aeabi_dcmpge+0x20"
+    },
+    {
+      "function": "fix642double",
+      "instruction": "10002500:\tda50      \tbge.n\t100025a4 <ufix642double>",
+      "opcode": "bge.n",
+      "target": "ufix642double",
+      "target_address": "0x100025a4",
+      "target_expression": "ufix642double"
+    },
+    {
+      "function": "fix2double",
+      "instruction": "1000263a:\tf280 8035 \tbge.w\t100026a8 <ufix2double>",
+      "opcode": "bge.w",
+      "target": "ufix2double",
+      "target_address": "0x100026a8",
+      "target_expression": "ufix2double"
+    }
+  ],
+  "decision": {
+    "all_input_dependent_thread_mode_paths_in_linked_graph_covered": true,
+    "all_operation_psp_bounds_fit_128_kib": true,
+    "boundary": "The bounds cover the linked KeyGen, Sign, and Verify Thread-mode call closures plus one maximum exception-entry frame charged to PSP. Handler software frames, enabled-interrupt nesting, and live MSP depth are outside this certificate.",
+    "operation_psp_bounds_established": true,
+    "whole_program_interrupt_inclusive_stack_bound_established": false
+  },
+  "elf": {
+    "bytes": 2041276,
+    "filename": "sqisign_rp2350_ksv.elf",
+    "firmware_commit": "dc3289add3213cc7671f9943dfaa3bac770b2709",
+    "sha256": "3ed410dc2e5fa2d465dac3d93cf5d3f61678693638cc9cb35c7920ca9883e29f"
+  },
+  "indirect_call_resolutions": {
+    "raise_signal_handler": {
+      "assumption": "ordinary execution without arbitrary memory corruption",
+      "initial_signal_table_pointer": 0,
+      "registration_symbols_linked": false
+    },
+    "secure_clear": {
+      "initialized_pointer": "0x200013f1",
+      "source_sha256": "758bd812b4baff55cdbc2a70976006a48caf438f972d596b2c5366a0e01d9fba",
+      "target": "memset"
+    }
+  },
+  "literal_veneer_resolutions": [
+    {
+      "literal": "1002880c:\t2000124d \t.word\t0x2000124d",
+      "target": "memcmp",
+      "target_address": "0x2000124c",
+      "veneer": "__memcmp_veneer"
+    },
+    {
+      "literal": "10028814:\t200001f1 \t.word\t0x200001f1",
+      "target": "mutex_try_enter_block_until",
+      "target_address": "0x200001f0",
+      "veneer": "__mutex_try_enter_block_until_veneer"
+    },
+    {
+      "literal": "1002881c:\t200002a9 \t.word\t0x200002a9",
+      "target": "reset_non_control_endpoints",
+      "target_address": "0x200002a8",
+      "veneer": "__reset_non_control_endpoints_veneer"
+    },
+    {
+      "literal": "10028824:\t20000ab1 \t.word\t0x20000ab1",
+      "target": "_hw_endpoint_buffer_control_update32",
+      "target_address": "0x20000ab0",
+      "veneer": "___hw_endpoint_buffer_control_update32_veneer"
+    },
+    {
+      "literal": "1002882c:\t20000a7d \t.word\t0x20000a7d",
+      "target": "e15_is_critical_frame_period",
+      "target_address": "0x20000a7c",
+      "veneer": "__e15_is_critical_frame_period_veneer"
+    },
+    {
+      "literal": "10028834:\t20000e71 \t.word\t0x20000e71",
+      "target": "frexp",
+      "target_address": "0x20000e70",
+      "veneer": "__frexp_veneer"
+    },
+    {
+      "literal": "1002883c:\t20000229 \t.word\t0x20000229",
+      "target": "mutex_enter_timeout_ms",
+      "target_address": "0x20000228",
+      "veneer": "__mutex_enter_timeout_ms_veneer"
+    },
+    {
+      "literal": "10028844:\t20000261 \t.word\t0x20000261",
+      "target": "mutex_exit",
+      "target_address": "0x20000260",
+      "veneer": "__mutex_exit_veneer"
+    },
+    {
+      "literal": "1002884c:\t20001479 \t.word\t0x20001479",
+      "target": "memcpy",
+      "target_address": "0x20001478",
+      "veneer": "__memcpy_veneer"
+    },
+    {
+      "literal": "10028854:\t20000dad \t.word\t0x20000dad",
+      "target": "llround",
+      "target_address": "0x20000dac",
+      "veneer": "__llround_veneer"
+    },
+    {
+      "literal": "1002885c:\t20000ed9 \t.word\t0x20000ed9",
+      "target": "__aeabi_uldivmod",
+      "target_address": "0x20000ed8",
+      "veneer": "____aeabi_uldivmod_veneer"
+    },
+    {
+      "literal": "10028864:\t200012cd \t.word\t0x200012cd",
+      "target": "memmove",
+      "target_address": "0x200012cc",
+      "veneer": "__memmove_veneer"
+    },
+    {
+      "literal": "1002886c:\t20000af9 \t.word\t0x20000af9",
+      "target": "hw_endpoint_start_next_buffer",
+      "target_address": "0x20000af8",
+      "veneer": "__hw_endpoint_start_next_buffer_veneer"
+    },
+    {
+      "literal": "10028874:\t200013f1 \t.word\t0x200013f1",
+      "target": "memset",
+      "target_address": "0x200013f0",
+      "veneer": "__memset_veneer"
+    },
+    {
+      "literal": "1002887c:\t20000a55 \t.word\t0x20000a55",
+      "target": "e15_is_bulkin_ep",
+      "target_address": "0x20000a54",
+      "veneer": "__e15_is_bulkin_ep_veneer"
+    },
+    {
+      "literal": "10028884:\t20000111 \t.word\t0x20000111",
+      "target": "mutex_try_enter",
+      "target_address": "0x20000110",
+      "veneer": "__mutex_try_enter_veneer"
+    },
+    {
+      "literal": "2000156c:\t10001cb9 \t.word\t0x10001cb9",
+      "target": "time_us_64",
+      "target_address": "0x10001cb8",
+      "veneer": "__time_us_64_veneer"
+    },
+    {
+      "literal": "20001574:\t10004d9d \t.word\t0x10004d9d",
+      "target": "tud_event_hook_cb",
+      "target_address": "0x10004d9c",
+      "veneer": "__tud_event_hook_cb_veneer"
+    },
+    {
+      "literal": "2000157c:\t10002709 \t.word\t0x10002709",
+      "target": "__wrap___aeabi_d2lz",
+      "target_address": "0x10002708",
+      "veneer": "____wrap___aeabi_d2lz_veneer"
+    },
+    {
+      "literal": "20001584:\t10000dd5 \t.word\t0x10000dd5",
+      "target": "panic",
+      "target_address": "0x10000dd4",
+      "veneer": "__panic_veneer"
+    },
+    {
+      "literal": "2000158c:\t10001b59 \t.word\t0x10001b59",
+      "target": "best_effort_wfe_or_timeout",
+      "target_address": "0x10001b58",
+      "veneer": "__best_effort_wfe_or_timeout_veneer"
+    },
+    {
+      "literal": "20001594:\t100063dd \t.word\t0x100063dd",
+      "target": "tu_fifo_write",
+      "target_address": "0x100063dc",
+      "veneer": "__tu_fifo_write_veneer"
+    },
+    {
+      "literal": "2000159c:\t100022a9 \t.word\t0x100022a9",
+      "target": "__wrap___aeabi_dmul",
+      "target_address": "0x100022a8",
+      "veneer": "____wrap___aeabi_dmul_veneer"
+    }
+  ],
+  "manual_frame_certificate": {
+    "basis": "all linked body stack adjustments inspected; DCP wrapper rows include the fallback save area and are rounded to ABI alignment",
+    "functions": {
+      "____wrap___aeabi_d2lz_veneer": {
+        "body_sha256": "6bd7b5a848a88f184a537ddc5b3b3fa5a2987a470533ed889bb4709167a3b257",
+        "frame_bytes": 0,
+        "required_fragments": [
+          "ldr.w\tpc",
+          ".word\t0x"
+        ]
+      },
+      "____wrap___aeabi_dmul_veneer": {
+        "body_sha256": "1dbd56596baa12d501a439423c8b10f98050974ce92d36de960a50b07b4cf509",
+        "frame_bytes": 0,
+        "required_fragments": [
+          "ldr.w\tpc",
+          ".word\t0x"
+        ]
+      },
+      "__frexp_veneer": {
+        "body_sha256": "c41c94c570d94f7a15d4e4b8baf79f6e3a16fd3953e169ff7c2e8cbe5b5d32da",
+        "frame_bytes": 0,
+        "required_fragments": [
+          "ldr.w\tpc",
+          ".word\t0x"
+        ]
+      },
+      "__llround_veneer": {
+        "body_sha256": "b7df21098792135e326617af16bba716c4583b6b541c92fa16c0e2d95f070b32",
+        "frame_bytes": 0,
+        "required_fragments": [
+          "ldr.w\tpc",
+          ".word\t0x"
+        ]
+      },
+      "__wrap___aeabi_d2lz": {
+        "body_sha256": "7c0b361239170f9d33fdc2612ef08538a85eed1f6ee075cd99d9938c8655efba",
+        "frame_bytes": 0,
+        "required_fragments": [
+          "movs\tr2, #0"
+        ]
+      },
+      "__wrap___aeabi_dadd": {
+        "body_sha256": "897522e867806aa50e414afc7e24cc0955f0d9bc407f7aa6f9ea8bfc1da3bfc4",
+        "frame_bytes": 40,
+        "required_fragments": [
+          "mrc2",
+          "bx\tlr"
+        ]
+      },
+      "__wrap___aeabi_dcmpeq": {
+        "body_sha256": "2a798093a0bc552dbc7ec74c08c9056c63a77548bae5dacce5f717a858fdfa11",
+        "frame_bytes": 40,
+        "required_fragments": [
+          "mrc2",
+          "bx\tlr"
+        ]
+      },
+      "__wrap___aeabi_dcmpgt": {
+        "body_sha256": "b7b524c8ceb340855cf046b45c9fe711b70fdc488bb6bf081288dc0c3b0bbce8",
+        "frame_bytes": 40,
+        "required_fragments": [
+          "mrc2",
+          "bx\tlr"
+        ]
+      },
+      "__wrap___aeabi_dcmplt": {
+        "body_sha256": "4abb588ffad610d16d1676f059d0f592639ce72df17ffe7ccd818a7fb7911ced",
+        "frame_bytes": 40,
+        "required_fragments": [
+          "mrc2",
+          "bx\tlr"
+        ]
+      },
+      "__wrap___aeabi_dcmpun": {
+        "body_sha256": "c9d2a54349ca8aaeb1936f6c9c39c47a38a8a28a707217c43f46fff4d708a3c3",
+        "frame_bytes": 40,
+        "required_fragments": [
+          "mrc2",
+          "bx\tlr"
+        ]
+      },
+      "__wrap___aeabi_ddiv": {
+        "body_sha256": "4c443e18c218e0de57c217f08af3007d706f377c871c075a293b59549c7bf9f3",
+        "frame_bytes": 40,
+        "required_fragments": [
+          "mrc2",
+          "bx\tlr"
+        ]
+      },
+      "__wrap___aeabi_dmul": {
+        "body_sha256": "c84845db5d072466fd60936bbc59b60cc39e140a81d84a902694790c8253453b",
+        "frame_bytes": 40,
+        "required_fragments": [
+          "mrc2",
+          "push\t{r4, lr}",
+          "pop\t{r4, pc}"
+        ]
+      },
+      "__wrap___aeabi_dsub": {
+        "body_sha256": "76ac0e5c16150718b1e5559853c9ee9195f90edc44f6fcc2b35fbfc82a463ba7",
+        "frame_bytes": 40,
+        "required_fragments": [
+          "mrc2",
+          "bx\tlr"
+        ]
+      },
+      "__wrap___aeabi_ul2d": {
+        "body_sha256": "9501bd4d180afd3afda1ecda0c11d3089af6153e9a6f167515953ca2b1323072",
+        "frame_bytes": 0,
+        "required_fragments": [
+          "movs\tr2, #0"
+        ]
+      },
+      "_getpid_r": {
+        "body_sha256": "9f258e8465b4c83a9bd047459e80af7ab6e7d383228492c2cf538daa0d2b08de",
+        "frame_bytes": 0,
+        "required_fragments": [
+          "<_getpid>"
+        ]
+      },
+      "_kill_r": {
+        "body_sha256": "16d383aaa26ee589caecf0766729b339db28170b51ee22a9415601eada59b1fc",
+        "frame_bytes": 16,
+        "required_fragments": [
+          "push\t{r3, r4, r5, lr}",
+          "pop\t{r3, r4, r5, pc}"
+        ]
+      },
+      "abort": {
+        "body_sha256": "eaae23a4158e474b91127d426a9dc3f63614f036608bbe86c717e83ddb033851",
+        "frame_bytes": 8,
+        "required_fragments": [
+          "push\t{r3, lr}",
+          "<raise>"
+        ]
+      },
+      "frexp": {
+        "body_sha256": "fca28d79c4c35ad7d283ace3cf080a6f9ec7f3c057f9dbc501bec44f12a02961",
+        "frame_bytes": 16,
+        "required_fragments": [
+          "push\t{r4, r5, r6, lr}",
+          "pop\t{r4, r5, r6, pc}"
+        ]
+      },
+      "llround": {
+        "body_sha256": "e9a21e6447bd4d0933d38c9b5d1e5966eb7ba22f5e9385ac891c6828456d4cf4",
+        "frame_bytes": 16,
+        "required_fragments": [
+          "push\t{r3, r4, r5, lr}",
+          "pop\t{r3, r4, r5, pc}"
+        ]
+      },
+      "raise": {
+        "body_sha256": "ba5b51b95574ce3ae670d607c517d454b3aaff7d224975f4e4117374bd32506e",
+        "frame_bytes": 16,
+        "required_fragments": [
+          "push\t{r4, lr}",
+          "sub\tsp, #8"
+        ]
+      }
+    }
+  },
+  "provenance": {
+    "cmake_cache_sha256": "e103737a295b81ff058e8a6f03d2ba733e0ce0cc660a449b66a6617f1b249d08",
+    "compiler": "arm-none-eabi-gcc (Arm GNU Toolchain 15.2.Rel1 (Build arm-15.86)) 15.2.1 20251203",
+    "firmware_commit": "3073f0237dcd28c14f023a4005d23ccb7be1800c",
+    "firmware_dirty": 0,
+    "v2_source_commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+    "v2_tracked_source_clean": true
+  },
+  "recursion_certificate": {
+    "all_recursive_components_covered": true,
+    "maximum_active_frames": 9,
+    "maximum_input_length": 248,
+    "rank": "positive len; each recursive child receives floor(len/2) or ceil(len/2)",
+    "source": "src/ec/ref/lvlx/biextension.c",
+    "source_sha256": "0d7af4d1c876d08da48161f78372a9e2a5151cde19622f458363d122a8b117dc"
+  },
+  "roots": {
+    "keygen_thunk": {
+      "missing_stack_metadata_count": 0,
+      "reachable_functions": 326,
+      "recursive_sccs": [
+        [
+          "fp2_dlog_2e_rec"
+        ],
+        [
+          "fp2_dlog_2e_rec.constprop.0"
+        ]
+      ],
+      "unresolved_indirect_callsite_count": 0
+    },
+    "sign_thunk": {
+      "missing_stack_metadata_count": 0,
+      "reachable_functions": 389,
+      "recursive_sccs": [
+        [
+          "fp2_dlog_2e_rec"
+        ],
+        [
+          "fp2_dlog_2e_rec.constprop.0"
+        ]
+      ],
+      "unresolved_indirect_callsite_count": 0
+    },
+    "verify_thunk": {
+      "missing_stack_metadata_count": 0,
+      "reachable_functions": 149,
+      "recursive_sccs": [],
+      "unresolved_indirect_callsite_count": 0
+    }
+  },
+  "schema": "sqisign-v2-linked-stack-bound-audit-v1",
+  "static_psp_bounds": {
+    "keygen_thunk": {
+      "bound_bytes": 92192,
+      "exception_entry_allowance_bytes": 212,
+      "fits_reservation": true,
+      "observed_equals_software_call_bound": true,
+      "observed_psp_extent_bytes": 91980,
+      "observed_within_bound": true,
+      "psp_reservation_bytes": 131072,
+      "reservation_margin_bytes": 38880,
+      "software_call_bound_bytes": 91980,
+      "witness": [
+        {
+          "basis": "local frame",
+          "component": [
+            "keygen_thunk"
+          ],
+          "frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_sqisign_keypair_with_workspace"
+          ],
+          "frame_bound_bytes": 5800
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_protocols_keygen_with_workspace"
+          ],
+          "frame_bound_bytes": 472
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_dim2id2iso_arbitrary_isogeny_evaluation_with_workspace"
+          ],
+          "frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "dim2id2iso_arbitrary_isogeny_evaluation_impl"
+          ],
+          "frame_bound_bytes": 3080
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "dim2id2iso_ideal_to_isogeny_clapotis_impl"
+          ],
+          "frame_bound_bytes": 18272
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_find_uv_with_workspace"
+          ],
+          "frame_bound_bytes": 15936
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_quat_lideal_lideal_mul_reduced_with_workspace"
+          ],
+          "frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "quat_lideal_lideal_mul_reduced_impl"
+          ],
+          "frame_bound_bytes": 10848
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_quat_lattice_mul_with_workspace"
+          ],
+          "frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "quat_lattice_mul_impl"
+          ],
+          "frame_bound_bytes": 24280
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_mat_4xn_hnf_mod_core_with_workspace"
+          ],
+          "frame_bound_bytes": 32
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "ibz_mat_4xn_hnf_mod_core_impl"
+          ],
+          "frame_bound_bytes": 6792
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_vec_4_linear_combination_mod"
+          ],
+          "frame_bound_bytes": 1328
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_centered_mod"
+          ],
+          "frame_bound_bytes": 1096
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_mod"
+          ],
+          "frame_bound_bytes": 224
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_div_floor"
+          ],
+          "frame_bound_bytes": 1112
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_div"
+          ],
+          "frame_bound_bytes": 1328
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "ibz_div_unsigned"
+          ],
+          "frame_bound_bytes": 1368
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "__memset_veneer"
+          ],
+          "frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "memset"
+          ],
+          "frame_bound_bytes": 12
+        }
+      ]
+    },
+    "sign_thunk": {
+      "bound_bytes": 120664,
+      "exception_entry_allowance_bytes": 212,
+      "fits_reservation": true,
+      "observed_equals_software_call_bound": true,
+      "observed_psp_extent_bytes": 120452,
+      "observed_within_bound": true,
+      "psp_reservation_bytes": 131072,
+      "reservation_margin_bytes": 10408,
+      "software_call_bound_bytes": 120452,
+      "witness": [
+        {
+          "basis": "local frame",
+          "component": [
+            "sign_thunk"
+          ],
+          "frame_bound_bytes": 24
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_sqisign_sign_with_workspace"
+          ],
+          "frame_bound_bytes": 6072
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_protocols_sign_with_workspace"
+          ],
+          "frame_bound_bytes": 32
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "protocols_sign_impl"
+          ],
+          "frame_bound_bytes": 28616
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_dim2id2iso_arbitrary_isogeny_evaluation_with_workspace"
+          ],
+          "frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "dim2id2iso_arbitrary_isogeny_evaluation_impl"
+          ],
+          "frame_bound_bytes": 3080
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "dim2id2iso_ideal_to_isogeny_clapotis_impl"
+          ],
+          "frame_bound_bytes": 18272
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_find_uv_with_workspace"
+          ],
+          "frame_bound_bytes": 15936
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_quat_lideal_lideal_mul_reduced_with_workspace"
+          ],
+          "frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "quat_lideal_lideal_mul_reduced_impl"
+          ],
+          "frame_bound_bytes": 10848
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_quat_lattice_mul_with_workspace"
+          ],
+          "frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "quat_lattice_mul_impl"
+          ],
+          "frame_bound_bytes": 24280
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_mat_4xn_hnf_mod_core_with_workspace"
+          ],
+          "frame_bound_bytes": 32
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "ibz_mat_4xn_hnf_mod_core_impl"
+          ],
+          "frame_bound_bytes": 6792
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_vec_4_linear_combination_mod"
+          ],
+          "frame_bound_bytes": 1328
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_centered_mod"
+          ],
+          "frame_bound_bytes": 1096
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_mod"
+          ],
+          "frame_bound_bytes": 224
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_div_floor"
+          ],
+          "frame_bound_bytes": 1112
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_gen_ibz_div"
+          ],
+          "frame_bound_bytes": 1328
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "ibz_div_unsigned"
+          ],
+          "frame_bound_bytes": 1368
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "__memset_veneer"
+          ],
+          "frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "memset"
+          ],
+          "frame_bound_bytes": 12
+        }
+      ]
+    },
+    "verify_thunk": {
+      "bound_bytes": 20980,
+      "exception_entry_allowance_bytes": 212,
+      "fits_reservation": true,
+      "observed_equals_software_call_bound": true,
+      "observed_psp_extent_bytes": 20768,
+      "observed_within_bound": true,
+      "psp_reservation_bytes": 131072,
+      "reservation_margin_bytes": 110092,
+      "software_call_bound_bytes": 20768,
+      "witness": [
+        {
+          "basis": "local frame",
+          "component": [
+            "verify_thunk"
+          ],
+          "frame_bound_bytes": 32
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_verify_with_workspace"
+          ],
+          "frame_bound_bytes": 568
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "protocols_verify_with_workspace"
+          ],
+          "frame_bound_bytes": 32
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "protocols_verify_core.constprop.0"
+          ],
+          "frame_bound_bytes": 3856
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_theta_chain_compute_and_eval_verify_with_workspace"
+          ],
+          "frame_bound_bytes": 32
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "theta_chain_compute_with_workspace"
+          ],
+          "frame_bound_bytes": 1824
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "_theta_chain_compute_core.isra.0"
+          ],
+          "frame_bound_bytes": 12384
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "gluing_eval_point"
+          ],
+          "frame_bound_bytes": 1320
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_jac_to_xz_add_components"
+          ],
+          "frame_bound_bytes": 536
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_fp2_mul"
+          ],
+          "frame_bound_bytes": 96
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "sqisign_lvl1_ref_fp_mul"
+          ],
+          "frame_bound_bytes": 0
+        },
+        {
+          "basis": "local frame",
+          "component": [
+            "modmul"
+          ],
+          "frame_bound_bytes": 88
+        }
+      ]
+    }
+  },
+  "status": "OPERATION_PSP_BOUND_ESTABLISHED",
+  "target_observation_crosscheck": {
+    "all_observed_psp_extents_equal_software_call_bounds": true,
+    "all_observed_psp_extents_within_bounds": true,
+    "analysis_rebuild_text_sha256": "fe4d2ad64fda28d45c913fa8ef0aedb55d5c88b7a1f707384a22ec8fc1344cdb",
+    "manifest": "results/rp2350/ksv-d13-dc3289a-manifest.json",
+    "manifest_sha256": "63444a4e47d609ae8dc1506529607dc76955c520dc9a67d52e2a3cf413b1d0ca",
+    "observed_text_sha256": "fe4d2ad64fda28d45c913fa8ef0aedb55d5c88b7a1f707384a22ec8fc1344cdb",
+    "summary": "results/rp2350/ksv-d13-repeat-2026-09-04-summary.json",
+    "summary_sha256": "a0d2a79dfce7c98c877de2890632e3edd0bafc6ddda8d602f488642a82390671",
+    "text_sections_identical": true
+  }
+}

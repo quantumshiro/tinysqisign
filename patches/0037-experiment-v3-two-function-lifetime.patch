@@ -1,0 +1,181 @@
+diff --git a/src/quaternion/ref/lvlx/lll/lll_dim4.c b/src/quaternion/ref/lvlx/lll/lll_dim4.c
+index 2d4c174..6b70942 100644
+--- a/src/quaternion/ref/lvlx/lll/lll_dim4.c
++++ b/src/quaternion/ref/lvlx/lll/lll_dim4.c
+@@ -19,6 +19,25 @@ typedef struct
+     ibz_t G[4][4];
+ } ct_mk_result_t;
+
++/*
++ * The LDL state is dead as soon as ct_minkowski_reduce() returns.  Conversely,
++ * Aout is not written before that return.  Make this lifetime separation part
++ * of the C object layout instead of relying on compiler stack-slot reuse after
++ * the addresses of both objects have escaped to helper functions.
++ *
++ * The second output matrix, Bout, reuses ct_mk_result_t::Ainv_total after Aout
++ * has been derived from it.  res.G and res.T remain live for the later Gram
++ * computation, so only the dead subobject is reused.
++ */
++typedef union
++{
++    fp_ldl_t reduction;
++    ibz_t Aout[4][4];
++} quat_lll_dual_phase_t;
++
++_Static_assert(sizeof(((ct_mk_result_t *)0)->Ainv_total) == sizeof(ibz_t[4][4]),
++               "Ainv_total/Bout lifetime overlay requires equal extents");
++
+ // ==== Part 1: LDL state — dual init, block update, size reduction
+
+ // ---- closed-form dual init
+@@ -857,10 +876,8 @@ quat_lll_dual_reduce_ideal(quat_lattice_t *reduced,
+     assert(ibz_bitsize(&hnf->basis.m[1][2]) < QUAT_HNF_BITS); // C
+     assert(ibz_bitsize(&hnf->basis.m[1][3]) < QUAT_HNF_BITS); // B
+
+-    // The transform that will be returned: P * Ainv_total, with the column order reversed.
+-    ibz_t Aout[4][4] = { 0 };
+-
+-    fp_ldl_t st;
++    // Reduction state and the later Aout matrix have disjoint lifetimes.
++    quat_lll_dual_phase_t phase;
+     ct_mk_result_t res = { 0 };
+
+     {
+@@ -875,20 +892,20 @@ quat_lll_dual_reduce_ideal(quat_lattice_t *reduced,
+     }
+
+     // 2. reduce
+-    lll_dim4_qlapoty_reduce(&res, &st, &twoN, &B, &C, &Dq, &E, &p, P);
++    lll_dim4_qlapoty_reduce(&res, &phase.reduction, &twoN, &B, &C, &Dq, &E, &p, P);
+
+     // 3. Aout = P * Ainv_total with the column order reversed; P is the pair-swap (2,3,0,1)
+     static const int QUAT_SIGMA[4] = { 2, 3, 0, 1 };
+     for (int i = 0; i < 4; i++) {
+         for (int c = 0; c < 4; c++) {
+-            ibz_copy(&Aout[i][3 - c], &res.Ainv_total[QUAT_SIGMA[i]][c]);
+-            ibz_set_bound_ct(&Aout[i][3 - c], QUAT_AINVOUT_BITS);
++            ibz_copy(&phase.Aout[i][3 - c], &res.Ainv_total[QUAT_SIGMA[i]][c]);
++            ibz_set_bound_ct(&phase.Aout[i][3 - c], QUAT_AINVOUT_BITS);
+         }
+     }
+
+     // 4. materialise the primal basis: reduced->basis = hnf->basis * Aout, which is exactly
+     // quat_lattice_t's basis_out = basis_in * Ainv_total convention
+-    ibz_t Bout[4][4] = { 0 };
++    ibz_t(*Bout)[4] = res.Ainv_total;
+     for (int r = 0; r < 4; r++) {
+         for (int c = 0; c < 4; c++) {
+             ibz_t acc = { 0 };
+@@ -898,7 +915,7 @@ quat_lll_dual_reduce_ideal(quat_lattice_t *reduced,
+                 ibz_t hm = { 0 }, term = { 0 };
+                 ibz_copy(&hm, &hnf->basis.m[r][m]);
+                 ibz_set_bound_ct(&hm, QUAT_HNF_BITS);
+-                ibz_mul(&term, &hm, &Aout[m][c]);
++                ibz_mul(&term, &hm, &phase.Aout[m][c]);
+                 ibz_add(&acc, &acc, &term);
+                 ibz_set_bound_ct(&acc, QUAT_BASIS_BITS);
+             }
+@@ -922,7 +939,7 @@ quat_lll_dual_reduce_ideal(quat_lattice_t *reduced,
+     for (int r = 0; r < 4; r++) {
+         for (int c = 0; c < 4; c++) {
+             ibz_copy(&reduced->basis.m[r][c], &Bout[r][c]);
+-            ibz_copy(&Ainv->m[r][c], &Aout[r][c]);
++            ibz_copy(&Ainv->m[r][c], &phase.Aout[r][c]);
+         }
+     }
+ }
+diff --git a/src/signature/ref/lvlx/sign.c b/src/signature/ref/lvlx/sign.c
+index 5745db9..35ab378 100644
+--- a/src/signature/ref/lvlx/sign.c
++++ b/src/signature/ref/lvlx/sign.c
+@@ -9,6 +9,20 @@
+ #include <fp_constants.h>
+ #include <prng.h>
+
++/*
++ * The commitment ideal is consumed while constructing ideal_skchall_aux.  It
++ * is not referenced by the later ideal-to-isogeny and output-encoding phase.
++ * Conversely, the output product is first written by
++ * compute_dim2_isogeny_challenge(), after the commitment ideal is dead.
++ * Express that separation in the object layout instead of relying on the
++ * compiler to reuse stack slots whose addresses escaped to helper functions.
++ */
++typedef union
++{
++    quat_ideal_t commitment_ideal;
++    theta_couple_curve_with_basis_t output_product;
++} protocols_sign_phase_t;
++
+ // compute the commitment with ideal to isogeny
+ // and apply it to the basis of E0 (together with the multiplication by some scalar u)
+ static bool
+@@ -222,8 +236,7 @@ protocols_sign(signature_t *sig, const public_key_t *pk, secret_key_t *sk, const
+     quat_alg_elem_t resp_quat;
+     quat_alg_elem_init(&resp_quat);
+
+-    quat_ideal_t ideal_commit, ideal_skchall_aux;
+-    quat_ideal_init(&ideal_commit);
++    quat_ideal_t ideal_skchall_aux;
+     quat_ideal_init(&ideal_skchall_aux);
+
+     // This structure holds two curves E1 x E2 together with a basis Bi of E[2^n] for each of these curves
+@@ -231,8 +244,8 @@ protocols_sign(signature_t *sig, const public_key_t *pk, secret_key_t *sk, const
+     // theta_couple_curve_t Ecom_Eaux;
+
+     theta_couple_curve_with_basis_t Ecom_Eaux;
+-    // This structure holds two curves E1 x E2 together with a basis Bi of Ei[2^n]
+-    theta_couple_curve_with_basis_t Eaux2_Echall2;
++    protocols_sign_phase_t phase;
++    quat_ideal_init(&phase.commitment_ideal);
+
+     // This will hold the challenge curve
+     // ec_curve_t E_chall = sk->curve;
+@@ -244,7 +257,7 @@ protocols_sign(signature_t *sig, const public_key_t *pk, secret_key_t *sk, const
+     prng_domain_seed(&prng_commit_domain, DS_COMMITMENT_DOMAIN);
+
+     // computing the commitment
+-    ret = commit(&Ecom_Eaux.E1, &Ecom_Eaux.B1, &ideal_commit, &prng_commit_domain);
++    ret = commit(&Ecom_Eaux.E1, &Ecom_Eaux.B1, &phase.commitment_ideal, &prng_commit_domain);
+     prng_domain_clear(&prng_commit_domain);
+     // should never fail
+     assert(ret);
+@@ -270,10 +283,10 @@ protocols_sign(signature_t *sig, const public_key_t *pk, secret_key_t *sk, const
+                               &sk->secret_ideal,
+                               &ideal_chall_two,
+                               &chall_split,
+-                              &ideal_commit,
++                              &phase.commitment_ideal,
+                               &prng_resp_domain,
+                               RESPONSE_BITS - 1);
+-        ibz_gcd(&tmp_int, &ideal_skchall.norm, &ideal_commit.norm);
++        ibz_gcd(&tmp_int, &ideal_skchall.norm, &phase.commitment_ideal.norm);
+         if (!ibz_is_one(&tmp_int)) {
+             ret = 0;
+             fprintf(
+@@ -357,18 +370,23 @@ protocols_sign(signature_t *sig, const public_key_t *pk, secret_key_t *sk, const
+         // B_aux_2 on E_aux_2
+         // B_chall_2 on E_chall_2
+         ibz_invmod(&degree_resp_inv, &deg_odd, &remain);
+-        ret = compute_dim2_isogeny_challenge(&Eaux2_Echall2, &Ecom_Eaux, &degree_resp_inv);
++        ret = compute_dim2_isogeny_challenge(&phase.output_product, &Ecom_Eaux, &degree_resp_inv);
+         assert(ret);
+         if (!ret)
+             goto err;
+     }
+
+     // Set to the signature the Montgomery A-coefficient of E_aux_2
+-    set_aux_curve_signature(sig, &Eaux2_Echall2.E1);
++    set_aux_curve_signature(sig, &phase.output_product.E1);
+
+     // Set the basis change matrix from canonical bases to the supplied bases
+     compute_and_set_basis_change_matrix(
+-        sig, &Eaux2_Echall2.B1, &Eaux2_Echall2.B2, &Eaux2_Echall2.E1, &Eaux2_Echall2.E2, reduced_order);
++        sig,
++        &phase.output_product.B1,
++        &phase.output_product.B2,
++        &phase.output_product.E1,
++        &phase.output_product.E2,
++        reduced_order);
+ err:;
+     prng_clear();
+     return ret;

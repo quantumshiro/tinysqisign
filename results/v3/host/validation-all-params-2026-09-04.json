@@ -1,0 +1,132 @@
+{
+  "configuration": {
+    "build_type": "Release",
+    "implementation": "ref",
+    "radix": 32,
+    "strict_checks": true
+  },
+  "decision": {
+    "all_three_official_parameter_sets_tested": true,
+    "api_and_scheme_selftests_passed": 12,
+    "both_implementations_tested": true,
+    "functional_equivalence_established_for_all_inputs": false,
+    "known_answer_vectors_passed": 600,
+    "official_response_oracle_shared_between_trees": true
+  },
+  "provenance": {
+    "official": {
+      "commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+      "tracked_source_clean": true
+    },
+    "two_function_lifetime": {
+      "commit": "874658c64aa2e20f53b1f4d696144723d558ed5c",
+      "tracked_source_clean": true
+    }
+  },
+  "rows": [
+    {
+      "altered_signature_rejected": true,
+      "known_answer_exit": 0,
+      "known_answer_output_sha256": "5e07c11290fc047689e080b3ae70d4463fa1035a5956c47b4900d6e287c91e38",
+      "known_answer_seconds": 12.28999,
+      "nist_api_exit": 0,
+      "nist_api_output_sha256": "f390efa4f8c3912c83670ef31b97ca9f4bab35f754dc6d345594792263000b7f",
+      "nist_api_seconds": 0.55461,
+      "official_response_vectors": 100,
+      "parameter": "p324_3",
+      "response_sha256": "b632c926c72692f850a71b7f7bb338fb1aeee0d9f3362aa35a8ac6255ca3155b",
+      "selftest_exit": 0,
+      "selftest_output_sha256": "b9b91b7a7c17adc36167ae2b5acc179641e875000a61719b633ed2d9fb7aa057",
+      "selftest_seconds": 0.718991,
+      "valid_signatures_accepted": true,
+      "variant": "official"
+    },
+    {
+      "altered_signature_rejected": true,
+      "known_answer_exit": 0,
+      "known_answer_output_sha256": "5e07c11290fc047689e080b3ae70d4463fa1035a5956c47b4900d6e287c91e38",
+      "known_answer_seconds": 48.690423,
+      "nist_api_exit": 0,
+      "nist_api_output_sha256": "4e9d2bf9e9bb5f7d5f3bee767b284be5fc151eba8593876282128cef3d42ef3f",
+      "nist_api_seconds": 0.848203,
+      "official_response_vectors": 100,
+      "parameter": "p500_27",
+      "response_sha256": "986a28c7752428ba0eff2784af4f07b996d259646b192b16407a647a584d7537",
+      "selftest_exit": 0,
+      "selftest_output_sha256": "db3d1eebb617edce3f0ff25956d030b96c0fd62f757bf35935da22c8014a2309",
+      "selftest_seconds": 1.876196,
+      "valid_signatures_accepted": true,
+      "variant": "official"
+    },
+    {
+      "altered_signature_rejected": true,
+      "known_answer_exit": 0,
+      "known_answer_output_sha256": "5e07c11290fc047689e080b3ae70d4463fa1035a5956c47b4900d6e287c91e38",
+      "known_answer_seconds": 113.598751,
+      "nist_api_exit": 0,
+      "nist_api_output_sha256": "dbec1473ab393e35301f7dd081bf6299f8092b83bf890541ab0ef75f58e90b1d",
+      "nist_api_seconds": 1.551924,
+      "official_response_vectors": 100,
+      "parameter": "p664_17",
+      "response_sha256": "d3755945811f8eecb8004d1a8c02092311a700f59a4836378d3c54b91f7ec61a",
+      "selftest_exit": 0,
+      "selftest_output_sha256": "14c7d38ea779fcd6ffe30d8470db60b2b4d23e60f4f3aa789f0b7ef6462f0095",
+      "selftest_seconds": 3.496947,
+      "valid_signatures_accepted": true,
+      "variant": "official"
+    },
+    {
+      "altered_signature_rejected": true,
+      "known_answer_exit": 0,
+      "known_answer_output_sha256": "5e07c11290fc047689e080b3ae70d4463fa1035a5956c47b4900d6e287c91e38",
+      "known_answer_seconds": 12.272249,
+      "nist_api_exit": 0,
+      "nist_api_output_sha256": "93c9ceefb9bd394abd57ffa58c4232cb0198aaaaf8842af928feaeabc1b91811",
+      "nist_api_seconds": 0.550466,
+      "official_response_vectors": 100,
+      "parameter": "p324_3",
+      "response_sha256": "b632c926c72692f850a71b7f7bb338fb1aeee0d9f3362aa35a8ac6255ca3155b",
+      "selftest_exit": 0,
+      "selftest_output_sha256": "54b10a4fc521184cfff8ef2efdc1159427832aab3795b1b121b5cb9774ec8ea2",
+      "selftest_seconds": 0.711871,
+      "valid_signatures_accepted": true,
+      "variant": "two_function_lifetime"
+    },
+    {
+      "altered_signature_rejected": true,
+      "known_answer_exit": 0,
+      "known_answer_output_sha256": "5e07c11290fc047689e080b3ae70d4463fa1035a5956c47b4900d6e287c91e38",
+      "known_answer_seconds": 48.817467,
+      "nist_api_exit": 0,
+      "nist_api_output_sha256": "d32b580080d83c0c2f0aa08d1b8b21f11735ebeaac943b364d821a2c27c56bbc",
+      "nist_api_seconds": 0.965472,
+      "official_response_vectors": 100,
+      "parameter": "p500_27",
+      "response_sha256": "986a28c7752428ba0eff2784af4f07b996d259646b192b16407a647a584d7537",
+      "selftest_exit": 0,
+      "selftest_output_sha256": "a8e4ed5b62ccc88183deb65148b139aae46e7e2c10c57d2e0445716c7dadfc85",
+      "selftest_seconds": 1.61952,
+      "valid_signatures_accepted": true,
+      "variant": "two_function_lifetime"
+    },
+    {
+      "altered_signature_rejected": true,
+      "known_answer_exit": 0,
+      "known_answer_output_sha256": "5e07c11290fc047689e080b3ae70d4463fa1035a5956c47b4900d6e287c91e38",
+      "known_answer_seconds": 113.797914,
+      "nist_api_exit": 0,
+      "nist_api_output_sha256": "c85aba3f3d6407e0aa1d34efb0f13778c2c4d2140d80025b41171695d2692b51",
+      "nist_api_seconds": 2.062105,
+      "official_response_vectors": 100,
+      "parameter": "p664_17",
+      "response_sha256": "d3755945811f8eecb8004d1a8c02092311a700f59a4836378d3c54b91f7ec61a",
+      "selftest_exit": 0,
+      "selftest_output_sha256": "b3b5e763a7f4551149e9690881f03dda359d31a24c41b3b4b3beec70c5c33e5d",
+      "selftest_seconds": 3.393266,
+      "valid_signatures_accepted": true,
+      "variant": "two_function_lifetime"
+    }
+  ],
+  "schema": "sqisign-v3-two-function-all-parameter-host-validation-v1",
+  "status": "PASS"
+}

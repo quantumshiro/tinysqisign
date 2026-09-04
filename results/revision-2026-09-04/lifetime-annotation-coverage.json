@@ -1,0 +1,69 @@
+{
+  "annotated_physical_objects": [
+    "lattice_state",
+    "phase.candidates",
+    "phase.fixed_degree",
+    "phase.lattice_mul"
+  ],
+  "boundary": "This fail-closed gate covers declared members and direct field accesses. Phase labels, indirect aliases, pointer escape, and clearing semantics remain human-reviewed obligations checked by the lifetime certificate and runtime gates.",
+  "decision": {
+    "all_declared_physical_members_are_annotated": true,
+    "all_direct_source_accesses_are_classified": true,
+    "lifetimes_inferred_from_c": false,
+    "object_mapping_is_bijective": true,
+    "whole_program_alias_analysis_performed": false
+  },
+  "declared_physical_objects": [
+    "lattice_state",
+    "phase.candidates",
+    "phase.fixed_degree",
+    "phase.lattice_mul"
+  ],
+  "direct_accesses": {
+    "lattice_state": [
+      "workspace->lattice_state.adjusted_norm",
+      "workspace->lattice_state.gram",
+      "workspace->lattice_state.ideal",
+      "workspace->lattice_state.reduced"
+    ],
+    "phase.candidates": [
+      "workspace->phase.candidates.eval",
+      "workspace->phase.candidates.eval.norm",
+      "workspace->phase.candidates.eval.point",
+      "workspace->phase.candidates.eval.remainder",
+      "workspace->phase.candidates.norm_sketch",
+      "workspace->phase.candidates.permutation",
+      "workspace->phase.candidates.small_vecs",
+      "workspace->phase.candidates.validated_counts"
+    ],
+    "phase.fixed_degree": [
+      "workspace->phase.fixed_degree",
+      "workspace->phase.fixed_degree.theta",
+      "workspace->phase.fixed_degree.theta.batched_inv"
+    ],
+    "phase.lattice_mul": [
+      "workspace->phase.lattice_mul",
+      "workspace->phase.lattice_mul.ml2"
+    ]
+  },
+  "inputs": {
+    "annotation": {
+      "path": "experiments/memory/finduv-lifetime-layout.json",
+      "sha256": "9ae6a0029787cff9510654f5931435a03e8d9bef2b393ee442b27f6bc7a18d1d"
+    },
+    "header": {
+      "path": "work/compact-d13/src/id2iso/ref/include/id2iso.h",
+      "sha256": "8b48e85d4d71bca6bf58c00aeaa1a29c707f622f91c34d430d12ae2a559deb18"
+    },
+    "source": {
+      "path": "work/compact-d13/src/id2iso/ref/lvlx/dim2id2iso.c",
+      "sha256": "ffb99adf6b03af7f6e5a9c2fa1a14a4ee2edbccc9d0f0a911c472c6d0ab5693e"
+    }
+  },
+  "schema": "tinysqisign-lifetime-annotation-coverage-v1",
+  "source_commit": "71099e0827d3f0a3b3c705d2eda592c401e0d57d",
+  "status": "PASS",
+  "whole_phase_accesses": [
+    "workspace->phase"
+  ]
+}

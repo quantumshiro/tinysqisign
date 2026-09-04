@@ -1,0 +1,309 @@
+{
+  "comparisons": [
+    {
+      "adapted_frame_bytes": 30888,
+      "function": "quat_lll_dual_reduce_ideal",
+      "official_frame_bytes": 34816,
+      "parameter": "p324_3",
+      "reduction_bytes": 3928,
+      "reduction_percent": 11.2822,
+      "translation_unit": "lll_dim4.c"
+    },
+    {
+      "adapted_frame_bytes": 19272,
+      "function": "protocols_sign",
+      "official_frame_bytes": 20008,
+      "parameter": "p324_3",
+      "reduction_bytes": 736,
+      "reduction_percent": 3.6785,
+      "translation_unit": "sign.c"
+    },
+    {
+      "adapted_frame_bytes": 40904,
+      "function": "quat_lll_dual_reduce_ideal",
+      "official_frame_bytes": 46088,
+      "parameter": "p500_27",
+      "reduction_bytes": 5184,
+      "reduction_percent": 11.248,
+      "translation_unit": "lll_dim4.c"
+    },
+    {
+      "adapted_frame_bytes": 26328,
+      "function": "protocols_sign",
+      "official_frame_bytes": 27304,
+      "parameter": "p500_27",
+      "reduction_bytes": 976,
+      "reduction_percent": 3.5746,
+      "translation_unit": "sign.c"
+    },
+    {
+      "adapted_frame_bytes": 55904,
+      "function": "quat_lll_dual_reduce_ideal",
+      "official_frame_bytes": 63016,
+      "parameter": "p664_17",
+      "reduction_bytes": 7112,
+      "reduction_percent": 11.286,
+      "translation_unit": "lll_dim4.c"
+    },
+    {
+      "adapted_frame_bytes": 35392,
+      "function": "protocols_sign",
+      "official_frame_bytes": 36728,
+      "parameter": "p664_17",
+      "reduction_bytes": 1336,
+      "reduction_percent": 3.6376,
+      "translation_unit": "sign.c"
+    }
+  ],
+  "decision": {
+    "all_600_official_known_answer_vectors_passed": true,
+    "all_six_affected_frames_reduced": true,
+    "all_three_official_parameter_sets_compiled": true,
+    "functional_equivalence_established_for_all_inputs": false,
+    "functional_equivalence_established_for_tested_vectors": true,
+    "two_distinct_functions_measured": true
+  },
+  "functional_gate_sha256": "ada333d8eb3be0eafc26a4112e217ca1bbf873cf09e23676806e4a0c664253a6",
+  "provenance": {
+    "adapted_commit": "874658c64aa2e20f53b1f4d696144723d558ed5c",
+    "compiler": "arm-none-eabi-gcc (Arm GNU Toolchain 15.2.Rel1 (Build arm-15.86)) 15.2.1 20251203",
+    "official_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21"
+  },
+  "rows": [
+    {
+      "frame_bytes": 34816,
+      "function": "quat_lll_dual_reduce_ideal",
+      "object_file_bytes": 18088,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 11735
+      },
+      "object_sha256": "9f6b155a960227f824b930303342e20f8441137ff86ed70e4b1b35f0a94e1154",
+      "parameter": "p324_3",
+      "source_sha256": "a93a6dce5c5ddd49631fd942592e4a1e496b6c8567068cbb4d256d2c90a97ef8",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "lll_dim4.c",
+      "variant": "official"
+    },
+    {
+      "frame_bytes": 20008,
+      "function": "protocols_sign",
+      "object_file_bytes": 6268,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 2216
+      },
+      "object_sha256": "8b294886c60c121ca07fa82e18b3236dbba18ab3e3e9bdb326fdb6e08df414b2",
+      "parameter": "p324_3",
+      "source_sha256": "bd85afe08014ce00bd2f839257735eb9c302bd2271044b644b06588474a21dd8",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "sign.c",
+      "variant": "official"
+    },
+    {
+      "frame_bytes": 30888,
+      "function": "quat_lll_dual_reduce_ideal",
+      "object_file_bytes": 17860,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 11523
+      },
+      "object_sha256": "44a94f1c90763d79f02fb14536cebe48d15d771357d51e82692d67d78185fd8e",
+      "parameter": "p324_3",
+      "source_sha256": "9a9b6643d53ad14320b6c584443ee1a8bb939c580669d5d96e95d2ec703ec403",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "lll_dim4.c",
+      "variant": "two_function_lifetime"
+    },
+    {
+      "frame_bytes": 19272,
+      "function": "protocols_sign",
+      "object_file_bytes": 6256,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 2204
+      },
+      "object_sha256": "ffa027347ab059b2ebfacdf31c71f692ae4cbef893fbc0d6e545e62e37b89cf5",
+      "parameter": "p324_3",
+      "source_sha256": "498aab7ba013159369173b1731d16c7b6cf9b0585f652a7c8cbf1d573bec4531",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "sign.c",
+      "variant": "two_function_lifetime"
+    },
+    {
+      "frame_bytes": 46088,
+      "function": "quat_lll_dual_reduce_ideal",
+      "object_file_bytes": 18360,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 11959
+      },
+      "object_sha256": "9d3c58f541ebe5fd94b811fd2ede612620ac3bd9b40d7a1f14e0338befa8ff35",
+      "parameter": "p500_27",
+      "source_sha256": "a93a6dce5c5ddd49631fd942592e4a1e496b6c8567068cbb4d256d2c90a97ef8",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "lll_dim4.c",
+      "variant": "official"
+    },
+    {
+      "frame_bytes": 27304,
+      "function": "protocols_sign",
+      "object_file_bytes": 6268,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 2216
+      },
+      "object_sha256": "2b5cd9745b072218097c3107b4ecd658eed4f23ff5d37bcf1c3d704d17ba4f3d",
+      "parameter": "p500_27",
+      "source_sha256": "bd85afe08014ce00bd2f839257735eb9c302bd2271044b644b06588474a21dd8",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "sign.c",
+      "variant": "official"
+    },
+    {
+      "frame_bytes": 40904,
+      "function": "quat_lll_dual_reduce_ideal",
+      "object_file_bytes": 18280,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 11895
+      },
+      "object_sha256": "3fae8b69be97c9ec758b6fddc03450f23f60e596b7480a8ce346013ef2903981",
+      "parameter": "p500_27",
+      "source_sha256": "9a9b6643d53ad14320b6c584443ee1a8bb939c580669d5d96e95d2ec703ec403",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "lll_dim4.c",
+      "variant": "two_function_lifetime"
+    },
+    {
+      "frame_bytes": 26328,
+      "function": "protocols_sign",
+      "object_file_bytes": 6284,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 2232
+      },
+      "object_sha256": "e1c98ee692d85d9219b7b9d0f0ec736ad4b846b1fefb6619340dbb0ac9dd0eec",
+      "parameter": "p500_27",
+      "source_sha256": "498aab7ba013159369173b1731d16c7b6cf9b0585f652a7c8cbf1d573bec4531",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "sign.c",
+      "variant": "two_function_lifetime"
+    },
+    {
+      "frame_bytes": 63016,
+      "function": "quat_lll_dual_reduce_ideal",
+      "object_file_bytes": 18496,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 12095
+      },
+      "object_sha256": "84f1e747c6e3bfadb478d6fbb0f1f15e3c09b475ce48eea0dc67c6d7d62a825d",
+      "parameter": "p664_17",
+      "source_sha256": "a93a6dce5c5ddd49631fd942592e4a1e496b6c8567068cbb4d256d2c90a97ef8",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "lll_dim4.c",
+      "variant": "official"
+    },
+    {
+      "frame_bytes": 36728,
+      "function": "protocols_sign",
+      "object_file_bytes": 6296,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 2244
+      },
+      "object_sha256": "ab4d60573a54bb9647db294845a2df26a22ac18f293d6c386f66745976b5187c",
+      "parameter": "p664_17",
+      "source_sha256": "bd85afe08014ce00bd2f839257735eb9c302bd2271044b644b06588474a21dd8",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "sign.c",
+      "variant": "official"
+    },
+    {
+      "frame_bytes": 55904,
+      "function": "quat_lll_dual_reduce_ideal",
+      "object_file_bytes": 18568,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 12183
+      },
+      "object_sha256": "c3b5649911829716b5c7edbeff79633742a78f46ee34e39fb3a28b433c68c0bf",
+      "parameter": "p664_17",
+      "source_sha256": "9a9b6643d53ad14320b6c584443ee1a8bb939c580669d5d96e95d2ec703ec403",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "lll_dim4.c",
+      "variant": "two_function_lifetime"
+    },
+    {
+      "frame_bytes": 35392,
+      "function": "protocols_sign",
+      "object_file_bytes": 6304,
+      "object_sections": {
+        "bss": 0,
+        "data": 0,
+        "text": 2252
+      },
+      "object_sha256": "14c3097bd1f908ca29360a1a7a4c8d4579732bd6f359cc88055e44c2b1a1aa39",
+      "parameter": "p664_17",
+      "source_sha256": "498aab7ba013159369173b1731d16c7b6cf9b0585f652a7c8cbf1d573bec4531",
+      "stack_qualifiers": [
+        "static"
+      ],
+      "translation_unit": "sign.c",
+      "variant": "two_function_lifetime"
+    }
+  ],
+  "schema": "sqisign-v3-two-function-all-parameter-frame-audit-v1",
+  "scope": {
+    "functional_gate": "results/v3/host/validation-all-params-2026-09-04.json",
+    "functions": [
+      "quat_lll_dual_reduce_ideal",
+      "protocols_sign"
+    ],
+    "not_in_scope": [
+      "RP2350 whole-image watermarks for p500_27 or p664_17",
+      "whole-program interrupt/MSP bound"
+    ],
+    "parameters": [
+      "p324_3",
+      "p500_27",
+      "p664_17"
+    ],
+    "target": "Arm Cortex-M33 softfp object compilation"
+  },
+  "status": "PASS"
+}

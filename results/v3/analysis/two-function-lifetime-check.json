@@ -1,0 +1,50 @@
+{
+  "certificate": {
+    "function_count": 2,
+    "overlay_site_count": 3,
+    "path": "results/v3/analysis/two-function-lifetime-certificate.csv",
+    "sha256": "1a6713101c8618485f317319e5b44f3fcb82d8986c13a014a3a43a7d276417ed"
+  },
+  "commit": "874658c64aa2e20f53b1f4d696144723d558ed5c",
+  "decision": {
+    "all_inputs_proved_equivalent": false,
+    "source_order_matches_certificate": true,
+    "three_parameter_sets_covered": true,
+    "two_functions_covered": true,
+    "whole_program_alias_analysis_performed": false
+  },
+  "schema": "sqisign-v3-two-function-lifetime-check-v1",
+  "source": {
+    "lll_dim4.c": "9a9b6643d53ad14320b6c584443ee1a8bb939c580669d5d96e95d2ec703ec403",
+    "sign.c": "498aab7ba013159369173b1731d16c7b6cf9b0585f652a7c8cbf1d573bec4531"
+  },
+  "source_order_offsets": {
+    "Ainv_total_then_Bout": [
+      33582,
+      33905,
+      34507
+    ],
+    "commitment_then_output": [
+      9614,
+      9648,
+      11265,
+      15099
+    ],
+    "reduction_then_Aout": [
+      32821,
+      33271,
+      33582
+    ]
+  },
+  "status": "PASS",
+  "validation": {
+    "arm_frames": {
+      "reduced_frame_count": 6,
+      "sha256": "912d65993983c3aa23ab983d667a9f2b8884466e4d60b9ffa11cf807aceef64a"
+    },
+    "host": {
+      "official_vectors_passed": 600,
+      "sha256": "ada333d8eb3be0eafc26a4112e217ca1bbf873cf09e23676806e4a0c664253a6"
+    }
+  }
+}

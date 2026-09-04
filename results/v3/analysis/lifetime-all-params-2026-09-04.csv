@@ -1,0 +1,7 @@
+parameter,translation_unit,function,official_frame_bytes,adapted_frame_bytes,reduction_bytes,reduction_percent
+p324_3,lll_dim4.c,quat_lll_dual_reduce_ideal,34816,30888,3928,11.2822
+p324_3,sign.c,protocols_sign,20008,19272,736,3.6785
+p500_27,lll_dim4.c,quat_lll_dual_reduce_ideal,46088,40904,5184,11.248
+p500_27,sign.c,protocols_sign,27304,26328,976,3.5746
+p664_17,lll_dim4.c,quat_lll_dual_reduce_ideal,63016,55904,7112,11.286
+p664_17,sign.c,protocols_sign,36728,35392,1336,3.6376

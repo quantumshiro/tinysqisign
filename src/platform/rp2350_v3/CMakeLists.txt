@@ -141,6 +141,12 @@ elseif(SQISIGN_V3_IMAGE_KIND STREQUAL "d1")
     set(SQISIGN_V3_ALIVE "SQISIGN_RP2350_V3_D1 alive")
     set(SQISIGN_V3_DESCRIPTION
         "v3 D1 lifetime-scheduled LLL, deterministic KAT, guarded PSP")
+elseif(SQISIGN_V3_IMAGE_KIND STREQUAL "d3")
+    set(SQISIGN_V3_TARGET sqisign_rp2350_v3_d3)
+    set(SQISIGN_V3_BANNER "SQISIGN_RP2350_V3_D3 v1")
+    set(SQISIGN_V3_ALIVE "SQISIGN_RP2350_V3_D3 alive")
+    set(SQISIGN_V3_DESCRIPTION
+        "v3 two-function lifetime scheduling, deterministic KAT, guarded PSP")
 elseif(SQISIGN_V3_IMAGE_KIND STREQUAL "d2-static")
     set(SQISIGN_V3_TARGET sqisign_rp2350_v3_d2_static)
     set(SQISIGN_V3_BANNER "SQISIGN_RP2350_V3_D2_STATIC v1")

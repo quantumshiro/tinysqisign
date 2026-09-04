@@ -5,8 +5,8 @@ set -euo pipefail
 project_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
 selection=${1:-all}
 case "${selection}" in
-    all|official|lifetime|static) ;;
-    *) printf 'usage: %s [all|official|lifetime|static]\n' "$0" >&2; exit 2 ;;
+    all|official|lifetime|extended|static) ;;
+    *) printf 'usage: %s [all|official|lifetime|extended|static]\n' "$0" >&2; exit 2 ;;
 esac
 
 generate_one()
@@ -51,6 +51,9 @@ if [[ ${selection} == all || ${selection} == official ]]; then
 fi
 if [[ ${selection} == all || ${selection} == lifetime ]]; then
     generate_one "${project_root}/work/v3-lowmem-d1" all
+fi
+if [[ ${selection} == all || ${selection} == extended ]]; then
+    generate_one "${project_root}/work/v3-lowmem-d3" all
 fi
 if [[ ${selection} == all || ${selection} == static ]]; then
     generate_one "${project_root}/work/v3-static-stack-d2" p324_3

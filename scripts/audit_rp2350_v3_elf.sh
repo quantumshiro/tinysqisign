@@ -28,6 +28,7 @@ esac
 case ${elf##*/} in
     *v3_baseline*) audit_label='v3 baseline' ;;
     *v3_d1*) audit_label='v3 D1' ;;
+    *v3_d3*) audit_label='v3 D3 two-function lifetime' ;;
     *v3_d2_static*) audit_label='v3 D2 static-stack' ;;
     *) audit_label='v3 image' ;;
 esac
