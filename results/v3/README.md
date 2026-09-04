@@ -7,14 +7,15 @@ artifacts.
 - `host/`: official v3 and v3-D1 host validation results.
 - `rp2350/`: RP2350 build manifests and serial captures.
 - `analysis/`: v2-versus-v3 deltas and lifetime-scheduling analyses.
-- `version-isolation-manifest.json`: v2、公式v3、lifetime版、固定frame版の
-  exact commit/treeと、現行clean campaignの対応。
+- `version-isolation-manifest.json`: v2、公式v3、D1 lifetime版、D3二関数版、
+  固定frame版のcommit/treeと、現行clean campaignの対応。
 
-The unmodified v3 source is checked out at `work/official-v3`; the clean
-lifetime and fixed-frame commits are reconstructed at `work/v3-lowmem-d1` and
-`work/v3-static-stack-d2`. The v2 D13 source remains at `work/compact-d13`.
-Thin Git bundles preserve the exact v3 commits and review patches preserve the
-human-readable diffs.
+The unmodified v3 source is checked out at `work/official-v3`; the clean D1,
+D3, and fixed-frame commits are reconstructed at `work/v3-lowmem-d1`,
+`work/v3-lowmem-d3`, and `work/v3-static-stack-d2`. The v2 D13 source remains
+at `work/compact-d13`.
+Thin Git bundles preserve the identified v3 commits and review patches preserve
+the human-readable diffs.
 
 Run `scripts/test_sqisign_v3_host.sh` from any directory to rebuild and repeat
 the NIST API test, self-test, and official KAT for both clean v3 trees. The script deliberately
@@ -28,6 +29,12 @@ machine-readable summary with `scripts/analyze_rp2350_v3_interleaved.py`.  All
 ten captures pass the embedded official KAT. The superseded dirty-firmware
 captures are omitted from the current tree and remain recoverable from Git
 history; they are not used for paper values.
+
+`rp2350/d3-two-function-clean-2026-09-04/` extends the placement from one to
+two functions. Its clean `p324_3` target capture reduces the Sign PSP
+watermark by 4,664 bytes relative to the official image. Host response checks
+and Arm frame audits cover all three official parameter sets; whole-image
+target measurements for `p500_27` and `p664_17` remain outside the claim.
 
 `rp2350/multi-input-placement-clean-2026-09-04/` extends the bounded check to
 official vectors 0--9, official/D1, and two linked-code placements.  Its 40

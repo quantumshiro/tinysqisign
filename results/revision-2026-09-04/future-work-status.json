@@ -15,21 +15,26 @@
   "items": [
     {
       "id": "FW-V2-TARGET-REPEAT",
-      "work": "v2実機反復",
+      "work": "v2実機反復・操作PSP上界",
       "status": "bounded_complete",
       "label_ja": "限定完了",
-      "finding": "同一UF2・同一決定的入力を2 bootで完走し、transcriptとPSP深さが一致。複数入力・最悪上界ではない。",
+      "finding": "同一UF2・同一決定的入力を2 bootで完走し、transcriptとPSP深さが一致。測定ELFとtext一致するclean再構築版で操作PSP上界を92192/120664/20980 bytesとし、全て128 KiB予約内。handler/MSPを含む全program上界ではない。",
       "evidence": [
         {
           "path": "results/rp2350/ksv-d13-repeat-2026-09-04-summary.json",
           "bytes": 3317,
           "sha256": "a0d2a79dfce7c98c877de2890632e3edd0bafc6ddda8d602f488642a82390671"
+        },
+        {
+          "path": "results/v2/analysis/linked-stack-bound-2026-09-04.json",
+          "bytes": 31024,
+          "sha256": "041292f13dd61c2f16e17752398e2552b23df76b0fc3840e48341599ee47ad60"
         }
       ]
     },
     {
       "id": "FW-V3-MULTI-PLACEMENT",
-      "work": "v3複数入力・複数配置",
+      "work": "v3 D1複数入力・複数配置",
       "status": "bounded_complete",
       "label_ja": "限定完了",
       "finding": "10公式ベクトルを2実装×2配置で検査。正当K/S/V 40件と改変拒否40件が通り、1024-byte配置移動後もPSP深さの不一致は0/80。",
@@ -43,6 +48,25 @@
           "path": "results/v3/rp2350/multi-input-placement-clean-2026-09-04/timing-screen.json",
           "bytes": 5525,
           "sha256": "fbfd4c5b15376b0db5f73292fd4555e75e5cdc98a7554b0df450077ae00d4e75"
+        }
+      ]
+    },
+    {
+      "id": "FW-V3-TWO-FUNCTION-ALL-PARAMETERS",
+      "work": "v3 D3二関数・全parameter",
+      "status": "bounded_complete",
+      "label_ja": "限定完了",
+      "finding": "二関数の三領域を重畳。公式版/D3の全三parameterでAPI・self-test・各100 response、計600ベクトルを通過し、Arm frameは全6比較で減少。RP2350 p324_3の一経路ではSign PSPを4664 bytes削減。他二parameterのwhole-image実機fitとD3時間分布は未評価。",
+      "evidence": [
+        {
+          "path": "results/v3/rp2350/d3-two-function-clean-2026-09-04/summary.json",
+          "bytes": 4533,
+          "sha256": "a6b908b7297d557092f916be84b31ce4f9dff919301011f0e7fba29076c2aa00"
+        },
+        {
+          "path": "results/v3/analysis/lifetime-all-params-2026-09-04.json",
+          "bytes": 9439,
+          "sha256": "912d65993983c3aa23ab983d667a9f2b8884466e4d60b9ffa11cf807aceef64a"
         }
       ]
     },
@@ -80,7 +104,7 @@
       "work": "配置・図表の自動生成",
       "status": "prototype_complete",
       "label_ja": "試作完了",
-      "finding": "annotation駆動配置生成器が172080 bytesを再現し、証拠生成器がSRAM・flash・cycle関係とPareto座標を再計算する。annotation自体の完全性は人手監査に依存する。",
+      "finding": "contract compilerが172080 bytesを再現し、宣言memberと直接accessのcoverage gateを追加。証拠生成器がSRAM・flash・cycle関係とPareto座標を再計算する。phase、間接alias、escape、消去の完全性は人手監査に依存する。",
       "evidence": [
         {
           "path": "results/revision-2026-09-04/generated-finduv-layout/layout.json",
@@ -88,14 +112,19 @@
           "sha256": "d230c3297193acc4e1fb2f52869916a45235bbf8f6529d6067f0a10a5b03e98c"
         },
         {
+          "path": "results/revision-2026-09-04/lifetime-annotation-coverage.json",
+          "bytes": 2455,
+          "sha256": "4fcffc99269d47035c2753eb6c0d8eda28bfab9473b893944a0d06fd8c56776c"
+        },
+        {
           "path": "results/revision-2026-09-04/manuscript-evidence.json",
-          "bytes": 3243,
-          "sha256": "169678b66dfba5cc59f07ce54978094954d2a21a8b44bdcdea85eb9d82b9d783"
+          "bytes": 4471,
+          "sha256": "5a74cc6d3eb28833edeea43a8ac71b0ba3743114a2bbda4cf3b21d3c568a7889"
         },
         {
           "path": "results/revision-2026-09-04/resource-time-pareto.json",
           "bytes": 3880,
-          "sha256": "11e6305dc6b59623dbf79de54d5ef5fa124e941f90a03d562c6aa524bdd097ad"
+          "sha256": "9112b7a7a8b62068a297faf42130f02ae7574fd504ada0097d361f5b418c38cf"
         }
       ]
     },

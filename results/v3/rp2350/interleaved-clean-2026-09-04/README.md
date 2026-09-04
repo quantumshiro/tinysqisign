@@ -14,7 +14,7 @@ embedded official-vector gate.
 - SQIsign v3 source: official `nist-v3` commit
   `6d017708db403bf83977fa70770fc4f7f9e9ff21`.
 - Official image: no tracked source changes (`v3_dirty=0`).
-- D1 image: the same source commit plus exactly
+- D1 image: the same source commit plus only
   `patches/0035-experiment-v3-d1-lifetime-overlays.patch`; the patch SHA-256 is
   recorded in `summary.json`.  The generated `src/pqm4` tree is an untracked
   build input in both source checkouts and is not an additional D1 change.
@@ -35,7 +35,7 @@ first-order ordering drift, but it remains a single-board, single-vector,
 descriptive repetition.  It does not estimate an input distribution or a
 cross-device distribution.
 
-`summary.json` binds every serial capture and the exact ELF, UF2, link map,
+`summary.json` binds every serial capture and the measured ELF, UF2, link map,
 cryptographic archive, stack-usage record, and D1 patch by SHA-256.  The
 analyzer rejects a capture if `firmware_dirty` is nonzero, the firmware commit
 differs, the banner or build identity differs, any known-answer comparison

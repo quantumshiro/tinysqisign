@@ -1,6 +1,6 @@
 {
   "baseline": "full-norm-table implementation",
-  "claim_boundary": "Static resource coordinates are exact for the frozen images. Host timing is a bounded paired campaign, whereas each target timing coordinate is one deterministic observation. The profile is not a statistical target slowdown estimate.",
+  "claim_boundary": "Static resource coordinates are derived from the frozen images. Host timing is a bounded paired campaign, whereas each target timing coordinate is one deterministic observation. The profile is not a statistical target slowdown estimate.",
   "decision": {
     "flash_growth_established": true,
     "large_operation_ram_reduction_established": true,
@@ -13,7 +13,7 @@
       "baseline": 353008,
       "dimension": "operation_arena_payload",
       "environment": "RP2350 layout",
-      "evidence_class": "exact type/layout value",
+      "evidence_class": "static type/layout value",
       "proposed": 172080,
       "proposed_over_baseline": 0.487467706114309,
       "sample": "static"
@@ -22,7 +22,7 @@
       "baseline": 502336,
       "dimension": "exclusive_reserved_sram",
       "environment": "RP2350 linked image",
-      "evidence_class": "exact linker/type value",
+      "evidence_class": "static linker/type value",
       "proposed": 321408,
       "proposed_over_baseline": 0.639826729519684,
       "sample": "static"
@@ -31,7 +31,7 @@
       "baseline": 131072,
       "dimension": "psp_reservation",
       "environment": "RP2350 linked image",
-      "evidence_class": "exact linker reservation; not observed use",
+      "evidence_class": "static linker reservation; not observed use",
       "proposed": 131072,
       "proposed_over_baseline": 1.0,
       "sample": "static"
@@ -40,7 +40,7 @@
       "baseline": 287504,
       "dimension": "bin_image",
       "environment": "RP2350 linked image",
-      "evidence_class": "exact linked image extent",
+      "evidence_class": "linked image extent",
       "proposed": 288384,
       "proposed_over_baseline": 1.0030608269797985,
       "sample": "static"

@@ -1,4 +1,4 @@
-% Monochrome storage and comparison flow for certified norm sketches.
+% Monochrome storage and comparison flow for the norm sketch.
 \begin{tikzpicture}[
   x=1mm,y=1mm,
   box/.style={draw=black,line width=.55pt,rounded corners=.7mm,minimum height=8mm,
@@ -9,33 +9,33 @@
   lab/.style={font=\sffamily\footnotesize},
   strong/.style={font=\sffamily\bfseries\footnotesize}
 ]
-  \node[strong,anchor=west] at (0,0) {(a) 生成時};
+  \node[strong,anchor=west] at (0,0) {(a) Construction};
   \node[box,text width=19mm] (v) at (24,-8) {packed $v$\\4 B};
-  \node[box,text width=25mm] (norm) at (66,-8) {\texttt{FullNorm}\\全精度（一時）};
-  \node[box,text width=35mm] (resident) at (119,-8) {常駐\\$v:4$ B、$(\ell,h_{64}):10$ B};
+  \node[box,text width=25mm] (norm) at (66,-8) {\texttt{FullNorm}\\temporary};
+  \node[box,text width=35mm] (resident) at (119,-8) {resident\\$v:4$ B, $(\ell,h_{64}):10$ B};
   \draw[flow] (v.east) -- node[lab,above] {$G_j,d_j$} (norm.west);
   \draw[flow] (norm.east) -- (resident.west);
-  \node[lab,anchor=north] at (66,-13) {全精度表は保存しない};
+  \node[lab,anchor=north] at (66,-13) {do not retain full norms};
 
-  \node[strong,anchor=west] at (0,-24) {(b) 比較時};
+  \node[strong,anchor=west] at (0,-24) {(b) Comparison};
   \node[box,text width=12mm] (pair) at (13,-34) {$(i,j)$};
   \node[decision] (len) at (42,-34) {$\ell_i=\ell_j$?};
   \node[decision] (top) at (78,-34) {$h_i=h_j$?};
-  \node[box,text width=23mm,line width=.9pt] (replay) at (115,-34)
-    {両$N(v)$を\\全精度再生成};
+  \node[box,text width=23mm,line width=.9pt] (rebuild) at (115,-34)
+    {rebuild both\\$N(v)$ values};
   \node[decision] (full) at (146,-34) {$N_i=N_j$?};
   \draw[flow] (pair.east) -- (len.west);
   \draw[flow] (len.east) -- node[lab,above] {yes} (top.west);
-  \draw[flow] (top.east) -- node[lab,above] {yes} (replay.west);
-  \draw[flow] (replay.east) -- (full.west);
+  \draw[flow] (top.east) -- node[lab,above] {yes} (rebuild.west);
+  \draw[flow] (rebuild.east) -- (full.west);
 
-  \node[box,text width=17mm] (bylen) at (42,-51) {$\ell$で確定};
-  \node[box,text width=19mm] (bytop) at (78,-51) {$h_{64}$で確定};
-  \node[box,text width=18mm] (byindex) at (116,-51) {indexで確定};
-  \node[box,text width=16mm] (bynorm) at (148,-51) {$N$で確定};
+  \node[box,text width=17mm] (bylen) at (42,-51) {order by $\ell$};
+  \node[box,text width=19mm] (bytop) at (78,-51) {order by $h_{64}$};
+  \node[box,text width=18mm] (byindex) at (116,-51) {order by index};
+  \node[box,text width=16mm] (bynorm) at (148,-51) {order by $N$};
   \draw[flow] (len.south) -- node[lab,right] {no} (bylen.north);
   \draw[flow] (top.south) -- node[lab,right] {no} (bytop.north);
   \draw[flow] (full.south) -- node[lab,right] {no} (bynorm.north);
   \draw[flow] (full.west) -- ++(-4,0) |- node[lab,near start,above] {yes} (byindex.north);
-  \node[strong,anchor=west] at (91,-24.5) {再生成経路：\num{5041}/\num{2062361}=\num{0.2444}\%};
+  \node[strong,anchor=west] at (91,-24.5) {rebuild path: \num{5041}/\num{2062361}=\num{0.2444}\%};
 \end{tikzpicture}

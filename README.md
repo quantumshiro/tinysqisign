@@ -2,7 +2,7 @@
 
 TinySQIsign is the public artifact for Hiro Nakanishi's paper on a low-memory
 SQIsign v2 implementation and a local transfer of lifetime scheduling to
-SQIsign v3. It contains the Japanese manuscript, reconstruction patches,
+SQIsign v3. It contains Japanese and English manuscripts, reconstruction patches,
 analysis programs, machine-readable certificates, clean firmware artifacts,
 and raw RP2350 captures needed for the paper-facing claims.
 
@@ -20,13 +20,18 @@ Contact: Hiro Nakanishi, independent researcher,
   ordinary API, including Open, modified-signature rejection, guards, and
   clearing. This is a differential conformance test using official requests;
   it is not equality to the historical official response file.
-- v2 target: the exact archived UF2 completes one deterministic KeyGen, Sign,
-  and Verify path in two boots with identical transcripts and PSP extents.
-  This is not a multiple-input or worst-case stack result.
-- SQIsign v3.0 `p324_3/m4f`: two lifetime overlays reduce measured Sign PSP
-  depth from 101,060 to 97,132 bytes. Five clean-firmware pairs and a separate
-  10-vector × 2-placement campaign reproduce the 3,928-byte reduction; all 40
-  valid K/S/V and 40 modified-signature rejection trials pass.
+- v2 target: the archived UF2 completes one deterministic KeyGen, Sign, and
+  Verify path in two boots with identical transcripts and PSP extents. A linked
+  call-graph certificate for a clean rebuild with byte-identical `.text` bounds
+  the three operation PSP paths at 92,192/120,664/20,980 bytes, including one
+  212-byte Secure exception entry. Handler software, IRQ nesting, and live MSP
+  remain outside that certificate.
+- SQIsign v3.0: the final D3 schedule overlays three pairs in two functions.
+  Host API, self-test, and 100-response checks pass for both implementations
+  and all three official parameter sets (600 vectors total), and all six Arm
+  frame comparisons decrease. A clean `p324_3/m4f` target capture reduces Sign
+  PSP from 101,060 to 96,396 bytes (−4,664 bytes, −4.6151%). Whole-image target
+  measurements for the other two parameter sets are not claimed.
 - A separate fixed-frame v3 prototype removes 19 compiler dynamic-frame
   records. Its linked K/S/V PSP bounds, including one conservative 212-byte
   Secure exception entry, are 108,300/127,932/40,468 bytes. A clean target
@@ -65,7 +70,7 @@ and `side_channel_resistance_established` remain false.
   generators, target build/capture helpers, and ELF/stack audits.
 - [`results/`](results/): frozen JSON/CSV, serial captures, firmware artifacts,
   certificates, and literature-search log.
-- [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md): exact reproduction routes and
+- [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md): source reconstruction routes and
   the distinction between checking frozen evidence and rerunning hardware.
 
 ## Fast verification
@@ -85,7 +90,7 @@ Reconstruct the external SQIsign sources with:
 ```
 
 See [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) before rebuilding firmware:
-the frozen captures bind exact historical firmware commits and toolchains, and
+the frozen captures bind specific historical firmware commits and toolchains, and
 new measurements must be stored separately rather than overwriting them.
 
 ## Licenses

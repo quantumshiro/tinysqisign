@@ -1,0 +1,125 @@
+{
+  "artifacts": {
+    "archive": {
+      "bytes": 2083218,
+      "filename": "libsqisign_v3_p324_3_m4f.a",
+      "sha256": "52896caa0cb774ae25b7980e48effd523f7a7367515fa065375979fbd8d8d049"
+    },
+    "capture": {
+      "bytes": 901,
+      "filename": "capture.txt",
+      "sha256": "338dca54ccef940be1475d4dd279f8adfd4ceac63206d5bc668462bb84e6d085"
+    },
+    "elf": {
+      "bytes": 2008932,
+      "filename": "sqisign_rp2350_v3_d3.elf",
+      "sha256": "efbe748ded98d597e667bc1554ed82ecf4b30eff9c4d420d0ff66a48d96479fd"
+    },
+    "elf_audit": {
+      "bytes": 6160,
+      "filename": "elf-audit.txt",
+      "sha256": "6b4578b1c35b0b3c67be2778bb885aa960816d6b5a4a45a3ae3140ee224cb2aa"
+    },
+    "frame_audit": {
+      "bytes": 9439,
+      "filename": "lifetime-all-params-2026-09-04.json",
+      "sha256": "912d65993983c3aa23ab983d667a9f2b8884466e4d60b9ffa11cf807aceef64a"
+    },
+    "host_validation": {
+      "bytes": 5586,
+      "filename": "validation-all-params-2026-09-04.json",
+      "sha256": "ada333d8eb3be0eafc26a4112e217ca1bbf873cf09e23676806e4a0c664253a6"
+    },
+    "lifetime_check": {
+      "bytes": 1368,
+      "filename": "two-function-lifetime-check.json",
+      "sha256": "0b59d109f1a92ac28d218e78e541f113a2c5f88d319f99247f36fc90343b6747"
+    },
+    "map": {
+      "bytes": 692273,
+      "filename": "sqisign_rp2350_v3_d3.elf.map",
+      "sha256": "61f0ff1bfee0b78d4633b451a898ef718dbc2daed7da7c6b40598172eadf837a"
+    },
+    "source_bundle": {
+      "bytes": 2461,
+      "filename": "v3-two-function-lifetime.bundle",
+      "sha256": "bd04982daccd3ac25d69a3df2501bc964e9ff4681ec4d03e5fe9532c823a428e"
+    },
+    "source_patch": {
+      "bytes": 7805,
+      "filename": "0037-experiment-v3-two-function-lifetime.patch",
+      "sha256": "baeba03bffbd99d394042391216446d63432a44e5eb009534d0ebb2e2052f7c2"
+    },
+    "uf2": {
+      "bytes": 428544,
+      "filename": "sqisign_rp2350_v3_d3.uf2",
+      "sha256": "0e700416ec00f767cc128d513c059fbf45546d2913956a6868872854be0965b1"
+    },
+    "uf2_info": {
+      "bytes": 974,
+      "filename": "uf2-info.txt",
+      "sha256": "41450ca051a5d2be22144b49744bf293c90c4167cc5cc7d36238c9ae656ac689"
+    }
+  },
+  "campaign": "d3-two-function-clean-2026-09-04",
+  "claim_boundary": "D3 extends the v3 transfer from one to two functions. Host API, self-test, and official-response KAT checks cover all three official parameter sets; Arm frame audits cover both functions for all three sets. The clean RP2350 measurement covers only p324_3 and one deterministic vector-0 K/S/V boot. It is not a whole-program interrupt/MSP bound or a timing-distribution result.",
+  "comparison": {
+    "d3_reduction_from_official_bytes": 4664,
+    "d3_reduction_from_official_percent": 4.6151,
+    "official_sign_psp_bytes": 101060,
+    "one_function_d1_sign_psp_bytes": 97132,
+    "second_function_incremental_reduction_bytes": 736,
+    "timing_comparison_claimed": false,
+    "two_function_d3_sign_psp_bytes": 96396
+  },
+  "linked_size": {
+    "bss_bytes": 135680,
+    "data_bytes": 0,
+    "text_bytes": 216016
+  },
+  "msp": {
+    "observed_upper_bytes": 2308,
+    "reservation_bytes": 8192
+  },
+  "operations": {
+    "keygen": {
+      "elapsed_us": 2270075,
+      "observed_psp_bytes": 56972,
+      "reservation_bytes": 131072,
+      "reservation_margin_bytes": 74100
+    },
+    "sign": {
+      "elapsed_us": 7199821,
+      "observed_psp_bytes": 96396,
+      "reservation_bytes": 131072,
+      "reservation_margin_bytes": 34676
+    },
+    "verify": {
+      "elapsed_us": 821601,
+      "observed_psp_bytes": 37444,
+      "reservation_bytes": 131072,
+      "reservation_margin_bytes": 93628
+    }
+  },
+  "provenance": {
+    "firmware_commit": "5df7acfb2e32019305094546939bdc50bbf71e00",
+    "firmware_dirty": 0,
+    "generated_tree_sha256": "32343b9704f0059ff7ce0315a2190600dba4026b4b8f87fad5a196bff30d38e4",
+    "v3_source_commit": "874658c64aa2e20f53b1f4d696144723d558ed5c",
+    "v3_source_dirty": 0
+  },
+  "schema": "sqisign-v3-rp2350-d3-two-function-v1",
+  "status": "PASS",
+  "validation": {
+    "all_six_affected_arm_frames_reduced": true,
+    "all_three_parameter_sets_host_api_selftest_and_official_100_vector_kat_passed": true,
+    "known_answer_vectors_passed_across_two_implementations": 600,
+    "official_vector_0_ksv_passed_on_rp2350": true,
+    "rp2350_parameter_sets_measured": [
+      "p324_3"
+    ],
+    "side_channel_resistance_established": false,
+    "two_distinct_functions_lifetime_scheduled": true,
+    "whole_program_worst_case_stack_bound_established": false
+  }
+}

@@ -12,6 +12,10 @@
       "bytes": 4604,
       "sha256": "ad26b6953594d7792ba9d427e1f0e7052dfbced10f8dd28247931974cb2def8f"
     },
+    "results/revision-2026-09-04/lifetime-annotation-coverage.json": {
+      "bytes": 2455,
+      "sha256": "4fcffc99269d47035c2753eb6c0d8eda28bfab9473b893944a0d06fd8c56776c"
+    },
     "results/rp2350/ksv-cb888f8-manifest.json": {
       "bytes": 6222,
       "sha256": "fd6a9e59e906ccfe5649d2f49c6498d4e7b4bd793dadda7120c8b38aa8778f63"
@@ -24,13 +28,25 @@
       "bytes": 3317,
       "sha256": "a0d2a79dfce7c98c877de2890632e3edd0bafc6ddda8d602f488642a82390671"
     },
+    "results/v2/analysis/linked-stack-bound-2026-09-04.json": {
+      "bytes": 31024,
+      "sha256": "041292f13dd61c2f16e17752398e2552b23df76b0fc3840e48341599ee47ad60"
+    },
     "results/v3/analysis/d2-linked-stack-bound-audit-2026-09-04.json": {
       "bytes": 32080,
       "sha256": "79933686eccdae17fec8b895d647991f6d406cc9227e7b252784a7103017b9d4"
     },
+    "results/v3/analysis/lifetime-all-params-2026-09-04.json": {
+      "bytes": 9439,
+      "sha256": "912d65993983c3aa23ab983d667a9f2b8884466e4d60b9ffa11cf807aceef64a"
+    },
     "results/v3/rp2350/d2-static-2026-09-04/summary.json": {
       "bytes": 10844,
       "sha256": "446f9a20e98d50da114f1b9d0bf3952033495bdbb0161b48d876d874c8a96c79"
+    },
+    "results/v3/rp2350/d3-two-function-clean-2026-09-04/summary.json": {
+      "bytes": 4533,
+      "sha256": "a6b908b7297d557092f916be84b31ce4f9dff919301011f0e7fba29076c2aa00"
     },
     "results/v3/rp2350/fixed-key-timing-clean-2026-09-04/summary.json": {
       "bytes": 75570,
@@ -52,8 +68,12 @@
   "outputs": [
     "manuscript/generated/evidence-macros.tex",
     "manuscript/generated/v2-memory-rows.tex",
+    "manuscript/generated/v2-memory-rows-en.tex",
     "manuscript/generated/v2-runtime-rows.tex",
     "manuscript/generated/v3-static-psp-bound-rows.tex",
+    "manuscript/generated/v2-static-psp-bound-rows.tex",
+    "manuscript/generated/v3-d3-results-rows.tex",
+    "manuscript/generated/v3-all-parameter-frame-rows.tex",
     "results/revision-2026-09-04/resource-time-pareto.json",
     "results/revision-2026-09-04/resource-time-pareto.csv"
   ],
@@ -63,10 +83,13 @@
     "reserved plus unreserved equals 532480 bytes for both v2 images",
     "arena, exclusive-SRAM, and unreserved-SRAM deltas are all 180928 bytes",
     "the proposed BIN growth is 880 bytes",
-    "150 MHz cycle values are exact elapsed-microsecond products",
+    "150 MHz cycle values are elapsed-microsecond products",
     "the four normalized resource coordinates are regenerated from the two manifests",
     "clean v3, multi-input placement, fixed-frame, fixed-key timing, and structural-trace campaigns report PASS",
     "linked p324_3/RADIX32 operation PSP bounds fit the 131072-byte reservation",
+    "linked v2 operation PSP bounds fit the 131072-byte reservation",
+    "v3 D3 schedules two functions and reduces all six affected Arm frames across three parameter sets",
+    "the lifetime annotation gate covers every declared member and direct access while retaining a manual alias boundary",
     "when present, the v2 repeat reproduces transcripts and PSP extents across two boots"
   ]
 }

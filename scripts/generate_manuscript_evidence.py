@@ -58,6 +58,11 @@ def main() -> int:
         default=ROOT / "results/rp2350/ksv-d13-repeat-2026-09-04-summary.json",
     )
     parser.add_argument(
+        "--v2-stack-bound",
+        type=Path,
+        default=ROOT / "results/v2/analysis/linked-stack-bound-2026-09-04.json",
+    )
+    parser.add_argument(
         "--v3-clean",
         type=Path,
         default=ROOT / "results/v3/rp2350/interleaved-clean-2026-09-04/summary.json",
@@ -102,6 +107,24 @@ def main() -> int:
         / "results/v3/analysis/d2-linked-stack-bound-audit-2026-09-04.json",
     )
     parser.add_argument(
+        "--v3-d3",
+        type=Path,
+        default=ROOT
+        / "results/v3/rp2350/d3-two-function-clean-2026-09-04/summary.json",
+    )
+    parser.add_argument(
+        "--v3-all-parameter-frames",
+        type=Path,
+        default=ROOT
+        / "results/v3/analysis/lifetime-all-params-2026-09-04.json",
+    )
+    parser.add_argument(
+        "--lifetime-annotation-coverage",
+        type=Path,
+        default=ROOT
+        / "results/revision-2026-09-04/lifetime-annotation-coverage.json",
+    )
+    parser.add_argument(
         "--output-dir", type=Path, default=ROOT / "manuscript/generated"
     )
     parser.add_argument(
@@ -120,6 +143,10 @@ def main() -> int:
     v3_fixed_timing = load(args.v3_fixed_key_timing)
     v3_structural = load(args.v3_fixed_key_structural)
     v3_stack_bound = load(args.v3_stack_bound)
+    v2_stack_bound = load(args.v2_stack_bound)
+    v3_d3 = load(args.v3_d3)
+    v3_all_parameter_frames = load(args.v3_all_parameter_frames)
+    annotation_coverage = load(args.lifetime_annotation_coverage)
 
     require(
         baseline.get("schema") == "sqisign-rp2350-ksv-evidence-v1",
@@ -197,6 +224,52 @@ def main() -> int:
         ]
         is True,
         "v3 architectural PSP exception certificate changed",
+    )
+    require(
+        v2_stack_bound.get("status") == "OPERATION_PSP_BOUND_ESTABLISHED"
+        and v2_stack_bound["decision"]["operation_psp_bounds_established"] is True
+        and v2_stack_bound["decision"][
+            "whole_program_interrupt_inclusive_stack_bound_established"
+        ]
+        is False,
+        "v2 operation PSP claim boundary changed",
+    )
+    require(
+        v2_stack_bound["target_observation_crosscheck"]["text_sections_identical"]
+        is True,
+        "v2 stack analysis does not match the measured image text",
+    )
+    require(
+        v3_d3.get("status") == "PASS"
+        and v3_d3["validation"]["two_distinct_functions_lifetime_scheduled"]
+        is True
+        and v3_d3["validation"][
+            "whole_program_worst_case_stack_bound_established"
+        ]
+        is False,
+        "v3 D3 evidence or claim boundary changed",
+    )
+    require(
+        v3_all_parameter_frames.get("status") == "PASS"
+        and v3_all_parameter_frames["decision"][
+            "all_three_official_parameter_sets_compiled"
+        ]
+        is True
+        and v3_all_parameter_frames["decision"]["two_distinct_functions_measured"]
+        is True,
+        "v3 all-parameter frame audit failed",
+    )
+    require(
+        annotation_coverage.get("status") == "PASS"
+        and annotation_coverage["decision"][
+            "all_declared_physical_members_are_annotated"
+        ]
+        is True
+        and annotation_coverage["decision"][
+            "whole_program_alias_analysis_performed"
+        ]
+        is False,
+        "lifetime annotation coverage boundary changed",
     )
 
     full_sram = baseline["sram"]
@@ -419,6 +492,64 @@ def main() -> int:
             "psp_allowance_bytes"
         ]
     )
+    for root, macro in (
+        ("keygen_thunk", "Keygen"),
+        ("sign_thunk", "Sign"),
+        ("verify_thunk", "Verify"),
+    ):
+        bound = v2_stack_bound["static_psp_bounds"][root]
+        require(
+            bound["fits_reservation"] is True
+            and bound["observed_within_bound"] is True,
+            f"v2 {root} PSP bound does not fit",
+        )
+        values[f"VTwoStatic{macro}SoftwareBytes"] = int(
+            bound["software_call_bound_bytes"]
+        )
+        values[f"VTwoStatic{macro}PspBoundBytes"] = int(bound["bound_bytes"])
+        values[f"VTwoStatic{macro}PspMarginBytes"] = int(
+            bound["reservation_margin_bytes"]
+        )
+    values["VTwoExceptionPspAllowanceBytes"] = int(
+        v2_stack_bound["architectural_exception_allowance_bytes"]
+    )
+
+    d3_comparison = v3_d3["comparison"]
+    values.update(
+        {
+            "VThreeDThreeOfficialSignPspBytes": int(
+                d3_comparison["official_sign_psp_bytes"]
+            ),
+            "VThreeDThreeDOneSignPspBytes": int(
+                d3_comparison["one_function_d1_sign_psp_bytes"]
+            ),
+            "VThreeDThreeSignPspBytes": int(
+                d3_comparison["two_function_d3_sign_psp_bytes"]
+            ),
+            "VThreeDThreeSavedBytes": int(
+                d3_comparison["d3_reduction_from_official_bytes"]
+            ),
+            "VThreeDThreeSavedPercent": float(
+                d3_comparison["d3_reduction_from_official_percent"]
+            ),
+            "VThreeDThreeSecondFunctionSavedBytes": int(
+                d3_comparison["second_function_incremental_reduction_bytes"]
+            ),
+            "VThreeDThreeKatVectors": int(
+                v3_d3["validation"][
+                    "known_answer_vectors_passed_across_two_implementations"
+                ]
+            ),
+            "LifetimeAnnotatedObjects": len(
+                annotation_coverage["annotated_physical_objects"]
+            ),
+            "LifetimeDirectAccessForms": sum(
+                len(accesses)
+                for accesses in annotation_coverage["direct_accesses"].values()
+            )
+            + len(annotation_coverage["whole_phase_accesses"]),
+        }
+    )
     for operation, macro in (("keygen", "Keygen"), ("sign", "Sign"), ("verify", "Verify")):
         row = low_exec[operation]
         elapsed_us = int(row["elapsed_us"])
@@ -516,6 +647,23 @@ def main() -> int:
     (args.output_dir / "v2-memory-rows.tex").write_text(
         "\n".join(memory_rows) + "\n", encoding="utf-8"
     )
+    memory_rows_en = [
+        "% Generated by scripts/generate_manuscript_evidence.py; do not edit.",
+        r"On-chip SRAM total & \num{\VTwoTotalSramBytes} & main + scratch \\",
+        r"Operation-arena payload & \num{\VTwoLowArenaBytes} & KeyGen/Sign/Verify union \\",
+        r"Guarded operation owner & \num{\VTwoLowOwnerBytes} & main bank \\",
+        r"PSP reservation & \num{\VTwoPspReservedBytes} & main bank \\",
+        r"Other main-bank state & \num{\VTwoOtherMainBytes} & data and runtime \\",
+        r"Main-bank linked use & \num{\VTwoMainLinkedBytes} & preceding rows \\",
+        r"MSP reservation & \num{\VTwoMspReservedBytes} & scratch bank \\",
+        r"Exclusive SRAM reservation & \num{\VTwoExclusiveReservedBytes} & $-\num{\VTwoArenaSavedBytes}$ B \\",
+        r"Unreserved SRAM & \num{\VTwoUnreservedBytes} & $+\num{\VTwoArenaSavedBytes}$ B \\",
+        r"Heap & 0 & no allocator symbol \\",
+        r"BIN image & \num{\VTwoBinBytes} & $+\num{\VTwoBinDeltaBytes}$ B",
+    ]
+    (args.output_dir / "v2-memory-rows-en.tex").write_text(
+        "\n".join(memory_rows_en) + "\n", encoding="utf-8"
+    )
     runtime_rows = [
         "% Generated by scripts/generate_manuscript_evidence.py; do not edit.",
         r"KeyGen & \num{\VTwoKeygenSeconds} & \num{\VTwoKeygenCycles} & \num{\VTwoKeygenPspBytes} \\",
@@ -534,6 +682,53 @@ def main() -> int:
     (args.output_dir / "v3-static-psp-bound-rows.tex").write_text(
         "\n".join(static_psp_rows) + "\n", encoding="utf-8"
     )
+    v2_static_psp_rows = [
+        "% Generated by scripts/generate_manuscript_evidence.py; do not edit.",
+        r"KeyGen & \num{\VTwoKeygenPspBytes} & \num{\VTwoStaticKeygenSoftwareBytes} & \num{\VTwoStaticKeygenPspBoundBytes} & \num{\VTwoStaticKeygenPspMarginBytes} \\",
+        r"Sign & \num{\VTwoSignPspBytes} & \num{\VTwoStaticSignSoftwareBytes} & \num{\VTwoStaticSignPspBoundBytes} & \num{\VTwoStaticSignPspMarginBytes} \\",
+        r"Verify & \num{\VTwoVerifyPspBytes} & \num{\VTwoStaticVerifySoftwareBytes} & \num{\VTwoStaticVerifyPspBoundBytes} & \num{\VTwoStaticVerifyPspMarginBytes}",
+    ]
+    (args.output_dir / "v2-static-psp-bound-rows.tex").write_text(
+        "\n".join(v2_static_psp_rows) + "\n", encoding="utf-8"
+    )
+
+    official_psp = {
+        operation: int(
+            v3_clean["summary"][operation]["official"]["psp_extent_bytes"]["median"]
+        )
+        for operation in ("keygen", "sign", "verify")
+    }
+    d3_target_rows = [
+        "% Generated by scripts/generate_manuscript_evidence.py; do not edit.",
+        r"\texttt{quat\_lll\_dual\_reduce\_ideal} frame [B] & \num{34816} & \num{30888} & $-\num{3928}$ \\",
+        r"\texttt{protocols\_sign} frame [B] & \num{20008} & \num{19272} & $-\num{736}$ \\",
+        rf"KeyGen PSP extent [B] & \num{{{official_psp['keygen']}}} & \num{{{int(v3_d3['operations']['keygen']['observed_psp_bytes'])}}} & \num{{0}} \\",
+        r"Sign PSP extent [B] & \num{\VThreeDThreeOfficialSignPspBytes} & \num{\VThreeDThreeSignPspBytes} & $-\num{\VThreeDThreeSavedBytes}$ ($-\num{\VThreeDThreeSavedPercent}$\%) \\",
+        rf"Verify PSP extent [B] & \num{{{official_psp['verify']}}} & \num{{{int(v3_d3['operations']['verify']['observed_psp_bytes'])}}} & \num{{0}}",
+    ]
+    (args.output_dir / "v3-d3-results-rows.tex").write_text(
+        "\n".join(d3_target_rows) + "\n", encoding="utf-8"
+    )
+
+    function_labels = {
+        "quat_lll_dual_reduce_ideal": r"\texttt{quat\_lll\_dual\_reduce\_ideal}",
+        "protocols_sign": r"\texttt{protocols\_sign}",
+    }
+    parameter_rows = [
+        "% Generated by scripts/generate_manuscript_evidence.py; do not edit."
+    ]
+    comparisons = v3_all_parameter_frames["comparisons"]
+    for index, row in enumerate(comparisons):
+        ending = r" \\" if index + 1 < len(comparisons) else ""
+        parameter = str(row["parameter"]).replace("_", r"\_")
+        parameter_rows.append(
+            f"\\texttt{{{parameter}}} & {function_labels[str(row['function'])]} & "
+            f"\\num{{{row['official_frame_bytes']}}} & \\num{{{row['adapted_frame_bytes']}}} & "
+            f"$-\\num{{{row['reduction_bytes']}}}$ ({row['reduction_percent']:.4f}\\%){ending}"
+        )
+    (args.output_dir / "v3-all-parameter-frame-rows.tex").write_text(
+        "\n".join(parameter_rows) + "\n", encoding="utf-8"
+    )
 
     pareto_rows = [
         {
@@ -543,7 +738,7 @@ def main() -> int:
             "baseline": int(full_sram["operation_workspace_payload_bytes"]),
             "proposed": int(low_sram["operation_workspace_payload_bytes"]),
             "proposed_over_baseline": values["VTwoArenaRatio"],
-            "evidence_class": "exact type/layout value",
+            "evidence_class": "static type/layout value",
         },
         {
             "dimension": "exclusive_reserved_sram",
@@ -552,7 +747,7 @@ def main() -> int:
             "baseline": int(full_sram["exclusive_reserved_sram_bytes"]),
             "proposed": int(low_sram["exclusive_reserved_sram_bytes"]),
             "proposed_over_baseline": values["VTwoExclusiveSramRatio"],
-            "evidence_class": "exact linker/type value",
+            "evidence_class": "static linker/type value",
         },
         {
             "dimension": "psp_reservation",
@@ -561,7 +756,7 @@ def main() -> int:
             "baseline": int(full_sram["psp_reserved_bytes"]),
             "proposed": int(low_sram["psp_reserved_bytes"]),
             "proposed_over_baseline": values["VTwoPspReservationRatio"],
-            "evidence_class": "exact linker reservation; not observed use",
+            "evidence_class": "static linker reservation; not observed use",
         },
         {
             "dimension": "bin_image",
@@ -570,7 +765,7 @@ def main() -> int:
             "baseline": int(full_link["flash_image_end_offset_bytes"]),
             "proposed": int(low_link["flash_image_end_offset_bytes"]),
             "proposed_over_baseline": values["VTwoBinRatio"],
-            "evidence_class": "exact linked image extent",
+            "evidence_class": "linked image extent",
         },
     ]
     for operation in ("keygen", "sign"):
@@ -619,7 +814,7 @@ def main() -> int:
             "target_timing_distribution_established": False,
         },
         "claim_boundary": (
-            "Static resource coordinates are exact for the frozen images. Host timing is a "
+            "Static resource coordinates are derived from the frozen images. Host timing is a "
             "bounded paired campaign, whereas each target timing coordinate is one deterministic "
             "observation. The profile is not a statistical target slowdown estimate."
         ),
@@ -628,7 +823,9 @@ def main() -> int:
         json.dumps(pareto_report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     with pareto_csv_path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(pareto_rows[0]))
+        writer = csv.DictWriter(
+            handle, fieldnames=list(pareto_rows[0]), lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(pareto_rows)
 
@@ -642,6 +839,10 @@ def main() -> int:
         args.v3_fixed_key_timing,
         args.v3_fixed_key_structural,
         args.v3_stack_bound,
+        args.v2_stack_bound,
+        args.v3_d3,
+        args.v3_all_parameter_frames,
+        args.lifetime_annotation_coverage,
     ]
     if v3_target_fixed is not None:
         inputs.append(args.v3_target_fixed_key_timing)
@@ -660,17 +861,24 @@ def main() -> int:
             "reserved plus unreserved equals 532480 bytes for both v2 images",
             "arena, exclusive-SRAM, and unreserved-SRAM deltas are all 180928 bytes",
             "the proposed BIN growth is 880 bytes",
-            "150 MHz cycle values are exact elapsed-microsecond products",
+            "150 MHz cycle values are elapsed-microsecond products",
             "the four normalized resource coordinates are regenerated from the two manifests",
             "clean v3, multi-input placement, fixed-frame, fixed-key timing, and structural-trace campaigns report PASS",
             "linked p324_3/RADIX32 operation PSP bounds fit the 131072-byte reservation",
+            "linked v2 operation PSP bounds fit the 131072-byte reservation",
+            "v3 D3 schedules two functions and reduces all six affected Arm frames across three parameter sets",
+            "the lifetime annotation gate covers every declared member and direct access while retaining a manual alias boundary",
             "when present, the v2 repeat reproduces transcripts and PSP extents across two boots",
         ],
         "outputs": [
             "manuscript/generated/evidence-macros.tex",
             "manuscript/generated/v2-memory-rows.tex",
+            "manuscript/generated/v2-memory-rows-en.tex",
             "manuscript/generated/v2-runtime-rows.tex",
             "manuscript/generated/v3-static-psp-bound-rows.tex",
+            "manuscript/generated/v2-static-psp-bound-rows.tex",
+            "manuscript/generated/v3-d3-results-rows.tex",
+            "manuscript/generated/v3-all-parameter-frame-rows.tex",
             "results/revision-2026-09-04/resource-time-pareto.json",
             "results/revision-2026-09-04/resource-time-pareto.csv",
         ],
@@ -681,7 +889,8 @@ def main() -> int:
     )
     print(
         f"manuscript evidence: PASS (v2 SRAM delta {saved} bytes, "
-        f"v3 multi placement mismatches 0, v3 fixed-frame dynamic records 0)"
+        f"v3 D3 Sign PSP saved {values['VThreeDThreeSavedBytes']} bytes, "
+        f"v3 fixed-frame dynamic records 0)"
     )
     print(f"output_dir={args.output_dir}")
     print(f"audit={args.audit_output}")

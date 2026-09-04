@@ -1,0 +1,45 @@
+% Monochrome v2 lifetime and physical-layout view.
+\begin{tikzpicture}[
+  x=1mm,y=1mm,
+  lab/.style={font=\sffamily\footnotesize},
+  strong/.style={font=\sffamily\bfseries\footnotesize},
+  bar/.style={draw=black,line width=.55pt,minimum height=6mm,inner sep=1mm},
+  flow/.style={-{Latex[length=1.8mm,width=1.2mm]},line width=.55pt},
+  brace/.style={line width=.55pt}
+]
+  \node[strong,anchor=west] at (0,3) {(a) Logical lifetimes};
+  \draw[flow] (25,-7) -- (151,-7);
+  \node[lab,anchor=west] at (151,-7) {time};
+  \foreach \x/\t in {25/{lattice setup},58/{candidate search},100/{find\_uv end},137/{later phase end}} {
+    \draw (\x,-5.5) -- (\x,-8.5);
+    \node[lab,anchor=south] at (\x,-4.2) {\t};
+  }
+
+  \node[lab,anchor=east] at (22,-14) {lattice state};
+  \draw[bar,fill=black!16] (25,-17) rectangle (100,-11);
+  \node[strong] at (62.5,-14) {\num{77168} B: live during \texttt{find\_uv}};
+
+  \node[lab,anchor=east] at (22,-23) {phase union};
+  \draw[bar,pattern=north east lines,pattern color=black] (25,-26) rectangle (55,-20);
+  \node[lab,align=center,fill=white,inner sep=.5mm] at (40,-23) {early ML2\\\num{94912} B};
+  \draw[bar,fill=black!38] (58,-26) rectangle (100,-20);
+  \node[lab,align=center] at (79,-23) {candidates\\\num{14024} B};
+  \draw[bar,pattern=horizontal lines,pattern color=black] (103,-26) rectangle (134,-20);
+  \node[lab,align=center,fill=white,inner sep=.5mm] at (118.5,-23) {fixed degree\\$\leq\num{94912}$ B};
+  \draw[flow] (55,-30) -- (58,-30);
+  \draw[flow] (100,-30) -- node[lab,above,fill=white,inner sep=.5mm] {clear} (103,-30);
+  \node[lab,anchor=west] at (25,-34) {phase members are disjoint: only one is active};
+
+  \node[strong,anchor=west] at (0,-41) {(b) Physical layout};
+  \draw[line width=.65pt] (25,-51) rectangle (137,-44);
+  \draw[line width=.55pt] (75.2,-51) -- (75.2,-44);
+  \fill[black!16] (25,-50.8) rectangle (75.2,-44.2);
+  \fill[pattern=north east lines,pattern color=black] (75.4,-50.8) rectangle (136.8,-44.2);
+  \node[strong] at (50.1,-47.5) {lattice \num{77168} B};
+  \node[strong,fill=white,inner sep=.4mm] at (106.1,-47.5) {phase \num{94912} B};
+  \draw[brace] (25,-54) -- (137,-54);
+  \draw[brace] (25,-52.8) -- (25,-55.2);
+  \draw[brace] (137,-52.8) -- (137,-55.2);
+  \node[strong,fill=white,inner xsep=2mm] at (81,-54)
+    {$\num{77168}+\max(\num{94912},\num{14024})=\num{172080}$ B};
+\end{tikzpicture}

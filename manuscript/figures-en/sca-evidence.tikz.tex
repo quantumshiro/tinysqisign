@@ -1,0 +1,31 @@
+% Evidence and claim boundary for the English manuscript.
+\begin{tikzpicture}[
+  x=1mm,y=1mm,
+  box/.style={draw=black,line width=.6pt,rounded corners=.8mm,minimum height=17mm,
+              text width=34mm,align=center,font=\sffamily\footnotesize,inner sep=1.5mm},
+  missing/.style={box,dashed,fill=white},
+  flow/.style={-{Latex[length=1.8mm,width=1.2mm]},line width=.55pt},
+  lab/.style={font=\sffamily\footnotesize},
+  strong/.style={font=\sffamily\bfseries\footnotesize}
+]
+  \node[strong,anchor=west] at (0,0) {Available evidence};
+  \node[box,fill=black!10] (timing) at (20,-14)
+    {host Sign timing\\$t_2=-5.410,-5.374$};
+  \node[box,pattern=north east lines,pattern color=black] (trace) at (61,-14)
+    {host full-Sign\\edge/address differences};
+  \node[box,fill=black!28] (target) at (102,-14)
+    {RP2350 timing\\powmod + ten-key Sign};
+  \node[box,line width=.9pt,text width=25mm] (claim) at (145,-14)
+    {finding\\current code is\\variable-time};
+  \draw[flow] (timing.east) -- (trace.west);
+  \draw[flow] (trace.east) -- (target.west);
+  \draw[flow] (target.east) -- (claim.west);
+
+  \draw[dashed,line width=.9pt] (0,-30) -- (160,-30);
+  \node[strong,fill=white,inner xsep=2mm] at (80,-30) {no evidence beyond this line};
+  \node[missing] (power) at (47,-43) {full-Sign\\analog power/EM};
+  \node[missing] (recovery) at (113,-43) {key recovery from\\target traces};
+  \draw[flow,dashed] (power.east) -- (recovery.west);
+  \node[lab,anchor=north,align=center] at (80,-54)
+    {No claim of power/EM resistance or key-recovery resistance};
+\end{tikzpicture}

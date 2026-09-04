@@ -72,6 +72,8 @@ def main() -> int:
     paths = {
         "v2_repeat": ROOT / "results/rp2350/ksv-d13-repeat-2026-09-04-summary.json",
         "v2_capture": ROOT / "results/rp2350/ksv-d13-repeat-2026-09-04.txt",
+        "v2_stack_bound": ROOT
+        / "results/v2/analysis/linked-stack-bound-2026-09-04.json",
         "v3_multi": ROOT
         / "results/v3/rp2350/multi-input-placement-clean-2026-09-04/summary.json",
         "v3_timing": ROOT
@@ -91,10 +93,16 @@ def main() -> int:
         / "results/v3/analysis/d2-async-stack-closure-audit-2026-09-04.json",
         "v3_static_closure": ROOT
         / "results/v3/rp2350/static-closure-clean-2026-09-04/summary.json",
+        "v3_d3": ROOT
+        / "results/v3/rp2350/d3-two-function-clean-2026-09-04/summary.json",
+        "v3_all_parameter_frames": ROOT
+        / "results/v3/analysis/lifetime-all-params-2026-09-04.json",
         "layout": ROOT
         / "results/revision-2026-09-04/generated-finduv-layout/layout.json",
         "lifetime_check": ROOT
         / "results/revision-2026-09-04/lifetime-certificate-check.json",
+        "annotation_coverage": ROOT
+        / "results/revision-2026-09-04/lifetime-annotation-coverage.json",
         "equivalence_check": ROOT
         / "results/revision-2026-09-04/finduv-equivalence-check.json",
         "manuscript_evidence": ROOT
@@ -115,6 +123,31 @@ def main() -> int:
     design = v3_multi["design"]
     require(design["positive_ksv_trials"] == 40, "unexpected v3 positive-trial count")
     require(design["negative_verify_trials"] == 40, "unexpected v3 negative-trial count")
+
+    v3_d3 = load(paths["v3_d3"])
+    v3_all_parameter_frames = load(paths["v3_all_parameter_frames"])
+    require(
+        v3_d3.get("status") == "PASS"
+        and v3_d3["validation"]["two_distinct_functions_lifetime_scheduled"]
+        is True
+        and v3_d3["validation"][
+            "all_three_parameter_sets_host_api_selftest_and_official_100_vector_kat_passed"
+        ]
+        is True,
+        "v3 two-function target/host validation failed",
+    )
+    require(
+        v3_all_parameter_frames.get("status") == "PASS"
+        and v3_all_parameter_frames["decision"][
+            "all_three_official_parameter_sets_compiled"
+        ]
+        is True
+        and v3_all_parameter_frames["decision"][
+            "all_six_affected_frames_reduced"
+        ]
+        is True,
+        "v3 all-parameter frame audit failed",
+    )
 
     v3_timing = load(paths["v3_timing"])
     require(
@@ -321,6 +354,20 @@ def main() -> int:
     require(layout.get("status") == "PASS", "lifetime layout generation failed")
     require(layout.get("extent_bytes") == 172080, "generated layout extent changed")
     require(len(layout.get("interference_edges", [])) == 3, "bad interference graph")
+    annotation_coverage = load(paths["annotation_coverage"])
+    require(
+        annotation_coverage.get("status") == "PASS"
+        and annotation_coverage["decision"][
+            "all_declared_physical_members_are_annotated"
+        ]
+        is True
+        and annotation_coverage["decision"][
+            "all_direct_source_accesses_are_classified"
+        ]
+        is True
+        and annotation_coverage["decision"]["lifetimes_inferred_from_c"] is False,
+        "annotation coverage gate or its manual boundary changed",
+    )
     lifetime_check = load(paths["lifetime_check"])
     equivalence_check = load(paths["equivalence_check"])
     manuscript_evidence = load(paths["manuscript_evidence"])
@@ -393,6 +440,21 @@ def main() -> int:
         "analog readiness must not certify resistance",
     )
 
+    v2_stack_bound = load(paths["v2_stack_bound"])
+    require(
+        v2_stack_bound.get("status") == "OPERATION_PSP_BOUND_ESTABLISHED"
+        and v2_stack_bound["decision"]["operation_psp_bounds_established"] is True
+        and v2_stack_bound["decision"][
+            "whole_program_interrupt_inclusive_stack_bound_established"
+        ]
+        is False,
+        "v2 operation PSP certificate boundary changed",
+    )
+    v2_bound_values = [
+        int(v2_stack_bound["static_psp_bounds"][root]["bound_bytes"])
+        for root in ("keygen_thunk", "sign_thunk", "verify_thunk")
+    ]
+
     if paths["v2_repeat"].is_file():
         v2_repeat = load(paths["v2_repeat"])
         require(v2_repeat.get("status") == "PASS", "v2 repeat analysis failed")
@@ -406,9 +468,14 @@ def main() -> int:
         v2_label = "限定完了"
         v2_finding = (
             "同一UF2・同一決定的入力を2 bootで完走し、transcriptとPSP深さが一致。"
-            "複数入力・最悪上界ではない。"
+            f"測定ELFとtext一致するclean再構築版で操作PSP上界を"
+            f"{v2_bound_values[0]}/{v2_bound_values[1]}/{v2_bound_values[2]} bytesとし、"
+            "全て128 KiB予約内。handler/MSPを含む全program上界ではない。"
         )
-        v2_evidence = [evidence(paths["v2_repeat"])]
+        v2_evidence = [
+            evidence(paths["v2_repeat"]),
+            evidence(paths["v2_stack_bound"]),
+        ]
     else:
         require(not args.require_v2_repeat, "required v2 repeat summary is absent")
         capture_text = paths["v2_capture"].read_text(encoding="ascii")
@@ -432,7 +499,7 @@ def main() -> int:
     items = [
         {
             "id": "FW-V2-TARGET-REPEAT",
-            "work": "v2実機反復",
+            "work": "v2実機反復・操作PSP上界",
             "status": v2_status,
             "label_ja": v2_label,
             "finding": v2_finding,
@@ -440,7 +507,7 @@ def main() -> int:
         },
         {
             "id": "FW-V3-MULTI-PLACEMENT",
-            "work": "v3複数入力・複数配置",
+            "work": "v3 D1複数入力・複数配置",
             "status": "bounded_complete",
             "label_ja": "限定完了",
             "finding": (
@@ -448,6 +515,22 @@ def main() -> int:
                 "1024-byte配置移動後もPSP深さの不一致は0/80。"
             ),
             "evidence": [evidence(paths["v3_multi"]), evidence(paths["v3_timing"])],
+        },
+        {
+            "id": "FW-V3-TWO-FUNCTION-ALL-PARAMETERS",
+            "work": "v3 D3二関数・全parameter",
+            "status": "bounded_complete",
+            "label_ja": "限定完了",
+            "finding": (
+                "二関数の三領域を重畳。公式版/D3の全三parameterでAPI・self-test・"
+                "各100 response、計600ベクトルを通過し、Arm frameは全6比較で減少。"
+                "RP2350 p324_3の一経路ではSign PSPを4664 bytes削減。"
+                "他二parameterのwhole-image実機fitとD3時間分布は未評価。"
+            ),
+            "evidence": [
+                evidence(paths["v3_d3"]),
+                evidence(paths["v3_all_parameter_frames"]),
+            ],
         },
         {
             "id": "FW-V3-STACK-BOUND",
@@ -470,11 +553,13 @@ def main() -> int:
             "status": "prototype_complete",
             "label_ja": "試作完了",
             "finding": (
-                "annotation駆動配置生成器が172080 bytesを再現し、証拠生成器がSRAM・flash・"
-                "cycle関係とPareto座標を再計算する。annotation自体の完全性は人手監査に依存する。"
+                "contract compilerが172080 bytesを再現し、宣言memberと直接accessの"
+                "coverage gateを追加。証拠生成器がSRAM・flash・cycle関係とPareto座標を"
+                "再計算する。phase、間接alias、escape、消去の完全性は人手監査に依存する。"
             ),
             "evidence": [
                 evidence(paths["layout"]),
+                evidence(paths["annotation_coverage"]),
                 evidence(paths["manuscript_evidence"]),
                 evidence(paths["pareto"]),
             ],

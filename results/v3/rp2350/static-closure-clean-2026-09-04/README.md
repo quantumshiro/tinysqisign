@@ -20,7 +20,7 @@ candidate interrupt roots but leaves 18 unique indirect callback sites,
 enabled-IRQ/nesting assumptions, and live MSP amounts unresolved. Therefore
 this is not a whole-program worst-case stack bound.
 
-The files under `artifacts/d2/` are the exact analyzed binaries. The original
+The files under `artifacts/d2/` are the analyzed binaries. The original
 build cache is intentionally represented by its hash in `summary.json` rather
 than copied as a portable build recipe; source reconstruction and analysis
 commands are documented at repository level.

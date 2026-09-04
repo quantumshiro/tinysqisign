@@ -3,44 +3,44 @@ IACR Cryptology ePrint Archive submission metadata
 
 Title
 -----
-SQIsign v2の省メモリ実装とv3へのlifetime scheduling転用：exact replay付きnorm sketchとRP2350評価
+Reducing SQIsign v2 Memory and Transferring Lifetime Scheduling to v3: An Order-Preserving Norm Sketch and RP2350 Evaluation
 
-Authors (paperと同じ順序で全員を入力)
---------------------------------------
-1. 氏名: Hiro Nakanishi
-   Email: quantumsity@protonmail.com（公開される）
-   Affiliation: 独立研究者
-   ORCID: 任意
-   ROR: 任意
+Authors (in the same order as the paper)
+-----------------------------------------
+1. Name: Hiro Nakanishi
+   Email: quantumsity@protonmail.com (public)
+   Affiliation: Independent Researcher
+   ORCID: optional
+   ROR: optional
 
-Abstract (投稿フォームへこのplain textを貼り付ける)
--------------------------------------------------
-SQIsignの小さな公開鍵と署名は、鍵生成・署名時の小さな作業メモリを意味しない。SQIsign v2.0.1 Level Iのcompact実装では、find_uvの五つの同時確保領域だけで6,339,868 bytesを要し、RP2350のオンチップSRAMを超える。本稿は、非交差生存区間を型付きunionへ配置するlifetime schedulingと、候補ノルムのビット長・上位64 bitだけを保持するcertified norm sketchを組み合わせる。sketchが同値の場合は保持済み候補から全精度ノルムを再生成するため、確率的なcollision仮定なしに元の比較順序を保存する。
+Abstract (plain text for the submission form)
+---------------------------------------------
+Small SQIsign keys and signatures do not imply a small signing workspace. In the SQIsign v2.0.1 Level-I compact implementation studied here, five simultaneously live regions in find_uv total 6,339,868 bytes, exceeding RP2350 on-chip SRAM. We combine typed lifetime scheduling with an order-preserving norm sketch that stores a bit length and 64-bit prefix and regenerates full precision only when required.
 
-Level I/RADIX32のoperation arenaは353,008 bytesから172,080 bytesへ51.2532%減少した。最終firmwareはGMP、動的確保、外部PSRAMを用いず、321,408 bytesを排他的に予約して211,072 bytesを未予約とした。正しさは、全精度表実装と提案実装の12個の差分トランスクリプト、および公式request 100本を用いた通常API対低メモリAPIの差分適合試験を独立に二回実施して検査した。後者は旧公式responseをoracleとするKATではない。RP2350では同じUF2と決定的入力によるKeyGen/Sign/Verify経路を独立な2 bootで完走し、transcriptとPSP深さの一致を確認したが、複数入力または全入力の最悪stack適合性は主張しない。
+For Level I/RADIX32, the operation arena falls from 353,008 to 172,080 bytes (51.2532%). The firmware uses no GMP, dynamic allocation, or external PSRAM; it reserves 321,408 of 532,480 SRAM bytes and leaves 211,072 unreserved. Two independent 100-vector campaigns compare the low-memory and same-commit ordinary APIs on official requests; historical responses are not the oracle. For the fixed image, a linked call-graph analysis bounds the KeyGen, Sign, and Verify operation-PSP paths at 92,192, 120,664, and 20,980 bytes, including one 212-byte exception entry; handler frames, interrupt nesting, and live MSP use are excluded.
 
-別の転用追試として、SQIsign v3.0公式p324_3/m4fの一関数に二つの局所重畳を施した。clean firmware commitから取得した5組10回の実機既知解試験では、SignのPSP上書き深さが101,060 bytesから97,132 bytesへ3,928 bytes減少した。公式既知解ベクトル10本を二つのbinary配置で処理する追加試験でも、この削減量は20回のSign観測すべてで一致した。正当なKeyGen/Sign/Verify 40件と改変署名の拒否40件はすべて成功した。別の固定frame試作では、link済みK/S/V根のsoftware callへ最大例外entryを加え、108,300、127,932、40,468 byteの保守的PSP上界を得て、clean実機vector 0の観測が全て上界内であることを確認した。ただし、主結果のv3適応実装には動的frameが残り、上界試作もhandler call・非同期割込み/MSPを含む全program最悪stackを示さない。さらに、v2署名のtiming、制御フロー、address検査は入力依存性を検出した。本稿は定数時間性、電力・電磁波耐性、製品利用可能性を主張しない。
+For v3.0, we overlay three lifetime-disjoint pairs in two functions. Both variants pass API, self-test, and official-response checks for all three parameter sets (600 vectors total), and all six affected Arm frames shrink. One clean p324_3 RP2350 path reduces the Sign PSP watermark from 101,060 to 96,396 bytes. These target data cover one parameter and one deterministic path, not a timing distribution or whole-program stack bound. Software screens find input-dependent behavior; we make no claim of constant-time or power/EM resistance.
 
 Category
 --------
 Implementation
 
-Keywords (comma区切り、合計120文字以内)
-------------------------------------------
+Keywords (comma separated; no more than 120 characters in total)
+----------------------------------------------------------------
 SQIsign, embedded cryptography, memory optimization, microcontroller, side-channel analysis
 
 Publication information
 -----------------------
-未発表なら「No」。既発表または掲載予定がある場合は書誌情報を入力する。
+Enter "No" if unpublished; otherwise enter the bibliographic information.
 
 Additional public notes
 -----------------------
-初版では空欄。改訂時は変更点を簡潔に記載する。
+Leave empty for the first version unless a public note is needed.
 
 Message to editors
 ------------------
-通常は空欄。編集者だけへ伝える必要がある事項がある場合に使用する。
+Normally leave empty.
 
 License
 -------
-未選択。撤回不能な選択であるため、著者が投稿フォーム上で最終決定する。
+To be selected by the author in the submission form because the choice is irrevocable.

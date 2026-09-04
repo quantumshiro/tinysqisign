@@ -42,8 +42,12 @@
 - [x] `https://github.com/quantumshiro/tinysqisign`を公開し、到達可能であることを確認する。
 - [x] v3 test harnessをclean commitへ凍結し、ELF、UF2、map、archive、stack-usage、capture、patchのhashを再取得する。
 - [x] v2のarenaとv3のstack watermarkを同一のRAM量として比較していない。
-- [x] 初版は日本語版として論理と証拠を固定する。
+- [x] 日本語の確認用原稿と、国際査読・投稿用の英語原稿を同じ生成証拠から構築する。
 - [x] v2の実装同値性対応表とlifetime certificateを機械検査可能な成果物として凍結する。
 - [x] v3のlink済みK/S/V software-call PSP上界へ最大例外entryを含め、実機観測が上界内であることを確認する。
 - [x] 「今後の研究工程」のうちローカルで実行可能な有限工程を完了し、外部計測器待ち・著者判断の対象外・未成立の研究目標を区別して台帳化する。
 - [x] RP2350固定鍵screenを事前固定設計で200署名完走し、鍵対応timingの検出と非耐性claim boundaryを本文へ反映する。
+- [x] v2固定imageの操作PSP上界を追加し、handler software、IRQ nesting、live MSPを含む全program上界と分離する。
+- [x] v3 D3を二関数・全三parameterのhost/Arm検証へ拡張し、実機claimは`p324_3`の一経路に限定する。
+- [x] contract compilerの直接access coverageと、phase/alias/escapeが手動annotationに依存する境界を明記する。
+- [x] 国際査読用`main-en.pdf`を追加し、日英両PDFを提出前checkの対象にする。

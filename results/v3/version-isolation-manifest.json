@@ -1,5 +1,5 @@
 {
-  "schema": "sqisign-version-isolation-v2",
+  "schema": "sqisign-version-isolation-v3",
   "freeze_date": "2026-09-04",
   "policy": {
     "v2_artifacts_are_not_overwritten_by_v3": true,
@@ -28,6 +28,14 @@
       "bundle": "patches/v3-lifetime-overlays.bundle",
       "review_patch": "patches/0035-experiment-v3-d1-lifetime-overlays.patch"
     },
+    "v3_two_function_lifetime": {
+      "directory": "work/v3-lowmem-d3",
+      "base_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
+      "commit": "874658c64aa2e20f53b1f4d696144723d558ed5c",
+      "tree": "71e3edec18ec40ff4bc315b596c94422f68888d7",
+      "bundle": "patches/v3-two-function-lifetime.bundle",
+      "review_patch": "patches/0037-experiment-v3-two-function-lifetime.patch"
+    },
     "v3_static_stack": {
       "directory": "work/v3-static-stack-d2",
       "base_commit": "6d017708db403bf83977fa70770fc4f7f9e9ff21",
@@ -45,6 +53,21 @@
       "nist_api": "PASS",
       "self_test": "PASS",
       "official_kat": "PASS"
+    },
+    "official_and_d3_all_parameters": {
+      "path": "results/v3/host/validation-all-params-2026-09-04.json",
+      "official_source_dirty": 0,
+      "d3_source_dirty": 0,
+      "parameter_sets": [
+        "p324_3",
+        "p500_27",
+        "p664_17"
+      ],
+      "official_response_vectors_per_implementation_and_parameter": 100,
+      "total_response_vectors": 600,
+      "nist_api": "PASS",
+      "self_test": "PASS",
+      "official_response_check": "PASS"
     },
     "static_stack": {
       "path": "results/v3/host/d2-static-validation-2026-09-04.txt",
@@ -101,12 +124,28 @@
       "signature_count": 200,
       "side_channel_resistance_established": false,
       "status": "PASS"
+    },
+    "v3_d3_two_function": {
+      "firmware_commit": "5df7acfb2e32019305094546939bdc50bbf71e00",
+      "firmware_dirty": 0,
+      "source_commit": "874658c64aa2e20f53b1f4d696144723d558ed5c",
+      "source_dirty": 0,
+      "summary": "results/v3/rp2350/d3-two-function-clean-2026-09-04/summary.json",
+      "parameter_set": "p324_3",
+      "deterministic_vector_count": 1,
+      "sign_psp_reduction_bytes": 4664,
+      "whole_program_worst_case_stack_bound_established": false,
+      "status": "PASS"
     }
   },
   "claim_boundary": {
     "single_board": true,
     "v2_multiple_input_target_campaign": false,
+    "v2_operation_psp_bound_for_fixed_image": true,
+    "v3_d3_all_parameter_host_and_arm_frame_coverage": true,
+    "v3_d3_all_parameter_whole_image_target_coverage": false,
     "whole_program_worst_case_stack_bound": false,
+    "automatic_lifetime_annotation_inference": false,
     "physical_power_or_em_traces": 0,
     "side_channel_resistance": false
   }

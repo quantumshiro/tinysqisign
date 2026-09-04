@@ -13,7 +13,7 @@ depth at most ten, and encoded integer length at most eleven 32-bit digits.
 
 Acceptance requires:
 
-1. exact source-anchor and digest checks during materialization;
+1. source-anchor and digest checks during materialization;
 2. an Arm build with `-Werror=vla -Werror=alloca`;
 3. zero `dynamic` records in every linked cryptographic translation unit;
 4. the official host known-answer test;
