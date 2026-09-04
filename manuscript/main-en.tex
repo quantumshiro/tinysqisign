@@ -11,6 +11,8 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,calc,patterns,positioning,shapes.geometric}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{enumitem}
 \usepackage{siunitx}
 \usepackage{url}
@@ -64,7 +66,7 @@
   Hiro Nakanishi\\[-0.2ex]
   {\small Independent Researcher}\\[-0.2ex]
   {\small\href{mailto:quantumsity@protonmail.com}{\texttt{quantumsity@protonmail.com}}}}
-\date{Preprint version: \today}
+\date{Preprint version: 5 September 2026}
 
 \begin{document}
 
@@ -81,9 +83,10 @@ regenerates full precision only when required.
 For Level I/RADIX32, the operation arena falls from \num{353008} to
 \num{172080} bytes (\num{51.2532}\%).  The firmware uses no GMP, dynamic
 allocation, or external PSRAM; it reserves \num{321408} of \num{532480} SRAM
-bytes and leaves \num{211072} unreserved.  Two independent 100-vector
-campaigns compare the low-memory and same-commit ordinary APIs on official
-requests; historical responses are not the oracle.  For the fixed image, a
+bytes and leaves \num{211072} unreserved.  The ordinary API and two separately
+started low-memory runs process the same 100 official requests.  These are
+fresh-process repetitions of a differential check, not independent or
+historical-response oracles.  For the fixed image, a
 linked call-graph analysis bounds the KeyGen, Sign, and Verify operation-PSP
 paths at \num{\VTwoStaticKeygenPspBoundBytes},
 \num{\VTwoStaticSignPspBoundBytes}, and
@@ -91,9 +94,10 @@ paths at \num{\VTwoStaticKeygenPspBoundBytes},
 entry; handler frames, interrupt nesting, and live MSP use are excluded.
 
 For v3.0, we overlay three lifetime-disjoint pairs in two functions.  Both
-variants pass API, self-test, and official-response checks for all three
-parameter sets (\num{600} vectors total), and all six affected Arm frames
-shrink.  One clean \texttt{p324\_3} RP2350 path reduces the Sign PSP watermark
+variants pass API, self-test, and official-response checks on 300 distinct
+parameter-set/request pairs each, giving \num{600} implementation-vector runs
+in total, and all six affected Arm frames shrink.  One clean
+\texttt{p324\_3} RP2350 path reduces the Sign PSP watermark
 from \num{\VThreeDThreeOfficialSignPspBytes} to
 \num{\VThreeDThreeSignPspBytes} bytes.  These target data cover one parameter
 and one deterministic path, not a timing distribution or whole-program stack
@@ -151,8 +155,8 @@ Our contributions are as follows.
         fallback whenever the sketch alone cannot decide an ordering.
   \item We produce an auditable v2 artifact: source correspondence checks,
         lifetime certificates, sanitizer and guard tests, ELF audits, two
-        100-request differential campaigns, a fixed-image operation-PSP
-        analysis, and RP2350 captures.
+        fresh-process repetitions of a 100-request differential campaign, a
+        fixed-image operation-PSP analysis, and RP2350 captures.
   \item We transfer lifetime scheduling, but not the v2 norm sketch, to two
         v3 functions.  We test all three official parameter sets on the host
         and in Arm object builds, and report one clean \texttt{p324\_3}
@@ -440,6 +444,77 @@ that sketch ties are rare.  In the attribution corpus, reconstruction was
 used for \num{5041} of \num{2062361} sorting comparisons
 (\num{0.2444}\%); this frequency is a performance observation only.
 
+\Cref{alg:en-lowmem-finduv} gives a compact, self-contained view of the two
+central changes.  \textsc{PrepareRow} generates candidates in the reference
+order and sorts their index permutation with \textsc{Compare}.
+\textsc{SearchPairs} retains the reference row-pair, in-row, and congruence
+orders.  The detailed source obligations and failure cases appear in
+\cref{tab:en-correspondence}.
+
+\begin{algorithm}[H]
+  \caption{Order-preserving comparison and two-row \texttt{find\_uv} schedule}
+  \label{alg:en-lowmem-finduv}
+  \small
+  \begin{algorithmic}[1]
+    \Require packed candidates, row descriptors $R_j=(G_j,d_j)$, target $T$,
+      and caller-owned workspace $W$
+    \Ensure reference-key comparison; \textsc{FindUV-LM} clears $W$ on every exit
+    \Function{Compare}{$i,j,V,S,G,d$}
+      \If{$i=j$}
+        \State \Return $0$
+      \ElsIf{$S[i].\ell\neq S[j].\ell$}
+        \State \Return $\Call{Cmp}{S[i].\ell,S[j].\ell}$
+      \ElsIf{$S[i].h\neq S[j].h$}
+        \State \Return $\Call{Cmp}{S[i].h,S[j].h}$
+      \EndIf
+      \State $n_i\gets\Call{FullNorm}{V[i],G,d}$;
+        $n_j\gets\Call{FullNorm}{V[j],G,d}$
+      \If{$n_i=\textsc{Fatal}$ \textbf{or} $n_j=\textsc{Fatal}$}
+        \State \Return \textsc{Fatal}
+      \ElsIf{$n_i\neq n_j$}
+        \State \Return $\Call{Cmp}{n_i,n_j}$
+      \Else
+        \State \Return $\Call{Cmp}{i,j}$
+      \EndIf
+    \EndFunction
+    \Function{FindUV-LM}{$T,\mathcal I,W$}
+      \State $(s,L,R_0,\ldots,R_{r-1})\gets\Call{PrepareLattice}{T,\mathcal I,W}$
+      \If{$s=\textsc{Fatal}$} \State \Return $\Call{Finish}{\textsc{Fatal},W}$ \EndIf
+      \State \Call{ClearPhaseStorage}{$W$}
+      \For{$j\gets0$ \textbf{to} $r-1$}
+        \State $c[j]\gets\Call{PrepareRow}{j,0,W}$ \Comment{validation pass}
+        \If{$c[j]=\textsc{Fatal}$} \State \Return $\Call{Finish}{\textsc{Fatal},W}$ \EndIf
+      \EndFor
+      \For{$j_1\gets0$ \textbf{to} $r-1$}
+        \State $m_1\gets\Call{PrepareRow}{j_1,0,W}$
+        \If{$m_1\neq c[j_1]$} \State \Return $\Call{Finish}{\textsc{Fatal},W}$ \EndIf
+        \For{$j_2\gets j_1$ \textbf{to} $r-1$}
+          \If{$j_2=j_1$}
+            \State $(V_2,m_2)\gets(W.V[0],m_1)$ \Comment{diagonal alias}
+          \Else
+            \State $m_2\gets\Call{PrepareRow}{j_2,1,W}$; $V_2\gets W.V[1]$
+            \If{$m_2\neq c[j_2]$} \State \Return $\Call{Finish}{\textsc{Fatal},W}$ \EndIf
+          \EndIf
+          \State $z\gets\Call{SearchPairs}{T,W.V[0],V_2,R_{j_1},R_{j_2}}$
+          \If{$z=\textsc{Fatal}$} \State \Return $\Call{Finish}{\textsc{Fatal},W}$ \EndIf
+          \If{$z$ is a solution}
+            \If{\textbf{not} $\Call{ValidateAndPublish}{z}$}
+              \State \Return $\Call{Finish}{\textsc{Fatal},W}$
+            \EndIf
+            \State \Return $\Call{Finish}{\textsc{Success},W}$
+          \EndIf
+        \EndFor
+      \EndFor
+      \State \Return $\Call{Finish}{\textsc{NotFound},W}$
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+Here \textsc{FullNorm} evaluates the full-precision quadratic form, requires a
+positive quotient with zero remainder on division by $d$, and otherwise
+returns \textsc{Fatal}.  \textsc{Finish} clears the complete caller-owned
+workspace before returning.
+
 \begin{figure}[ht]
   \centering
   \input{figures-en/sketch-flow.tikz.tex}
@@ -600,18 +675,21 @@ PSP watermark are not subtracted as though they were the same resource.
 \subsection{Functional gates}
 
 For v2, 12 frozen transcripts compare the full-norm-table and proposed
-implementations.  Two fresh processes then feed all 100 official v2 Level-I
-requests to the ordinary API and the caller-owned low-memory API.  Each vector
+implementations.  One ordinary-API process and two separately started
+low-memory processes each consume all 100 official v2 Level-I requests.  Each vector
 checks public/secret keys, signed message, post-RNG state, successful Open,
 one-bit modified-signature rejection, guards, and terminal clearing.  All
 three generated response streams are byte-identical.  The expected response
-is produced by the ordinary path at the same compact-source commit; therefore
-we call this a differential-conformance test using official requests, not a
-historical-response KAT.
+is produced by the ordinary path at the same compact-source commit.  The two
+low-memory runs therefore test fresh-process repeatability, but do not provide
+independent oracles.  We call this a differential-conformance test using
+official requests, not a historical-response KAT.
 
 For v3, official and D3 builds each pass the NIST API test, scheme self-test,
 and 100 official-response vectors for \texttt{p324\_3}, \texttt{p500\_27},
-and \texttt{p664\_17}: \num{600} response vectors in total.  D1 additionally
+and \texttt{p664\_17}.  This is 300 distinct parameter-set/request pairs run
+once on each implementation, or \num{600} implementation-vector runs in
+total.  D1 additionally
 has five interleaved official/adapted target pairs and a 10-vector campaign in
 two linked-code placements.  D3's final target evidence is one clean
 \texttt{p324\_3} vector-0 K/S/V capture.  These corpora are finite regression
@@ -951,9 +1029,9 @@ Typed lifetime scheduling and an order-preserving norm sketch reduce the
 SQIsign v2 Level-I operation arena from \num{353008} to \num{172080} bytes.
 The resulting RP2350 firmware uses no GMP, heap, or external PSRAM, reserves
 \num{321408} bytes of SRAM, and leaves \num{211072} bytes unreserved.  Two
-official-request differential campaigns, lifetime and source certificates,
-linked-image audits, and fixed-image operation-PSP analysis support this
-bounded result.
+fresh-process repetitions of the official-request differential campaign,
+lifetime and source certificates, linked-image audits, and fixed-image
+operation-PSP analysis support this bounded result.
 
 In SQIsign v3, three local overlays across two functions reduce all six tested
 Arm frames over the three official parameter sets.  One clean

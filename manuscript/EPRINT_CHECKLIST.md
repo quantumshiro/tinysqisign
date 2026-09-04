@@ -51,3 +51,7 @@
 - [x] v3 D3を二関数・全三parameterのhost/Arm検証へ拡張し、実機claimは`p324_3`の一経路に限定する。
 - [x] contract compilerの直接access coverageと、phase/alias/escapeが手動annotationに依存する境界を明記する。
 - [x] 国際査読用`main-en.pdf`を追加し、日英両PDFを提出前checkの対象にする。
+- [x] v2の二回の低メモリ試験を、独立oracleではなく同一request・同一通常API oracleを用いる別process反復として記述する。
+- [x] v3の`600`を、300個の異なるparameter/request組を二実装で検査した600回の実装別実行として記述する。
+- [x] 英語原稿だけでも中核変換を追えるよう、norm比較と二行streamingの短縮擬似コードを追加する。
+- [x] 日英PDFの日付を固定し、`VERSIONS.md`冒頭のv3公開前freezeを歴史的記録として明示する。

@@ -91,7 +91,7 @@
   Hiro Nakanishi\\[-0.2ex]
   {\small 独立研究者}\\[-0.2ex]
   {\small\href{mailto:quantumsity@protonmail.com}{\texttt{quantumsity@protonmail.com}}}}
-\date{プレプリント版：\today}
+\date{プレプリント版：2026年9月5日}
 
 \begin{document}
 
@@ -100,9 +100,9 @@
 \begin{abstract}
 SQIsignの小さな公開鍵と署名は、鍵生成・署名時の小さな作業メモリを意味しない。SQIsign v2.0.1 Level Iのcompact実装では、\texttt{find\_uv}の五つの同時確保領域だけで\num{6339868} bytesを要し、RP2350のオンチップSRAMを超える。本稿は、非交差生存区間を型付きunionへ配置するlifetime schedulingと、候補ノルムのビット長・上位64 bitだけを保持するcertified norm sketchを組み合わせる。sketchが同値の場合は保持済み候補から全精度ノルムを再生成するため、確率的なcollision仮定なしに元の比較順序を保存する。
 
-Level I/RADIX32のoperation arenaは\num{353008} bytesから\num{172080} bytesへ\num{51.2532}\%減少した。最終firmwareはGMP、動的確保、外部PSRAMを用いず、\num{321408} bytesを排他的に予約して\num{211072} bytesを未予約とした。公式request 100本を用いる差分適合試験を独立に二回実施した。さらに測定済みELFと同一の\texttt{.text}を持つclean再構築版について、link済みの入力依存Thread-mode経路を解析し、最大例外entry 212 bytesを含むKeyGen/Sign/VerifyのPSP上界をそれぞれ\num{\VTwoStaticKeygenPspBoundBytes}、\num{\VTwoStaticSignPspBoundBytes}、\num{\VTwoStaticVerifyPspBoundBytes} bytesとした。これらは\num{131072} byte予約内に収まる。同じUF2による2 bootはこの解析の実機cross-checkであり、割込みhandler、nesting、entry時MSPを含む全program上界ではない。
+Level I/RADIX32のoperation arenaは\num{353008} bytesから\num{172080} bytesへ\num{51.2532}\%減少した。最終firmwareはGMP、動的確保、外部PSRAMを用いず、\num{321408} bytesを排他的に予約して\num{211072} bytesを未予約とした。同一の公式request 100本について、通常API一回と、別々に起動した低メモリAPI二回を比較した。低メモリ側の二回は別processでの反復であり、独立なoracleではない。さらに測定済みELFと同一の\texttt{.text}を持つclean再構築版について、link済みの入力依存Thread-mode経路を解析し、最大例外entry 212 bytesを含むKeyGen/Sign/VerifyのPSP上界をそれぞれ\num{\VTwoStaticKeygenPspBoundBytes}、\num{\VTwoStaticSignPspBoundBytes}、\num{\VTwoStaticVerifyPspBoundBytes} bytesとした。これらは\num{131072} byte予約内に収まる。同じUF2による2 bootはこの解析の実機cross-checkであり、割込みhandler、nesting、entry時MSPを含む全program上界ではない。
 
-v3.0への転用では、二関数の三つの非交差領域を重畳した。公式版と適応版について全三パラメータ集合のAPI、self-test、各100本の公式responseを検査し、合計\num{\VThreeDThreeKatVectors}ベクトルを通過した。両関数のArm frameは全六比較で減少した。RP2350上の\texttt{p324\_3}第0ベクトルではSignのPSP上書き深さが\num{\VThreeDThreeOfficialSignPspBytes} bytesから\num{\VThreeDThreeSignPspBytes} bytesへ\num{\VThreeDThreeSavedBytes} bytes減少した。ただし実機転用試験は一パラメータ・一決定的経路であり、時間分布も全program最悪stackも与えない。v2とv3の入力依存timing・control-flow・addressも検出されており、本稿は定数時間性、電力・電磁波耐性、製品利用可能性を主張しない。
+v3.0への転用では、二関数の三つの非交差領域を重畳した。公式版と適応版について全三パラメータ集合のAPI、self-test、各100本の公式responseを検査した。異なるparameter/request組は300組であり、二実装で各一回実行した合計は\num{\VThreeDThreeKatVectors}回である。両関数のArm frameは全六比較で減少した。RP2350上の\texttt{p324\_3}第0ベクトルではSignのPSP上書き深さが\num{\VThreeDThreeOfficialSignPspBytes} bytesから\num{\VThreeDThreeSignPspBytes} bytesへ\num{\VThreeDThreeSavedBytes} bytes減少した。ただし実機転用試験は一パラメータ・一決定的経路であり、時間分布も全program最悪stackも与えない。v2とv3の入力依存timing・control-flow・addressも検出されており、本稿は定数時間性、電力・電磁波耐性、製品利用可能性を主張しない。
 \end{abstract}
 
 \begin{center}
@@ -139,7 +139,7 @@ NISTの追加耐量子デジタル署名標準化では、SQIsignが第3ラウ�
   \item \textbf{順序保存certified norm sketch.}
         候補ノルムのビット長と上位64 bitを保持し、両者が同じ場合だけ保持済み候補から全精度ノルムを再生成する。比較器が元の全精度比較と同一の全順序を与えることを示し、意図的collision fixtureを含む差分試験で検証する。
   \item \textbf{静的なCortex-M実装とPareto評価.}
-        SQIsign v2.0.1 Level I/RADIX32について、GMP、allocator、VLAを選択済みlink closureから除去した。v2提案実装はoperation arenaを\num{353008} bytesから\num{172080} bytesへ\num{51.2532}\%削減し、排他的SRAM予約を\num{321408} bytes、未予約SRAMを\num{211072} bytesとする。flash増加は\num{880} bytesである。12個の凍結トランスクリプトと、公式request 100本を用いた通常・低メモリAPIの差分適合試験を独立に二回実施する。さらに固定imageのlink済みThread-mode経路へ最大例外entryを加えた操作PSP上界を求め、実機2 bootのwatermarkでcross-checkする。
+        SQIsign v2.0.1 Level I/RADIX32について、GMP、allocator、VLAを選択済みlink closureから除去した。v2提案実装はoperation arenaを\num{353008} bytesから\num{172080} bytesへ\num{51.2532}\%削減し、排他的SRAM予約を\num{321408} bytes、未予約SRAMを\num{211072} bytesとする。flash増加は\num{880} bytesである。12個の凍結トランスクリプトと、公式request 100本を用いた通常・低メモリAPI差分適合試験の別process反復を二回実施する。さらに固定imageのlink済みThread-mode経路へ最大例外entryを加えた操作PSP上界を求め、実機2 bootのwatermarkでcross-checkする。
   \item \textbf{SQIsign v3への転用追試.}
         公式v3.0とv3適応実装を、v2および相互から分離したsource、build、resultディレクトリで評価する。最終適応版は\texttt{quat\_lll\_dual\_reduce\_ideal}と\texttt{protocols\_sign}の計三組を重畳する。全三パラメータ集合でhost機能試験とArm frame監査を行い、\texttt{p324\_3}のclean実機ではSign PSPを\num{\VThreeDThreeSavedBytes} bytes削減する。v2固有のnorm sketchは転用せず、一般化できた要素とできなかった要素を分離する。
   \item \textbf{安全性を含むclaim boundary.}
@@ -673,11 +673,11 @@ v3では、公式source commit \texttt{6d017708db403bf83977fa70770fc4f7f9e9ff21}
 
 v2実機試験ではAES-256 CTR-DRBGの決定的test adapterを使用し、host oracleと同じseed、message、期待digestを用いた。これは再現性と差分検査のためであり、製品向けentropy sourceではない。clock、toolchain、linker layout、binary hash、capture hashをmanifestへ固定した。同じ保存済みUF2を用いて2 bootを取得し、各boot内でKeyGen、Sign、Verifyを直列に実行して、各操作後のguardと全消去を確認した。これは一入力の反復であり、入力分布を広げる試験ではない。
 
-v2の公式request差分適合試験では、保存済みNIST-v2 Level-Iの公式100-vector request（SHA-256 \texttt{81ff60e3...d6ebc7e}、完全値は補助資料）を、同一commitから別々に構築した通常APIと\texttt{SQISIGN\_LOWMEM\_ONLY} APIへ与えた。低メモリ側は通常entryを呼ばず、呼出側所有workspace版のKeyGen、Sign、Open、およびVerifyだけを用いる。各vectorで正当signed messageの復元、署名一bit改変の拒否、前後guard、操作後消去を検査し、低メモリrunを新しいprocessで二回実施した。期待値は同一commitの通常経路であり、旧公式responseをoracleとするKATではない。
+v2の公式request差分適合試験では、保存済みNIST-v2 Level-Iの公式100-vector request（SHA-256 \texttt{81ff60e3...d6ebc7e}、完全値は補助資料）を、同一commitから別々に構築した通常APIと\texttt{SQISIGN\_LOWMEM\_ONLY} APIへ与えた。低メモリ側は通常entryを呼ばず、呼出側所有workspace版のKeyGen、Sign、Open、およびVerifyだけを用いる。各vectorで正当signed messageの復元、署名一bit改変の拒否、前後guard、操作後消去を検査した。通常APIを一回、低メモリAPIを別々に起動したprocessで二回実行した。三つの応答列は同一だが、低メモリ側の反復は同じrequest集合と同一commitの通常経路を共有するため、独立なoracleではない。旧公式responseをoracleとするKATでもない。
 
 v3実機試験では、公式既知解テストの第0ベクトルをfirmwareへ埋め込み、公開鍵、秘密鍵、署名付きmessage、復元messageをbyte単位で照合した。D1の対比較は5組10 bootで順序を反転し、10 captureすべてで\texttt{firmware\_dirty=0}を検査した。D3は別のclean commitから一回の第0ベクトルK/S/Vを取得し、ELF、UF2、map、archive、serial capture、source patch、bundleのdigestを一つのsummaryへ固定した。旧dirty campaignは投稿用の集計から除外した。
 
-hostでは公式headとD3 headをclean treeから別々に構築し、\texttt{p324\_3}、\texttt{p500\_27}、\texttt{p664\_17}の全てでAPI test、scheme self-test、および公式response 100本を完走した。合計は二実装\(\times\)三parameter\(\times\)100本の\num{600}ベクトルである。Arm frame監査も同じ六構成を対象とする。v2のsource、build、resultは移動も上書きもせず、v3用の全成果物を専用directoryへ保存する。
+hostでは公式headとD3 headをclean treeから別々に構築し、\texttt{p324\_3}、\texttt{p500\_27}、\texttt{p664\_17}の全てでAPI test、scheme self-test、および公式response 100本を完走した。異なるparameter/request組は三parameter\(\times\)100本の300組である。各組を公式版とD3版で一回ずつ実行したため、実装別の検査回数は合計\num{600}回となる。Arm frame監査も同じ六構成を対象とする。v2のsource、build、resultは移動も上書きもせず、v3用の全成果物を専用directoryへ保存する。
 
 単一ベクトル反復とは別に、公式responseの第0--9ベクトルを一つのbootで順に処理するfirmwareも構築した。公式版とv3適応版のそれぞれについて、暗号archive直前へ0個または512個のThumb NOPを置く二配置を用いる。後者は\texttt{crypto\_sign\_keypair}, \texttt{crypto\_sign}, \texttt{crypto\_sign\_open}を正確に\num{1024} bytes移動させる。この試験では正当K/S/Vのbyte一致に加えて、署名先頭bitを反転したnegative Verifyも各ベクトルで実行する。
 
@@ -716,7 +716,7 @@ hostでは公式headとD3 headをclean treeから別々に構築し、\texttt{p3
     \midrule
     sketch collision & $2^{100}$と$2^{100}+1$が全精度比較を通り正順序 & PASS \\
     凍結トランスクリプト & PK/SK/signed messageが12 seed全てでbyte一致 & 12/12 \\
-    公式request差分適合試験 & 通常APIと低メモリAPIがbyte一致、独立二回 & 100/100 $\times 2$ \\
+    公式request差分適合試験 & 通常APIと低メモリAPIがbyte一致、別processで2反復 & 100/100 $\times 2$ \\
     sanitizer & ASanおよびUBSanの対象fixtureが無警告完走 & PASS \\
     radix/level & RADIX64/RADIX32およびLevel I/III/Vの対象gate & PASS \\
     Arm ABI & candidate/phase/operationが規定byte数と一致 & PASS \\
@@ -901,7 +901,7 @@ D3では\texttt{protocols\_sign}の第三の重畳を加えた。\cref{tab:v3-d3
   \end{tabular}
 \end{table}
 
-単一parameterへの依存を調べるため、公式版とD3を三つの公式parameter setすべてで生成した。各構成はAPI test、scheme self-test、公式response 100本を通過し、合計\num{\VThreeDThreeKatVectors}ベクトルとなる。\cref{tab:v3-all-parameter-frames}のとおり、二関数のframeは全六比較で減少した。これは局所配置が三parameterへ適用できることを示すが、\texttt{p500\_27}と\texttt{p664\_17}のwhole-image SRAMまたは実機watermarkを示すものではない。
+単一parameterへの依存を調べるため、公式版とD3を三つの公式parameter setすべてで生成した。各構成はAPI test、scheme self-test、公式response 100本を通過した。これは300個の異なるparameter/request組を二実装で検査した合計\num{\VThreeDThreeKatVectors}回の実行である。\cref{tab:v3-all-parameter-frames}のとおり、二関数のframeは全六比較で減少した。これは局所配置が三parameterへ適用できることを示すが、\texttt{p500\_27}と\texttt{p664\_17}のwhole-image SRAMまたは実機watermarkを示すものではない。
 
 \begin{table}[H]
   \centering
@@ -1101,7 +1101,7 @@ v2提案実装では\num{211072} bytesが未予約となり、全精度表実装
   \item \textbf{単一target}: 実機結果はRP2350、Arm Cortex-M33、1 coreに限られる。v2はLevel I/RADIX32だけを対象とする。v3 D3のhost機能試験とArm frame監査は全三parameterを含むが、whole-imageの構築・実機watermarkは\texttt{p324\_3/m4f}だけである。他MCUのfitを示さない。
   \item \textbf{決定的乱数}: v2は再現用CTR-DRBG adapter、v3は公式既知解ベクトルを用いる。entropy source、reseeding、故障時処理を含むproduction RNG統合は未評価である。
   \item \textbf{実行回数}: v2のtarget反復は同じ決定的K/S/Vを2 bootで測ったcross-checkである。v3 D1は順序を反転した単一ベクトル5組と10ベクトル二配置、D3は一回の第0ベクトルを測定した。固定鍵screenと固定frame試作も単一基板であり、母集団上の入力分布、個体差、retry tail、D3の時間分布を与えない。
-  \item \textbf{機能同値性の範囲}: v2の12個の凍結トランスクリプト、公式requestを用いた二回の100-vector通常・低メモリ差分適合、およびv3全三parameter・二実装の計600-vector公式response一致は強い回帰gateだが、有限corpusであり、全入力の形式的equivalence proofではない。またv2差分試験の期待値は同一commitの通常APIであり、乱数消費列が異なる旧GMP応答ではない。
+  \item \textbf{機能同値性の範囲}: v2の12個の凍結トランスクリプト、公式requestを用いた100-vector通常・低メモリ差分適合の別process反復、およびv3の300個のparameter/request組を二実装で検査した計600回の公式response一致は強い回帰gateだが、有限corpusであり、全入力の形式的equivalence proofではない。またv2差分試験の期待値は同一commitの通常APIであり、乱数消費列が異なる旧GMP応答ではない。
   \item \textbf{手動lifetime}: contract compilerとcoverage gateは、宣言済み全memberと直接accessのannotation漏れをfail-closedで検出する。しかしphase、生存区間、間接alias、pointer escape、failure edgeの消去は人手のcontractに依存する。sanitizer、canary、ELF監査、公式responseは誤りを検出するが、C alias意味論に対する完全性を証明しない。
   \item \textbf{v3の静的閉包}: D3には19件の動的stack記録が残る。別の固定frame試作はcompiler上これを0件にし、allocatorと診断失敗をfail-stop trapへ限定した。link済み操作根のmetadata、間接call、固定assembly frame、および3個の再帰componentを閉じ、software callにSecure Armv8-Mの最大例外entryを加えたK/S/VのPSP上界を得た。ただしこの上界はD3へは移らない。USB CDCとalarm poolから到達し得る割込み候補4根では直接call先のstack metadata欠落を0件まで閉じたが、重複を除いて18地点の間接callbackが残る。handler software frame、enabled IRQ集合、割込みnesting、および各entry時の生存MSP量は未評価であるため、全program boundではない。
   \item \textbf{可変時間}: v2署名には入力依存の分岐、address、retry、再計算が残る。完全Signのanalog power/EM testとkey-recovery reproductionは未実施である。v3では10入力のtarget時間差に加え、native host上の固定message・固定署名乱数条件で10鍵に対応する時間差とedge/address差を再現し、同じ固定条件の鍵対応timingをRP2350でも再現した。ただし鍵は対応する公開成分も同時に変わるため秘密部分だけへの帰属ではなく、target上の制御フロー・address traceおよび物理波形は未実施である。
@@ -1160,7 +1160,7 @@ v3の動的局所frame記録は固定frame試作で19件から0件へ変更で�
 
 本稿では、SQIsign v2.0.1 Level IのKeyGen、Sign、VerifyをRP2350のオンチップSRAM内でGMPおよび動的確保なしに実行するためのメモリ設計を示した。型付きlifetime-aware arena schedulingによりプロトコル全体の同時生存領域を削減し、候補ノルムのビット長と上位64 bitを保持して必要時だけ全精度へ戻るcertified norm sketchを組み合わせた。元の全精度順序を保ったままoperation arenaを\num{353008} bytesから\num{172080} bytesへ削減した。実機2 bootに加え、固定ELFのlink済み入力依存Thread-mode経路についてK/S/VのPSP上界を閉じ、いずれも\num{131072} byte予約内であることを確認した。
 
-v3.0では、同じ考え方を\texttt{quat\_lll\_dual\_reduce\_ideal}と\texttt{protocols\_sign}へ適用した。全三parameterの二実装で計\num{\VThreeDThreeKatVectors}公式responseを通し、二関数の全六Arm frameを削減した。\texttt{p324\_3}実機ではSign PSPが\num{\VThreeDThreeOfficialSignPspBytes} bytesから\num{\VThreeDThreeSignPspBytes} bytesへ減少した。同時に、certified norm sketchとv2の静的closureはそのまま転用できないことも示した。別の固定frame試作では操作PSP上界を128 KiB内で閉じたが、この保証はD3およびhandler/MSPへは移らない。
+v3.0では、同じ考え方を\texttt{quat\_lll\_dual\_reduce\_ideal}と\texttt{protocols\_sign}へ適用した。全三parameterの300個のparameter/request組を二実装で検査し、計\num{\VThreeDThreeKatVectors}回の公式response一致を確認した。二関数の全六Arm frameも削減した。\texttt{p324\_3}実機ではSign PSPが\num{\VThreeDThreeOfficialSignPspBytes} bytesから\num{\VThreeDThreeSignPspBytes} bytesへ減少した。同時に、certified norm sketchとv2の静的closureはそのまま転用できないことも示した。別の固定frame試作では操作PSP上界を128 KiB内で閉じたが、この保証はD3およびhandler/MSPへは移らない。
 
 v2最終firmwareは\num{321408} bytesを排他的に予約し、\num{211072} bytesを未予約として残しながら、決定的K/S/Vを2 bootで完了した。hostでは公式request 100本による差分適合試験を二回完走し、同一commitの通常APIとのbyte一致、正当message復元、改変拒否、arena境界・消去を各100本で確認した。一方、v2のKeyGenとSignは非常に遅く、署名の可変時間性と既知のSPA攻撃面も残る。v3でもhostとRP2350の固定条件で鍵対応timingを再現し、v3適応実装にも動的stackと未評価の漏洩面が残る。これは定数時間性または物理漏洩を証明する結果ではなく、省メモリ化とは独立に安全性評価が必要であることを具体化する結果である。従って本結果の価値は、値の上界、同時生存、再計算、link時予約、安全性の主張範囲を版ごとに分離し、二世代の実装で監査可能な設計として示した点にある。
 

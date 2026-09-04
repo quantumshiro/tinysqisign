@@ -1,10 +1,19 @@
-# Version freeze
+# Version freezes
+
+This ledger is chronological. The 2026-08-19 entry below is the historical v2
+baseline freeze made before SQIsign v3.0 was published; it does not describe
+the current protocol state. The manuscript-facing state is the
+[2026-09-04 paper-revision freeze](#2026-09-04-paper-revision-freeze), which
+records the official v3 source and the clean v3 experiments separately from
+the unchanged v2 baseline.
+
+## Historical v2 baseline freeze
 
 Freeze date: **2026-08-19 (Asia/Tokyo)**.
 
 ## Standardization and protocol target
 
-NIST advanced SQIsign, together with eight other signature candidates, to Round 3 on 2026-05-14. NIST explicitly describes the next submissions as an opportunity for updated specifications and implementations (“tweaks”); it does not yet publish a Round-3 SQIsign package on the candidate page.
+NIST advanced SQIsign, together with eight other signature candidates, to Round 3 on 2026-05-14. At this freeze, NIST described the next submissions as an opportunity for updated specifications and implementations (“tweaks”) but had not yet published a Round-3 SQIsign package on the candidate page.
 
 - NIST status: [Round 3 advancement announcement](https://csrc.nist.gov/news/2026/nist-advances-9-candidates-to-the-3rd-round-of-pqc)
 - NIST candidate page: [Round 3 Additional Signatures](https://csrc.nist.gov/projects/pqc-dig-sig/round-3-additional-signatures)
@@ -12,7 +21,7 @@ NIST advanced SQIsign, together with eight other signature candidates, to Round 
 - Previous stable specification: [v2.0, 2025-02-05](https://sqisign.org/spec/sqisign-20250205.pdf)
 - NIST Round-2 implementation tag: `nist-v2` at `91e9e464fe5400192d13e1f9240cbf180200a103`
 
-No Round-3-specific SQIsign specification, parameter set, source tag, or tweak package was found by the freeze date. The project therefore targets the **v2.0.1 protocol and Level-I parameters**, with the v2 source lineage as the experimental baseline. This is a provisional research target, not a claim of future Round-3 compatibility.
+No Round-3-specific SQIsign specification, parameter set, source tag, or tweak package was found by this historical freeze date. The initial project therefore targeted the **v2.0.1 protocol and Level-I parameters**, with the v2 source lineage as the experimental baseline. The later v3 entries do not retroactively change that v2 experiment.
 
 The v2.0.1 document is not merely a cosmetic reissue. Its algorithm text corrects the normalized discrete-log update in the relevant verification derivation (division by the appropriate power replaces the v2.0 expression), clarifies a parameter inequality, and includes errata. The public implementation has no `nist-v2.0.1` tag. The current `main` commit below is used as the conformance oracle because it contains only post-tag maintenance changes found in our diff (stack-smash/test-parallelism/RNG-state maintenance), not a new protocol or parameter set.
 
@@ -906,7 +915,7 @@ bound to that image; it is not a replacement for raw power or EM traces.
 | v3 fixed-key official ELF / UF2 SHA-256 | `3a30a6022ce4c9e0c31a71655583a347a2c7728f36e03a69052d6981e43a834c` / `09c10cd9812a14a692c64842f11204f3d69f8ce3f04c2ae962c466ad5d03c314` |
 | v3 fixed-key adapted ELF / UF2 SHA-256 | `a8bf87a862d15574de599da491c891119a634e928544b75d316b70c1db9bc335` / `8e5a5973a96f051377b5ae1100c25ec3c91972f7a0c989bd69615db522d3f9b7` |
 | v3 fixed-key raw official / adapted / summary SHA-256 | `0edbd872e4f4f0e558511a5ace0c5d4073154db5a4f522375ce288bea79ecd99` / `f3e09c54a9378637ffa432f04f34901f767ef21e697c4e00da3dbf574eef96ab` / `9c5975d6ae6b91c27eb21a0539c12d37baf7a1dde4b82974567f6c4d66ff16d5` |
-| Final future-work register / hardware readiness SHA-256 | `46b0fbcba7f8138c4940696501c14de752a78718dc9acb61b7a2cf6a94f5c815` / `a2f664bf61bd0d554d75ce67393d64f3d8a98e1734a39e0c05efffefc9a53b39` |
+| Final future-work register / hardware readiness SHA-256 | `6ed26ca3fd3f36777861db500104c8127ad13dcdeb2ef2d86d66df65dd53638a` / `a2f664bf61bd0d554d75ce67393d64f3d8a98e1734a39e0c05efffefc9a53b39` |
 | v3 lifetime/static thin-bundle SHA-256 | `823e3b0dc251646046ba32b5b26a30e8a6c37197ff1a8192f725080e5d13dde2` / `a7aa0c4d78507606ded4cd2174898882c004ab4ca34ee6320dfd04837d0cd710` |
 | Clean v3 official+lifetime / fixed-frame host gate SHA-256 | `5825787bdb4ff6b0782e980289618428da3c8f4101a97acae1b035cad8627539` / `aa8f8fe713021a0d07007c08f6863f76ecaec230922672dec798e67192c51cb4` |
 | Reconstructed generated `p324_3/m4f` tree SHA-256 | official `38ee7ae007db2de0366cdb66dfe22f83f66ee5ce3d99f7f6260dc9ab24c3328a`; lifetime `57e1ae2d0d1a16d40f44f5fbcda91b4e588eca5c2f40dda04377bb61e3077ae2`; fixed-frame `7df287fc4e690b93459fa47c9bb6856a49712996ba348fba0abd0eb397383421` |

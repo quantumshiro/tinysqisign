@@ -28,8 +28,10 @@ Contact: Hiro Nakanishi, independent researcher,
   remain outside that certificate.
 - SQIsign v3.0: the final D3 schedule overlays three pairs in two functions.
   Host API, self-test, and 100-response checks pass for both implementations
-  and all three official parameter sets (600 vectors total), and all six Arm
-  frame comparisons decrease. A clean `p324_3/m4f` target capture reduces Sign
+  and all three official parameter sets. The corpus contains 300 distinct
+  parameter-set/request pairs, each run on both implementations, for 600
+  implementation-vector runs in total. All six Arm frame comparisons decrease.
+  A clean `p324_3/m4f` target capture reduces Sign
   PSP from 101,060 to 96,396 bytes (−4,664 bytes, −4.6151%). Whole-image target
   measurements for the other two parameter sets are not claimed.
 - A separate fixed-frame v3 prototype removes 19 compiler dynamic-frame

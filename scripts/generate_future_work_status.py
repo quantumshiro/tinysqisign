@@ -523,7 +523,8 @@ def main() -> int:
             "label_ja": "限定完了",
             "finding": (
                 "二関数の三領域を重畳。公式版/D3の全三parameterでAPI・self-test・"
-                "各100 response、計600ベクトルを通過し、Arm frameは全6比較で減少。"
+                "各100 responseを通過。異なるparameter/request組は300組、"
+                "二実装で計600回の検査となり、Arm frameは全6比較で減少。"
                 "RP2350 p324_3の一経路ではSign PSPを4664 bytes削減。"
                 "他二parameterのwhole-image実機fitとD3時間分布は未評価。"
             ),

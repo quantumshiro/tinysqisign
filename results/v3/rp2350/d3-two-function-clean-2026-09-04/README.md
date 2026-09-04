@@ -17,9 +17,10 @@ performance distribution.
 The target result is paired with host API, self-test, and 100-response checks
 for all three official parameter sets in
 `results/v3/host/validation-all-params-2026-09-04.json`. Across the official
-and D3 trees these checks cover 600 response vectors. The corresponding Arm
-frame audit covers both modified functions in all three parameter sets and
-records a reduction in all six comparisons.
+and D3 trees these checks cover 300 distinct parameter-set/request pairs, each
+run on both implementations, for 600 implementation-vector runs. The
+corresponding Arm frame audit covers both modified functions in all three
+parameter sets and records a reduction in all six comparisons.
 
 `summary.json` verifies the capture identity, source and firmware cleanliness,
 the generated-tree digest, the official target response, archived ELF/UF2/map
