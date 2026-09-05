@@ -11,7 +11,7 @@
 ]
   \node[title] at (15,0) {(a) v2 overflow};
   \node[title] at (48,0) {(b) Lifetimes};
-  \node[title] at (81,0) {(c) Norm sketch};
+  \node[title] at (81,0) {(c) Retain/recompute};
   \node[title] at (116,0) {(d) RP2350};
   \node[title] at (151,0) {(e) Claim scope};
 
@@ -35,7 +35,7 @@
   \node[lab] at (49.5,-30) {B};
   \node[lab] at (49.5,-34) {C};
 
-  % (c) The v2-only sketch returns to full precision on a tie.
+  % (c) The v2-only retained pair returns to full precision on a tie.
   \node[box,text width=15mm] (sk) at (76,-15) {$\ell,h_{64}$};
   \node[box,text width=18mm,line width=.85pt] (ex) at (76,-30) {$N_i\ ?\ N_j$};
   \node[box,text width=9mm] (ord) at (94,-15) {Order};
@@ -57,7 +57,7 @@
   \draw[flow] (24.5,-22) -- (33.5,-22);
   \draw[flow] (63,-17) -- (66,-17);
   \draw[flow] (99,-15) -- (103,-15);
-  % Route the lifetime-only v3 branch below the sketch comparison box.
+  % Route the lifetime-only v3 branch below the retained pair comparison box.
   \draw[flow] (63,-24) -- (64,-24) -- (64,-39) -| (v3.south);
   \draw[flow] (129,-14) -| (136,-20);
   \draw[flow] (129,-30) -| (136,-24);

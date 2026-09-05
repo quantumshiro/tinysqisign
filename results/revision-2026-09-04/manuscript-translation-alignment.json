@@ -2,8 +2,8 @@
   "scope": "Structural correspondence only; semantic translation requires reading both texts.",
   "status": "PASS",
   "sha256": {
-    "main.tex": "d855f399225aa63153951f57fdb326b3b4bfda82a93e74c4777a931f270eaf2a",
-    "main-en.tex": "c86cf3a524c9e8debc9e8841c0b0d28f136c320d3eefd027eefce7a660ad8e7c"
+    "main.tex": "bbb5c9899e2b2c54271de8d1638e1beebf08b8fc7a8db82fd855c8140bb83c3e",
+    "main-en.tex": "576a714779b233a036118c630415685515da7cdeb3628399d32325787107a322"
   },
   "counts": {
     "sections": 8,
@@ -17,978 +17,978 @@
   "blocks": [
     {
       "block": 1,
-      "ja_line": 94,
-      "en_line": 95
+      "ja_line": 93,
+      "en_line": 94
     },
     {
       "block": 2,
-      "ja_line": 96,
-      "en_line": 97
+      "ja_line": 95,
+      "en_line": 96
     },
     {
       "block": 3,
-      "ja_line": 98,
-      "en_line": 99
+      "ja_line": 97,
+      "en_line": 98
     },
     {
       "block": 4,
-      "ja_line": 101,
-      "en_line": 102
+      "ja_line": 100,
+      "en_line": 101
     },
     {
       "block": 5,
-      "ja_line": 107,
-      "en_line": 108
+      "ja_line": 106,
+      "en_line": 107
     },
     {
       "block": 6,
-      "ja_line": 110,
-      "en_line": 111
+      "ja_line": 109,
+      "en_line": 110
     },
     {
       "block": 7,
-      "ja_line": 112,
-      "en_line": 113
+      "ja_line": 111,
+      "en_line": 112
     },
     {
       "block": 8,
-      "ja_line": 114,
-      "en_line": 115
+      "ja_line": 113,
+      "en_line": 114
     },
     {
       "block": 9,
-      "ja_line": 116,
-      "en_line": 117
+      "ja_line": 115,
+      "en_line": 116
     },
     {
       "block": 10,
-      "ja_line": 118,
-      "en_line": 119
+      "ja_line": 117,
+      "en_line": 118
     },
     {
       "block": 11,
-      "ja_line": 125,
-      "en_line": 126
+      "ja_line": 124,
+      "en_line": 125
     },
     {
       "block": 12,
-      "ja_line": 127,
-      "en_line": 128
+      "ja_line": 126,
+      "en_line": 127
     },
     {
       "block": 13,
-      "ja_line": 129,
-      "en_line": 130
+      "ja_line": 128,
+      "en_line": 129
     },
     {
       "block": 14,
-      "ja_line": 142,
-      "en_line": 143
+      "ja_line": 141,
+      "en_line": 142
     },
     {
       "block": 15,
-      "ja_line": 149,
-      "en_line": 150
+      "ja_line": 148,
+      "en_line": 149
     },
     {
       "block": 16,
-      "ja_line": 152,
-      "en_line": 153
+      "ja_line": 151,
+      "en_line": 152
     },
     {
       "block": 17,
-      "ja_line": 154,
-      "en_line": 155
+      "ja_line": 153,
+      "en_line": 154
     },
     {
       "block": 18,
-      "ja_line": 156,
-      "en_line": 157
+      "ja_line": 155,
+      "en_line": 156
     },
     {
       "block": 19,
-      "ja_line": 158,
-      "en_line": 159
+      "ja_line": 157,
+      "en_line": 158
     },
     {
       "block": 20,
-      "ja_line": 160,
-      "en_line": 161
+      "ja_line": 159,
+      "en_line": 160
     },
     {
       "block": 21,
-      "ja_line": 162,
-      "en_line": 163
+      "ja_line": 161,
+      "en_line": 162
     },
     {
       "block": 22,
-      "ja_line": 164,
-      "en_line": 165
+      "ja_line": 163,
+      "en_line": 164
     },
     {
       "block": 23,
-      "ja_line": 188,
-      "en_line": 189
+      "ja_line": 187,
+      "en_line": 188
     },
     {
       "block": 24,
-      "ja_line": 190,
-      "en_line": 191
+      "ja_line": 189,
+      "en_line": 190
     },
     {
       "block": 25,
-      "ja_line": 193,
-      "en_line": 194
+      "ja_line": 192,
+      "en_line": 193
     },
     {
       "block": 26,
-      "ja_line": 195,
-      "en_line": 196
+      "ja_line": 194,
+      "en_line": 195
     },
     {
       "block": 27,
-      "ja_line": 197,
-      "en_line": 198
+      "ja_line": 196,
+      "en_line": 197
     },
     {
       "block": 28,
-      "ja_line": 199,
-      "en_line": 200
+      "ja_line": 198,
+      "en_line": 199
     },
     {
       "block": 29,
-      "ja_line": 201,
-      "en_line": 202
+      "ja_line": 200,
+      "en_line": 201
     },
     {
       "block": 30,
-      "ja_line": 203,
-      "en_line": 204
+      "ja_line": 202,
+      "en_line": 203
     },
     {
       "block": 31,
-      "ja_line": 205,
-      "en_line": 206
+      "ja_line": 204,
+      "en_line": 205
     },
     {
       "block": 32,
-      "ja_line": 207,
-      "en_line": 208
+      "ja_line": 206,
+      "en_line": 207
     },
     {
       "block": 33,
-      "ja_line": 209,
-      "en_line": 210
+      "ja_line": 208,
+      "en_line": 209
     },
     {
       "block": 34,
-      "ja_line": 211,
-      "en_line": 212
+      "ja_line": 210,
+      "en_line": 211
     },
     {
       "block": 35,
-      "ja_line": 213,
-      "en_line": 214
+      "ja_line": 212,
+      "en_line": 213
     },
     {
       "block": 36,
-      "ja_line": 216,
-      "en_line": 217
+      "ja_line": 215,
+      "en_line": 216
     },
     {
       "block": 37,
-      "ja_line": 225,
-      "en_line": 226
+      "ja_line": 224,
+      "en_line": 225
     },
     {
       "block": 38,
-      "ja_line": 241,
-      "en_line": 242
+      "ja_line": 240,
+      "en_line": 241
     },
     {
       "block": 39,
-      "ja_line": 253,
-      "en_line": 254
+      "ja_line": 252,
+      "en_line": 253
     },
     {
       "block": 40,
-      "ja_line": 255,
-      "en_line": 256
+      "ja_line": 254,
+      "en_line": 255
     },
     {
       "block": 41,
-      "ja_line": 263,
-      "en_line": 264
+      "ja_line": 262,
+      "en_line": 263
     },
     {
       "block": 42,
-      "ja_line": 265,
-      "en_line": 266
+      "ja_line": 264,
+      "en_line": 265
     },
     {
       "block": 43,
-      "ja_line": 272,
-      "en_line": 273
+      "ja_line": 271,
+      "en_line": 272
     },
     {
       "block": 44,
-      "ja_line": 274,
-      "en_line": 275
+      "ja_line": 273,
+      "en_line": 274
     },
     {
       "block": 45,
-      "ja_line": 277,
-      "en_line": 278
+      "ja_line": 276,
+      "en_line": 277
     },
     {
       "block": 46,
-      "ja_line": 279,
-      "en_line": 280
+      "ja_line": 278,
+      "en_line": 279
     },
     {
       "block": 47,
-      "ja_line": 281,
-      "en_line": 282
+      "ja_line": 280,
+      "en_line": 281
     },
     {
       "block": 48,
-      "ja_line": 283,
-      "en_line": 284
+      "ja_line": 282,
+      "en_line": 283
     },
     {
       "block": 49,
-      "ja_line": 294,
-      "en_line": 295
+      "ja_line": 293,
+      "en_line": 294
     },
     {
       "block": 50,
-      "ja_line": 296,
-      "en_line": 297
+      "ja_line": 295,
+      "en_line": 296
     },
     {
       "block": 51,
-      "ja_line": 298,
-      "en_line": 299
+      "ja_line": 297,
+      "en_line": 298
     },
     {
       "block": 52,
-      "ja_line": 319,
-      "en_line": 320
+      "ja_line": 318,
+      "en_line": 319
     },
     {
       "block": 53,
-      "ja_line": 322,
-      "en_line": 323
+      "ja_line": 321,
+      "en_line": 322
     },
     {
       "block": 54,
-      "ja_line": 324,
-      "en_line": 325
+      "ja_line": 323,
+      "en_line": 324
     },
     {
       "block": 55,
-      "ja_line": 336,
-      "en_line": 337
+      "ja_line": 335,
+      "en_line": 336
     },
     {
       "block": 56,
-      "ja_line": 338,
-      "en_line": 339
+      "ja_line": 337,
+      "en_line": 338
     },
     {
       "block": 57,
-      "ja_line": 343,
-      "en_line": 344
+      "ja_line": 342,
+      "en_line": 343
     },
     {
       "block": 58,
-      "ja_line": 347,
-      "en_line": 348
+      "ja_line": 346,
+      "en_line": 347
     },
     {
       "block": 59,
-      "ja_line": 349,
-      "en_line": 350
+      "ja_line": 348,
+      "en_line": 349
     },
     {
       "block": 60,
-      "ja_line": 351,
-      "en_line": 352
+      "ja_line": 350,
+      "en_line": 351
     },
     {
       "block": 61,
-      "ja_line": 353,
-      "en_line": 354
+      "ja_line": 352,
+      "en_line": 353
     },
     {
       "block": 62,
-      "ja_line": 355,
-      "en_line": 356
+      "ja_line": 354,
+      "en_line": 355
     },
     {
       "block": 63,
-      "ja_line": 362,
-      "en_line": 363
+      "ja_line": 361,
+      "en_line": 362
     },
     {
       "block": 64,
-      "ja_line": 406,
-      "en_line": 407
+      "ja_line": 405,
+      "en_line": 406
     },
     {
       "block": 65,
-      "ja_line": 438,
-      "en_line": 439
+      "ja_line": 437,
+      "en_line": 438
     },
     {
       "block": 66,
-      "ja_line": 474,
-      "en_line": 475
+      "ja_line": 473,
+      "en_line": 474
     },
     {
       "block": 67,
-      "ja_line": 481,
-      "en_line": 482
+      "ja_line": 480,
+      "en_line": 481
     },
     {
       "block": 68,
-      "ja_line": 527,
-      "en_line": 528
+      "ja_line": 526,
+      "en_line": 527
     },
     {
       "block": 69,
-      "ja_line": 532,
-      "en_line": 533
+      "ja_line": 531,
+      "en_line": 532
     },
     {
       "block": 70,
-      "ja_line": 536,
-      "en_line": 537
+      "ja_line": 535,
+      "en_line": 536
     },
     {
       "block": 71,
-      "ja_line": 538,
-      "en_line": 539
+      "ja_line": 537,
+      "en_line": 538
     },
     {
       "block": 72,
-      "ja_line": 557,
-      "en_line": 558
+      "ja_line": 556,
+      "en_line": 557
     },
     {
       "block": 73,
-      "ja_line": 559,
-      "en_line": 560
+      "ja_line": 558,
+      "en_line": 559
     },
     {
       "block": 74,
-      "ja_line": 567,
-      "en_line": 568
+      "ja_line": 566,
+      "en_line": 567
     },
     {
       "block": 75,
-      "ja_line": 570,
-      "en_line": 571
+      "ja_line": 569,
+      "en_line": 570
     },
     {
       "block": 76,
-      "ja_line": 572,
-      "en_line": 573
+      "ja_line": 571,
+      "en_line": 572
     },
     {
       "block": 77,
-      "ja_line": 574,
-      "en_line": 575
+      "ja_line": 573,
+      "en_line": 574
     },
     {
       "block": 78,
-      "ja_line": 576,
-      "en_line": 577
+      "ja_line": 575,
+      "en_line": 576
     },
     {
       "block": 79,
-      "ja_line": 578,
-      "en_line": 579
+      "ja_line": 577,
+      "en_line": 578
     },
     {
       "block": 80,
-      "ja_line": 580,
-      "en_line": 581
+      "ja_line": 579,
+      "en_line": 580
     },
     {
       "block": 81,
-      "ja_line": 582,
-      "en_line": 583
+      "ja_line": 581,
+      "en_line": 582
     },
     {
       "block": 82,
-      "ja_line": 584,
-      "en_line": 585
+      "ja_line": 583,
+      "en_line": 584
     },
     {
       "block": 83,
-      "ja_line": 586,
-      "en_line": 587
+      "ja_line": 585,
+      "en_line": 586
     },
     {
       "block": 84,
-      "ja_line": 588,
-      "en_line": 589
+      "ja_line": 587,
+      "en_line": 588
     },
     {
       "block": 85,
-      "ja_line": 592,
-      "en_line": 593
+      "ja_line": 591,
+      "en_line": 592
     },
     {
       "block": 86,
-      "ja_line": 594,
-      "en_line": 595
+      "ja_line": 593,
+      "en_line": 594
     },
     {
       "block": 87,
-      "ja_line": 596,
-      "en_line": 597
+      "ja_line": 595,
+      "en_line": 596
     },
     {
       "block": 88,
-      "ja_line": 598,
-      "en_line": 599
+      "ja_line": 597,
+      "en_line": 598
     },
     {
       "block": 89,
-      "ja_line": 600,
-      "en_line": 601
+      "ja_line": 599,
+      "en_line": 600
     },
     {
       "block": 90,
-      "ja_line": 602,
-      "en_line": 603
+      "ja_line": 601,
+      "en_line": 602
     },
     {
       "block": 91,
-      "ja_line": 604,
-      "en_line": 605
+      "ja_line": 603,
+      "en_line": 604
     },
     {
       "block": 92,
-      "ja_line": 606,
-      "en_line": 607
+      "ja_line": 605,
+      "en_line": 606
     },
     {
       "block": 93,
-      "ja_line": 613,
-      "en_line": 614
+      "ja_line": 612,
+      "en_line": 613
     },
     {
       "block": 94,
-      "ja_line": 615,
-      "en_line": 616
+      "ja_line": 614,
+      "en_line": 615
     },
     {
       "block": 95,
-      "ja_line": 621,
-      "en_line": 622
+      "ja_line": 620,
+      "en_line": 621
     },
     {
       "block": 96,
-      "ja_line": 623,
-      "en_line": 624
+      "ja_line": 622,
+      "en_line": 623
     },
     {
       "block": 97,
-      "ja_line": 625,
-      "en_line": 626
+      "ja_line": 624,
+      "en_line": 625
     },
     {
       "block": 98,
-      "ja_line": 627,
-      "en_line": 628
+      "ja_line": 626,
+      "en_line": 627
     },
     {
       "block": 99,
-      "ja_line": 630,
-      "en_line": 631
+      "ja_line": 629,
+      "en_line": 630
     },
     {
       "block": 100,
-      "ja_line": 632,
-      "en_line": 633
+      "ja_line": 631,
+      "en_line": 632
     },
     {
       "block": 101,
-      "ja_line": 640,
-      "en_line": 641
+      "ja_line": 639,
+      "en_line": 640
     },
     {
       "block": 102,
-      "ja_line": 642,
-      "en_line": 643
+      "ja_line": 641,
+      "en_line": 642
     },
     {
       "block": 103,
-      "ja_line": 644,
-      "en_line": 645
+      "ja_line": 643,
+      "en_line": 644
     },
     {
       "block": 104,
-      "ja_line": 646,
-      "en_line": 647
+      "ja_line": 645,
+      "en_line": 646
     },
     {
       "block": 105,
-      "ja_line": 648,
-      "en_line": 649
+      "ja_line": 647,
+      "en_line": 648
     },
     {
       "block": 106,
-      "ja_line": 650,
-      "en_line": 651
+      "ja_line": 649,
+      "en_line": 650
     },
     {
       "block": 107,
-      "ja_line": 652,
-      "en_line": 653
+      "ja_line": 651,
+      "en_line": 652
     },
     {
       "block": 108,
-      "ja_line": 654,
-      "en_line": 655
+      "ja_line": 653,
+      "en_line": 654
     },
     {
       "block": 109,
-      "ja_line": 656,
-      "en_line": 657
+      "ja_line": 655,
+      "en_line": 656
     },
     {
       "block": 110,
-      "ja_line": 658,
-      "en_line": 659
+      "ja_line": 657,
+      "en_line": 658
     },
     {
       "block": 111,
-      "ja_line": 660,
-      "en_line": 661
+      "ja_line": 659,
+      "en_line": 660
     },
     {
       "block": 112,
-      "ja_line": 662,
-      "en_line": 663
+      "ja_line": 661,
+      "en_line": 662
     },
     {
       "block": 113,
-      "ja_line": 681,
-      "en_line": 682
+      "ja_line": 680,
+      "en_line": 681
     },
     {
       "block": 114,
-      "ja_line": 683,
-      "en_line": 684
+      "ja_line": 682,
+      "en_line": 683
     },
     {
       "block": 115,
-      "ja_line": 705,
-      "en_line": 706
+      "ja_line": 704,
+      "en_line": 705
     },
     {
       "block": 116,
-      "ja_line": 707,
-      "en_line": 708
+      "ja_line": 706,
+      "en_line": 707
     },
     {
       "block": 117,
-      "ja_line": 709,
-      "en_line": 710
+      "ja_line": 708,
+      "en_line": 709
     },
     {
       "block": 118,
-      "ja_line": 727,
-      "en_line": 728
+      "ja_line": 726,
+      "en_line": 727
     },
     {
       "block": 119,
-      "ja_line": 729,
-      "en_line": 730
+      "ja_line": 728,
+      "en_line": 729
     },
     {
       "block": 120,
-      "ja_line": 732,
-      "en_line": 733
+      "ja_line": 731,
+      "en_line": 732
     },
     {
       "block": 121,
-      "ja_line": 734,
-      "en_line": 735
+      "ja_line": 733,
+      "en_line": 734
     },
     {
       "block": 122,
-      "ja_line": 736,
-      "en_line": 737
+      "ja_line": 735,
+      "en_line": 736
     },
     {
       "block": 123,
-      "ja_line": 738,
-      "en_line": 739
+      "ja_line": 737,
+      "en_line": 738
     },
     {
       "block": 124,
-      "ja_line": 755,
-      "en_line": 756
+      "ja_line": 754,
+      "en_line": 755
     },
     {
       "block": 125,
-      "ja_line": 762,
-      "en_line": 763
+      "ja_line": 761,
+      "en_line": 762
     },
     {
       "block": 126,
-      "ja_line": 764,
-      "en_line": 765
+      "ja_line": 763,
+      "en_line": 764
     },
     {
       "block": 127,
-      "ja_line": 778,
-      "en_line": 779
+      "ja_line": 777,
+      "en_line": 778
     },
     {
       "block": 128,
-      "ja_line": 785,
-      "en_line": 786
+      "ja_line": 784,
+      "en_line": 785
     },
     {
       "block": 129,
-      "ja_line": 787,
-      "en_line": 788
+      "ja_line": 786,
+      "en_line": 787
     },
     {
       "block": 130,
-      "ja_line": 789,
-      "en_line": 790
+      "ja_line": 788,
+      "en_line": 789
     },
     {
       "block": 131,
-      "ja_line": 791,
-      "en_line": 792
+      "ja_line": 790,
+      "en_line": 791
     },
     {
       "block": 132,
-      "ja_line": 805,
-      "en_line": 806
+      "ja_line": 804,
+      "en_line": 805
     },
     {
       "block": 133,
-      "ja_line": 807,
-      "en_line": 808
+      "ja_line": 806,
+      "en_line": 807
     },
     {
       "block": 134,
-      "ja_line": 809,
-      "en_line": 810
+      "ja_line": 808,
+      "en_line": 809
     },
     {
       "block": 135,
-      "ja_line": 823,
-      "en_line": 824
+      "ja_line": 822,
+      "en_line": 823
     },
     {
       "block": 136,
-      "ja_line": 825,
-      "en_line": 826
+      "ja_line": 824,
+      "en_line": 825
     },
     {
       "block": 137,
-      "ja_line": 827,
-      "en_line": 828
+      "ja_line": 826,
+      "en_line": 827
     },
     {
       "block": 138,
-      "ja_line": 834,
-      "en_line": 835
+      "ja_line": 833,
+      "en_line": 834
     },
     {
       "block": 139,
-      "ja_line": 837,
-      "en_line": 838
+      "ja_line": 836,
+      "en_line": 837
     },
     {
       "block": 140,
-      "ja_line": 839,
-      "en_line": 840
+      "ja_line": 838,
+      "en_line": 839
     },
     {
       "block": 141,
-      "ja_line": 853,
-      "en_line": 854
+      "ja_line": 852,
+      "en_line": 853
     },
     {
       "block": 142,
-      "ja_line": 855,
-      "en_line": 856
+      "ja_line": 854,
+      "en_line": 855
     },
     {
       "block": 143,
-      "ja_line": 857,
-      "en_line": 858
+      "ja_line": 856,
+      "en_line": 857
     },
     {
       "block": 144,
-      "ja_line": 871,
-      "en_line": 872
+      "ja_line": 870,
+      "en_line": 871
     },
     {
       "block": 145,
-      "ja_line": 873,
-      "en_line": 874
+      "ja_line": 872,
+      "en_line": 873
     },
     {
       "block": 146,
-      "ja_line": 887,
-      "en_line": 888
+      "ja_line": 886,
+      "en_line": 887
     },
     {
       "block": 147,
-      "ja_line": 889,
-      "en_line": 890
+      "ja_line": 888,
+      "en_line": 889
     },
     {
       "block": 148,
-      "ja_line": 903,
-      "en_line": 904
+      "ja_line": 902,
+      "en_line": 903
     },
     {
       "block": 149,
-      "ja_line": 905,
-      "en_line": 906
+      "ja_line": 904,
+      "en_line": 905
     },
     {
       "block": 150,
-      "ja_line": 907,
-      "en_line": 908
+      "ja_line": 906,
+      "en_line": 907
     },
     {
       "block": 151,
-      "ja_line": 909,
-      "en_line": 910
+      "ja_line": 908,
+      "en_line": 909
     },
     {
       "block": 152,
-      "ja_line": 911,
-      "en_line": 912
+      "ja_line": 910,
+      "en_line": 911
     },
     {
       "block": 153,
-      "ja_line": 925,
-      "en_line": 926
+      "ja_line": 924,
+      "en_line": 925
     },
     {
       "block": 154,
-      "ja_line": 927,
-      "en_line": 928
+      "ja_line": 926,
+      "en_line": 927
     },
     {
       "block": 155,
-      "ja_line": 929,
-      "en_line": 930
+      "ja_line": 928,
+      "en_line": 929
     },
     {
       "block": 156,
-      "ja_line": 931,
-      "en_line": 932
+      "ja_line": 930,
+      "en_line": 931
     },
     {
       "block": 157,
-      "ja_line": 945,
-      "en_line": 946
+      "ja_line": 944,
+      "en_line": 945
     },
     {
       "block": 158,
-      "ja_line": 947,
-      "en_line": 948
+      "ja_line": 946,
+      "en_line": 947
     },
     {
       "block": 159,
-      "ja_line": 949,
-      "en_line": 950
+      "ja_line": 948,
+      "en_line": 949
     },
     {
       "block": 160,
-      "ja_line": 951,
-      "en_line": 952
+      "ja_line": 950,
+      "en_line": 951
     },
     {
       "block": 161,
-      "ja_line": 953,
-      "en_line": 954
+      "ja_line": 952,
+      "en_line": 953
     },
     {
       "block": 162,
-      "ja_line": 956,
-      "en_line": 957
+      "ja_line": 955,
+      "en_line": 956
     },
     {
       "block": 163,
-      "ja_line": 958,
-      "en_line": 959
+      "ja_line": 957,
+      "en_line": 958
     },
     {
       "block": 164,
-      "ja_line": 960,
-      "en_line": 961
+      "ja_line": 959,
+      "en_line": 960
     },
     {
       "block": 165,
-      "ja_line": 962,
-      "en_line": 963
+      "ja_line": 961,
+      "en_line": 962
     },
     {
       "block": 166,
-      "ja_line": 964,
-      "en_line": 965
+      "ja_line": 963,
+      "en_line": 964
     },
     {
       "block": 167,
-      "ja_line": 979,
-      "en_line": 980
+      "ja_line": 978,
+      "en_line": 979
     },
     {
       "block": 168,
-      "ja_line": 981,
-      "en_line": 982
+      "ja_line": 980,
+      "en_line": 981
     },
     {
       "block": 169,
-      "ja_line": 983,
-      "en_line": 984
+      "ja_line": 982,
+      "en_line": 983
     },
     {
       "block": 170,
-      "ja_line": 985,
-      "en_line": 986
+      "ja_line": 984,
+      "en_line": 985
     },
     {
       "block": 171,
-      "ja_line": 987,
-      "en_line": 988
+      "ja_line": 986,
+      "en_line": 987
     },
     {
       "block": 172,
-      "ja_line": 989,
-      "en_line": 990
+      "ja_line": 988,
+      "en_line": 989
     },
     {
       "block": 173,
-      "ja_line": 991,
-      "en_line": 992
+      "ja_line": 990,
+      "en_line": 991
     },
     {
       "block": 174,
-      "ja_line": 993,
-      "en_line": 994
+      "ja_line": 992,
+      "en_line": 993
     },
     {
       "block": 175,
-      "ja_line": 995,
-      "en_line": 996
+      "ja_line": 994,
+      "en_line": 995
     },
     {
       "block": 176,
-      "ja_line": 997,
-      "en_line": 998
+      "ja_line": 996,
+      "en_line": 997
     },
     {
       "block": 177,
-      "ja_line": 1004,
-      "en_line": 1005
+      "ja_line": 1003,
+      "en_line": 1004
     },
     {
       "block": 178,
-      "ja_line": 1007,
-      "en_line": 1008
+      "ja_line": 1006,
+      "en_line": 1007
     },
     {
       "block": 179,
-      "ja_line": 1009,
-      "en_line": 1010
+      "ja_line": 1008,
+      "en_line": 1009
     },
     {
       "block": 180,
-      "ja_line": 1011,
-      "en_line": 1012
+      "ja_line": 1010,
+      "en_line": 1011
     },
     {
       "block": 181,
-      "ja_line": 1013,
-      "en_line": 1014
+      "ja_line": 1012,
+      "en_line": 1013
     },
     {
       "block": 182,
-      "ja_line": 1015,
-      "en_line": 1016
+      "ja_line": 1014,
+      "en_line": 1015
     },
     {
       "block": 183,
-      "ja_line": 1022,
-      "en_line": 1023
+      "ja_line": 1021,
+      "en_line": 1022
     },
     {
       "block": 184,
-      "ja_line": 1024,
-      "en_line": 1025
+      "ja_line": 1023,
+      "en_line": 1024
     },
     {
       "block": 185,
-      "ja_line": 1026,
-      "en_line": 1027
+      "ja_line": 1025,
+      "en_line": 1026
     },
     {
       "block": 186,
-      "ja_line": 1029,
-      "en_line": 1030
+      "ja_line": 1028,
+      "en_line": 1029
     },
     {
       "block": 187,
-      "ja_line": 1031,
-      "en_line": 1032
+      "ja_line": 1030,
+      "en_line": 1031
     },
     {
       "block": 188,
-      "ja_line": 1041,
-      "en_line": 1042
+      "ja_line": 1040,
+      "en_line": 1041
     },
     {
       "block": 189,
-      "ja_line": 1043,
-      "en_line": 1044
+      "ja_line": 1042,
+      "en_line": 1043
     },
     {
       "block": 190,
-      "ja_line": 1060,
-      "en_line": 1061
+      "ja_line": 1059,
+      "en_line": 1060
     },
     {
       "block": 191,
-      "ja_line": 1063,
-      "en_line": 1064
+      "ja_line": 1062,
+      "en_line": 1063
     },
     {
       "block": 192,
-      "ja_line": 1065,
-      "en_line": 1066
+      "ja_line": 1064,
+      "en_line": 1065
     },
     {
       "block": 193,
-      "ja_line": 1067,
-      "en_line": 1068
+      "ja_line": 1066,
+      "en_line": 1067
     },
     {
       "block": 194,
-      "ja_line": 1069,
-      "en_line": 1070
+      "ja_line": 1068,
+      "en_line": 1069
     },
     {
       "block": 195,
-      "ja_line": 1071,
-      "en_line": 1072
+      "ja_line": 1070,
+      "en_line": 1071
     }
   ],
   "assets": [

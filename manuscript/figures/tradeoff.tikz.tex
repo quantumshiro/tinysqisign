@@ -28,7 +28,7 @@
   }
   \draw[guide] (75.1,-7) -- (75.1,-43);
   \node[lab,anchor=south,rotate=90] at (75.1,-6) {全精度表};
-  \foreach \y/\name in {-11/{操作用アリーナ},-19/{排他的SRAM},-27/{PSP予約},-35/{バイナリイメージ}} {
+  \foreach \y/\name in {-11/{操作用アリーナ},-19/{SRAM予約合計},-27/{PSP予約},-35/{バイナリイメージ}} {
     \node[lab,anchor=east] at (20,\y) {\name};
   }
   \node[host] at (\xArena,-11) {}; \node[lab,anchor=west] at (28,-11) {\num{\VTwoArenaRatio}};

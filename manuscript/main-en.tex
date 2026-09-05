@@ -38,7 +38,7 @@
   unicode=true,
   colorlinks=false,
   hidelinks,
-  pdftitle={Reducing SQIsign v2 Memory and Transferring Lifetime Scheduling to v3},
+  pdftitle={Low-Memory SQIsign through Memory Reuse and Recomputation},
   pdfauthor={Hiro Nakanishi},
   pdfsubject={A low-memory SQIsign v2 implementation for RP2350 and local transfer to v3},
   pdfkeywords={SQIsign, post-quantum cryptography, microcontroller, memory optimization, side-channel analysis}
@@ -79,8 +79,7 @@
 \newcommand{\targetchip}{RP2350}
 % Numerical macros and table rows regenerated from pinned JSON/CSV artifacts.
 \input{generated/evidence-macros.tex}
-\title{Reducing SQIsign v2 Memory and Transferring Lifetime Scheduling to v3\\[0.5ex]
-  {\large An Order-Preserving Norm Sketch and RP2350 Evaluation}}
+\title{Low-Memory SQIsign through Memory Reuse and Recomputation}
 \author{%
   Hiro Nakanishi\\[-0.2ex]
   {\small Independent Researcher}\\[-0.2ex]
@@ -92,9 +91,9 @@
 \maketitle
 
 \begin{abstract}
-SQIsign has small public keys and signatures, but its key generation and signing workspaces are not small. In the SQIsign v2.0.1 Level-I Compact implementation, five simultaneously retained regions in \texttt{find\_uv} alone require \num{6339868} bytes, exceeding RP2350 on-chip SRAM. We combine lifetime scheduling, which shares regions not used simultaneously through typed \texttt{union}s, with a norm sketch that retains only the bit length and leading 64 bits of each candidate norm. When two sketches coincide, the full-precision norms are regenerated from the candidates. The original comparison order is therefore preserved without assuming a collision probability.
+SQIsign has small public keys and signatures, but its key generation and signing workspaces are not small. In the SQIsign v2.0.1 Level-I Compact implementation, five simultaneously retained regions in \texttt{find\_uv} alone require \num{6339868} bytes, exceeding RP2350 on-chip SRAM. We combine lifetime-based memory allocation, which shares regions not used simultaneously through typed \texttt{union}s, with a representation retaining only the bit length and leading 64 bits of each candidate norm. When both retained fields coincide, the full-precision norms are regenerated from the candidates. The original comparison order is therefore preserved without assuming a collision probability.
 
-The Level-I/RADIX32 operation arena decreases from \num{353008} to \num{172080} bytes, a reduction of \num{51.2532}\%. The v2 firmware uses neither the GNU Multiple Precision Arithmetic Library (GMP), dynamic memory allocation, nor external PSRAM. It exclusively reserves \num{321408} SRAM bytes and leaves \num{211072} bytes unreserved. A differential-conformance test using 100 official input vectors finds matching outputs from the ordinary and low-memory APIs built from the same commit. This is not a known-answer test against historical official responses. Analysis of the linked, fixed firmware image gives Process Stack Pointer (PSP) bounds of \num{\VTwoStaticKeygenPspBoundBytes}, \num{\VTwoStaticSignPspBoundBytes}, and \num{\VTwoStaticVerifyPspBoundBytes} bytes for key generation, signing, and verification, respectively. These values include a maximum 212-byte exception-entry cost and fit within the \num{131072}-byte PSP reservation. They exclude interrupt handlers, interrupt nesting, and Main Stack Pointer (MSP) use at exception entry.
+The Level-I/RADIX32 operation arena decreases from \num{353008} to \num{172080} bytes, a reduction of \num{51.2532}\%. The v2 firmware uses neither the GNU Multiple Precision Arithmetic Library (GMP), dynamic memory allocation, nor external PSRAM. It reserves a total of \num{321408} SRAM bytes and leaves \num{211072} bytes unreserved. A differential-conformance test using 100 official input vectors finds matching outputs from the ordinary and low-memory APIs built from the same commit. This is not a known-answer test against historical official responses. Analysis of the linked, fixed firmware image gives Process Stack Pointer (PSP) bounds of \num{\VTwoStaticKeygenPspBoundBytes}, \num{\VTwoStaticSignPspBoundBytes}, and \num{\VTwoStaticVerifyPspBoundBytes} bytes for key generation, signing, and verification, respectively. These values include a maximum 212-byte exception-entry cost and fit within the \num{131072}-byte PSP reservation. They exclude interrupt handlers, interrupt nesting, and Main Stack Pointer (MSP) use at exception entry.
 
 For v3.0, we apply the same placement principle to three pairs of regions in two functions. The official and adapted implementations each process 300 distinct inputs across three parameter sets once. The Arm stack frames of the two functions decrease in all six comparisons. Processing vector 0 of \texttt{p324\_3} on RP2350 reduces the Sign PSP watermark from \num{\VThreeDThreeOfficialSignPspBytes} to \num{\VThreeDThreeSignPspBytes} bytes, a reduction of \num{\VThreeDThreeSavedBytes} bytes. This target result covers one parameter set and one deterministic execution path. In both v2 and v3, we detect input-dependent changes in execution time, control flow, and memory addresses. Our conclusions therefore exclude constant-time behavior, power/EM resistance, and production readiness.
 \end{abstract}
@@ -123,19 +122,19 @@ We do not change the cryptographic scheme, but redesign the representation, rete
   \item Can lifetime-based storage sharing transfer to other large stack frames in SQIsign v3, where the v2-specific candidate search is absent?
 \end{enumerate}
 
-We use \emph{lifetime scheduling} to denote sharing the same physical storage among objects whose lifetimes do not overlap. We call a representation that retains only part of a candidate norm and returns to full precision when necessary an \emph{order-preserving norm sketch}, or simply a \emph{norm sketch}. The static-arena configuration immediately preceding the sketch is the \emph{full-norm-table implementation}, and the configuration with the sketch is the \emph{proposed v2 implementation}. The configuration sharing two pairs of regions in one official v3.0 function is the \emph{one-function adaptation}, whereas that sharing three pairs in two functions is the \emph{two-function adaptation}. Unless otherwise qualified, the \emph{adapted v3 implementation} refers to the two-function adaptation.
+We reuse the same physical memory when object lifetimes do not overlap. We also retain each candidate norm's bit length and leading 64 bits, regenerating and comparing full-precision values when both fields agree. The static-arena configuration immediately before this change is the \emph{full-norm-table implementation}; the configuration after it is the \emph{proposed v2 implementation}. For v3, we distinguish the implementation sharing two pairs of regions in one function from the implementation sharing three pairs in two functions. Unless otherwise qualified, the \emph{adapted v3 implementation} refers to the implementation modifying two functions.
 
 Our contributions are as follows.
 
 \begin{enumerate}[leftmargin=2.2em]
-  \item \textbf{Protocol-wide lifetime scheduling.}
+  \item \textbf{Protocol-wide lifetime-based memory allocation.}
         We represent workspaces as objects with types, sizes, alignments, lifetimes, and secrecy attributes. We formulate the problem of sharing regions that are not used simultaneously through a typed arena, including shared storage used sequentially by KeyGen, Sign, and Verify.
-  \item \textbf{An order-preserving norm sketch.}
-        We retain each candidate norm's bit length and leading 64 bits and regenerate its full precision from the candidate only when both fields coincide. We show that the comparator induces the same total order as the original full-precision comparison, and validate it through differential tests including deliberately colliding sketches.
+  \item \textbf{Comparing bit lengths and leading bits with full-precision recomputation.}
+        We retain each candidate norm's bit length and leading 64 bits and regenerate its full precision from the candidate only when both fields coincide. We show that the comparator induces the same total order as the original full-precision comparison, and validate it through differential tests including deliberately colliding retained pairs.
   \item \textbf{A static Cortex-M implementation and evaluation of RAM, stack, flash, and execution-time trade-offs.}
-        For SQIsign v2.0.1 Level I/RADIX32, we remove GMP, dynamic allocation functions, and variable-length arrays (VLAs) from the linked code reachable from KeyGen, Sign, and Verify. The proposed v2 implementation reduces the operation arena from \num{353008} to \num{172080} bytes (\num{51.2532}\%), with \num{321408} bytes of exclusive SRAM reservation and \num{211072} bytes of unreserved SRAM. Flash usage increases by \num{880} bytes. We validate this configuration using 12 fixed inputs, ordinary/low-memory API differential-conformance tests on 100 official input vectors, PSP analysis of the fixed firmware image, and target measurements.
+        For SQIsign v2.0.1 Level I/RADIX32, we remove GMP, dynamic allocation functions, and variable-length arrays (VLAs) from the linked code reachable from KeyGen, Sign, and Verify. The proposed v2 implementation reduces the operation arena from \num{353008} to \num{172080} bytes (\num{51.2532}\%), with \num{321408} bytes of total SRAM reservation and \num{211072} bytes of unreserved SRAM. Flash usage increases by \num{880} bytes. We validate this configuration using 12 fixed inputs, ordinary/low-memory API differential-conformance tests on 100 official input vectors, PSP analysis of the fixed firmware image, and target measurements.
   \item \textbf{Evaluation of transfer to SQIsign v3.}
-        We build official v3.0 and the two-function adaptation separately and compare them under the same baseline and compilation conditions. The two-function adaptation shares three pairs of regions in \texttt{quat\_lll\_dual\_reduce\_ideal} and \texttt{protocols\_sign}. We perform host functional tests and Arm stack-frame audits for all three parameter sets. The \texttt{p324\_3} target test reduces the Sign PSP watermark by \num{\VThreeDThreeSavedBytes} bytes. We do not transfer the v2-specific norm sketch, and distinguish the placement principle transferred across versions from v2-specific changes.
+        We build official v3.0 and the implementation modifying two functions separately and compare them under the same baseline and compilation conditions. The implementation modifying two functions shares three pairs of regions in \texttt{quat\_lll\_dual\_reduce\_ideal} and \texttt{protocols\_sign}. We perform host functional tests and Arm stack-frame audits for all three parameter sets. The \texttt{p324\_3} target test reduces the Sign PSP watermark by \num{\VThreeDThreeSavedBytes} bytes. We do not transfer the v2-specific bit-length and leading-bit pair, and distinguish the placement principle transferred across versions from v2-specific changes.
   \item \textbf{Implementation-security assessment.}
         We evaluate fixed-versus-random timing tests, full-signing control-flow and memory-address differences, and execution-path correspondence with the published simple power analysis (SPA)~\cite{spa-2025}. We report detected residual input dependencies, without claiming that memory reduction provides constant-time behavior or power/EM resistance.
 \end{enumerate}
@@ -143,7 +142,7 @@ Our contributions are as follows.
 \begin{figure}[H]
   \centering
   \input{figures-en/overview.tikz.tex}
-  \caption{Overview of the study. The proposed v2 implementation combines lifetime scheduling and a norm sketch. The adapted v3 implementation transfers lifetime scheduling to two functions for lattice reduction and signing. Both implementations are evaluated on RP2350, with functional and memory evaluation separated from side-channel assessment.}
+  \caption{Overview of the study. The proposed v2 implementation combines lifetime-based memory allocation with partial norm storage and recomputation. The adapted v3 implementation transfers lifetime-based memory allocation to two functions for lattice reduction and signing. Both implementations are evaluated on RP2350, with functional and memory evaluation separated from side-channel assessment.}
   \label{fig:overview}
 \end{figure}
 
@@ -154,11 +153,11 @@ Sharing storage whose lifetimes do not overlap is not itself new. Modeling simul
 
 Fixed-precision SQIsign gives uniform bounds of 7026/10713/14150 bits for quaternion intermediates at Levels I/III/V and demonstrates the feasibility of a GMP-free implementation~\cite{fixed-precision-2025}. The current revision of Compact Quaternion Algorithms reduces these bounds to 1665/2521/3319 bits and substantially accelerates host key generation and signing~\cite{compact-quaternion-2026}. Our v2 implementation also uses the 1665-bit absolute-value bound at Level I. We take this width as our starting point, but focus on simultaneously used candidate tables and protocol-wide storage placement.
 
-Qlapoti improves IdealToIsogeny, the conversion of quaternion ideals into isogenies, substantially reducing SQIsign execution time and heap usage~\cite{qlapoti-2025,qlapoti-plus-2026}. The subsequent Qlapoty revisits discrepancies between the published Qlapoti description and implementation and its failure-probability analysis, reporting a new norm-equation algorithm and further SQIsign signing speedups~\cite{qlapoty-2026}. These advances are incorporated in our starting implementation. However, reported heap usage and host execution time are not Cortex-M exclusive SRAM reservations that include stacks, interrupt reservations, and writable global regions. They cannot therefore serve as like-for-like comparisons with the proposed v2 implementation.
+Qlapoti improves IdealToIsogeny, the conversion of quaternion ideals into isogenies, substantially reducing SQIsign execution time and heap usage~\cite{qlapoti-2025,qlapoti-plus-2026}. The subsequent Qlapoty revisits discrepancies between the published Qlapoti description and implementation and its failure-probability analysis, reporting a new norm-equation algorithm and further SQIsign signing speedups~\cite{qlapoty-2026}. These advances are incorporated in our starting implementation. However, reported heap usage and host execution time are not Cortex-M total SRAM reservations that include stacks, interrupt reservations, and writable global regions. They cannot therefore serve as like-for-like comparisons with the proposed v2 implementation.
 
 The pqm4 survey of additional signature candidates excluded SQIsign from embedded integration because of GMP and dynamic allocation~\cite{pqm4-2024}. Subsequent generation of fast finite-field arithmetic for Cortex-M4 accelerates v2 Level-I Verify, but does not cover KeyGen or Sign~\cite{m4-modarith-2025}. The principal target operation of the one-dimensional SQIsign Cortex-M4 implementation is also Verify~\cite{sqisign-1d-2024}. Meanwhile, 32-bit Cortex-A/Linux, Armv8-A NEON, and AVX-512 implementations cover complete KeyGen, Sign, and Verify, but do not target Cortex-M-class on-chip SRAM alone~\cite{sqisign-32bit-2024,sqisign-arm-2026,sqisign-avx512-2026}. The pure-Rust \texttt{sqisign-rs} is a nearby example of a complete GMP-free implementation, but signing uses \texttt{alloc} and \texttt{num-bigint}, and it does not report memory usage for all operations on Cortex-M~\cite{sqisign-rs-2026}. We thus distinguish three nearest-prior-work groups: complete operations on hosts, GMP-free implementations that use a heap, and Cortex-M implementations limited to Verify.
 
-The official v3 implementation changes this situation. It adopts its own fixed-precision integer layer and provides complete KeyGen, Sign, and Verify on Cortex-M4. Reported Level-I stack usages for these operations are 56, 99, and 37 kB, respectively~\cite{sqisign-spec-v3,sqisign-code-v3}. We therefore do not claim the first execution of all operations on Cortex-M. We use unmodified official v3 as the control and investigate whether lifetime scheduling reduces signing stack usage under the same source commit and build conditions.
+The official v3 implementation changes this situation. It adopts its own fixed-precision integer layer and provides complete KeyGen, Sign, and Verify on Cortex-M4. Reported Level-I stack usages for these operations are 56, 99, and 37 kB, respectively~\cite{sqisign-spec-v3,sqisign-code-v3}. We therefore do not claim the first execution of all operations on Cortex-M. We use unmodified official v3 as the control and investigate whether lifetime-based memory allocation reduces signing stack usage under the same source commit and build conditions.
 
 For security, constant-time techniques are advancing separately for integer arithmetic~\cite{ct-integer-2025}, four-dimensional lattice reduction~\cite{ct-lattice-2025}, and quaternion operations~\cite{ct-quaternion-2025}. None makes the entire current low-memory signer constant-time. The published SPA~\cite{spa-2025} shows that this gap connects to an actual attack path.
 
@@ -186,7 +185,7 @@ For security, constant-time techniques are advancing separately for integer arit
   \end{tabularx}
 \end{table}
 
-We repeated the literature audit after the v3 release on September 4, 2026. We found no public example simultaneously demonstrating real v2.0.1 Level-I KeyGen, Sign, and Verify on Cortex-M-class hardware, using on-chip SRAM alone, no GMP, no dynamic allocation, and a whole-firmware exclusive SRAM reservation below \SI{520}{\kibi\byte}. This negative search result is restricted to v2 and is not proof of a world first. Because official v3 already provides complete KeyGen, Sign, and Verify on Cortex-M4, we make no corresponding absence claim for v3. Search targets, queries, exclusion criteria, and the counterexample groups above are fixed in the dated search log at \url{https://github.com/quantumshiro/tinysqisign/blob/main/results/literature/related-work-search-2026-09-04.md}.
+We repeated the literature audit after the v3 release on September 4, 2026. We found no public example simultaneously demonstrating real v2.0.1 Level-I KeyGen, Sign, and Verify on Cortex-M-class hardware, using on-chip SRAM alone, no GMP, no dynamic allocation, and a whole-firmware total SRAM reservation below \SI{520}{\kibi\byte}. This negative search result is restricted to v2 and is not proof of a world first. Because official v3 already provides complete KeyGen, Sign, and Verify on Cortex-M4, we make no corresponding absence claim for v3. Search targets, queries, exclusion criteria, and the counterexample groups above are fixed in the dated search log at \url{https://github.com/quantumshiro/tinysqisign/blob/main/results/literature/related-work-search-2026-09-04.md}.
 
 \section{Background and Problem Formulation}
 \label{sec:background}
@@ -199,11 +198,11 @@ The main computations comprise finite-field and elliptic-curve arithmetic, quate
 
 SQIsign v3.0 is the Round-3 specification released on September 1, 2026~\cite{sqisign-spec-v3}. For \texttt{p324\_3}, corresponding to Level I, public keys, secret keys, and signatures occupy 83, 270, and 200 bytes, respectively. Version 3 enlarges parameters in response to new attack estimates. It also introduces an inert representation of quaternion ideals, smaller bounds on integer growth, new lattice reduction, ideal-to-isogeny conversion, and a new response distribution. External GMP and the DPE floating-point library are replaced by an in-house fixed-precision integer implementation and computations without floating point. The official source targets x86\_64, Arm64, and Cortex-M4 and reports performance and stack usage for complete KeyGen, Sign, and Verify on Cortex-M4~\cite{sqisign-spec-v3,sqisign-code-v3}.
 
-Version 3 is not a minor modification of v2. The \texttt{find\_uv} routine and full-precision candidate-norm table responsible for the largest reduction in the proposed v2 implementation do not occur in computations reachable from official v3 source commit \texttt{6d017708db403bf83977fa70770fc4f7f9e9ff21}~\cite{sqisign-code-v3}. The v2 norm sketch therefore has no target in v3. However, v3 still contains large local states with disjoint lifetimes to which lifetime scheduling applies. We evaluate v2-specific data reduction separately from the placement principle usable across versions. The v3 specification explains that the changed response distribution makes the v2 and v3 security assumptions technically incomparable~\cite{sqisign-spec-v3}. We likewise do not rank their cryptographic security.
+Version 3 is not a minor modification of v2. The \texttt{find\_uv} routine and full-precision candidate-norm table responsible for the largest reduction in the proposed v2 implementation do not occur in computations reachable from official v3 source commit \texttt{6d017708db403bf83977fa70770fc4f7f9e9ff21}~\cite{sqisign-code-v3}. The v2 bit-length and leading-bit pair therefore has no target in v3. However, v3 still contains large local states with disjoint lifetimes to which lifetime-based memory allocation applies. We evaluate v2-specific data reduction separately from the placement principle usable across versions. The v3 specification explains that the changed response distribution makes the v2 and v3 security assumptions technically incomparable~\cite{sqisign-spec-v3}. We likewise do not rank their cryptographic security.
 
 The target is the RP2350 on Raspberry Pi Pico 2. We use one Arm Cortex-M33 core with single-precision floating-point hardware and security extensions~\cite{rp2350-datasheet}. The system clock is \SI{150}{\mega\hertz}, and only the \num{532480} bytes of on-chip SRAM are used. No external PSRAM is used. Code and read-only data are executed and accessed directly from the board's external flash, a mode called execute in place (XIP). The measured firmware is built with Pico SDK 2.3.0 and Arm GNU Toolchain 15.2.1 in Release configuration.
 
-Although RP2350 has more SRAM than typical Cortex-M4 evaluation boards, the original candidate-search workspace is still larger by an order of magnitude. The interrupt MSP, application PSP, shared operation workspace, and runtime data must also occupy the same physical SRAM. We therefore do not evaluate heap usage alone. Our metric is exclusive SRAM reservation, comprising link-time static storage, stack reservations, and the operation arena.
+Although RP2350 has more SRAM than typical Cortex-M4 evaluation boards, the original candidate-search workspace is still larger by an order of magnitude. The interrupt MSP, application PSP, shared operation workspace, and runtime data must also occupy the same physical SRAM. We therefore do not evaluate heap usage alone. Our metric is total SRAM reservation, comprising link-time static storage, stack reservations, and the operation arena.
 
 \label{sec:threat-model}
 
@@ -239,7 +238,7 @@ The arena-body usage, excluding surrounding guards, is
 The minimization problem is an alignment-constrained storage-allocation problem with objective $M_{\mathrm{arena}}$. The proposed v2 implementation does not, however, seek a generally optimal placement. It constructs a feasible placement from manually specified processing phases using C \texttt{struct}s and \texttt{union}s, checked through \texttt{sizeof}, \texttt{offsetof}, and \texttt{\_Static\_assert}.
 The arena base address must also satisfy each member's alignment requirements. The implementation does not cast a byte array to arbitrary types. It delegates typed-\texttt{union} alignment to the compiler and checks it with an application binary interface (ABI) probe.
 
-$M_{\mathrm{arena}}$ is not the SRAM usage of the entire firmware. Let $g_{\mathrm{pre}},g_{\mathrm{post}}$ be the guards surrounding the arena, $R_{\mathrm{PSP}},R_{\mathrm{MSP}}$ the PSP and MSP reservations, and $R_{\mathrm{other}}$ writable static storage other than the shared operation region and stacks. The whole-firmware exclusive SRAM reservation is then
+$M_{\mathrm{arena}}$ is not the SRAM usage of the entire firmware. Let $g_{\mathrm{pre}},g_{\mathrm{post}}$ be the guards surrounding the arena, $R_{\mathrm{PSP}},R_{\mathrm{MSP}}$ the PSP and MSP reservations, and $R_{\mathrm{other}}$ writable static storage other than the shared operation region and stacks. The whole-firmware total SRAM reservation, counting each region only once, is then
 \begin{equation}
   R_{\mathrm{excl}}=
   (M_{\mathrm{arena}}+g_{\mathrm{pre}}+g_{\mathrm{post}})
@@ -289,7 +288,7 @@ The starting Compact implementation simultaneously retains candidate vectors, fu
   \item Move large variable-length arrays into caller-owned workspace, reducing dynamic stack-frame records to zero in the targeted Arm code.
   \item Share temporary storage for ML2, candidate search, theta chains, discrete logarithms, batch inversion, and multiprecision integers across phases.
   \item Consolidate KeyGen, Sign, and Verify workspaces into one sequentially used region.
-  \item Finally, replace full-precision norm rows by norm sketches and on-demand full-precision regeneration.
+  \item Finally, replace full-precision norm rows by bit-length and leading-bit pairs and on-demand full-precision regeneration.
 \end{enumerate}
 
 The earlier candidate compression, indexing, and two-row processing reduce resident data themselves. The later arena construction reuses the same physical storage at different times. Because recomputation may increase flash usage and execution time, we evaluate each transformation using four metrics: RAM, stack, flash, and execution time.
@@ -312,17 +311,17 @@ The earlier candidate compression, indexing, and two-row processing reduce resid
     Two-row streaming & \num{275840} & Replace retention of all 7 rows by two rows \\
     Explicit lattice-state ownership & \num{353008} & Move \num{77168} bytes of lattice VLAs to typed storage (simultaneous usage unchanged) \\
     Full-norm-table implementation & \num{353008} & Share ML2, theta, discrete-log, and other regions; remove dynamic frames from targeted Arm code \\
-    Proposed v2 implementation & \num{172080} & Replace two full-norm rows by sketches and regeneration; share ML2 storage \\
+    Proposed v2 implementation & \num{172080} & Replace two full-norm rows by retained pairs and regeneration; share ML2 storage \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-\subsection{An order-preserving norm sketch}
+\subsection{Comparing bit lengths and leading bits with full-precision recomputation}
 \label{sec:sketch}
 
-The norm $N(v)$ of candidate $v$ can be regenerated by evaluating a quadratic form from the retained compressed four-coordinate vector, its row's Gram matrix $G_j$, and adjusted norm $d_j$. We use this property to retain only the following sketch instead of the full-precision integer $N(v)$ for every candidate. The state $G_j,d_j$ may contain secret-derived information. Regenerability is therefore not evidence of side-channel security.
+The norm $N(v)$ of candidate $v$ can be regenerated by evaluating a quadratic form from the retained compressed four-coordinate vector, its row's Gram matrix $G_j$, and adjusted norm $d_j$. We use this property to retain only the following pair instead of the full-precision integer $N(v)$ for every candidate. The state $G_j,d_j$ may contain secret-derived information. Regenerability is therefore not evidence of side-channel security.
 
-\begin{definition}[Norm sketch using the leading $w$ bits]
+\begin{definition}[Bit length and leading bits using the leading $w$ bits]
 For a nonnegative integer $n$, define its bit length $\ell(n)$ as 0 if $n=0$ and $\lfloor\log_2 n\rfloor+1$ if $n>0$. With $w=64$, define
 \begin{equation}
   h_w(n)=
@@ -331,10 +330,10 @@ For a nonnegative integer $n$, define its bit length $\ell(n)$ as 0 if $n=0$ and
     \left\lfloor n/2^{\ell(n)-w}\right\rfloor, & \ell(n)>w
   \end{cases}
 \end{equation}
-and call $S_w(n)=(\ell(n),h_w(n))$ the norm sketch of $n$.
+and call $S_w(n)=(\ell(n),h_w(n))$ the bit-length and leading-bit pair of $n$.
 \end{definition}
 
-The comparator examines (1) bit length, (2) the leading 64 bits, (3) full-precision norms regenerated when sketches coincide, and (4) the original enumeration index, in that order.
+The comparator examines (1) bit length, (2) the leading 64 bits, (3) full-precision norms regenerated when retained pairs coincide, and (4) the original enumeration index, in that order.
 
 \begin{proposition}[Order preservation]
 \label{prop:order-preservation}
@@ -342,14 +341,14 @@ Suppose $N(v_i)$ can be regenerated at full precision from each candidate $v_i$.
 \end{proposition}
 
 \begin{proof}
-If $\ell(N(v_i))\neq\ell(N(v_j))$, the nonnegative integer with smaller bit length is smaller. If the lengths agree but $h_{64}$ differs, the first differing bit from the most significant end lies within the retained 64 bits, so their order agrees with that of the full integers. If both fields agree, the comparator does not decide from the sketches alone, but regenerates and compares both full-precision norms. It compares enumeration indices only if the norms also agree. Thus, all cases agree with the lexicographic order of $(N(v_i),i)$.
+If $\ell(N(v_i))\neq\ell(N(v_j))$, the nonnegative integer with smaller bit length is smaller. If the lengths agree but $h_{64}$ differs, the first differing bit from the most significant end lies within the retained 64 bits, so their order agrees with that of the full integers. If both fields agree, the comparator does not decide from the retained pairs alone, but regenerates and compares both full-precision norms. It compares enumeration indices only if the norms also agree. Thus, all cases agree with the lexicographic order of $(N(v_i),i)$.
 \end{proof}
 
-The method does not assume sketch collisions are sufficiently unlikely. For example, $2^{100}$ and $2^{100}+1$ have identical bit lengths and leading 64 bits, but always proceed to full-precision comparison and return the correct order. Neither cryptographic-hash collision probabilities nor collision frequencies observed on finite input sets are correctness assumptions.
+The method does not assume retained pair collisions are sufficiently unlikely. For example, $2^{100}$ and $2^{100}+1$ have identical bit lengths and leading 64 bits, but always proceed to full-precision comparison and return the correct order. Neither cryptographic-hash collision probabilities nor collision frequencies observed on finite input sets are correctness assumptions.
 
 \Cref{alg:sketch-order} gives the procedures corresponding to C functions \texttt{finduv\_eval\_norm}, \texttt{finduv\_\allowbreak set\_\allowbreak norm\_\allowbreak sketch}, and \texttt{finduv\_compare\_indices}. \textsc{FullNorm} divides the quadratic-form value by $d_j$ and checks that the remainder is zero and the quotient positive. Rounded approximations are therefore not used to resolve ties.
 
-During sorting, each sketch tie causes both norms to be regenerated in temporary storage and erased immediately after comparison. During search, the required norms are regenerated at their use sites from candidates addressed by the sorted indices. Initial measurements observed approximately \num{7800} sorting comparisons per \texttt{find\_uv} call. In the memory/functional evaluation corpus, search reevaluations ranged from 2--30 for KeyGen and 2--578 for Sign. A separate fixed-key timing test ran Sign 128 times, including 64 random inputs. In this test, sketches coincided in \num{5041} of \num{2062361} comparisons, or \num{0.2444}\%. Search reevaluations on random inputs ranged from 4--1677. The ranges 2--578 and 4--1677 come from different input corpora. All are performance observations, not worst-case count bounds over all inputs.
+During sorting, each retained pair tie causes both norms to be regenerated in temporary storage and erased immediately after comparison. During search, the required norms are regenerated at their use sites from candidates addressed by the sorted indices. Initial measurements observed approximately \num{7800} sorting comparisons per \texttt{find\_uv} call. In the memory/functional evaluation corpus, search reevaluations ranged from 2--30 for KeyGen and 2--578 for Sign. A separate fixed-key timing test ran Sign 128 times, including 64 random inputs. In this test, retained pairs coincided in \num{5041} of \num{2062361} comparisons, or \num{0.2444}\%. Search reevaluations on random inputs ranged from 4--1677. The ranges 2--578 and 4--1677 come from different input corpora. All are performance observations, not worst-case count bounds over all inputs.
 
 Each row is sorted using an in-place heapsort on a \texttt{uint16\_t} index array of $m\leq624$ enumeration indices. It uses $O(m\log m)$ comparisons and $O(1)$ auxiliary storage, without recursion or standard-C-library sorting workspace. The C comparison function cannot return an error status directly. If full-precision regeneration fails, it records a \texttt{fatal} state and returns enumeration-index order for that comparison only. The status is checked after heapsort and the entire row is rejected, so this provisional order is never exposed as a successful output.
 
@@ -366,7 +365,7 @@ in the same nested-loop order as the original implementation. Specifically, each
   \small
   \begin{algorithmic}[1]
     \Require Compressed candidate $v$, Gram matrix $G$, nonzero adjusted norm $d$
-    \Ensure On success, a positive full-precision norm, a 10-byte sketch, or comparison of $(N(v_i),i)$
+    \Ensure On success, a positive full-precision norm, a 10-byte retained pair, or comparison of $(N(v_i),i)$
     \Function{FullNorm}{$v,G,d$}
       \State $p\gets\Call{WidenToIbz}{v}$
       \State $q\gets\Call{QuadraticForm}{p,G}$ \Comment{Evaluate $q=p^{\mathsf T}Gp$ at fixed precision}
@@ -475,7 +474,7 @@ in the same nested-loop order as the original implementation. Specifically, each
 \begin{figure}[H]
   \centering
   \input{figures-en/sketch-flow.tikz.tex}
-  \caption{Norm-sketch storage format and comparison paths. Different bit lengths or leading 64 bits determine the order from sketches alone. When both agree, full-precision norms are regenerated from compressed candidates. The regeneration rate shown is observed in the fixed-key timing test; comparison correctness does not depend on this frequency.}
+  \caption{Storage format for bit lengths and leading bits and comparison paths. Different bit lengths or leading 64 bits determine the order from retained pairs alone. When both agree, full-precision norms are regenerated from compressed candidates. The regeneration rate shown is observed in the fixed-key timing test; comparison correctness does not depend on this frequency.}
   \label{fig:sketch-flow}
 \end{figure}
 
@@ -531,7 +530,7 @@ For a fixed input, assume all full-precision arithmetic succeeds in both the ref
 \end{proposition}
 
 \begin{proof}
-By \cref{prop:order-preservation}, row order obtained from sketches and full-precision regeneration agrees with that of the full-norm rows. Initial validation carries no state other than counts into search, and each row is regenerated by the same procedure during search. The diagonal start $i_2=i_1$, off-diagonal start $i_2=0$, triangular $(j_1,j_2)$ order, and congruence sequences in \cref{alg:pair-search} all agree with the reference scan. The first successful combination, or failure of all combinations, is therefore preserved.
+By \cref{prop:order-preservation}, row order obtained from retained pairs and full-precision regeneration agrees with that of the full-norm rows. Initial validation carries no state other than counts into search, and each row is regenerated by the same procedure during search. The diagonal start $i_2=i_1$, off-diagonal start $i_2=0$, triangular $(j_1,j_2)$ order, and congruence sequences in \cref{alg:pair-search} all agree with the reference scan. The first successful combination, or failure of all combinations, is therefore preserved.
 \end{proof}
 
 To connect the premises of \cref{prop:first-solution} to actual C code, we compare \texttt{dim2id2iso.c} in the full-norm-table implementation retaining full-precision norm rows (commit \texttt{6b79cfb5...}) and the immediately subsequent proposed v2 implementation (commit \texttt{71099e08...}). \Cref{tab:finduv-correspondence} gives the correspondence. The checking script verifies both source digests and checks 22 conditions concerning enumeration, comparison, scanning, and failure handling. This connects the scan domain and order assumed in the proposition to the C implementations in these two commits.
@@ -555,7 +554,7 @@ To connect the premises of \cref{prop:first-solution} to actual C code, we compa
   \end{tabularx}
 \end{table}
 
-In addition to this audit, we perform differential tests between the full-table reference and proposed v2 implementation on 12 fixed inputs, and between ordinary and low-memory APIs on 100 official input vectors. We separately test deliberate sketch collisions, NotFound, retries, Fatal, guards, and erasure paths. These are not formal proofs of whole-C-program semantics or all-input behavior. Correspondence tables, source locations, and machine-check results are provided at \url{https://github.com/quantumshiro/tinysqisign/tree/main/results/revision-2026-09-04}.
+In addition to this audit, we perform differential tests between the full-table reference and proposed v2 implementation on 12 fixed inputs, and between ordinary and low-memory APIs on 100 official input vectors. We separately test deliberate retained pair collisions, NotFound, retries, Fatal, guards, and erasure paths. These are not formal proofs of whole-C-program semantics or all-input behavior. Correspondence tables, source locations, and machine-check results are provided at \url{https://github.com/quantumshiro/tinysqisign/tree/main/results/revision-2026-09-04}.
 
 Here, \textsc{Finish} denotes the common exit that finalizes initialized fixed-precision objects and then erases the entire workspace with \texttt{sqisign\_secure\_clear}, regardless of success, failure, or no solution found. In the implementation, long-lived lattice state occupies \num{77168} bytes and phase-shared storage \num{94912} bytes, including a \num{14024}-byte candidate-search region. Thus, the \texttt{find\_uv} type size is
 \begin{equation}
@@ -565,7 +564,7 @@ Here, \textsc{Finish} denotes the common exit that finalizes initialized fixed-p
 \end{equation}
 in total.
 
-\subsection{Local lifetime scheduling in the v3 adaptation}
+\subsection{Local lifetime-based memory allocation in the v3 adaptation}
 \label{sec:v3-method}
 
 Compiling official v3 \texttt{p324\_3/m4f} for RP2350 gives a largest reported fixed-size function frame of \num{34816} bytes in \texttt{quat\_lll\_dual\_reduce\_ideal}. This function contains two pairs of regions whose lifetimes do not overlap across sequential computations.
@@ -574,9 +573,9 @@ The first overlay places lattice-reduction state \texttt{fp\_ldl\_t} and the $4\
 
 The second overlay reuses the now-unneeded inverse-transform matrix \texttt{Ainv\_total} in \texttt{ct\_mk\_result\_t} as basis-output storage \texttt{Bout}, after deriving \texttt{Aout} from it. The Gram matrix \texttt{G} and transform \texttt{T} in the same structure remain live until later norm computation and are not shared. A \texttt{\_Static\_assert} checks that \texttt{Ainv\_total} and \texttt{Bout} have equal storage sizes.
 
-The third overlay applies to the signing body \texttt{protocols\_sign}. The commitment ideal is no longer referenced after construction of \texttt{ideal\_skchall\_aux} and the greatest-common-divisor check. The output product of the challenge isogeny is first written afterward. Placing these two objects in \texttt{protocols\_sign\_phase\_t} reduces the function's \texttt{p324\_3} stack frame from \num{20008} to \num{19272} bytes. A lifetime certificate recording source locations checks that the commitment ideal's last reference precedes the first write to the output product.
+The third overlay applies to the signing body \texttt{protocols\_sign}. The commitment ideal is no longer referenced after construction of \texttt{ideal\_skchall\_aux} and the greatest-common-divisor check. The output product of the challenge isogeny is first written afterward. Placing these two objects in \texttt{protocols\_sign\_phase\_t} reduces the function's \texttt{p324\_3} stack frame from \num{20008} to \num{19272} bytes. A lifetime audit table recording source locations checks that the commitment ideal's last reference precedes the first write to the output product.
 
-The two-function adaptation applies these three changes to two functions. Algorithms, branch conditions, randomness consumption, and public APIs remain unchanged; only local-variable ownership and placement change. This is an application of \cref{eq:interference,eq:nonoverlap} to two functions, not a data-representation change such as the v2 norm sketch. We use the one-function adaptation for repeated target and binary-layout tests, and the two-function adaptation to evaluate transfer of lifetime scheduling to two functions.
+The implementation modifying two functions applies these three changes to two functions. Algorithms, branch conditions, randomness consumption, and public APIs remain unchanged; only local-variable ownership and placement change. This is an application of \cref{eq:interference,eq:nonoverlap} to two functions, not a data-representation change such as the v2 bit-length and leading-bit pair. We use the implementation modifying one function for repeated target and binary-layout tests, and the implementation modifying two functions to evaluate transfer of lifetime-based memory allocation to two functions.
 
 \subsection{Generating placement from lifetime annotations}
 
@@ -584,7 +583,7 @@ To generate typed placement from lifetime conditions, we annotate each object wi
 
 The v2 \texttt{find\_uv} annotations express interference between the \num{77168}-byte long-lived lattice state and three phase-specific objects. Sharing the latter three at offset \num{77168} generates a total layout of \num{172080} bytes. We compile the generated header with the actual Cortex-M33/RADIX32 types and confirm agreement with the manually implemented \texttt{find\_uv\_workspace\_t} size and offsets. We additionally enumerate \num{\LifetimeAnnotatedObjects} physical objects in the C header and \num{\LifetimeDirectAccessForms} forms of direct access to members or entire phase regions in the source. Unannotated members or direct accesses cause the check to fail.
 
-Automation covers interference-graph generation and placement from supplied annotations, and coverage checks for direct accesses. It does not infer phase semantics, lifetimes, indirect aliases, pointer retention, erasure on all failure paths, function-pointer targets, post-link-time-optimization call graphs, or absence of uncommitted external outputs from C source. Placement validity therefore depends on annotation completeness. Separate checks using lifetime certificates, dynamic canaries, erasure tests, and ELF audits remain necessary.
+Automation covers interference-graph generation and placement from supplied annotations, and coverage checks for direct accesses. It does not infer phase semantics, lifetimes, indirect aliases, pointer retention, erasure on all failure paths, function-pointer targets, post-link-time-optimization call graphs, or absence of uncommitted external outputs from C source. Placement validity therefore depends on annotation completeness. Separate checks using lifetime audit tables, dynamic canaries, erasure tests, and ELF audits remain necessary.
 
 \section{Implementation and Evaluation Method}
 \label{sec:implementation}
@@ -598,7 +597,7 @@ We start from the public Compact Quaternion Algorithms implementation and fix SQ
 
 This choice fixes every integer object's capacity and alignment at compile time, allowing direct inclusion in the placement of \cref{eq:interference,eq:nonoverlap}. Fixed width does not, however, imply a fixed operation count. Scans of currently used words, comparisons, Euclidean algorithms, and exponentiation are variable-time. We do not claim constant-time integer processing. The proposed v2 SQIsign source is pinned to commit \texttt{71099e0827d3f0a3b3c705d2eda592c401e0d57d}, and the RP2350 firmware to \texttt{dc3289add3213cc7671f9943dfaa3bac770b2709}.
 
-According to the official GMP 6.3.0 manual, \texttt{mpz\_t} holds an integer size and a pointer to allocated data. Insufficient capacity triggers further allocation, using \texttt{malloc}, \texttt{realloc}, and \texttt{free} by default~\cite{gmp-manual-630}. Ordinary GMP therefore allocates and reallocates multiprecision limbs on a general heap. This does not meet our requirements of bare-metal code without dynamic allocation functions and compile-time-determined exclusive SRAM reservation. mini-GMP can reduce dependencies, but the bundled version used here also allocates variable-length limb arrays per \texttt{mpz\_t}. Linking unmodified mini-GMP therefore does not resolve memory ownership.
+According to the official GMP 6.3.0 manual, \texttt{mpz\_t} holds an integer size and a pointer to allocated data. Insufficient capacity triggers further allocation, using \texttt{malloc}, \texttt{realloc}, and \texttt{free} by default~\cite{gmp-manual-630}. Ordinary GMP therefore allocates and reallocates multiprecision limbs on a general heap. This does not meet our requirements of bare-metal code without dynamic allocation functions and compile-time-determined total SRAM reservation. mini-GMP can reduce dependencies, but the bundled version used here also allocates variable-length limb arrays per \texttt{mpz\_t}. Linking unmodified mini-GMP therefore does not resolve memory ownership.
 
 For functional tests, we change only the integer backend in the Level-I implementation at official source commit \texttt{dd133d7aca576c361a270c8e6434832535b42ecc}. System GMP, unmodified mini-GMP, and a static-pool mini-GMP variant with erasure all pass the official 100-vector known-answer test. On the fixed LP64 host input corpus, however, unmodified mini-GMP signing requests at most \num{67168} bytes of simultaneously live limbs, but up to \num{4830} simultaneously live allocations. With a simple 16-byte-aligned first-fit pool allocator, the smallest pool completing all 100 paths is \num{317696} bytes; \num{317680} bytes exhausts it. This measurement depends on allocator, ABI, and input corpus. It is neither an inherent mini-GMP lower bound nor a Cortex-M33 upper bound. The pool excludes the official implementation's stack, other writable state, and MSP, and is therefore not directly compared with the proposed v2 whole-firmware value of \num{321408} bytes.
 
@@ -613,13 +612,13 @@ For the same official host source, the median-time ratios of unmodified mini-GMP
 
 Value-dependent control flow and memory addresses remain in the fixed-width implementation. The last item therefore means only that it removes the additional leakage surface associated with dynamic allocation. Capacity-limited mini-GMP with a dedicated allocator is another possible design. We exclude it from our comparison because pool bounds covering every retry path, total SRAM on 32-bit hardware, erasure, cycle counts, and leakage tests have not been evaluated.
 
-The proposed v2 operation arena body occupies \num{172080} bytes; including surrounding guards, the shared operation region occupies \num{172208} bytes. The main SRAM bank holds this region, a \num{131072}-byte PSP reservation, and \num{9936} other bytes, totaling \num{313216} bytes reserved at link time. Another \num{8192} bytes in a separate auxiliary bank are reserved for MSP. The exclusive SRAM reservation is therefore
+The proposed v2 operation arena body occupies \num{172080} bytes; including surrounding guards, the shared operation region occupies \num{172208} bytes. The main SRAM bank holds this region, a \num{131072}-byte PSP reservation, and \num{9936} other bytes, totaling \num{313216} bytes reserved at link time. Another \num{8192} bytes in a separate auxiliary bank are reserved for MSP. The total SRAM reservation is therefore
 \begin{equation}
   \num{313216}+\num{8192}=\num{321408}\ \text{bytes}
 \end{equation}
 leaving \num{211072} bytes unreserved.
 
-For v3, official source commit \texttt{6d017708db403bf83977fa70770fc4f7f9e9ff21} is the unmodified control. The one-function adaptation is pinned to \texttt{9293313fb58de4c5ce9dd27a5a9fde0058766c79}, and the two-function adaptation to \texttt{874658c64aa2e20f53b1f4d696144723d558ed5c}. The latter changes only \texttt{lll\_dim4.c} and \texttt{sign.c}. For all three official parameter sets, we bind the generating commit to the directory-tree digest of generated \texttt{pqm4} source. The RP2350 two-function adaptation is built from firmware commit \texttt{5df7acfb2e32019305094546939bdc50bbf71e00}, using Pico SDK 2.3.0, Arm GNU Toolchain 15.2.1, Release configuration, \SI{150}{\mega\hertz}, and one core. Reconstruction patches and digests are included in the public supplementary artifacts.
+For v3, official source commit \texttt{6d017708db403bf83977fa70770fc4f7f9e9ff21} is the unmodified control. The implementation modifying one function is pinned to \texttt{9293313fb58de4c5ce9dd27a5a9fde0058766c79}, and the implementation modifying two functions to \texttt{874658c64aa2e20f53b1f4d696144723d558ed5c}. The latter changes only \texttt{lll\_dim4.c} and \texttt{sign.c}. For all three official parameter sets, we bind the generating commit to the directory-tree digest of generated \texttt{pqm4} source. The RP2350 implementation modifying two functions is built from firmware commit \texttt{5df7acfb2e32019305094546939bdc50bbf71e00}, using Pico SDK 2.3.0, Arm GNU Toolchain 15.2.1, Release configuration, \SI{150}{\mega\hertz}, and one core. Reconstruction patches and digests are included in the public supplementary artifacts.
 
 Official v3 places large local state primarily on the stack. The proposed v2 arena body and v3 PSP watermark are therefore different quantities. The v3 firmware reserves \num{131072} bytes for the application PSP, fills it with a known pattern immediately before each operation, and measures the contiguous overwritten depth afterward. The interrupt MSP reservation is \num{8192} bytes.
 
@@ -640,17 +639,17 @@ We divide evaluation into five groups.
 
 The proposed v2, official v3, and adapted v3 implementations are independently built from pinned commits, without sharing object files. Comparison manifests bind commits, ELFs, target captures, and measurement definitions using SHA-256.
 
-Official and adapted v3 use the same baseline commit, parameter set, and compiler options. Source differences are restricted to one file for the one-function adaptation and two files for the two-function adaptation. We use these within-version comparisons to estimate local storage-sharing effects. Between v2 and v3, parameters, algorithms, integer representations, and ownership models change simultaneously, so cross-version figures are reported only for context. In particular, we do not subtract the explicit v2 arena and the v3 stack watermark as though they were one RAM metric.
+Official and adapted v3 use the same baseline commit, parameter set, and compiler options. Source differences are restricted to one file for the implementation modifying one function and two files for the implementation modifying two functions. We use these within-version comparisons to estimate local storage-sharing effects. Between v2 and v3, parameters, algorithms, integer representations, and ownership models change simultaneously, so cross-version figures are reported only for context. In particular, we do not subtract the explicit v2 arena and the v3 stack watermark as though they were one RAM metric.
 
 The v2 target test uses a deterministic test random generator based on AES-256 CTR-DRBG, with the same seed, message, and expected digests as the host reference. This source is for differential testing, not production entropy. Manifests record the clock, toolchain, linker layout, binary hash, and capture hash. We boot the same UF2 firmware image twice, execute KeyGen, Sign, and Verify sequentially, and check guards and whole-region erasure after each operation. This repeats one input rather than broadening the input distribution.
 
 The v2 differential-conformance test uses 100 archived NIST-v2 Level-I official input vectors. Their input-file SHA-256 is \texttt{81ff60e3...d6ebc7e}, with the full value in the supplementary artifacts. We separately build ordinary and \texttt{SQISIGN\_LOWMEM\_ONLY} APIs from the same commit and supply identical inputs. The low-memory build does not call ordinary entry points; it runs only caller-workspace KeyGen, Sign, Open, and Verify. Each vector checks recovery of a valid signed message, rejection of a one-bit signature modification, guards, and post-operation erasure. The ordinary API runs once, and the low-memory API twice in separately launched processes. The three response sequences agree, but share the same input corpus and ordinary path from the same commit, so they are not independent expected values. Nor is this a known-answer test against historical official responses.
 
-The v3 target test embeds official known-answer vector 0 in firmware and compares public keys, secret keys, signed messages, and recovered messages byte for byte. We compare the one-function adaptation with official v3 in five pairs with reversed execution order, totaling ten boot-time measurements. The two-function adaptation measures KeyGen, Sign, and Verify once on vector 0. Reported measurements are pinned to source and firmware without uncommitted changes. SHA-256 digests of binaries, captures, and patches are recorded in the public supplementary artifacts.
+The v3 target test embeds official known-answer vector 0 in firmware and compares public keys, secret keys, signed messages, and recovered messages byte for byte. We compare the implementation modifying one function with official v3 in five pairs with reversed execution order, totaling ten boot-time measurements. The implementation modifying two functions measures KeyGen, Sign, and Verify once on vector 0. Reported measurements are pinned to source and firmware without uncommitted changes. SHA-256 digests of binaries, captures, and patches are recorded in the public supplementary artifacts.
 
-On the host, we build official v3 and the two-function adaptation separately. For each of \texttt{p324\_3}, \texttt{p500\_27}, and \texttt{p664\_17}, we run API tests, scheme self-tests, and 100 official responses. There are 3 sets \(\times\) 100 vectors, or 300 distinct parameter/input pairs. Each pair runs once on official v3 and once on the two-function adaptation, totaling \num{600} checks. Arm stack-frame audits cover the same six configurations, without shared object files across implementations.
+On the host, we build official v3 and the implementation modifying two functions separately. For each of \texttt{p324\_3}, \texttt{p500\_27}, and \texttt{p664\_17}, we run API tests, scheme self-tests, and 100 official responses. There are 3 sets \(\times\) 100 vectors, or 300 distinct parameter/input pairs. Each pair runs once on official v3 and once on the implementation modifying two functions, totaling \num{600} checks. Arm stack-frame audits cover the same six configurations, without shared object files across implementations.
 
-Separately from single-vector repetitions, we build firmware processing official response vectors 0--9 sequentially in one boot. For official v3 and the one-function adaptation, we use two layouts placing either 0 or 512 Thumb no-operation (NOP) instructions immediately before the cryptographic library. The latter shifts the entry addresses of \texttt{crypto\_sign\_keypair}, \texttt{crypto\_sign}, and \texttt{crypto\_sign\_open} by \num{1024} bytes. In addition to agreement of valid KeyGen, Sign, and Verify outputs, every vector must reject a modified signature with its first bit flipped.
+Separately from single-vector repetitions, we build firmware processing official response vectors 0--9 sequentially in one boot. For official v3 and the implementation modifying one function, we use two layouts placing either 0 or 512 Thumb no-operation (NOP) instructions immediately before the cryptographic library. The latter shifts the entry addresses of \texttt{crypto\_sign\_keypair}, \texttt{crypto\_sign}, and \texttt{crypto\_sign\_open} by \num{1024} bytes. In addition to agreement of valid KeyGen, Sign, and Verify outputs, every vector must reject a modified signature with its first bit flipped.
 
 \subsection{Functional and memory-safety validation}
 
@@ -658,11 +657,11 @@ For the measured firmware, we fix 52 project translation units reachable from Le
 
 This method does not rely merely on the absence of visible \texttt{malloc} calls in source. The linked ELF is checked for allocation inside libraries, retained legacy paths, implicit VLAs, and unaccounted linker-script regions.
 
-To make sharing safety traceable, we construct a lifetime certificate for 11 major regions. Each row records object name, type, Arm-ABI size/alignment/offset, construction and last-reference sites, mutually exclusive partners, pointer passing and retention by callees, erasure sites on normal/failure/retry paths, and corresponding static/dynamic checks. \Cref{tab:lifetime-certificate} summarizes it; the complete CSV and check results are public supplementary artifacts.
+To make sharing safety traceable, we construct a lifetime audit table for 11 major regions. Each row records object name, type, Arm-ABI size/alignment/offset, construction and last-reference sites, mutually exclusive partners, pointer passing and retention by callees, erasure sites on normal/failure/retry paths, and corresponding static/dynamic checks. \Cref{tab:lifetime-certificate} summarizes it; the complete CSV and check results are public supplementary artifacts.
 
 \begin{table}[H]
   \centering
-  \caption{Summary of lifetime certificates for major shared v2 regions}
+  \caption{Summary of lifetime audit tables for major shared v2 regions}
   \label{tab:lifetime-certificate}
   \scriptsize
   \begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}r r p{0.22\linewidth}X@{}}
@@ -725,7 +724,7 @@ For v3, we use official \texttt{p324\_3} known answers and apply identical check
   \end{tabularx}
 \end{table}
 
-We separately record the operation arena body, guarded shared operation region, link-time main-SRAM-bank reservation, PSP/MSP reservations, and measured stack watermarks. A watermark is the region actually overwritten while processing one input, not a worst-case stack bound. Unreserved memory is computed by subtracting full PSP and MSP reservations from total SRAM, not observed watermarks.
+We separately record the operation arena body, guarded shared operation region, link-time main-SRAM-bank reservation, PSP/MSP reservations, and measured stack watermarks. We measure stack usage by prefilling the stack with a known pattern and measuring the extent overwritten during execution (the stack watermark). This measured extent is not a worst-case stack bound. Unreserved memory is computed by subtracting full PSP and MSP reservations from total SRAM, not observed watermarks.
 
 \section{Results}
 \label{sec:results}
@@ -738,7 +737,7 @@ For v2, we evaluate how arena reduction translates into whole-firmware SRAM rese
 
 \begin{table}[H]
   \centering
-  \caption{Cortex-M33/RADIX32 arena changes from the norm sketch}
+  \caption{Cortex-M33/RADIX32 arena changes from the bit-length and leading-bit pair}
   \label{tab:sketch-arena}
   \small
   \begin{tabular}{@{}lrrr@{}}
@@ -760,7 +759,7 @@ The whole-operation-arena reduction is
 \end{equation}
 or \num{51.2532}\%.
 
-\Cref{tab:firmware-memory} reports the linked proposed v2 implementation. The \num{180928}-byte reduction from the full-table implementation translates directly into reduced exclusive SRAM reservation and increased unreserved SRAM. It is therefore not merely a transfer of heap data to stack. The proposed v2 binary image occupies \num{288384} bytes, \num{880} bytes more than the full-table implementation, due to the code for full-precision regeneration and comparison.
+\Cref{tab:firmware-memory} reports the linked proposed v2 implementation. The \num{180928}-byte reduction from the full-table implementation translates directly into reduced total SRAM reservation and increased unreserved SRAM. It is therefore not merely a transfer of heap data to stack. The proposed v2 binary image occupies \num{288384} bytes, \num{880} bytes more than the full-table implementation, due to the code for full-precision regeneration and comparison.
 
 \begin{table}[H]
   \centering
@@ -835,45 +834,45 @@ Relative to the full-table implementation, proposed v2 reduces operation RAM by 
 \subsection{Results of transfer to SQIsign v3}
 \label{sec:v3-results}
 
-The one-function adaptation applies two overlays only to \texttt{quat\_lll\_dual\_reduce\_ideal}. \Cref{tab:v3-results} compares it with unmodified v3 built from the same official baseline commit. Both implementations process 100 official responses each on the host. The adaptation reduces this function's stack frame from \num{34816} to \num{30888} bytes. The \num{3928}-byte difference agrees with the reduction in Sign PSP watermark in all five repetitions. This repeated test examines whether local function-frame reduction translates into target stack usage. Transfer to two functions is evaluated using the two-function adaptation below.
+The implementation modifying one function applies two overlays only to \texttt{quat\_lll\_dual\_reduce\_ideal}. \Cref{tab:v3-results} compares it with unmodified v3 built from the same official baseline commit. Both implementations process 100 official responses each on the host. The adaptation reduces this function's stack frame from \num{34816} to \num{30888} bytes. The \num{3928}-byte difference agrees with the reduction in Sign PSP watermark in all five repetitions. This repeated test examines whether local function-frame reduction translates into target stack usage. Transfer to two functions is evaluated using the implementation modifying two functions below.
 
 \begin{table}[H]
   \centering
-  \caption{Official SQIsign v3.0 and the one-function adaptation on RP2350. Time columns are medians of five runs each; changes are medians of the five individual paired ratios.}
+  \caption{Official SQIsign v3.0 and the implementation modifying one function on RP2350. Time columns are medians of five runs each; changes are medians of the five individual paired ratios.}
   \label{tab:v3-results}
   \small
   \begin{tabular}{@{}lrrr@{}}
     \toprule
-    Item & Official v3 & One-function & Change \\
+    Item & Official v3 & 1 function & Change \\
     \midrule
     \input{generated/v3-results-rows-en.tex}\\
     \bottomrule
   \end{tabular}
 \end{table}
 
-Unchanged KeyGen and Verify PSP watermarks are consistent with the one-function adaptation modifying only Sign. All three operation watermarks remain constant across five repetitions in both implementations. Paired Sign-time increases range from \num{0.4112}--\num{0.4204}\%, with median \num{0.4190}\%. This observation applies to the specific binary, board, clock, and deterministic known-answer vector. It is neither an input-distribution estimate nor a slowdown rate for the two-function adaptation.
+Unchanged KeyGen and Verify PSP watermarks are consistent with the implementation modifying one function modifying only Sign. All three operation watermarks remain constant across five repetitions in both implementations. Paired Sign-time increases range from \num{0.4112}--\num{0.4204}\%, with median \num{0.4190}\%. This observation applies to the specific binary, board, clock, and deterministic known-answer vector. It is neither an input-distribution estimate nor a slowdown rate for the implementation modifying two functions.
 
-The two-function adaptation adds the third overlay in \texttt{protocols\_sign}. RP2350 measurements in \cref{tab:v3-two-function-target} are bound to source and firmware without uncommitted changes. Vector-0 KeyGen, Sign, and Verify match official responses. Sign PSP watermark decreases from official v3's \num{\VThreeDThreeOfficialSignPspBytes} to \num{\VThreeDThreeSignPspBytes} bytes, a total reduction of \num{\VThreeDThreeSavedBytes} bytes (\num{\VThreeDThreeSavedPercent}\%). The additional \num{\VThreeDThreeSecondFunctionSavedBytes} bytes saved beyond the one-function adaptation agree with the \texttt{protocols\_sign} frame reduction. Because this target measurement is performed only once, its elapsed time is not used for performance comparison.
+The implementation modifying two functions adds the third overlay in \texttt{protocols\_sign}. RP2350 measurements in \cref{tab:v3-two-function-target} are bound to source and firmware without uncommitted changes. Vector-0 KeyGen, Sign, and Verify match official responses. Sign PSP watermark decreases from official v3's \num{\VThreeDThreeOfficialSignPspBytes} to \num{\VThreeDThreeSignPspBytes} bytes, a total reduction of \num{\VThreeDThreeSavedBytes} bytes (\num{\VThreeDThreeSavedPercent}\%). The additional \num{\VThreeDThreeSecondFunctionSavedBytes} bytes saved beyond the implementation modifying one function agree with the \texttt{protocols\_sign} frame reduction. Because this target measurement is performed only once, its elapsed time is not used for performance comparison.
 
 \begin{table}[H]
   \centering
-  \caption{Official v3 and the two-function adaptation for \texttt{p324\_3} on RP2350. Function frames are static values from Arm object files. PSP watermarks are medians of five official runs and one observation for the two-function adaptation.}
+  \caption{Official v3 and the implementation modifying two functions for \texttt{p324\_3} on RP2350. Function frames are static values from Arm object files. PSP watermarks are medians of five official runs and one observation for the implementation modifying two functions.}
   \label{tab:v3-two-function-target}
   \small
   \begin{tabular}{@{}lrrr@{}}
     \toprule
-    Item & Official v3 & Two-function & Change \\
+    Item & Official v3 & 2 functions & Change \\
     \midrule
     \input{generated/v3-d3-results-rows-en.tex}\\
     \bottomrule
   \end{tabular}
 \end{table}
 
-To test whether the changes depend on one parameter set, we generate official v3 and the two-function adaptation for all three official parameter sets. Each configuration passes API tests, scheme self-tests, and 100 official responses. This comprises \num{\VThreeDThreeKatVectors} executions checking 300 distinct parameter/input pairs on two implementations. As \cref{tab:v3-all-parameter-frames} shows, both function frames decrease in all six comparisons. This supports applicability of local storage sharing to the three parameter sets, but does not establish whole-firmware SRAM or target stack watermarks for \texttt{p500\_27} and \texttt{p664\_17}.
+To test whether the changes depend on one parameter set, we generate official v3 and the implementation modifying two functions for all three official parameter sets. Each configuration passes API tests, scheme self-tests, and 100 official responses. This comprises \num{\VThreeDThreeKatVectors} executions checking 300 distinct parameter/input pairs on two implementations. As \cref{tab:v3-all-parameter-frames} shows, both function frames decrease in all six comparisons. This supports applicability of local storage sharing to the three parameter sets, but does not establish whole-firmware SRAM or target stack watermarks for \texttt{p500\_27} and \texttt{p664\_17}.
 
 \begin{table}[H]
   \centering
-  \caption{Arm Cortex-M33 stack frames of the two-function adaptation across three official parameter sets.}
+  \caption{Arm Cortex-M33 stack frames of the implementation modifying two functions across three official parameter sets.}
   \label{tab:v3-all-parameter-frames}
   \scriptsize
   \begin{tabular}{@{}llrrr@{}}
@@ -885,7 +884,7 @@ To test whether the changes depend on one parameter set, we generate official v3
   \end{tabular}
 \end{table}
 
-For the multi-input test, we generate four firmware images from firmware commit \texttt{76f88dcc...}, official source \texttt{6d017708...}, and one-function adaptation \texttt{9293313f...}. Every image has a zero-byte heap section, with allocation-function entry points consisting only of three forced-stop handlers. The 19 dynamic-stack records are identical across implementations and layouts. \Cref{tab:v3-multi} reports the results.
+For the multi-input test, we generate four firmware images from firmware commit \texttt{76f88dcc...}, official source \texttt{6d017708...}, and implementation modifying one function \texttt{9293313f...}. Every image has a zero-byte heap section, with allocation-function entry points consisting only of three forced-stop handlers. The 19 dynamic-stack records are identical across implementations and layouts. \Cref{tab:v3-multi} reports the results.
 
 \begin{table}[H]
   \centering
@@ -901,9 +900,9 @@ For the multi-input test, we generate four firmware images from firmware commit 
   \end{tabular}
 \end{table}
 
-All 40 valid KeyGen/Sign/Verify paths and 40 modified-signature rejections succeed. Operation PSP watermarks agree in all 80 comparisons between layouts A and B for identical implementation/input pairs. The one-function adaptation saves \num{3928} Sign bytes in all 20 observations. Thus, within these 10 inputs and two layouts, the observed reduction does not depend solely on one known-answer input or one link address.
+All 40 valid KeyGen/Sign/Verify paths and 40 modified-signature rejections succeed. Operation PSP watermarks agree in all 80 comparisons between layouts A and B for identical implementation/input pairs. The implementation modifying one function saves \num{3928} Sign bytes in all 20 observations. Thus, within these 10 inputs and two layouts, the observed reduction does not depend solely on one known-answer input or one link address.
 
-However, Sign-time differences in the multi-vector firmware range from \num{1.1327}--\num{1.5592}\%, with median \num{1.3323}\%, unlike the single-vector firmware's \num{0.4190}\%. We therefore do not claim one general slowdown percentage for the one-function adaptation. Across the two layouts, input-wise Sign times have Pearson correlations of \num{0.999999867} for official v3 and \num{0.999999912} for the one-function adaptation. Maximum/minimum input-time ratios are \num{1.474635} and \num{1.468729}, respectively. Seeds, keys, and messages change simultaneously across these 10 inputs, so the result cannot be attributed to leakage from a fixed key's secret information.
+However, Sign-time differences in the multi-vector firmware range from \num{1.1327}--\num{1.5592}\%, with median \num{1.3323}\%, unlike the single-vector firmware's \num{0.4190}\%. We therefore do not claim one general slowdown percentage for the implementation modifying one function. Across the two layouts, input-wise Sign times have Pearson correlations of \num{0.999999867} for official v3 and \num{0.999999912} for the implementation modifying one function. Maximum/minimum input-time ratios are \num{1.474635} and \num{1.468729}, respectively. Seeds, keys, and messages change simultaneously across these 10 inputs, so the result cannot be attributed to leakage from a fixed key's secret information.
 
 \subsection{Stack-bound analysis using the fixed-array variant}
 
@@ -977,13 +976,13 @@ For proposed v2, we measure 64 fixed and 64 random inputs and repeat the test wi
   \end{tabular}
 \end{table}
 
-Pearson correlations of Sign time with sketch comparisons, sketch ties, and search reexecutions have absolute values generally at most \num{0.217}. The measured metrics thus do not identify the norm sketch as the existing dominant leakage source. Weak correlation is not proof of nonleakage, however, and does not justify treating proposed v2 as a side-channel-security improvement.
+Pearson correlations of Sign time with retained pair comparisons, retained pair ties, and search reexecutions have absolute values generally at most \num{0.217}. The measured metrics thus do not identify the use of partial norm storage as the existing dominant leakage source. Weak correlation is not proof of nonleakage, however, and does not justify treating proposed v2 as a side-channel-security improvement.
 
-For v3, we test timing with fixed message, signing randomness, and key-storage address. We select 10 keys from official \texttt{p324\_3} known answers and copy each to the same buffer. With a fixed 33-byte message and 48-byte signing seed, each key runs 30 times in two different randomized orders. On Darwin/arm64, we measure \num{\VThreeFixedTimingRows} signatures across official and one-function builds and verify every signature with its corresponding public key. For both implementations, between-run rankings of key-wise median times agree with Spearman correlation at least \num{\VThreeKeyTimingSpearmanMin}. The fastest-to-slowest key median span is \num{\VThreeKeyTimingSpanMinPercent}--\num{\VThreeKeyTimingSpanMaxPercent}\% of the median across keys. Thus, key-associated timing differences reproduce under these host conditions. This does not demonstrate secret-only attribution, physical leakage, or key recovery.
+For v3, we test timing with fixed message, signing randomness, and key-storage address. We select 10 keys from official \texttt{p324\_3} known answers and copy each to the same buffer. With a fixed 33-byte message and 48-byte signing seed, each key runs 30 times in two different randomized orders. On Darwin/arm64, we measure \num{\VThreeFixedTimingRows} signatures across official builds and builds modifying one function and verify every signature with its corresponding public key. For both implementations, between-run rankings of key-wise median times agree with Spearman correlation at least \num{\VThreeKeyTimingSpearmanMin}. The fastest-to-slowest key median span is \num{\VThreeKeyTimingSpanMinPercent}--\num{\VThreeKeyTimingSpanMaxPercent}\% of the median across keys. Thus, key-associated timing differences reproduce under these host conditions. This does not demonstrate secret-only attribution, physical leakage, or key recovery.
 
-We test the same hypothesis on RP2350 using a decision rule set before measurement. We copy 10 keys to the same fixed address and invalidate XIP cache immediately before each measurement. With fixed message and signing randomness, we perform two tests with different key orders, repeating each key five times per test. Across official and one-function builds, we obtain \num{\VThreeTargetFixedTimingSamples} signatures. Besides successful verification of every signature, we check signature digests, canaries, and firmware/source digests. For each implementation, the rule requires between-test Spearman correlation of key-median ranks of at least 0.8. In each test, the fastest-to-slowest median span must be at least 1\% of the median across keys and at least ten times the median within-key median absolute deviation (MAD). Both implementations have Spearman correlation at least \num{\VThreeTargetKeyTimingSpearmanMin} and key spans of \num{\VThreeTargetKeyTimingSpanMinPercent}--\num{\VThreeTargetKeyTimingSpanMaxPercent}\%, satisfying the rule. Across all 100 samples per implementation, Sign PSP watermarks are \num{101060} bytes for official v3 and \num{97132} for the one-function adaptation, reproducing the \num{3928}-byte difference. Firmware order is fixed as official then one-function, so cross-version timing differences are not used as general performance comparisons. This single-board result demonstrates repeatedly observed key-associated timing differences on RP2350. It does not demonstrate separation of public and secret components, RP2350 control-flow/address traces, analog power/EM leakage, key recovery, or resistance.
+We test the same hypothesis on RP2350 using a decision rule set before measurement. We copy 10 keys to the same fixed address and invalidate XIP cache immediately before each measurement. With fixed message and signing randomness, we perform two tests with different key orders, repeating each key five times per test. Across official builds and builds modifying one function, we obtain \num{\VThreeTargetFixedTimingSamples} signatures. Besides successful verification of every signature, we check signature digests, canaries, and firmware/source digests. For each implementation, the rule requires between-test Spearman correlation of key-median ranks of at least 0.8. In each test, the fastest-to-slowest median span must be at least 1\% of the median across keys and at least ten times the median within-key median absolute deviation (MAD). Both implementations have Spearman correlation at least \num{\VThreeTargetKeyTimingSpearmanMin} and key spans of \num{\VThreeTargetKeyTimingSpanMinPercent}--\num{\VThreeTargetKeyTimingSpanMaxPercent}\%, satisfying the rule. Across all 100 samples per implementation, Sign PSP watermarks are \num{101060} bytes for official v3 and \num{97132} for the implementation modifying one function, reproducing the \num{3928}-byte difference. Firmware order is fixed as official then modified, so cross-version timing differences are not used as general performance comparisons. This single-board result demonstrates repeatedly observed key-associated timing differences on RP2350. It does not demonstrate separation of public and secret components, RP2350 control-flow/address traces, analog power/EM leakage, key recovery, or resistance.
 
-For the same input design, we use Apple Clang SanitizerCoverage to record control-flow edge identifiers and effective addresses of loads/stores during \texttt{crypto\_sign} in two independent processes. Each secret key is copied to the same fixed-address buffer before measurement to remove trivial storage-location differences in the known-answer table. Across official and one-function builds, all \num{\VThreeStructuralControlPairs} same-key control pairs agree in event counts and two sequence digests. Among \num{\VThreeStructuralDifferentKeyPairs} comparisons of the other 9 keys against key 0, control-flow counts or digests differ in \num{\VThreeStructuralEdgeDifferentPairs}/\num{\VThreeStructuralDifferentKeyPairs} pairs, and effective-address counts or digests in \num{\VThreeStructuralAddressDifferentPairs}/\num{\VThreeStructuralDifferentKeyPairs} pairs. Sequences contain up to approximately 70 million control-flow edges and 358 million memory accesses. Only the first 2 million events are retained; complete sequences are compared by counts and two 64-bit digests. Same-key agreement is therefore not formal equivalence. In every different-key pair, event counts themselves differ, so key-associated structural differences are confirmed without relying on digest collision probabilities. The test does not separate public and secret key components and observes host code only. It is not evidence of secret leakage, RP2350 code behavior, physical waveforms, or a successful attack.
+For the same input design, we use Apple Clang SanitizerCoverage to record control-flow edge identifiers and effective addresses of loads/stores during \texttt{crypto\_sign} in two independent processes. Each secret key is copied to the same fixed-address buffer before measurement to remove trivial storage-location differences in the known-answer table. Across official builds and builds modifying one function, all \num{\VThreeStructuralControlPairs} same-key control pairs agree in event counts and two sequence digests. Among \num{\VThreeStructuralDifferentKeyPairs} comparisons of the other 9 keys against key 0, control-flow counts or digests differ in \num{\VThreeStructuralEdgeDifferentPairs}/\num{\VThreeStructuralDifferentKeyPairs} pairs, and effective-address counts or digests in \num{\VThreeStructuralAddressDifferentPairs}/\num{\VThreeStructuralDifferentKeyPairs} pairs. Sequences contain up to approximately 70 million control-flow edges and 358 million memory accesses. Only the first 2 million events are retained; complete sequences are compared by counts and two 64-bit digests. Same-key agreement is therefore not formal equivalence. In every different-key pair, event counts themselves differ, so key-associated structural differences are confirmed without relying on digest collision probabilities. The test does not separate public and secret key components and observes host code only. It is not evidence of secret leakage, RP2350 code behavior, physical waveforms, or a successful attack.
 
 In two separate host measurements, we record Sign control-flow edge sequences and effective-address sequences of targeted load/store instructions. Same-seed controls agree in both sequences. Every comparison between the fixed seed and different signing randomness reproducibly differs in both sequences. Operations reached from first differences include multiprecision used-word scans, most-significant-word comparisons, and random-ideal sampling.
 
@@ -1007,9 +1006,9 @@ We measure three local-countermeasure variants: fixed exponent-processing order,
 
 \subsection{Applicability and implications for embedded integration}
 
-The procedure effective in both versions explicitly identifies object lifetimes and interference and reflects them in typed storage placement. Proposed v2 applies it to protocol-wide shared operation storage. The v3 two-function adaptation applies the same procedure to two redesigned functions, reducing usage in all six stack-frame comparisons across three parameter sets. In the \texttt{p324\_3} target test, both function reductions translate into Sign PSP watermark, differing from official v3 by \num{\VThreeDThreeSavedBytes} bytes. This demonstrates applicability of lifetime scheduling beyond v2 \texttt{find\_uv}.
+The procedure effective in both versions explicitly identifies object lifetimes and interference and reflects them in typed storage placement. Proposed v2 applies it to protocol-wide shared operation storage. The v3 implementation modifying two functions applies the same procedure to two redesigned functions, reducing usage in all six stack-frame comparisons across three parameter sets. In the \texttt{p324\_3} target test, both function reductions translate into Sign PSP watermark, differing from official v3 by \num{\VThreeDThreeSavedBytes} bytes. This demonstrates applicability of lifetime-based memory allocation beyond v2 \texttt{find\_uv}.
 
-The norm sketch, 1665-bit integer width, \num{172080}-byte arena, and reachable scope of 52 translation units with allocation functions and VLAs removed are v2-specific. Version 3 lacks the targeted \texttt{find\_uv} candidate table, and the two-function adaptation retains 19 dynamic-stack records. We therefore do not conclude that the concrete v2 memory layout transfers unchanged to v3. What transfers is the formulation and checking procedure for determining shareability from lifetimes. Shared regions and obtained guarantees differ by version.
+The bit-length and leading-bit pair, 1665-bit integer width, \num{172080}-byte arena, and reachable scope of 52 translation units with allocation functions and VLAs removed are v2-specific. Version 3 lacks the targeted \texttt{find\_uv} candidate table, and the implementation modifying two functions retains 19 dynamic-stack records. We therefore do not conclude that the concrete v2 memory layout transfers unchanged to v3. What transfers is the formulation and checking procedure for determining shareability from lifetimes. Shared regions and obtained guarantees differ by version.
 
 The concrete memory quantities depend on each version's Level-I-equivalent parameters and RP2350. The same ideas may nevertheless apply to implementations satisfying the following conditions.
 
@@ -1020,9 +1019,9 @@ The concrete memory quantities depend on each version's Level-I-equivalent param
   \item Comparisons can return to full precision when representative values do not determine the order.
 \end{enumerate}
 
-The norm sketch decides comparisons only when leading bits differ and always returns to original full precision when they agree. This may apply beyond norms to search or pruning procedures whose compared values can be reconstructed at full precision from small inputs. Data reduction is demonstrated only for v2 norms, however. Lifetime scheduling yields results for v2 shared operation storage and two v3 functions across three parameter sets, but not for other post-quantum schemes or microcontrollers. Applicability beyond SQIsign is therefore a hypothesis requiring future validation.
+The comparison method determines the order when bit lengths or leading bits differ and returns to original full precision when both agree. This may apply beyond norms to search or pruning procedures whose compared values can be reconstructed at full precision from small inputs. Data reduction is demonstrated only for v2 norms, however. Lifetime-based memory allocation yields results for v2 shared operation storage and two v3 functions across three parameter sets, but not for other post-quantum schemes or microcontrollers. Applicability beyond SQIsign is therefore a hypothesis requiring future validation.
 
-Proposed v2 leaves \num{211072} bytes unreserved, increasing integration headroom relative to the full-table implementation's \num{30144} bytes. This may support production randomness, communication buffers, interrupt stacks, additional countermeasure state, or other parameter sets. Unreserved capacity does not show that all these fit simultaneously. After constant-time processing or masking is introduced, RAM, stack, flash, and execution time must be remeasured to assess trade-offs against this implementation. For adapted v3, only local stack reductions are measured; exclusive SRAM reservation and unreserved SRAM under the same definition have not been computed.
+Proposed v2 leaves \num{211072} bytes unreserved, increasing integration headroom relative to the full-table implementation's \num{30144} bytes. This may support production randomness, communication buffers, interrupt stacks, additional countermeasure state, or other parameter sets. Unreserved capacity does not show that all these fit simultaneously. After constant-time processing or masking is introduced, RAM, stack, flash, and execution time must be remeasured to assess trade-offs against this implementation. For adapted v3, only local stack reductions are measured; total SRAM reservation and unreserved SRAM under the same definition have not been computed.
 
 \subsection{Validity and remaining constraints}
 \label{sec:limitations}
@@ -1030,20 +1029,20 @@ Proposed v2 leaves \num{211072} bytes unreserved, increasing integration headroo
 The results have the following limitations.
 
 \begin{enumerate}[leftmargin=2.2em]
-  \item \textbf{Target scope}: hardware measurements are limited to RP2350, one Arm Cortex-M33 core, and Level I/RADIX32 for v2. Host functional tests and Arm frame audits of the v3 two-function adaptation cover three parameter sets, but full firmware builds and hardware measurements cover only \texttt{p324\_3/m4f}. Results correspond to the commits stated here and do not establish transfer to other microcontrollers or implementation versions.
-  \item \textbf{Input scope}: v2 target measurements repeat identical deterministic KeyGen, Sign, and Verify over two boots using reproducibility CTR-DRBG. The v3 one-function adaptation has five reversed-order single-vector pairs and ten vectors in two layouts. The two-function target measurement is one vector-0 run. These tests do not characterize input distributions, board variation, high-retry inputs, or two-function timing distributions. No production random generator incorporating entropy sources, reseeding, and fault handling is integrated.
+  \item \textbf{Target scope}: hardware measurements are limited to RP2350, one Arm Cortex-M33 core, and Level I/RADIX32 for v2. Host functional tests and Arm frame audits of the v3 implementation modifying two functions cover three parameter sets, but full firmware builds and hardware measurements cover only \texttt{p324\_3/m4f}. Results correspond to the commits stated here and do not establish transfer to other microcontrollers or implementation versions.
+  \item \textbf{Input scope}: v2 target measurements repeat identical deterministic KeyGen, Sign, and Verify over two boots using reproducibility CTR-DRBG. The v3 implementation modifying one function has five reversed-order single-vector pairs and ten vectors in two layouts. The two-function target measurement is one vector-0 run. These tests do not characterize input distributions, board variation, high-retry inputs, or two-function timing distributions. No production random generator incorporating entropy sources, reseeding, and fault handling is integrated.
   \item \textbf{Functional equivalence}: v2 checks 12 fixed inputs and ordinary/low-memory API differences on 100 official inputs. Version 3 processes 300 distinct parameter/input pairs on two implementations, totaling 600 official-response checks. These finite-corpus regression tests do not prove all-input C-program equivalence. The v2 differential oracle is the same commit's ordinary API, not historical GMP responses.
   \item \textbf{Manual conditions}: the annotation-driven placement generator and coverage checks detect missing annotations for declared members and direct accesses. Phases, lifetimes, indirect aliases, pointer retention, and failure-path erasure remain manually specified. ASan/UBSan, canaries, ELF audits, and official responses provide separate error-detection routes, but do not prove every C behavior including aliases.
-  \item \textbf{Stack bounds}: v2 bounds cover input-dependent Thread-mode paths of a fixed firmware image and one maximum exception entry. The v3 fixed-array variant is a separate binary with zero dynamic-frame records; its bounds do not apply to the two-function adaptation retaining 19 such records. No missing stack information is found among direct callees of four candidate interrupt roots. However, 18 indirect-callback sites, enabled interrupt requests, priorities, nesting, handler frames, and MSP use at exception entry are unevaluated. Neither result is a whole-program bound including interrupts.
+  \item \textbf{Stack bounds}: v2 bounds cover input-dependent Thread-mode paths of a fixed firmware image and one maximum exception entry. The v3 fixed-array variant is a separate binary with zero dynamic-frame records; its bounds do not apply to the implementation modifying two functions retaining 19 such records. No missing stack information is found among direct callees of four candidate interrupt entry functions. However, 18 indirect-callback sites, enabled interrupt requests, priorities, nesting, handler frames, and MSP use at exception entry are unevaluated. Neither result is a whole-program bound including interrupts.
   \item \textbf{Security scope}: v2 signing retains input-dependent branches, memory addresses, retries, and recomputation. We also observe v3 key-associated timing and control-flow/address differences, but public and secret components change simultaneously, precluding secret-only attribution. Full-signing power/EM waveforms, independent acquisition, attack reproduction, masking, and RP2350 structural traces are unevaluated. Side-channel resistance is therefore not demonstrated.
-  \item \textbf{Practicality}: v2 KeyGen and Sign are too slow for many product applications. The \num{211072} unreserved bytes are integration headroom, not demonstrated simultaneous capacity for production randomness, communication, interrupts, and countermeasure state. A v3 exclusive SRAM total under the same definition is also unavailable.
+  \item \textbf{Practicality}: v2 KeyGen and Sign are too slow for many product applications. The \num{211072} unreserved bytes are integration headroom, not demonstrated simultaneous capacity for production randomness, communication, interrupts, and countermeasure state. A v3 total SRAM reservation under the same definition is also unavailable.
 \end{enumerate}
 
 \Cref{tab:stack-claim-layers} distinguishes obtained stack evidence from excluded elements for each implementation.
 
 \begin{table}[H]
   \centering
-  \caption{Scope of stack evaluation. The fixed-array and two-function adaptations are different binaries.}
+  \caption{Scope of stack evaluation. The fixed-array and implementation modifying two functionss are different binaries.}
   \label{tab:stack-claim-layers}
   \footnotesize
   \begin{tabularx}{\linewidth}{@{}p{0.27\linewidth}p{0.34\linewidth}X@{}}
@@ -1051,8 +1050,8 @@ The results have the following limitations.
     Target & Obtained evidence & Excluded elements \\
     \midrule
     v2 KeyGen/Sign/Verify PSP & Bound on linked input-dependent Thread-mode paths plus one maximum exception entry & Interrupt handlers, nesting, MSP use at exception entry \\
-    v3 fixed-array operation PSP & Bound on linked software calls plus one maximum exception entry & Application to two-function adaptation; handlers and MSP \\
-    v3 two-function operation PSP & Local frame differences in two functions and one \texttt{p324\_3} watermark & Operation-path bound including 19 dynamic frames \\
+    v3 fixed-array operation PSP & Bound on linked software calls plus one maximum exception entry & Application to implementation modifying two functions; handlers and MSP \\
+    v3 operation PSP (two functions modified) & Local frame differences in two functions and one \texttt{p324\_3} watermark & Operation-path bound including 19 dynamic frames \\
     Interrupt-side stack & MSP reservation/watermark; direct-callee stack-information audit & Enabled interrupts, indirect callbacks, nesting, MSP use at exception entry \\
     \bottomrule
   \end{tabularx}
@@ -1061,9 +1060,9 @@ The results have the following limitations.
 \section{Conclusion}
 \label{sec:conclusion}
 
-For SQIsign v2.0.1 Level I, we combine typed lifetime scheduling and norm sketches to reduce the operation arena from \num{353008} to \num{172080} bytes while preserving the original full-precision comparison order. The RP2350 firmware uses no GMP, dynamic allocation, or external PSRAM. It exclusively reserves \num{321408} SRAM bytes and leaves \num{211072} bytes unreserved. Differential conformance on 100 official inputs, lifetime certificates, ELF audits, and fixed-image PSP analysis support the functional and memory results within this scope.
+For SQIsign v2.0.1 Level I, we combine typed lifetime-based memory allocation with partial norm storage and recomputation to reduce the operation arena from \num{353008} to \num{172080} bytes while preserving the original full-precision comparison order. The RP2350 firmware uses no GMP, dynamic allocation, or external PSRAM. It reserves a total of \num{321408} SRAM bytes and leaves \num{211072} bytes unreserved. Differential conformance on 100 official inputs, lifetime audit tables, ELF audits, and fixed-image PSP analysis support the functional and memory results within this scope.
 
-For SQIsign v3.0, we apply the same placement principle to \texttt{quat\_lll\_dual\_reduce\_ideal} and \texttt{protocols\_sign}, reducing six Arm frames across three parameter sets. On \texttt{p324\_3} hardware, Sign PSP watermark decreases from \num{\VThreeDThreeOfficialSignPspBytes} to \num{\VThreeDThreeSignPspBytes} bytes. The norm sketch remains v2-specific. Fixed-array PSP bounds also do not apply to the two-function adaptation or interrupt-handler MSP.
+For SQIsign v3.0, we apply the same placement principle to \texttt{quat\_lll\_dual\_reduce\_ideal} and \texttt{protocols\_sign}, reducing six Arm frames across three parameter sets. On \texttt{p324\_3} hardware, Sign PSP watermark decreases from \num{\VThreeDThreeOfficialSignPspBytes} to \num{\VThreeDThreeSignPspBytes} bytes. The bit-length and leading-bit pair remains v2-specific. Fixed-array PSP bounds also do not apply to the implementation modifying two functions or interrupt-handler MSP.
 
 Both v2 and v3 retain input-dependent execution time, control flow, and memory addresses. Version 2 KeyGen and Sign also remain impractically slow. Our results therefore concern low-memory placement and its checking methodology. They do not establish constant-time behavior, physical-leakage resistance, whole-program worst-case stack bounds, or production readiness.
 

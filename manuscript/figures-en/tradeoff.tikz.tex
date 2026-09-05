@@ -28,7 +28,7 @@
   }
   \draw[guide] (75.1,-7) -- (75.1,-43);
   \node[lab,anchor=south,rotate=90] at (75.1,-6) {Full table};
-  \foreach \y/\name in {-11/{Arena},-19/{Exclusive SRAM},-27/{PSP reserved},-35/{Binary image}} {
+  \foreach \y/\name in {-11/{Arena},-19/{SRAM reserved},-27/{PSP reserved},-35/{Binary image}} {
     \node[lab,anchor=east] at (20,\y) {\name};
   }
   \node[host] at (\xArena,-11) {}; \node[lab,anchor=west] at (28,-11) {\num{\VTwoArenaRatio}};
