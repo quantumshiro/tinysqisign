@@ -120,10 +120,10 @@ ec7b95976196b09fd7bcb5c790fbb7491e2f8f0ababe08323462e17ae6e7f8b2  ./manuscript/g
 be5358e6d095e0f2ec768b3d913ec2229d1279b939568ead2ccf7753590741db  ./manuscript/generated/v3-results-rows-en.tex
 07026d0af9461c22761c37f8cbdb1c14f9101f82e984e139e36f6f14d9cc97e5  ./manuscript/generated/v3-results-rows.tex
 58959be3248327f666f08b7319bf7dc5269af4da7d5ca304cbdaf45ddca401c2  ./manuscript/generated/v3-static-psp-bound-rows.tex
-be302b903a616edb43d7d01a0ea0032547f50272e6d0380f5df0957765ed16ee  ./manuscript/main-en.pdf
-e600728ab3e8889f59c4641201264b83157f8b4505755490f2bef667500823f6  ./manuscript/main-en.tex
-696d648d25c548a55a65761068bd337f8c2230a2b6ab9d4f08b4d066515a2c54  ./manuscript/main.pdf
-d5ff5b958756956792703f27442132d4309a0b7bbece215a02b7931cb4fc3908  ./manuscript/main.tex
+b53905ec4beec5282b8e8d59c4af18815593d8cab01d3542bddf1e40c62fd889  ./manuscript/main-en.pdf
+998237b487418b8402985b4a939513e78fd7b57b43427c74e3babebc04100391  ./manuscript/main-en.tex
+86a6a31ea9d87494eb6e32144ff2313cc28a09d49bc0f7b0d571c6348ea82d57  ./manuscript/main.pdf
+4c949c4f6d64753b6a1f4fd17170c8e3a4e7dd3c376d4111d667bf9e0c81928c  ./manuscript/main.tex
 7e7321d5b8660ac4fa0fc7947aef27f7fd91f0368a8f05c1f3f7c880c19a3d0d  ./manuscript/Makefile
 02ea2ba15a13690555974e9ae6c5fe41f069cc0cf8e568335add9a2dfc4d97b8  ./manuscript/README.md
 eda326e69bff3e40423fee9414c0158cd148eb9d8de5d7ea32e06e078684cc79  ./manuscript/references.bib
@@ -203,7 +203,7 @@ f9bd4779016da4cd2aa3f36f042301805567c3ff29b902fad890f9b9f9c110e0  ./results/revi
 27137ded1c00cba19598613be6e9ae9608789348ad2793adf2e7aa3e760f44cc  ./results/revision-2026-09-04/lifetime-layout-generator.md
 131cfbd32367da400c2db8ca1aeac40377d7cd23fe2dd6707a16847437784785  ./results/revision-2026-09-04/manuscript-evidence.json
 fa9a86dc381223f0306c753cb1c91f65d694d7661b38e60effcf21551f3bc4b9  ./results/revision-2026-09-04/manuscript-semantic-review-2026-09-05.md
-152128855b636ec357ff223e5e81910829f916a3aa54d2367db93d2de8d9e0bc  ./results/revision-2026-09-04/manuscript-translation-alignment.json
+7df1e7b24e24267b3ec6a8c4d7cd19a8032edbc81f237969ad63758e0f46e89d  ./results/revision-2026-09-04/manuscript-translation-alignment.json
 10ea24e3290b3e4c4101f931e6b8a6b45db77d206adae7ca5ca37b3a8560e848  ./results/revision-2026-09-04/resource-time-tradeoff.csv
 ac1622dbcbfe2718a9007866199f3c24a812b756bfdc9d7aee5d8f360d089e19  ./results/revision-2026-09-04/resource-time-tradeoff.json
 57a8002919587d70108d7513e816acdc7e0de5bcd04bbe041902df0b71c06010  ./results/rp2350/artifacts/ksv-d13-dc3289a/README.md
