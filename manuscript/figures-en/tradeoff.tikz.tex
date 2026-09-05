@@ -1,0 +1,62 @@
+% Normalized trade-off profile; all data values come from generated evidence
+% macros, while the coordinate transform is local to this figure.
+\begin{tikzpicture}[
+  x=1mm,y=1mm,
+  lab/.style={font=\sffamily\footnotesize},
+  strong/.style={font=\sffamily\bfseries\footnotesize},
+  axis/.style={-{Latex[length=1.6mm,width=1.1mm]},line width=.5pt},
+  guide/.style={draw=black,dashed,line width=.45pt},
+  host/.style={circle,fill=black,draw=black,inner sep=1.5pt},
+  target/.style={circle,fill=white,draw=black,line width=.75pt,inner sep=1.7pt}
+]
+  \pgfmathsetmacro{\xArena}{75.1+(\VTwoArenaRatio-1)*96.4}
+  \pgfmathsetmacro{\xExclusive}{75.1+(\VTwoExclusiveSramRatio-1)*96.4}
+  \pgfmathsetmacro{\xPsp}{75.1+(\VTwoPspReservationRatio-1)*96.4}
+  \pgfmathsetmacro{\xBin}{75.1+(\VTwoBinRatio-1)*96.4}
+  \pgfmathsetmacro{\xHostKeygenOne}{112+(\VTwoHostKeygenRatioOne-1)*1150}
+  \pgfmathsetmacro{\xHostKeygenTwo}{112+(\VTwoHostKeygenRatioTwo-1)*1150}
+  \pgfmathsetmacro{\xHostSignOne}{112+(\VTwoHostSignRatioOne-1)*1150}
+  \pgfmathsetmacro{\xHostSignTwo}{112+(\VTwoHostSignRatioTwo-1)*1150}
+  \pgfmathsetmacro{\xTargetKeygen}{112+(\VTwoTargetKeygenRatio-1)*1150}
+  \pgfmathsetmacro{\xTargetSign}{112+(\VTwoTargetSignRatio-1)*1150}
+  \pgfmathsetmacro{\xTargetVerify}{112+(\VTwoTargetVerifyRatio-1)*1150}
+  \node[strong,anchor=west] at (0,0) {(a) Resource ratios (proposed v2/full table)};
+  \draw[axis] (22,-43) -- (78,-43);
+  \foreach \x/\v in {26.8/{0.50},51.0/{0.75},75.1/{1.00}} {
+    \draw (\x,-41.8) -- (\x,-44.2);
+    \node[lab,anchor=north] at (\x,-44.5) {\v};
+  }
+  \draw[guide] (75.1,-7) -- (75.1,-43);
+  \node[lab,anchor=south,rotate=90] at (75.1,-6) {Full table};
+  \foreach \y/\name in {-11/{Arena},-19/{Exclusive SRAM},-27/{PSP reserved},-35/{Binary image}} {
+    \node[lab,anchor=east] at (20,\y) {\name};
+  }
+  \node[host] at (\xArena,-11) {}; \node[lab,anchor=west] at (28,-11) {\num{\VTwoArenaRatio}};
+  \node[host] at (\xExclusive,-19) {}; \node[lab,anchor=west] at (42.7,-19) {\num{\VTwoExclusiveSramRatio}};
+  \node[host] at (\xPsp,-27) {}; \node[lab,anchor=west] at (77.5,-27) {\num{\VTwoPspReservationRatio}};
+  \node[host] at (\xBin,-35) {}; \node[lab,anchor=west] at (77.8,-35) {\num{\VTwoBinRatio}};
+
+  \node[strong,anchor=west] at (91,0) {(b) Time ratios (proposed v2/full table)};
+  \draw[axis] (106,-43) -- (159,-43);
+  \foreach \x/\v in {112.0/{1.00},135.0/{1.02},158.0/{1.04}} {
+    \draw (\x,-41.8) -- (\x,-44.2);
+    \node[lab,anchor=north] at (\x,-44.5) {\v};
+  }
+  \draw[guide] (112,-7) -- (112,-43);
+  \foreach \y/\name in {-10/{Host K},-17/{Host S},-25/{Target K},-32/{Target S},-39/{Target V}} {
+    \node[lab,anchor=east] at (104,\y) {\name};
+  }
+  % Two reversed-order host runs, shown separately.
+  \node[host] at (\xHostKeygenOne,-10) {}; \node[host] at (\xHostKeygenTwo,-10) {};
+  \draw[line width=.45pt] (\xHostKeygenOne,-10) -- (\xHostKeygenTwo,-10);
+  \node[lab,anchor=west] at (121.2,-10) {\num{\VTwoHostKeygenRatioOne}, \num{\VTwoHostKeygenRatioTwo}};
+  \node[host] at (\xHostSignTwo,-17) {}; \node[host] at (\xHostSignOne,-17) {};
+  \node[lab,anchor=west] at (114,-17) {\num{\VTwoHostSignRatioTwo}, \num{\VTwoHostSignRatioOne}};
+  % One target observation per operation: hollow markers.
+  \node[target] at (\xTargetKeygen,-25) {}; \node[lab,anchor=west] at (115.5,-25) {\num{\VTwoTargetKeygenRatio}};
+  \node[target] at (\xTargetSign,-32) {}; \node[lab,anchor=east] at (152.2,-32) {\num{\VTwoTargetSignRatio}};
+  \node[target] at (\xTargetVerify,-39) {}; \node[lab,anchor=west] at (115.5,-39) {\num{\VTwoTargetVerifyRatio}};
+
+  \node[host] at (101,-51) {}; \node[lab,anchor=west] at (104,-51) {Host repeats};
+  \node[target] at (132,-51) {}; \node[lab,anchor=west] at (135,-51) {Single target run};
+\end{tikzpicture}

@@ -1,4 +1,4 @@
-% Monochrome v2 lifetime and physical-layout view.
+% Monochrome lifetime and physical-layout view of the proposed v2 find_uv workspace.
 \begin{tikzpicture}[
   x=1mm,y=1mm,
   lab/.style={font=\sffamily\footnotesize},
@@ -9,37 +9,38 @@
 ]
   \node[strong,anchor=west] at (0,3) {(a) Logical lifetimes};
   \draw[flow] (25,-7) -- (151,-7);
-  \node[lab,anchor=west] at (151,-7) {time};
-  \foreach \x/\t in {25/{lattice setup},58/{candidate search},100/{find\_uv end},137/{later phase end}} {
+  \node[lab,anchor=west] at (151,-7) {Order};
+  \foreach \x/\t in {25/{Lattice setup},58/{Generate/search},100/{find\_uv exit},137/{Later phase exit}} {
     \draw (\x,-5.5) -- (\x,-8.5);
     \node[lab,anchor=south] at (\x,-4.2) {\t};
   }
 
-  \node[lab,anchor=east] at (22,-14) {lattice state};
+  \node[lab,anchor=east] at (22,-14) {Lattice state};
   \draw[bar,fill=black!16] (25,-17) rectangle (100,-11);
   \node[strong] at (62.5,-14) {\num{77168} B: live during \texttt{find\_uv}};
 
-  \node[lab,anchor=east] at (22,-23) {phase union};
+  \node[lab,anchor=east] at (22,-23) {Phase storage};
   \draw[bar,pattern=north east lines,pattern color=black] (25,-27) rectangle (55,-19);
   \node[font=\sffamily\scriptsize,align=center,fill=white,
-        inner xsep=.5mm,inner ysep=.1mm] at (40,-23) {early ML2\\\num{94912} B};
+        inner xsep=.5mm,inner ysep=.1mm] at (40,-23) {Initial ML2\\\num{94912} B};
   \draw[bar,fill=black!38] (58,-27) rectangle (100,-19);
-  \node[lab,align=center] at (79,-23) {candidates\\\num{14024} B};
+  \node[lab,align=center] at (79,-23) {Search\\\num{14024} B};
   \draw[bar,pattern=horizontal lines,pattern color=black] (103,-27) rectangle (134,-19);
   \node[font=\sffamily\scriptsize,align=center,fill=white,
-        inner xsep=.5mm,inner ysep=.1mm] at (118.5,-23) {fixed degree\\$\leq\num{94912}$ B};
+        inner xsep=.5mm,inner ysep=.1mm] at (118.5,-23) {Fixed degree\\$\leq\num{94912}$ B};
+
   \draw[flow] (55,-30.5) -- (58,-30.5);
   \draw[flow] (100,-30.5) -- node[font=\sffamily\scriptsize,above,
-    fill=white,inner xsep=.3mm,inner ysep=0] {clear} (103,-30.5);
-  \node[lab,anchor=west] at (25,-34) {phase members are disjoint: only one is active};
+    fill=white,inner xsep=.3mm,inner ysep=0] {Erase all} (103,-30.5);
+  \node[lab,anchor=west] at (25,-34) {Three phases reuse one region at different times};
 
   \node[strong,anchor=west] at (0,-41) {(b) Physical layout};
   \draw[line width=.65pt] (25,-51) rectangle (137,-44);
   \draw[line width=.55pt] (75.2,-51) -- (75.2,-44);
   \fill[black!16] (25,-50.8) rectangle (75.2,-44.2);
   \fill[pattern=north east lines,pattern color=black] (75.4,-50.8) rectangle (136.8,-44.2);
-  \node[strong] at (50.1,-47.5) {lattice \num{77168} B};
-  \node[strong,fill=white,inner sep=.4mm] at (106.1,-47.5) {phase \num{94912} B};
+  \node[strong] at (50.1,-47.5) {Lattice \num{77168} B};
+  \node[strong,fill=white,inner sep=.4mm] at (106.1,-47.5) {Phase \num{94912} B};
   \draw[brace] (25,-54) -- (137,-54);
   \draw[brace] (25,-52.8) -- (25,-55.2);
   \draw[brace] (137,-52.8) -- (137,-55.2);

@@ -25,6 +25,7 @@ main-en.pdf: evidence main-en.tex references.bib $(EN_FIGURES) $(GENERATED_TEX)
 
 # 提出直前用。生成済み証拠とPDFの双方を検査する。
 eprint-check: pdf
+	cd .. && python3 scripts/check_manuscript_translation.py
 	@if grep -En '著者氏名（要入力）|所属（要入力）|author@example\.org|github\.com/USERNAME/REPOSITORY|^\\placeholderfigure|^\\todo\{' main.tex main-en.tex; then \
 		echo 'ERROR: 原稿に提出前プレースホルダが残っています。' >&2; \
 		exit 1; \

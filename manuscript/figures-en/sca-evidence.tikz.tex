@@ -1,4 +1,4 @@
-% Evidence and evaluation scope for the English manuscript.
+% Evidence map and evaluation scope for side-channel statements.
 \begin{tikzpicture}[
   x=1mm,y=1mm,
   box/.style={draw=black,line width=.6pt,rounded corners=.8mm,minimum height=17mm,
@@ -8,24 +8,26 @@
   lab/.style={font=\sffamily\footnotesize},
   strong/.style={font=\sffamily\bfseries\footnotesize}
 ]
-  \node[strong,anchor=west] at (0,0) {Available evidence};
+  \node[strong,anchor=west] at (0,0) {Detections obtained in this study};
   \node[box,fill=black!10] (timing) at (20,-14)
-    {host Sign timing\\$t_2=-5.410,-5.374$};
+    {Host Sign timing\\$t_2=-5.410,-5.374$};
   \node[box,pattern=north east lines,pattern color=black] (trace) at (61,-14)
-    {host full-Sign\\edge/address differences};
+    {\colorbox{white}{\shortstack{Full-signing\\control/address\\differences}}};
   \node[box,fill=black!28] (target) at (102,-14)
-    {RP2350 timing\\powmod + ten-key Sign};
+    {RP2350 timing\\Powmod + 10-key Sign};
   \node[box,line width=.9pt,text width=25mm] (claim) at (145,-14)
-    {finding\\current code is\\variable-time};
+    {Conclusion\\Current code:\\variable-time};
   \draw[flow] (timing.east) -- (trace.west);
   \draw[flow] (trace.east) -- (target.west);
   \draw[flow] (target.east) -- (claim.west);
 
   \draw[dashed,line width=.9pt] (0,-30) -- (160,-30);
-  \node[strong,fill=white,inner xsep=2mm] at (80,-30) {outside evaluation scope};
-  \node[missing] (power) at (47,-43) {full-Sign\\analog power/EM};
-  \node[missing] (recovery) at (113,-43) {key recovery from\\target traces};
+  \node[strong,fill=white,inner xsep=2mm] at (80,-30) {Outside evaluation scope};
+  \node[missing] (power) at (47,-43)
+    {Full-signing\\power/EM};
+  \node[missing] (recovery) at (113,-43)
+    {From target traces:\\key recovery};
   \draw[flow,dashed] (power.east) -- (recovery.west);
   \node[lab,anchor=north,align=center] at (80,-54)
-    {power/EM resistance and key recovery not evaluated};
+    {Power/EM resistance and key recovery are not evaluated};
 \end{tikzpicture}
