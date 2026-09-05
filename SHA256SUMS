@@ -92,7 +92,7 @@ e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118  ./LICENSES/LGP
 00678784f6aa50094cccc46108247123a580d59cff1898f9d903d0400abb3146  ./LICENSES/SQISIGN-NOTICE.txt
 cfd62f9983cb55be83140ff532d1481561b05dad07007d92caac805eb13dfc62  ./manuscript/.gitignore
 c8e0665faaca372fa12b72a6e62ca7aa88b7db3583bbeacf73fcfe7775f21d4b  ./manuscript/EPRINT_CHECKLIST.md
-b3070ba604d1d1a92eeac2ebc872500f8226520a6c5cef7a25f4da6de606ee32  ./manuscript/eprint-metadata.txt
+b84818842e065c0b7d253f2706d87a885790b5a36ca82a27e2ff8b928cab7193  ./manuscript/eprint-metadata.txt
 f64d4b9c73a445fe47dd0bd47d50cefa3819544152f457eef92c5cf08be79ac9  ./manuscript/figures-en/lifetime.tikz.tex
 741a2de42ca620dd75369a9d0a952238957e66bc1760d233dbcd4f7b50e369cb  ./manuscript/figures-en/memory-bars.tikz.tex
 c338e70fa6c7acfe3528a6bf271db77ba43690549c21cd540c19934e4287339b  ./manuscript/figures-en/overview.tikz.tex
@@ -120,10 +120,10 @@ ec7b95976196b09fd7bcb5c790fbb7491e2f8f0ababe08323462e17ae6e7f8b2  ./manuscript/g
 be5358e6d095e0f2ec768b3d913ec2229d1279b939568ead2ccf7753590741db  ./manuscript/generated/v3-results-rows-en.tex
 07026d0af9461c22761c37f8cbdb1c14f9101f82e984e139e36f6f14d9cc97e5  ./manuscript/generated/v3-results-rows.tex
 58959be3248327f666f08b7319bf7dc5269af4da7d5ca304cbdaf45ddca401c2  ./manuscript/generated/v3-static-psp-bound-rows.tex
-b53905ec4beec5282b8e8d59c4af18815593d8cab01d3542bddf1e40c62fd889  ./manuscript/main-en.pdf
-998237b487418b8402985b4a939513e78fd7b57b43427c74e3babebc04100391  ./manuscript/main-en.tex
-86a6a31ea9d87494eb6e32144ff2313cc28a09d49bc0f7b0d571c6348ea82d57  ./manuscript/main.pdf
-4c949c4f6d64753b6a1f4fd17170c8e3a4e7dd3c376d4111d667bf9e0c81928c  ./manuscript/main.tex
+3ffdfc91f14dff48559176baf7f38d30c2d81c384aa9dc1f426ecbacee5619db  ./manuscript/main-en.pdf
+2e8a3eb51a1b41dcae15d26504ec4643ad13446921796c980c063bc99d99b6d6  ./manuscript/main-en.tex
+536067da6180b22ca8eb68a19a77ad7078165cdddeb7563666b369420830a7ff  ./manuscript/main.pdf
+bfa7fa485a75274abd32ca524214badca828e09421a8d4d7399840a571bdad30  ./manuscript/main.tex
 7e7321d5b8660ac4fa0fc7947aef27f7fd91f0368a8f05c1f3f7c880c19a3d0d  ./manuscript/Makefile
 02ea2ba15a13690555974e9ae6c5fe41f069cc0cf8e568335add9a2dfc4d97b8  ./manuscript/README.md
 eda326e69bff3e40423fee9414c0158cd148eb9d8de5d7ea32e06e078684cc79  ./manuscript/references.bib
@@ -203,7 +203,7 @@ f9bd4779016da4cd2aa3f36f042301805567c3ff29b902fad890f9b9f9c110e0  ./results/revi
 27137ded1c00cba19598613be6e9ae9608789348ad2793adf2e7aa3e760f44cc  ./results/revision-2026-09-04/lifetime-layout-generator.md
 131cfbd32367da400c2db8ca1aeac40377d7cd23fe2dd6707a16847437784785  ./results/revision-2026-09-04/manuscript-evidence.json
 fa9a86dc381223f0306c753cb1c91f65d694d7661b38e60effcf21551f3bc4b9  ./results/revision-2026-09-04/manuscript-semantic-review-2026-09-05.md
-7df1e7b24e24267b3ec6a8c4d7cd19a8032edbc81f237969ad63758e0f46e89d  ./results/revision-2026-09-04/manuscript-translation-alignment.json
+c1f3d6ef4e9a3015e8f610a2cbc81de8d21307a9a52271e12053fa214442ba86  ./results/revision-2026-09-04/manuscript-translation-alignment.json
 10ea24e3290b3e4c4101f931e6b8a6b45db77d206adae7ca5ca37b3a8560e848  ./results/revision-2026-09-04/resource-time-tradeoff.csv
 ac1622dbcbfe2718a9007866199f3c24a812b756bfdc9d7aee5d8f360d089e19  ./results/revision-2026-09-04/resource-time-tradeoff.json
 57a8002919587d70108d7513e816acdc7e0de5bcd04bbe041902df0b71c06010  ./results/rp2350/artifacts/ksv-d13-dc3289a/README.md

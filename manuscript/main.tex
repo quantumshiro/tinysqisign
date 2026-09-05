@@ -40,7 +40,7 @@
   pdftitle={メモリ領域の再利用と中間値の再計算によるSQIsignの省メモリ実装},
   pdfauthor={Hiro Nakanishi},
   pdfsubject={SQIsign v2のRP2350向け省メモリ実装とv3への局所的転用},
-  pdfkeywords={SQIsign, post-quantum cryptography, microcontroller, memory optimization, side-channel analysis}
+  pdfkeywords={SQIsign, microcontroller, low-memory implementation, lifetime analysis, memory reuse, recomputation}
 }
 
 \sisetup{
@@ -90,17 +90,17 @@
 \maketitle
 
 \begin{abstract}
-SQIsignの公開鍵と署名は小さいが、鍵生成と署名に必要な作業メモリは小さくない。SQIsign v2.0.1 Level IのCompact実装では、\texttt{find\_uv}が同時に保持する五つの領域だけで\num{6339868} bytesを要し、RP2350のオンチップSRAMを超える。本稿では、同時に使わない領域を型付き\texttt{union}で共有する生存期間に基づくメモリ割当てと、候補ノルムのビット長と上位64 bitだけを保持する方法を組み合わせる。保持したビット長と上位ビットが両方とも一致した場合は候補から全精度ノルムを再生成する。このため、衝突確率を仮定せずに元の比較順序を保存できる。
+SQIsignは小さな公開鍵と署名を実現する一方、鍵生成と署名に必要な作業メモリがマイクロコントローラへの実装を制約する。本稿では、SQIsign v2.0.1 Level Iを対象に、生存期間が重ならない領域の再利用と、中間値の再計算を組み合わせる。候補ノルムは全精度で保存せず、ビット長と上位64 bitだけを保持する。比較する二つの候補で両方の値がそれぞれ一致した場合に限り、各候補のノルムを全精度で再計算する。これにより、衝突確率を仮定せずに元の比較順序を保つ。
 
-Level I/RADIX32の操作用アリーナは\num{353008} bytesから\num{172080} bytesへ\num{51.2532}\%減少した。v2ファームウェアはGNU Multiple Precision Arithmetic Library（GMP）、動的メモリ確保、外部PSRAMを用いない。予約するSRAMの合計は\num{321408} bytesであり、\num{211072} bytesを未予約として残す。公式入力ベクトル100本を用いた差分適合試験では、同一コミットから構築した通常APIと低メモリAPIの出力が一致した。この試験は、旧公式応答を期待値とする既知解テストではない。リンク済みの固定ファームウェアイメージを解析して得た鍵生成、署名、検証のProcess Stack Pointer（PSP）上界は、それぞれ\num{\VTwoStaticKeygenPspBoundBytes}、\num{\VTwoStaticSignPspBoundBytes}、\num{\VTwoStaticVerifyPspBoundBytes} bytesである。これらの値は、最大212 bytesの例外進入分を含み、\num{131072} byteのPSP予約内に収まる。ただし、割込み処理、割込みの入れ子、および例外進入時のMain Stack Pointer（MSP）使用量は含まない。
+Level I/RADIX32では、全精度ノルム表を保持する静的アリーナ実装と比較して、操作用アリーナを\num{353008} bytesから\num{172080} bytesへ\num{51.25}\%削減した。RP2350上で、GNU Multiple Precision Arithmetic Library（GMP）、動的メモリ確保、外部RAMを使わずに鍵生成・署名・検証を実行し、SRAM予約量の合計を\num{321408} bytesとした。公式入力100本による差分適合試験では、同一コミットの通常APIと低メモリAPIの出力が一致した。これは旧公式応答との既知解テストではない。固定ファームウェアの解析では、スレッドモードのスタック使用量に最大一回分の例外進入を加えた上界が予約内に収まった。ただし、割込み処理とその入れ子、および例外進入時の割込み用スタック使用量は解析範囲に含まない。
 
-v3.0では、同じ配置原理を二つの関数にある三組の領域へ適用した。公式版と適応版は、三つのパラメータ集合について合計300種類の入力を各一回処理した。二つの関数のArm用スタックフレームは、六つの比較すべてで減少した。RP2350上で\texttt{p324\_3}の第0ベクトルを処理したとき、署名時のPSP使用量の実測値は\num{\VThreeDThreeOfficialSignPspBytes} bytesから\num{\VThreeDThreeSignPspBytes} bytesへ、\num{\VThreeDThreeSavedBytes} bytes減少した。この実機結果は、一つのパラメータ集合と一つの決定的実行経路に限られる。v2とv3の両方で、入力に応じて実行時間、制御フロー、メモリアドレスが変化することを検出した。したがって、定数時間性、電力・電磁波への耐性、および製品利用可能性は本稿の結論に含めない。
+さらに、領域再利用の原理をSQIsign v3.0の二つの関数へ適用した。三つのパラメータ集合で各関数のスタックフレームが減少し、RP2350上の一つのパラメータ集合・一つの決定的実行経路では、署名時のスタック使用量の実測値が\num{\VThreeDThreeSavedBytes} bytes減少した。ノルムの部分保持と再計算はv2固有の手法であり、v3への適用には含まれない。これらの結果は、SQIsignの作業メモリ削減における領域再利用と必要時の再計算の有効性を示す。ただし、サイドチャネル耐性や製品利用可能性を示すものではない。
 \end{abstract}
 
 \begin{center}
 \small
 \textbf{キーワード:}
-耐量子暗号、SQIsign、マイクロコントローラ、省メモリ実装、生存期間解析、サイドチャネル
+SQIsign、マイクロコントローラ、省メモリ実装、生存期間解析、メモリ領域の再利用、中間値の再計算
 \end{center}
 
 \section{はじめに}
