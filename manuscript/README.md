@@ -55,10 +55,10 @@ make eprint-check
 - v2のリンク後に到達可能な操作用PSP上界: `../results/v2/analysis/linked-stack-bound-2026-09-04.json`
 - v3の版分離記録: `../results/v3/version-isolation-manifest.json`
 - v3の版を固定したホスト検証: `../results/v3/host/validation-clean-2026-09-04.txt`
-- v31関数を変更した実装の対比較実機測定: `../results/v3/rp2350/interleaved-clean-2026-09-04/`
-- v32関数を変更した実装の実機測定: `../results/v3/rp2350/d3-two-function-clean-2026-09-04/`
+- v3の1関数を変更した実装の対比較実機測定: `../results/v3/rp2350/interleaved-clean-2026-09-04/`
+- v3の2関数を変更した実装の実機測定: `../results/v3/rp2350/d3-two-function-clean-2026-09-04/`
 - v3全パラメータ集合のホスト・Arm検証: `../results/v3/host/validation-all-params-2026-09-04.json`、`../results/v3/analysis/lifetime-all-params-2026-09-04.json`
-- v31関数を変更した実装の10ベクトル・2配置試験: `../results/v3/rp2350/multi-input-placement-clean-2026-09-04/`
+- v3の1関数を変更した実装の10ベクトル・2配置試験: `../results/v3/rp2350/multi-input-placement-clean-2026-09-04/`
 - v3固定長配列版のリンク後PSP上界: `../results/v3/analysis/d2-linked-stack-bound-audit-2026-09-04.json`
 - v3固定長配列版の実機測定: `../results/v3/rp2350/static-closure-clean-2026-09-04/`
 - v3固定鍵RP2350実行時間検査: `../results/v3/rp2350/fixed-key-timing-clean-2026-09-04/`

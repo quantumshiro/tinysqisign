@@ -2,8 +2,8 @@
   "scope": "Structural correspondence only; semantic translation requires reading both texts.",
   "status": "PASS",
   "sha256": {
-    "main.tex": "bbb5c9899e2b2c54271de8d1638e1beebf08b8fc7a8db82fd855c8140bb83c3e",
-    "main-en.tex": "576a714779b233a036118c630415685515da7cdeb3628399d32325787107a322"
+    "main.tex": "d5ff5b958756956792703f27442132d4309a0b7bbece215a02b7931cb4fc3908",
+    "main-en.tex": "e600728ab3e8889f59c4641201264b83157f8b4505755490f2bef667500823f6"
   },
   "counts": {
     "sections": 8,

@@ -7,9 +7,9 @@
   flow/.style={-{Latex[length=1.8mm,width=1.2mm]},line width=.55pt},
   brace/.style={line width=.55pt}
 ]
-  \node[strong,anchor=west] at (0,3) {(a) 論理生存区間};
+  \node[strong,anchor=west] at (0,3) {(a) 各領域の生存期間};
   \draw[flow] (25,-7) -- (151,-7);
-  \node[lab,anchor=west] at (151,-7) {時間};
+  \node[lab,anchor=west] at (151,-7) {処理順};
   \foreach \x/\t in {25/{格子準備},58/{候補生成・探索},100/{find\_uv終了},137/{後続処理終了}} {
     \draw (\x,-5.5) -- (\x,-8.5);
     \node[lab,anchor=south] at (\x,-4.2) {\t};
@@ -19,7 +19,7 @@
   \draw[bar,fill=black!16] (25,-17) rectangle (100,-11);
   \node[strong] at (62.5,-14) {\num{77168} B：\texttt{find\_uv}中は生存};
 
-  \node[lab,anchor=east] at (22,-23) {段階共有領域};
+  \node[lab,anchor=east] at (22,-23) {共有領域};
   \draw[bar,pattern=north east lines,pattern color=black] (25,-27) rectangle (55,-19);
   \node[font=\sffamily\scriptsize,align=center,fill=white,
         inner xsep=.5mm,inner ysep=.1mm] at (40,-23) {前半ML2\\\num{94912} B};
@@ -40,7 +40,7 @@
   \fill[black!16] (25,-50.8) rectangle (75.2,-44.2);
   \fill[pattern=north east lines,pattern color=black] (75.4,-50.8) rectangle (136.8,-44.2);
   \node[strong] at (50.1,-47.5) {格子 \num{77168} B};
-  \node[strong,fill=white,inner sep=.4mm] at (106.1,-47.5) {段階共有 \num{94912} B};
+  \node[strong,fill=white,inner sep=.4mm] at (106.1,-47.5) {共有領域 \num{94912} B};
   \draw[brace] (25,-54) -- (137,-54);
   \draw[brace] (25,-52.8) -- (25,-55.2);
   \draw[brace] (137,-52.8) -- (137,-55.2);
