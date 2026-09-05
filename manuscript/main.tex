@@ -1,11 +1,6 @@
 % !TeX program = lualatex
 % !BIB program = biber
-% -----------------------------------------------------------------------------
 % IACR Cryptology ePrint Archive向け日本語プレプリント原稿。
-% ePrintには専用document classの指定はなく、PDFはA4またはUS Letterとする。
-% 非匿名投稿であるため、公開前に著者名・所属・メールアドレスを必ず実値へ置換する。
-% 数値を更新するときは README.md に記載した一次成果物も同時に確認すること。
-% -----------------------------------------------------------------------------
 \documentclass[a4paper,10pt]{ltjsarticle}
 
 \usepackage[margin=22mm]{geometry}
@@ -42,7 +37,7 @@
   unicode=true,
   colorlinks=false,
   hidelinks,
-  pdftitle={SQIsign v2の省メモリ実装とv3へのlifetime scheduling転用},
+  pdftitle={SQIsign v2の省メモリ実装とv3への生存期間配置の転用},
   pdfauthor={Hiro Nakanishi},
   pdfsubject={SQIsign v2のRP2350向け省メモリ実装とv3への局所的転用},
   pdfkeywords={SQIsign, post-quantum cryptography, microcontroller, memory optimization, side-channel analysis}
@@ -81,12 +76,10 @@
 
 \newcommand{\systemname}{SQIsign-LM}
 \newcommand{\targetchip}{RP2350}
-% Frozen JSON/CSV artifactsから再生成する数値macroと表行。
+% 固定したJSON/CSV成果物から再生成する数値macroと表行。
 \input{generated/evidence-macros.tex}
-\title{SQIsign v2の省メモリ実装とv3へのlifetime scheduling転用\\[0.5ex]
-  {\large 順序保存norm sketchとRP2350評価}}
-% ePrintは匿名投稿ではない。著者情報をPDFと投稿フォームで一致させる。
-% 複数著者の場合は、同じ3行を \and で区切って追加する。
+\title{SQIsign v2の省メモリ実装とv3への生存期間配置の転用\\[0.5ex]
+  {\large 比較順序を保存するノルム要約とRP2350評価}}
 \author{%
   Hiro Nakanishi\\[-0.2ex]
   {\small 独立研究者}\\[-0.2ex]
@@ -98,60 +91,58 @@
 \maketitle
 
 \begin{abstract}
-SQIsignの小さな公開鍵と署名は、鍵生成・署名時の小さな作業メモリを意味しない。SQIsign v2.0.1 Level Iのcompact実装では、\texttt{find\_uv}の五つの同時確保領域だけで\num{6339868} bytesを要し、RP2350のオンチップSRAMを超える。本稿は、非交差生存区間を型付きunionへ配置するlifetime schedulingと、候補ノルムのビット長・上位64 bitだけを保持するcertified norm sketchを組み合わせる。sketchが同値の場合は保持済み候補から全精度ノルムを再生成するため、確率的なcollision仮定なしに元の比較順序を保存する。
+SQIsignの公開鍵と署名は小さいが、鍵生成と署名に必要な作業メモリは小さくない。SQIsign v2.0.1 Level IのCompact実装では、\texttt{find\_uv}が同時に保持する五つの領域だけで\num{6339868} bytesを要し、RP2350のオンチップSRAMを超える。本稿では、同時に使わない領域を型付き\texttt{union}で共有する生存期間配置と、候補ノルムのビット長と上位64 bitだけを常駐させるノルム要約を組み合わせる。二つの要約が同じ場合は候補から全精度ノルムを再生成する。このため、衝突確率を仮定せずに元の比較順序を保存できる。
 
-Level I/RADIX32のoperation arenaは\num{353008} bytesから\num{172080} bytesへ\num{51.2532}\%減少した。最終firmwareはGMP、動的確保、外部PSRAMを用いず、\num{321408} bytesを排他的に予約して\num{211072} bytesを未予約とした。同一の公式request 100本について、通常API一回と、別々に起動した低メモリAPI二回を比較した。低メモリ側の二回は別processでの反復であり、独立なoracleではない。さらに測定済みELFと同一の\texttt{.text}を持つclean再構築版について、link済みの入力依存Thread-mode経路を解析し、最大例外entry 212 bytesを含むKeyGen/Sign/VerifyのPSP上界をそれぞれ\num{\VTwoStaticKeygenPspBoundBytes}、\num{\VTwoStaticSignPspBoundBytes}、\num{\VTwoStaticVerifyPspBoundBytes} bytesとした。これらは\num{131072} byte予約内に収まる。同じUF2による2 bootはこの解析の実機cross-checkであり、割込みhandler、nesting、entry時MSPを含む全program上界ではない。
+Level I/RADIX32の操作用アリーナは\num{353008} bytesから\num{172080} bytesへ\num{51.2532}\%減少した。v2ファームウェアはGNU Multiple Precision Arithmetic Library（GMP）、動的メモリ確保、外部PSRAMを用いない。排他的に予約するSRAMは\num{321408} bytesであり、\num{211072} bytesを未予約として残す。公式入力ベクトル100本を用いた差分適合試験では、同一コミットから構築した通常APIと低メモリAPIの出力が一致した。この試験は、旧公式応答を期待値とする既知解テストではない。リンク済みの固定ファームウェアイメージを解析して得た鍵生成、署名、検証のProcess Stack Pointer（PSP）上界は、それぞれ\num{\VTwoStaticKeygenPspBoundBytes}、\num{\VTwoStaticSignPspBoundBytes}、\num{\VTwoStaticVerifyPspBoundBytes} bytesである。これらの値は、最大212 bytesの例外進入分を含み、\num{131072} byteのPSP予約内に収まる。ただし、割込み処理、割込みの入れ子、および例外進入時のMain Stack Pointer（MSP）使用量は含まない。
 
-v3.0への転用では、二関数の三つの非交差領域を重畳した。公式版と適応版について全三パラメータ集合のAPI、self-test、各100本の公式responseを検査した。異なるparameter/request組は300組であり、二実装で各一回実行した合計は\num{\VThreeDThreeKatVectors}回である。両関数のArm frameは全六比較で減少した。RP2350上の\texttt{p324\_3}第0ベクトルではSignのPSP上書き深さが\num{\VThreeDThreeOfficialSignPspBytes} bytesから\num{\VThreeDThreeSignPspBytes} bytesへ\num{\VThreeDThreeSavedBytes} bytes減少した。ただし実機転用試験は一パラメータ・一決定的経路であり、時間分布も全program最悪stackも与えない。v2とv3の入力依存timing・control-flow・addressも検出されており、本稿は定数時間性、電力・電磁波耐性、製品利用可能性を主張しない。
+v3.0では、同じ配置原理を二つの関数にある三組の領域へ適用した。公式版と適応版は、三つのパラメータ集合について合計300種類の入力を各一回処理した。二つの関数のArm用スタックフレームは、六つの比較すべてで減少した。RP2350上で\texttt{p324\_3}の第0ベクトルを処理したとき、署名時のPSP上書き深さは\num{\VThreeDThreeOfficialSignPspBytes} bytesから\num{\VThreeDThreeSignPspBytes} bytesへ、\num{\VThreeDThreeSavedBytes} bytes減少した。この実機結果は、一つのパラメータ集合と一つの決定的実行経路に限られる。v2とv3の両方で、入力に応じて実行時間、制御フロー、メモリアドレスが変化することを検出した。したがって、定数時間性、電力・電磁波への耐性、および製品利用可能性は本稿の結論に含めない。
 \end{abstract}
 
 \begin{center}
 \small
 \textbf{キーワード:}
-耐量子暗号、SQIsign、マイクロコントローラ、省メモリ実装、ライフタイム解析、サイドチャネル
+耐量子暗号、SQIsign、マイクロコントローラ、省メモリ実装、生存期間解析、サイドチャネル
 \end{center}
 
 \section{はじめに}
 \label{sec:introduction}
 
-NISTの追加耐量子デジタル署名標準化では、SQIsignが第3ラウンド候補の一つに選ばれている\cite{nist-ir-8610,nist-round3}。SQIsignは、超特異楕円曲線間の同種写像と四元数イデアルの対応を利用し、非常に小さな公開鍵と署名を実現する\cite{sqisign-2020,sqisign-spec-v201,sqisign-spec-v3}。この通信上のcompactnessは、帯域、不揮発メモリ、証明書サイズが制約される機器にとって重要である。
+NISTの追加耐量子デジタル署名標準化では、SQIsignが第3ラウンド候補の一つに選ばれている\cite{nist-ir-8610,nist-round3}。SQIsignは、超特異楕円曲線間の同種写像と四元数イデアルの対応を利用し、非常に小さな公開鍵と署名を実現する\cite{sqisign-2020,sqisign-spec-v201,sqisign-spec-v3}。通信データが小さいことは、帯域、不揮発メモリ、証明書サイズが制約される機器にとって重要である。
 
-しかし、wire formatの小ささと、鍵生成・署名時のworking setの小ささは別の性質である。SQIsignの署名側処理では、四元数算術、4次元格子処理、ノルム方程式、候補探索、多倍長整数演算が重なる。v2公式実装はGMPと動的確保を前提とし、固定精度整数版\cite{fixed-precision-2025}とCompact Quaternion Algorithms\cite{compact-quaternion-2026}は整数値の上界を与えたものの、プロトコル全体で同時に生存する配列の配置までは解決しない。実際、本研究の出発点としたcompact実装では、一回の\texttt{find\_uv}が保持する五つの確保領域だけで\num{6339868} bytesを要する。これは対象とするRP2350の全オンチップSRAM \num{532480} bytesの約\num{11.91}倍である。固定精度化によってheapを除去しても、同じ領域を巨大なstackまたは静的配列へ移すだけではCortex-M上で実行できない。
+しかし、通信形式が小さいことと、鍵生成・署名時の作業領域が小さいことは別の性質である。SQIsignの署名処理では、四元数算術、4次元格子処理、ノルム方程式、候補探索、多倍長整数演算が重なる。v2公式実装はGMPと動的確保を前提とする。固定精度整数版\cite{fixed-precision-2025}とCompact Quaternion Algorithms\cite{compact-quaternion-2026}は整数値の上界を与えたが、プロトコル全体で同時に使う配列の配置までは扱わない。本研究の出発点としたCompact実装では、一回の\texttt{find\_uv}が保持する五つの領域だけで\num{6339868} bytesを要する。これはRP2350の全オンチップSRAM \num{532480} bytesの約\num{11.91}倍である。固定精度化によってヒープを除去しても、同じ領域を巨大なスタック配列または静的配列へ移すだけではCortex-M上で実行できない。
 
-組込みSQIsignについては、pqm4の追加署名候補調査がGMPと動的確保を理由にv2署名側の統合を見送り\cite{pqm4-2024}、後続研究も主としてVerifyを対象としてきた\cite{m4-modarith-2025,sqisign-1d-2024}。完全なv2 KeyGen、Sign、Verifyを扱う高速実装は通常のhostまたはArmv8-A環境を対象とする\cite{sqisign-arm-2026}。一方、2026年9月1日に公開されたv3.0は、外部GMPと浮動小数点ライブラリへの依存を除去し、Cortex-M4向けの完全なKeyGen、Sign、Verify実装を提供した\cite{sqisign-spec-v3,sqisign-code-v3}。この変更により、v2のメモリ実現可能性と、再設計後のv3へ同じ原理を転用できるかは、分けて評価する必要が生じた。
+組込みSQIsignについては、マイクロコントローラ向け耐量子暗号評価基盤pqm4の調査が、2023年の第1ラウンド提出実装について、GMPと動的確保を理由にSQIsignの統合を見送った\cite{pqm4-2024}。後続研究も主として検証（Verify）を対象としてきた\cite{m4-modarith-2025,sqisign-1d-2024}。完全なv2の鍵生成（KeyGen）、署名（Sign）、検証を扱う高速実装は、ホスト計算機またはArmv8-A環境を対象とする\cite{sqisign-arm-2026}。一方、2026年9月1日に公開されたv3.0は、外部GMPと浮動小数点ライブラリへの依存を除去し、Cortex-M4向けの完全なKeyGen、Sign、Verify実装を提供した\cite{sqisign-spec-v3,sqisign-code-v3}。このため、v2をオンチップSRAM内で実行できるかという問題と、再設計されたv3へ同じ配置原理を転用できるかという問題を分けて評価する。
 
 本研究では暗号方式そのものを変更せず、値の表現、保持、再生成、および所有権を再設計する。具体的には、次の四つの研究課題を扱う。
 
 \begin{enumerate}[label=Q\arabic*.,leftmargin=3em]
-  \item SQIsign v2.0.1の一つの決定的KeyGen、Sign、Verify経路を、GMP、heap、外部PSRAMなしでCortex-M級のオンチップSRAM内に収められるか。
+  \item SQIsign v2.0.1の一つの決定的KeyGen、Sign、Verify経路を、GMP、ヒープ、外部PSRAMなしでCortex-M級のオンチップSRAM内に収められるか。
   \item 全精度の候補ノルム表を常駐させず、元実装と同じ比較順序と暗号出力を保てるか。
-  \item RAM削減をstack、flash、実行時間へ転嫁していないかを測定し、安全性上の新旧の入力依存性を区別できるか。
-  \item v2固有の候補探索が消えたSQIsign v3でも、生存区間に基づく領域重畳が別の支配的stack frameへ転用できるか。
+  \item RAM、スタック、フラッシュ、実行時間の間にどのようなトレードオフが生じるか。また、省メモリ化の前後にある入力依存性を区別できるか。
+  \item v2固有の候補探索が消えたSQIsign v3でも、生存期間に基づく領域共有を別の大きなスタックフレームへ転用できるか。
 \end{enumerate}
 
-以下では、certified norm sketch導入直前の静的アリーナ構成を\emph{全精度表実装}、これにsketchと必要時の全精度再生成を加えた最終構成を\emph{v2提案実装}と呼ぶ。また、公式v3.0へ局所的な領域重畳だけを加えた構成を\emph{v3適応実装}と呼ぶ。
+本稿では、オブジェクトの生存期間が重ならないときに同じ物理領域を共有させる手法を\emph{生存期間配置}（lifetime scheduling）と呼ぶ。また、候補ノルムの一部だけを保持し、必要な場合に全精度値へ戻る表現を\emph{比較順序を保存するノルム要約}（order-preserving norm sketch、以下\emph{ノルム要約}）と呼ぶ。ノルム要約の導入直前の静的アリーナ構成を\emph{全精度表実装}、ノルム要約を導入した構成を\emph{v2提案実装}とする。公式v3.0の一つの関数に二組の領域共有を加えた構成を\emph{一関数適応版}、二つの関数に合計三組の領域共有を加えた構成を\emph{二関数適応版}とする。以下で\emph{v3適応実装}とだけ記す場合は、二関数適応版を指す。
 
 本稿の貢献は以下の通りである。
 
 \begin{enumerate}[leftmargin=2.2em]
-  \item \textbf{プロトコル全体のlifetime scheduling.}
-        作業領域を型、サイズ、アラインメント、生存区間、秘密性属性を持つオブジェクトとして表し、干渉しない領域を型付きarenaへ重畳する問題として定式化する。KeyGen、Sign、Verifyを逐次実行するoperation ownerまで含め、heapだけでなく同時生存SRAM全体を削減対象とする。
-  \item \textbf{順序保存certified norm sketch.}
-        候補ノルムのビット長と上位64 bitを保持し、両者が同じ場合だけ保持済み候補から全精度ノルムを再生成する。比較器が元の全精度比較と同一の全順序を与えることを示し、意図的collision fixtureを含む差分試験で検証する。
-  \item \textbf{静的なCortex-M実装とPareto評価.}
-        SQIsign v2.0.1 Level I/RADIX32について、GMP、allocator、VLAを選択済みlink closureから除去した。v2提案実装はoperation arenaを\num{353008} bytesから\num{172080} bytesへ\num{51.2532}\%削減し、排他的SRAM予約を\num{321408} bytes、未予約SRAMを\num{211072} bytesとする。flash増加は\num{880} bytesである。12個の凍結トランスクリプトと、公式request 100本を用いた通常・低メモリAPI差分適合試験の別process反復を二回実施する。さらに固定imageのlink済みThread-mode経路へ最大例外entryを加えた操作PSP上界を求め、実機2 bootのwatermarkでcross-checkする。
-  \item \textbf{SQIsign v3への転用追試.}
-        公式v3.0とv3適応実装を、v2および相互から分離したsource、build、resultディレクトリで評価する。最終適応版は\texttt{quat\_lll\_dual\_reduce\_ideal}と\texttt{protocols\_sign}の計三組を重畳する。全三パラメータ集合でhost機能試験とArm frame監査を行い、\texttt{p324\_3}のclean実機ではSign PSPを\num{\VThreeDThreeSavedBytes} bytes削減する。v2固有のnorm sketchは転用せず、一般化できた要素とできなかった要素を分離する。
-  \item \textbf{安全性を含むclaim boundary.}
-        固定対ランダムのtiming screen、全Signのedge/address差分、および既報SPA\cite{spa-2025}との経路対応を評価する。現実装に入力依存性が残るというpositive resultを報告し、省メモリ化を定数時間化または電力・電磁波耐性として主張しない。
+  \item \textbf{プロトコル全体を対象とする生存期間配置。}
+        作業領域を、型、サイズ、アラインメント、生存期間、秘密性属性を持つオブジェクトとして表す。同時に使われない領域を型付きアリーナで共有する問題として定式化し、KeyGen、Sign、Verifyが逐次利用する共有領域まで削減対象に含める。
+  \item \textbf{比較順序を保存するノルム要約。}
+        候補ノルムのビット長と上位64 bitを保持し、両者が同じ場合だけ候補から全精度ノルムを再生成する。比較器が元の全精度比較と同じ全順序を与えることを示し、意図的に要約を衝突させる試験を含む差分試験で検証する。
+  \item \textbf{静的なCortex-M実装とRAM・スタック・フラッシュ・実行時間のトレードオフ評価。}
+        SQIsign v2.0.1 Level I/RADIX32について、GMP、動的メモリ確保関数、可変長配列（VLA）を、KeyGen、Sign、Verifyから到達するリンク後のコードから除去した。v2提案実装は操作用アリーナを\num{353008} bytesから\num{172080} bytesへ\num{51.2532}\%削減し、排他的SRAM予約を\num{321408} bytes、未予約SRAMを\num{211072} bytesとする。フラッシュ使用量は\num{880} bytes増加する。12個の固定入力、公式入力ベクトル100本による通常・低メモリAPI差分適合試験、固定ファームウェアイメージのPSP解析、および実機測定により、この構成を検証した。
+  \item \textbf{SQIsign v3への適用評価。}
+        公式v3.0と二関数適応版を別々に構築し、同じ基準版とコンパイル条件で比較する。二関数適応版は、\texttt{quat\_lll\_dual\_reduce\_ideal}と\texttt{protocols\_sign}にある計三組の領域を共有する。三つのパラメータ集合すべてでホスト機能試験とArm用スタックフレームの監査を行う。\texttt{p324\_3}の実機試験では、SignのPSP上書き深さを\num{\VThreeDThreeSavedBytes} bytes削減する。v2固有のノルム要約は転用せず、版を越えて転用できた配置原理とv2固有の変更を区別する。
+  \item \textbf{実装安全性の評価。}
+        固定入力とランダム入力の実行時間検査、署名処理全体の制御フロー・メモリアドレス差分、および既報の単純電力解析（SPA）\cite{spa-2025}との実行経路の対応を評価する。現実装に入力依存性が残るという検出結果を報告し、省メモリ化を定数時間化または電力・電磁波耐性として主張しない。
 \end{enumerate}
-
-本稿の構成は次の通りである。\cref{sec:background}でv2とv3の相違、プラットフォーム、脅威モデルを整理し、\cref{sec:related-work}で先行実装と本研究の位置付けを明確にする。\cref{sec:formulation}で同時生存メモリ最小化を定式化し、\cref{sec:method,sec:implementation}でv2のarena schedulingとcertified norm sketch、およびv3への局所的な転用を述べる。\cref{sec:evaluation-method,sec:results}で版ごとに正しさ、SRAM、stack、flash、実行時間を評価し、\cref{sec:sca}でサイドチャネル上の限界を検証する。最後に\cref{sec:discussion,sec:limitations}で一般化可能性と妥当性への脅威を議論する。
 
 \begin{figure}[H]
   \centering
   \input{figures/overview.tikz.tex}
-  \caption{本研究の全体像。v2提案実装ではlifetime schedulingとcertified norm sketchを組み合わせ、v3適応実装ではlifetime schedulingだけを別の格子簡約領域へ転用する。両系列をRP2350上で評価し、安全性の主張範囲を機能・メモリ評価から分離する。}
+  \caption{本研究の全体像。v2提案実装では生存期間配置とノルム要約を組み合わせる。v3適応実装では、生存期間配置を格子簡約と署名処理の二つの関数へ転用する。両実装をRP2350上で評価し、機能・メモリの評価とサイドチャネル評価を分けて示す。}
   \label{fig:overview}
 \end{figure}
 
@@ -160,43 +151,43 @@ NISTの追加耐量子デジタル署名標準化では、SQIsignが第3ラウ�
 
 \subsection{SQIsign v2と実装上の特徴}
 
-SQIsignは、超特異楕円曲線の自己準同型環と四元数代数の極大整環の対応を計算に用いる署名方式である\cite{sqisign-2020}。本研究が主対象とするv2.0.1は、署名の応答計算で楕円曲線の積、すなわち二次元アーベル多様体上の$(2,2)$-isogeny chainを用いる第2ラウンド仕様系列である\cite{sqisign-spec-v201}。従って、本稿のv2実験は「一次元SQIsign実装」ではなく、旧Round-1実装や一次元検証実装のメモリ・性能値をそのまま比較対象にはできない。v2提案実装はLevel Iの完全なKeyGen、Sign、Verify経路を対象とする。
+SQIsignは、超特異楕円曲線の自己準同型環と四元数代数の極大整環の対応を計算に用いる署名方式である\cite{sqisign-2020}。本研究が主対象とするv2.0.1は、署名の応答計算で楕円曲線の積、すなわち二次元アーベル多様体上の$(2,2)$同種写像鎖を用いる第2ラウンド仕様系列である\cite{sqisign-spec-v201}。したがって、本稿のv2実験は一次元SQIsign実装を対象としない。旧第1ラウンド実装や一次元検証実装のメモリ・性能値は、そのまま比較対象にできない。v2提案実装はLevel Iの完全なKeyGen、Sign、Verify経路を対象とする。
 
-計算の主要部分は、有限体・楕円曲線演算、四元数イデアル演算、4次元格子処理、および固定精度多倍長整数演算からなる。有限体側はコンパイル時に幅が定まる一方、四元数側では大きな中間整数、候補列、ソート用情報、格子状態が同時に生存し得る。固定精度化は動的な整数長を排除するが、全ルーチンへ一様な最大幅を適用すると大きな配列がstackまたは静的領域へ移るだけであり、総SRAMが小さくなるとは限らない。
+計算の主要部分は、有限体・楕円曲線演算、四元数イデアル演算、4次元格子処理、および固定精度多倍長整数演算からなる。有限体側はコンパイル時に幅が定まる。一方、四元数側では大きな中間整数、候補列、ソート用情報、格子状態が同時に使われる場合がある。固定精度化は動的な整数長を排除するが、全ルーチンへ一様な最大幅を適用すると、大きな配列がスタックまたは静的領域へ移るだけである。したがって、固定精度化だけで総SRAMが小さくなるとは限らない。
 
 \subsection{SQIsign v3による設計変更}
 
-SQIsign v3.0は2026年9月1日に公開された第3ラウンド仕様である\cite{sqisign-spec-v3}。Level Iに相当する\texttt{p324\_3}では、公開鍵、秘密鍵、署名がそれぞれ83、270、200 bytesである。v3は、新しい攻撃評価に対応してパラメータを拡大する一方、四元数イデアルのinert representation、整数成長量の厳しい上界、新しい格子簡約、ideal-to-isogeny変換、および応答分布を導入した。外部GMPとDPE浮動小数点ライブラリは、独自の固定精度整数実装と浮動小数点を使わない処理へ置き換えられた。公式sourceはx86\_64、Arm64、Cortex-M4を対象とし、Cortex-M4について完全なKeyGen、Sign、Verifyの性能とstack使用量を報告する\cite{sqisign-spec-v3,sqisign-code-v3}。
+SQIsign v3.0は2026年9月1日に公開された第3ラウンド仕様である\cite{sqisign-spec-v3}。Level Iに相当する\texttt{p324\_3}では、公開鍵、秘密鍵、署名がそれぞれ83、270、200 bytesである。v3は、新しい攻撃評価に対応してパラメータを拡大した。また、四元数イデアルの慣性表現、整数増大に対するより小さい上界、新しい格子簡約、イデアルから同種写像への変換、および新しい応答分布を導入した。外部GMPとDPE浮動小数点ライブラリは、独自の固定精度整数実装と浮動小数点を使わない処理へ置き換えられた。公式ソースコードはx86\_64、Arm64、Cortex-M4を対象とし、Cortex-M4上の完全なKeyGen、Sign、Verifyについて性能とスタック使用量を報告する\cite{sqisign-spec-v3,sqisign-code-v3}。
 
-v3はv2への小さな修正ではない。v2提案実装の最大削減を生んだ\texttt{find\_uv}と全精度候補ノルム表は、公式v3 source commit \texttt{6d017708db403bf83977fa70770fc4f7f9e9ff21}の到達経路に存在しない\cite{sqisign-code-v3}。このため、certified norm sketchをv3へ移植する対象はない。一方、生存区間が非交差する大きな局所状態はv3にもあり、lifetime schedulingの対象になり得る。本稿はこの差を利用し、v2固有のデータ縮約と、版を越えて使える配置原理を実験的に分離する。なお、v3仕様は応答分布の変更によりv2とv3の安全性仮定が技術的には直接比較できないと説明している\cite{sqisign-spec-v3}。本稿も暗号学的安全性の版間順位を主張しない。
+v3はv2への小さな修正ではない。v2提案実装で最大の削減を生んだ\texttt{find\_uv}と全精度候補ノルム表は、公式v3ソースコードのコミット\texttt{6d017708db403bf83977fa70770fc4f7f9e9ff21}から到達する処理に存在しない\cite{sqisign-code-v3}。したがって、v2のノルム要約にはv3上の適用対象がない。一方、生存期間が重ならない大きな局所状態はv3にもあり、生存期間配置を適用できる。本稿は、v2固有のデータ縮約と、版を越えて使える配置原理を分けて評価する。なお、v3仕様は、応答分布が変更されたため、v2とv3の安全性仮定を技術的に直接比較できないと説明している\cite{sqisign-spec-v3}。本稿も暗号学的安全性の版間順位を主張しない。
 
 \subsection{対象プラットフォーム}
 
-対象はRaspberry Pi Pico 2に搭載されたRP2350である。実験ではsingle-precision FPUとSecurity Extensionを備えるArm Cortex-M33\cite{rp2350-datasheet}を1 core、system clockを\SI{150}{\mega\hertz}とし、オンチップSRAM \num{532480} bytesのみを使用した。外部PSRAMは使用せず、コードおよび読み出し専用データは内蔵flashから実行・参照する。最終イメージはPico SDK 2.3.0、Arm GNU Toolchain 15.2.1、Release構成でビルドした。
+対象はRaspberry Pi Pico 2に搭載されたRP2350である。実験では、単精度浮動小数点演算器とセキュリティ拡張機能を備えるArm Cortex-M33\cite{rp2350-datasheet}を1コア使用した。システムクロックは\SI{150}{\mega\hertz}とし、\num{532480} bytesのオンチップSRAMだけを使用した。外部PSRAMは使用せず、コードおよび読み出し専用データは、基板上の外付けフラッシュから直接実行・参照する。この実行方式をexecute in place（XIP）と呼ぶ。測定対象のファームウェアはPico SDK 2.3.0、Arm GNU Toolchain 15.2.1、Release構成で構築した。
 
-RP2350は一般的なCortex-M4評価ボードよりSRAMが大きいが、SQIsignの元の候補ワークスペースはなお桁違いに大きい。また、割込み用MSP、アプリケーション用PSP、グローバルな操作所有者、ランタイムデータをすべて同じ物理SRAM内で共存させる必要がある。このため、本稿では「heap使用量」ではなく、リンク時予約、stack予約、および操作アリーナを含む排他的SRAM予約量を評価指標とする。
+RP2350は一般的なCortex-M4評価ボードよりSRAMが大きいが、元の候補探索用領域はそれでも桁違いに大きい。また、割込み用MSP、アプリケーション用PSP、操作用共有領域、および実行時データを同じ物理SRAM内に置く必要がある。このため、本稿はヒープ使用量だけを評価しない。リンク時に確保する静的領域、スタック予約、および操作用アリーナを合計した排他的SRAM予約量を評価指標とする。
 
-\subsection{脅威モデルと主張範囲}
+\subsection{脅威モデルと評価範囲}
 \label{sec:threat-model}
 
-機能・メモリ評価では、境界外アクセス、workspace guard破壊、未消去、allocator/GMPへの意図しない依存、ホスト参照との出力不一致を失敗とする。物理攻撃者については、署名中の実行時間、制御フロー、メモリアドレス、消費電力、電磁波を観測できる強い実装攻撃者を想定する。ただし、本稿で取得済みなのはホスト上のタイミング・構造トレースとRP2350上の局所タイミング診断であり、完全署名の電力・電磁波波形は未取得である。
+機能・メモリ評価では、境界外アクセス、作業領域の前後に置いた保護領域の破壊、秘密値の未消去、動的メモリ確保関数またはGMPへの意図しない依存、および参照実装との出力不一致を失敗とする。物理攻撃者については、署名中の実行時間、制御フロー、メモリアドレス、消費電力、電磁波を観測できる強い実装攻撃者を想定する。評価対象は、ホスト計算機上の実行時間・構造トレース、RP2350上の局所処理時間、およびv3の署名処理全体の実行時間である。署名全体の電力・電磁波波形は含まない。
 
-したがって、本稿の成功条件は「機能経路がメモリ制約内で再現可能に完走すること」である。秘密非依存の実行、マスキング、フォールト耐性、製品品質の乱数生成は成功条件に含めず、未達の安全性要件として明示する。
+本稿の機能・メモリ評価は、対象経路の出力一致と、定義したメモリ境界への適合を扱う。秘密非依存の実行、マスキング、フォールト耐性、製品品質の乱数生成はこの評価から分離し、実装安全性に関する限界として扱う。
 
 \section{関連研究}
 \label{sec:related-work}
 
-lifetimeに基づく領域重畳そのものは新しい原理ではない。同時生存する値を干渉辺で表す考え方はgraph-coloring型register allocationで確立され\cite{chaitin-1981}、異なる大きさの配列や構造体を対象とするcompile-time memory allocationも研究されている\cite{gergov-1999}。従って本稿は、arena重畳一般の発明を主張しない。本稿固有の対象は、SQIsignの完全なK/S/V閉包について、分岐・retry・失敗経路、型とalignment、秘密消去まで含む生存契約を作り、必要時の全精度再生成によるresident state削減と組み合わせ、最終ELFと実機で総SRAMを閉じることである。
+生存期間が重ならない領域を共有する原理自体は新しくない。同時に生存する値を干渉辺で表す考え方は、グラフ彩色に基づくレジスタ割当てで確立されている\cite{chaitin-1981}。異なる大きさの配列や構造体を対象とするコンパイル時メモリ割当ても研究されている\cite{gergov-1999}。したがって、本稿は領域共有そのものの発明を主張しない。本稿の対象は、SQIsignの完全なKeyGen、Sign、Verifyについて、分岐、再試行、失敗経路、型、アラインメント、および秘密消去を含む生存期間の条件を定めることである。この条件を、必要時の全精度再生成による常駐データの削減と組み合わせ、リンク済み実行ファイル（ELF）と実機測定から総SRAM予約量を評価する。
 
-固定精度整数版SQIsignは、四元数中間値へLevel I/III/Vで7026/10713/14150 bitの一様上界を与え、GMPを使わない実装可能性を示した\cite{fixed-precision-2025}。Compact Quaternion Algorithmsの現行改訂は、この上界を1665/2521/3319 bitへ縮小し、host上の鍵生成・署名を大幅に高速化した\cite{compact-quaternion-2026}。本研究の凍結実装もLevel Iで1665-bit magnitude boundを用いる。本研究はこの値幅の結果を出発点とするが、同時生存する候補表とプロトコル全体の領域配置を主対象とする。
+固定精度整数版SQIsignは、四元数中間値についてLevel I/III/Vで7026/10713/14150 bitの一様上界を与え、GMPを使わない実装可能性を示した\cite{fixed-precision-2025}。Compact Quaternion Algorithmsの現行改訂は、この上界を1665/2521/3319 bitへ縮小し、ホスト計算機上の鍵生成・署名を大幅に高速化した\cite{compact-quaternion-2026}。本稿のv2実装もLevel Iで1665 bitの絶対値上界を用いる。本研究はこの値幅を出発点とするが、同時に使われる候補表とプロトコル全体の領域配置を主対象とする。
 
-Qlapotiは、四元数イデアルを同種写像へ変換するIdealToIsogeny処理を改善し、SQIsignの速度とheap使用を大きく削減した\cite{qlapoti-2025,qlapoti-plus-2026}。その後のQlapotyは、公開済みQlapoti記述と実装の差異および失敗確率解析を再検討し、新しいnorm-equation algorithmとSQIsign署名の追加高速化を報告した\cite{qlapoty-2026}。これらは本稿の速度改善に重要な入力である。一方、報告されたheap値またはhost時間は、stack、割込み予約、mutable globalsを含むCortex-Mの排他的SRAM予約ではなく、本稿の最終実装と同一条件の直接比較ではない。
+Qlapotiは、四元数イデアルを同種写像へ変換するIdealToIsogeny処理を改善し、SQIsignの実行時間とヒープ使用量を大きく削減した\cite{qlapoti-2025,qlapoti-plus-2026}。その後のQlapotyは、公開済みQlapotiの記述と実装の差異、および失敗確率解析を再検討し、新しいノルム方程式アルゴリズムとSQIsign署名の追加高速化を報告した\cite{qlapoty-2026}。これらの成果は、本稿の出発点となった実装に含まれる。一方、既報のヒープ使用量やホスト計算機上の実行時間は、スタック、割込み用予約、書換え可能な大域領域を含むCortex-Mの排他的SRAM予約量ではない。したがって、v2提案実装との同一条件の比較には使えない。
 
-pqm4による追加署名候補の調査では、SQIsignはGMPと動的確保のため組込み統合から除外された\cite{pqm4-2024}。その後、Cortex-M4向け高速有限体演算の生成によりv2 Level I Verifyが高速化されたが、KeyGenとSignは対象外である\cite{m4-modarith-2025}。一次元SQIsignのCortex-M4実装も主な実機対象はVerifyである\cite{sqisign-1d-2024}。一方、32-bit Cortex-A/Linux実装、Armv8-A NEON実装、およびAVX-512実装は完全K/S/Vを扱うが、Cortex-M級のオンチップSRAMだけを対象としない\cite{sqisign-32bit-2024,sqisign-arm-2026,sqisign-avx512-2026}。純Rustの\texttt{sqisign-rs}はGMPを用いない完全K/S/Vの近接例だが、署名側は\texttt{alloc}と\texttt{num-bigint}を用い、Cortex-M上の全K/S/Vメモリを報告しない\cite{sqisign-rs-2026}。したがって、「全K/S/Vだがhost」「非GMPだがheap使用」「Cortex-MだがVerifyのみ」を別の反例群として扱う。
+pqm4による追加署名候補の調査では、SQIsignはGMPと動的確保のため組込み統合から除外された\cite{pqm4-2024}。その後、Cortex-M4向け高速有限体演算の生成によりv2 Level IのVerifyが高速化されたが、KeyGenとSignは対象外である\cite{m4-modarith-2025}。一次元SQIsignのCortex-M4実装も主な実機対象はVerifyである\cite{sqisign-1d-2024}。一方、32-bit Cortex-A/Linux実装、Armv8-A NEON実装、およびAVX-512実装は完全なKeyGen、Sign、Verifyを扱うが、Cortex-M級のオンチップSRAMだけを対象としない\cite{sqisign-32bit-2024,sqisign-arm-2026,sqisign-avx512-2026}。純Rustの\texttt{sqisign-rs}はGMPを用いない完全実装の近接例だが、署名処理は\texttt{alloc}と\texttt{num-bigint}を用い、Cortex-M上の全操作のメモリ量を報告しない\cite{sqisign-rs-2026}。以上から、最も近い先行例を「全操作を実装するがホスト計算機向け」「GMPを使わないがヒープを使用」「Cortex-M向けだがVerifyのみ」の三群に分けて比較する。
 
-公式v3実装は、この実装状況を変えた。v3は独自の固定精度整数層を採用し、Cortex-M4上の完全K/S/Vと、Level IでKeyGen、Sign、Verifyのstack使用量56、99、37 kBを報告する\cite{sqisign-spec-v3,sqisign-code-v3}。従って、本稿のv3追試は「初めてCortex-MでK/S/Vを動作させる」という主張ではない。公式v3を無改変の対照群として固定し、同じsource commitと実装条件のまま、追加のlifetime schedulingが署名stackを削減するかを調べる対照実験である。
+公式v3実装は、この状況を変えた。v3は独自の固定精度整数層を採用し、Cortex-M4上の完全なKeyGen、Sign、Verifyを提供する。Level Iにおける各操作のスタック使用量は56、99、37 kBと報告されている\cite{sqisign-spec-v3,sqisign-code-v3}。したがって、本稿は、Cortex-M上で初めて全操作を実行したとは主張しない。公式v3を無改変の対照実装とし、同じソースコードのコミットと構築条件の下で、生存期間配置が署名時のスタックを削減するかを調べる。
 
-安全性については、整数算術\cite{ct-integer-2025}、4次元格子簡約\cite{ct-lattice-2025}、四元数routine\cite{ct-quaternion-2025}ごとの定数時間化が進んでいる。しかし、いずれも現在の完全な低メモリsigner全体の定数時間性を与えるものではない。既報SPA\cite{spa-2025}は、この空白を実装上の現実的な問題として示している。
+安全性については、整数算術\cite{ct-integer-2025}、4次元格子簡約\cite{ct-lattice-2025}、四元数処理\cite{ct-quaternion-2025}ごとの定数時間化が進んでいる。しかし、いずれも現在の低メモリ署名実装全体を定数時間化するものではない。既報の単純電力解析\cite{spa-2025}は、この不足が実際の攻撃経路につながることを示している。
 
 \begin{table}[H]
   \centering
@@ -205,31 +196,31 @@ pqm4による追加署名候補の調査では、SQIsignはGMPと動的確保の
   \scriptsize
   \begin{tabularx}{\linewidth}{@{}p{0.21\linewidth}p{0.18\linewidth}p{0.18\linewidth}X@{}}
     \toprule
-    研究 & 完全K/S/V & 対象 & 本稿との差 \\
+    研究 & KeyGen・Sign・Verify & 対象 & 本稿との差 \\
     \midrule
-    Official v2\cite{sqisign-spec-v201} & hostでは有 & x86/GMP & heap・GMP前提 \\
-    Official v3\cite{sqisign-spec-v3} & 有 & Cortex-M4を含む & 固定精度化済み。本稿v3追試の対照群 \\
-    Fixed precision\cite{fixed-precision-2025} & host & x86 & 値幅を証明、全同時生存SRAMは未報告 \\
-    Compact quaternion\cite{compact-quaternion-2026} & host & x86 & 本稿の出発点、公開実装の候補表がMCU SRAM超過 \\
-    Qlapoti/\allowbreak Qlapoty\cite{qlapoti-2025,qlapoty-2026} & hostのSign経路 & x86/GMP & algorithm・heap・速度を改善、stack込みMCU実測ではない \\
+    Official v2\cite{sqisign-spec-v201} & ホストでは有 & x86/GMP & ヒープ・GMP前提 \\
+    Official v3\cite{sqisign-spec-v3} & 有 & Cortex-M4を含む & 固定精度化済み。本稿v3評価の対照実装 \\
+    Fixed precision\cite{fixed-precision-2025} & ホスト & x86 & 値幅を証明、全同時生存SRAMは未報告 \\
+    Compact quaternion\cite{compact-quaternion-2026} & ホスト & x86 & 本稿の出発点、公開実装の候補表がMCU SRAM超過 \\
+    Qlapoti/\allowbreak Qlapoty\cite{qlapoti-2025,qlapoty-2026} & ホストのSign経路 & x86/GMP & アルゴリズム・ヒープ・速度を改善、スタックを含むMCU実測ではない \\
     pqm4調査\cite{pqm4-2024} & 組込み統合から除外 & Cortex-M4 & GMP・動的確保が障壁 \\
     m4-\allowbreak modarith\cite{m4-modarith-2025} & Verifyのみ & Cortex-M4 & 現行v2の組込みK/Sなし \\
-    \texttt{sqisign-rs}\cite{sqisign-rs-2026} & 有 & host/no\_std & 非GMPだがSignはheap使用 \\
-    32-bit/AVX-512\cite{sqisign-32bit-2024,sqisign-avx512-2026} & 有 & Cortex-A/x86 & host-class memory system \\
+    \texttt{sqisign-rs}\cite{sqisign-rs-2026} & 有 & ホスト/\texttt{no\_std} & 非GMPだがSignはヒープ使用 \\
+    32-bit/AVX-512\cite{sqisign-32bit-2024,sqisign-avx512-2026} & 有 & Cortex-A/x86 & ホスト級のメモリ環境 \\
     SQIsign on ARM\cite{sqisign-arm-2026} & 有 & Armv8-A/NEON & Cortex-M級でなくGMPを保持 \\
-    本研究 & 有 & RP2350/M33 & v2提案実装は静的閉包、v3適応実装は局所stack重畳 \\
+    本研究 & 有 & RP2350/M33 & v2は全操作の静的領域を計上、v3は局所スタック領域を共有 \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-2026年9月4日にv3公開後の再監査を行った。v2.0.1 Level Iの実KeyGen、Sign、Verify、Cortex-M級実機、オンチップSRAMのみ、GMPなし、動的確保なし、whole-firmwareの排他的SRAM予約\SI{520}{\kibi\byte}未満を同時に示す公開例は見つからなかった。この否定的検索結果はv2だけに限定し、「世界初」の証明とは扱わない。公式v3は既にCortex-M4の完全K/S/Vを提供するため、v3について同じ不在主張を行わない。検索対象、検索式、除外基準、および上記反例群は日付付き検索ログ\url{https://github.com/quantumshiro/tinysqisign/blob/main/results/literature/related-work-search-2026-09-04.md}に固定した。
+2026年9月4日にv3公開後の再監査を行った。v2.0.1 Level Iの実KeyGen、Sign、Verify、Cortex-M級実機、オンチップSRAMのみ、GMPなし、動的確保なし、ファームウェア全体の排他的SRAM予約\SI{520}{\kibi\byte}未満を同時に示す公開例は見つからなかった。この否定的検索結果はv2だけに限定し、「世界初」の証明とは扱わない。公式v3は既にCortex-M4の完全なKeyGen、Sign、Verifyを提供するため、v3について同じ不在主張を行わない。検索対象、検索式、除外基準、および上記反例群は日付付き検索ログ\url{https://github.com/quantumshiro/tinysqisign/blob/main/results/literature/related-work-search-2026-09-04.md}に固定した。
 
 \section{問題設定：同時生存メモリの最小化}
 \label{sec:formulation}
 
 \subsection{型付きオブジェクトと生存区間}
 
-操作中に使用するオブジェクト集合を$O=\{o_1,\ldots,o_n\}$、入力、retry、失敗returnを含む許容実行トレースの集合を$\mathcal{T}$とする。各$o_i$は、サイズ$s_i\in\mathbb{N}_{>0}$、アラインメント$a_i\in\mathbb{N}_{>0}$、型$\tau_i$、秘密性属性$\sigma_i$を持つ。トレース$t\in\mathcal{T}$において$o_i$が生存する時点の集合を$L_i(t)$とし、そのトレースに現れない場合は$L_i(t)=\varnothing$とする。干渉辺を
+操作中に使用するオブジェクト集合を$O=\{o_1,\ldots,o_n\}$とする。入力、再試行、失敗終了を含む許容実行トレースの集合を$\mathcal{T}$とする。各$o_i$は、サイズ$s_i\in\mathbb{N}_{>0}$、アラインメント$a_i\in\mathbb{N}_{>0}$、型$\tau_i$、秘密性属性$\sigma_i$を持つ。トレース$t\in\mathcal{T}$において$o_i$が生存する時点の集合を$L_i(t)$とし、そのトレースに現れない場合は$L_i(t)=\varnothing$とする。干渉辺を
 \begin{equation}
   (o_i,o_j)\in E
   \quad\Longleftrightarrow\quad
@@ -238,7 +229,7 @@ pqm4による追加署名候補の調査では、SQIsignはGMPと動的確保の
 \end{equation}
 で定義し、このグラフを$\mathcal{G}=(O,E)$と書く。すなわち、どれか一つの許容経路で同時生存し得る二領域は干渉する。単一の正常系トレースで非交差だったことだけでは、重畳を許さない。
 
-アリーナ内のoffsetを$x_i\in\mathbb{Z}_{\geq 0}$とすると、配置は次を満たさなければならない。
+アリーナ内のオフセットを$x_i\in\mathbb{Z}_{\geq 0}$とすると、配置は次を満たさなければならない。
 \begin{align}
   x_i &\equiv 0 \pmod{a_i}, \\
   (o_i,o_j)\in E
@@ -246,101 +237,100 @@ pqm4による追加署名候補の調査では、SQIsignはGMPと動的確保の
   (x_i+s_i\leq x_j)\ \lor\ (x_j+s_j\leq x_i).
   \label{eq:nonoverlap}
 \end{align}
-境界guardなどを除くアリーナpayloadの高水位は
+前後の保護領域などを除くアリーナ本体の使用量は
 \begin{equation}
   M_{\mathrm{arena}}=\max_i(x_i+s_i)
   \label{eq:arena-height}
 \end{equation}
-である。最小化問題は$M_{\mathrm{arena}}$を目的関数とするalignment付きstorage allocationである。ただし、v2提案実装は一般の最適配置を解くsolverではない。手作業で定めたphase分割から実行可能解をCの\texttt{struct}/\texttt{union}として構成し、\texttt{sizeof}、\texttt{offsetof}、\texttt{\_Static\_assert}でその配置を検査する。
-ここではアリーナの基底addressも各memberの要求alignmentを満たすものとする。実装ではbyte配列へ任意にcastせず、型付きunionのalignmentをコンパイラに担わせ、ABI probeで確認する。
+である。最小化問題は、$M_{\mathrm{arena}}$を目的関数とする、アラインメント制約付きの記憶領域割当て問題になる。ただし、v2提案実装は一般的な最適配置を求めるものではない。人手で定めた処理段階から実行可能な配置をCの\texttt{struct}と\texttt{union}で構成し、\texttt{sizeof}、\texttt{offsetof}、\texttt{\_Static\_assert}で検査する。
+アリーナの先頭アドレスも、各要素が要求するアラインメントを満たすものとする。実装ではバイト配列を任意の型へ変換しない。型付き\texttt{union}のアラインメント処理をコンパイラに委ね、アプリケーションバイナリインタフェース（ABI）の検査プログラムで確認する。
 
-$M_{\mathrm{arena}}$はfirmware全体のSRAM量ではない。前後guardを$g_{\mathrm{pre}},g_{\mathrm{post}}$、PSPとMSPの予約を$R_{\mathrm{PSP}},R_{\mathrm{MSP}}$、ownerとstack以外の排他的なmutable領域を$R_{\mathrm{other}}$とすると、本稿の最終指標は
+$M_{\mathrm{arena}}$はファームウェア全体のSRAM量ではない。アリーナ前後の保護領域を$g_{\mathrm{pre}},g_{\mathrm{post}}$、PSPとMSPの予約を$R_{\mathrm{PSP}},R_{\mathrm{MSP}}$、操作用共有領域とスタック以外の書換え可能な静的領域を$R_{\mathrm{other}}$とする。このとき、ファームウェア全体の排他的SRAM予約量は
 \begin{equation}
   R_{\mathrm{excl}}=
   (M_{\mathrm{arena}}+g_{\mathrm{pre}}+g_{\mathrm{post}})
   +R_{\mathrm{PSP}}+R_{\mathrm{MSP}}+R_{\mathrm{other}}.
   \label{eq:exclusive-sram}
 \end{equation}
-v2提案実装では、$M_{\mathrm{arena}}=\num{172080}$、guard合計
+v2提案実装では、$M_{\mathrm{arena}}=\num{172080}$、前後の保護領域の合計
 $128$、$R_{\mathrm{PSP}}=\num{131072}$、
 $R_{\mathrm{MSP}}=\num{8192}$、$R_{\mathrm{other}}=\num{9936}$であり、
-$R_{\mathrm{excl}}=\num{321408}$ bytesとなる。read-onlyなXIP領域と未予約SRAMはこの式に加えない。
+$R_{\mathrm{excl}}=\num{321408}$ bytesとなる。フラッシュから直接実行する読出し専用領域と未予約SRAMは、この式に加えない。
 
 \subsection{安全な重畳の条件}
 
 領域の重畳は、単に「同時には使わないはず」という経験則では認めない。二つの型付き領域を同一offsetへ配置する条件を次のように定めた。
 
 \begin{enumerate}[leftmargin=2.2em]
-  \item 呼出グラフとphase state machine上で生存区間が非交差である。
-  \item 呼出先がポインタをphase外へ保存せず、返却値も当該領域を参照しない。
-  \item 次phaseへの遷移前に秘密値を消去し、必要なら全領域のzero-checkを行う。
-  \item aliasingとアラインメントを、byte配列への無制限なcastではなく型付きunion memberまたは検査済みaccessorで保証する。
-  \item failure pathを含む全return edgeで、guard、消去、公開状態への非publicationを検査する。
+  \item 呼出しグラフと処理段階の状態遷移において、生存期間が重ならない。
+  \item 呼出し先がポインタを現在の処理段階より後まで保存せず、返り値も当該領域を参照しない。
+  \item 次の処理段階へ移る前に秘密値を消去し、必要な箇所では領域全体が0であることを検査する。
+  \item Cの別名参照規則とアラインメントを、型付き\texttt{union}の要素または検査済みのアクセス関数で保証する。バイト配列を無制限に別の型へ変換しない。
+  \item 失敗経路を含むすべての終了経路で、前後の保護領域、秘密値の消去、および未確定値が外部出力へ書き込まれていないことを検査する。
 \end{enumerate}
 
-実装では、この条件をABI size probe、\texttt{-Wvla -Walloca -Werror}、ASan/UBSan、canary、全消去fixture、ELF symbol auditで検査した。これらは完全な静的証明ではないが、手作業のlifetime annotationとバイナリ検査の間に独立なfailure gateを設ける。
+実装では、この条件をABI上のサイズ検査、\texttt{-Wvla -Walloca -Werror}、AddressSanitizer（ASan）、UndefinedBehaviorSanitizer（UBSan）、カナリア値、全領域の消去試験、およびELFシンボル監査で検査した。これらは完全な静的証明ではないが、人手で記述した生存期間の注釈とは異なる方法で誤りを検出する。
 
 \begin{figure}[H]
   \centering
   \input{figures/lifetime.tikz.tex}
-  \caption{IdealToIsogeny経路で共有するv2提案実装のworkspaceの生存区間と物理配置。lattice stateは\texttt{find\_uv}中を通して生存するため、その間のphase memberと重畳できない。\texttt{find\_uv}の共通出口で全体を消去した後は、同じphase unionをfixed-degree処理が再利用する。図の幅は時間順を表し、実行時間の比率ではない。}
+  \caption{IdealToIsogeny経路で共有するv2提案実装の作業領域について、論理的な生存期間と物理配置を示す。格子状態は\texttt{find\_uv}の実行中を通して生存するため、候補探索などの処理段階用領域とは共有できない。\texttt{find\_uv}の共通出口で全体を消去した後は、同じ領域を固定次数処理が再利用する。横方向は処理順を表し、実行時間の比率を表さない。}
   \label{fig:lifetime}
 \end{figure}
 
-\subsection{操作所有者の直列化}
+\subsection{KeyGen・Sign・Verify間の領域共有}
 
-組込みAPIでは、KeyGen、Sign、Verifyが同時に実行されない構成が一般的である。本実装は三操作を一つの\emph{operation owner}の異なるunion memberとして表現し、操作終了時にmemberと共有アリーナを消去する。これにより、必要SRAMは三操作の和ではなく最大値となる。ただし、再入可能性、並行署名、複数coreからの同時利用は失われる。本実装は1 core・逐次実行を明示的なAPI contractとする。
+本実装では、KeyGen、Sign、Verifyを同時に実行しない。三操作の作業領域を一つの型付き\texttt{union}で共有し、各操作の終了時に使用した領域と共有アリーナを消去する。これにより、三操作に必要なSRAMの合計ではなく、最大値だけを確保すればよい。一方、このAPIは再入可能ではなく、並行署名や複数コアからの同時利用を許さない。1コアで三操作を逐次実行することをAPIの前提とする。
 
 \section{提案手法}
 \label{sec:method}
 
-\subsection{段階的なresident state削減}
+\subsection{常駐状態の削減}
 
-出発点のCompact実装では、候補ベクトル、全ノルム、商、行数、ソートrecordを一回の\texttt{find\_uv}で同時に保持していた。本研究では、以下の変換を、各段階でトランスクリプト一致を確認しながら適用した。
+出発点のCompact実装では、候補ベクトル、全ノルム、商、行数、ソート用記録を一回の\texttt{find\_uv}で同時に保持していた。本研究では、各変換後に出力一致を確認しながら、以下の変更を順に適用した。
 
 \begin{enumerate}[leftmargin=2.2em]
-  \item 値域が$[-2,2]$と証明される4座標候補を、広い多倍長表現から\texttt{int8\_t[4]}へpackする。
-  \item ソートrecordの候補コピーをやめ、\texttt{uint16\_t}のindex permutationをソートする。
+  \item 値域が$[-2,2]$と証明される4座標候補を、広い多倍長表現から\texttt{int8\_t[4]}へ圧縮する。
+  \item ソート用記録に候補を複製せず、\texttt{uint16\_t}の索引配列をソートする。
   \item 候補ごとの商を常駐させず、使用地点で決定的に再計算する。
-  \item 全行を保持する処理を二行streamingへ変換し、確定した行を再利用する。
-  \item 大きなVLAを呼出側所有workspaceへ移し、選択済みArmリンク閉包の動的stack frameを0件にする。
-  \item ML2、候補探索、theta chain、離散対数、batch inversion、多倍長一時領域をphaseごとに重畳する。
-  \item KeyGen、Sign、Verifyを一つの逐次operation ownerへ統合する。
-  \item 最後に、全精度ノルム行をcertified sketchと必要時の全精度再生成で置換する。
+  \item 全行を保持する処理を、二行ずつ処理する方式へ変換し、確定した行の領域を再利用する。
+  \item 大きな可変長配列を呼出し側所有の作業領域へ移し、対象とするArm用コードの動的スタックフレームを0件にする。
+  \item ML2、候補探索、theta鎖、離散対数、一括逆元計算、および多倍長整数の一時領域を処理段階ごとに共有する。
+  \item KeyGen、Sign、Verifyの作業領域を一つの逐次利用領域へ統合する。
+  \item 最後に、全精度ノルム行をノルム要約と必要時の全精度再生成で置き換える。
 \end{enumerate}
 
-前半のpack、index化、streamingはresident stateそのものを減らし、後半のarena化は同じ領域を時間方向に再利用する。再計算はflashと時間を増やし得るため、各変換はRAM・stack・flash・時間の四指標で評価する。
+前半の候補圧縮、索引化、二行処理は常駐データそのものを減らす。後半のアリーナ化は、同じ物理領域を異なる時点で再利用する。再計算はフラッシュ使用量と実行時間を増やす可能性があるため、各変換はRAM、スタック、フラッシュ、実行時間の四指標で評価する。
 
-\cref{tab:ablation}は、最終点だけでは見えない設計判断を、各変換の内容と計上境界に沿って示す。「二行ストリーミング」までの値は\texttt{find\_uv}候補領域であり、それ以降はlattice stateを含むcaller-owned workspaceまたはoperation arenaの\texttt{sizeof}である。いずれもfirmware全体のpeakではない。「格子状態の明示所有」ではVLA
-\num{77168} bytesをworkspaceへ移すため表示値が増えるが、同時生存総量は減らない。これは、保存クラスの移動をメモリ削減と数えないための意図的なownership checkpointである。
+\cref{tab:ablation}は、各変換の内容と計上範囲を示す。「二行ストリーミング」までの値は\texttt{find\_uv}の候補探索用領域である。それ以降は、格子状態を含む呼出し側所有の作業領域または操作用アリーナの\texttt{sizeof}である。いずれもファームウェア全体の最大使用量ではない。「格子状態の明示所有」では\num{77168} bytesの可変長配列を作業領域へ移すため、表の値が増える。しかし、同時に使うメモリの総量は変わらない。保存場所を移しただけの変更をメモリ削減に数えないため、この段階を表に残した。
 
 \begin{table}[H]
   \centering
-  \caption{主要な変換後の明示領域サイズ。計上境界の異なる値をfirmware全体のpeakとして比較していない。}
+  \caption{主要な変換後に明示的に確保する領域の大きさ。計上範囲が異なる行同士を、ファームウェア全体の最大使用量として比較していない。}
   \label{tab:ablation}
   \scriptsize
   \begin{tabularx}{\linewidth}{@{}l r X@{}}
     \toprule
     構成 & 明示領域 [B] & その構成で導入した変換 \\
     \midrule
-    Compact出発点 & \num{6339868} & 同時生存する五つのheap request payload \\
-    候補座標のpack & \num{2044252} & 4-byte候補座標とpacked sort record \\
-    索引ソート & \num{1905728} & record copyを廃し、\texttt{uint16\_t} index permutationを再利用 \\
+    Compact出発点 & \num{6339868} & 同時に確保する五つのヒープ領域 \\
+    候補座標の圧縮 & \num{2044252} & 4-byte候補座標と圧縮したソート用記録 \\
+    索引ソート & \num{1905728} & 候補の複製を廃し、\texttt{uint16\_t}索引配列を再利用 \\
     商の遅延再計算 & \num{962240} & 候補ごとの商を常駐させず、使用時に再計算 \\
     二行ストリーミング & \num{275840} & 全7行の常駐を二行へ変更 \\
-    格子状態の明示所有 & \num{353008} & \num{77168} byteのlattice VLAを型付きownerへ移動（同時生存量は不変） \\
-    全精度表実装 & \num{353008} & ML2、theta、dlog等を重畳し、選択済みArm閉包の動的frameを除去 \\
-    v2提案実装 & \num{172080} & full-norm二行をsketch+全精度再生成へ置換し、phase最大memberをML2へ移動 \\
+    格子状態の明示所有 & \num{353008} & \num{77168} byteの格子用可変長配列を型付き領域へ移動（同時使用量は不変） \\
+    全精度表実装 & \num{353008} & ML2、theta、離散対数等の領域を共有し、対象Armコードの動的フレームを除去 \\
+    v2提案実装 & \num{172080} & 全精度ノルム二行をノルム要約と再生成へ置換し、ML2領域を共有 \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-\subsection{certified norm sketch}
+\subsection{比較順序を保存するノルム要約}
 \label{sec:sketch}
 
-候補$v$のノルム$N(v)$は、保持済みの4座標packed vectorと、その行について保持しているGram行列$G_j$および調整ノルム$d_j$から決定的な二次形式評価として再生成できる。この性質を使い、各候補について全精度整数$N(v)$を保持する代わりに、次のsketchだけを保持する。$G_j,d_j$は秘密由来状態を含み得るため、再生成可能であることをサイドチャネル安全性の根拠には用いない。
+候補$v$のノルム$N(v)$は、保持済みの4座標圧縮ベクトルと、その行のGram行列$G_j$および調整ノルム$d_j$から、二次形式を評価して再生成できる。この性質を使い、各候補の全精度整数$N(v)$を常駐させる代わりに、次の要約だけを保持する。$G_j,d_j$は秘密に由来する状態を含む可能性がある。したがって、ノルムを再生成できることはサイドチャネル安全性の根拠にならない。
 
-\begin{definition}[上位$w$ bit sketch]
+\begin{definition}[上位$w$ bitによるノルム要約]
 非負整数$n$に対して、ビット長$\ell(n)$を$n=0$なら0、$n>0$なら$\lfloor\log_2 n\rfloor+1$とする。$w=64$として、
 \begin{equation}
   h_w(n)=
@@ -349,44 +339,44 @@ $R_{\mathrm{excl}}=\num{321408}$ bytesとなる。read-onlyなXIP領域と未予
     \left\lfloor n/2^{\ell(n)-w}\right\rfloor, & \ell(n)>w
   \end{cases}
 \end{equation}
-を定める。組$S_w(n)=(\ell(n),h_w(n))$を$n$のcertified sketchと呼ぶ。
+を定める。組$S_w(n)=(\ell(n),h_w(n))$を$n$のノルム要約と呼ぶ。
 \end{definition}
 
-比較器は、(1)ビット長、(2)上位64 bit、(3)sketch tie時の再生成済み全精度ノルム、(4)元の列挙index、の順に比較する。
+比較器は、(1)ビット長、(2)上位64 bit、(3)要約が同じ場合に再生成する全精度ノルム、(4)元の列挙番号、の順に比較する。
 
 \begin{proposition}[順序保存]
 \label{prop:order-preservation}
-各候補$v_i$から$N(v_i)$を決定的に全精度で再生成できるとする。上記比較器が与える候補の全順序は、組$(N(v_i),i)$を全精度整数比較とindex比較で辞書式順序に並べた結果と一致する。
+各候補$v_i$から$N(v_i)$を全精度で再生成できるとする。上記比較器が与える候補の全順序は、組$(N(v_i),i)$を全精度整数比較と列挙番号の比較で辞書式順序に並べた結果と一致する。
 \end{proposition}
 
 \begin{proof}
-$\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が必ず小さい。ビット長が等しく、$h_{64}$が異なる場合、最上位から最初に異なるbitは保持された64 bit内に存在するため、その大小は全整数の大小と一致する。両者が等しい場合、sketchだけでは大小を決めず、二つのノルムを全精度で再生成して比較する。ノルムも等しい場合のみindexを比較する。したがって全ての場合で$(N(v_i),i)$の辞書式順序と一致する。
+$\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が必ず小さい。ビット長が等しく、$h_{64}$が異なる場合、最上位から最初に異なるbitは保持された64 bit内に存在するため、その大小は全整数の大小と一致する。両者が等しい場合、要約だけでは大小を決めず、二つのノルムを全精度で再生成して比較する。ノルムも等しい場合だけ列挙番号を比較する。したがって、すべての場合で$(N(v_i),i)$の辞書式順序と一致する。
 \end{proof}
 
-重要なのは、この方法がcollisionを「十分起こりにくい」と仮定しない点である。例えば$2^{100}$と$2^{100}+1$はビット長と上位64 bitが一致するが、必ず全精度比較へ進み、正しい順序を返す。したがって暗号学的hashのcollision確率や、観測コーパスに基づく経験的上界は正しさの仮定に含まれない。
+この方法は、要約の衝突が十分に起こりにくいとは仮定しない。例えば$2^{100}$と$2^{100}+1$はビット長と上位64 bitが一致するが、必ず全精度比較へ進み、正しい順序を返す。したがって、暗号学的ハッシュの衝突確率や、有限の入力集合で観測した衝突頻度は正しさの仮定に含まれない。
 
 \cref{alg:sketch-order}に、C実装の\texttt{finduv\_eval\_norm}、\texttt{finduv\_set\_norm\_sketch}、\texttt{finduv\_compare\_indices}に対応する処理を示す。\textsc{FullNorm}は二次形式値を$d_j$で割り、余りが0かつ商が正であることまで検査する。したがって丸めた近似値を同値時の比較に使用しない。
 
 \subsection{ソートと探索における再計算}
 
-ソート時はsketch tieごとに二つのノルムを一時領域へ再生成し、比較直後に消去する。探索時は、ソート済みindexが指す候補から必要なノルムをその場で再生成する。初期profileでは一回の\texttt{find\_uv}あたり約\num{7800}回のソート比較が発生した。メモリ・機能評価用fixtureでは、探索側の再評価回数はKeyGenで2--30回、Signで2--578回であった。これとは別の固定鍵timing-screen corpus（Sign 128回、うちrandom class 64回）では、\num{2062361}比較中\num{5041}回、すなわち\num{0.2444}\%がsketch tieであり、random classの探索再評価回数は4--1677回であった。従って2--578回と4--1677回は異なる入力集合の値である。いずれも性能を説明する観測値であり、入力全体に対する最悪回数の証明ではない。
+ソート時は、二つの要約が同じになるたびに両方のノルムを一時領域へ再生成し、比較直後に消去する。探索時は、ソート済みの索引が指す候補から必要なノルムをその場で再生成する。初期測定では、一回の\texttt{find\_uv}あたり約\num{7800}回のソート比較が発生した。メモリ・機能評価用の入力集合では、探索時の再評価回数はKeyGenで2--30回、Signで2--578回であった。これとは別の固定鍵実行時間検査ではSignを128回実行し、そのうち64回にランダム入力を用いた。この試験では、\num{2062361}回の比較中\num{5041}回、すなわち\num{0.2444}\%で要約が一致した。ランダム入力における探索時の再評価回数は4--1677回であった。2--578回と4--1677回は異なる入力集合から得た値である。いずれも性能を説明する観測値であり、全入力に対する最悪回数の上界ではない。
 
-一行のソートでは、$m\leq624$個の元indexを持つ\texttt{uint16\_t} permutationをin-place heapsortする。比較回数は$O(m\log m)$、補助領域は$O(1)$であり、再帰やlibcのsort workspaceを使用しない。Cの比較callbackはerror statusを直接返せないため、全精度再生成に失敗した場合は\texttt{fatal}をlatchし、その比較だけはindex順を返す。heapsort終了後にlatchを検査して行全体を拒否するため、この暫定順を正常出力として公開しない。
+一行のソートでは、$m\leq624$個の列挙番号を持つ\texttt{uint16\_t}索引配列を、追加配列を使わないヒープソートで整列する。比較回数は$O(m\log m)$、補助領域は$O(1)$であり、再帰や標準Cライブラリのソート用作業領域を使用しない。Cの比較関数はエラー状態を直接返せない。全精度再生成に失敗した場合は\texttt{fatal}状態を記録し、その比較だけは列挙番号順を返す。ヒープソート終了後に状態を検査して行全体を拒否するため、この暫定順を正常な出力として外部へ渡さない。
 
-\cref{alg:prepare-row,alg:pair-search,alg:d13-schedule}は、一行の生成・整列、二行の候補対探索、二行だけを常駐させながら元の三角形順$(j_1,j_2)$を保つscheduleを分けて示す。\textsc{Admissible}は、元実装の符号代表、全座標が2または3の倍数である候補の除外、および該当する基底における位数4の対称性代表を同じ走査順で判定する。Level Iでは$r\leq7$、一行のcapacityは624である。検証passを先に全行へ行うため、早い候補が見つかったことで後方の不正な行を見逃さない。\textsc{SearchPairs}は、二つの候補ノルム$n_1,n_2$に対する
+\cref{alg:prepare-row,alg:pair-search,alg:two-row-schedule}は、一行の生成・整列、二行の候補対探索、および二行だけを常駐させながら元の三角形順$(j_1,j_2)$を保つ処理順を示す。\textsc{Admissible}は、元実装と同じ順序で、符号の代表元を選び、全座標が2または3の倍数である候補を除外し、該当する基底では位数4の対称性代表を選ぶ。Level Iでは$r\leq7$であり、一行の容量は624である。探索前に全行を検証するため、早い候補が見つかった場合でも後方にある不正な行を見逃さない。\textsc{SearchPairs}は、二つの候補ノルム$n_1,n_2$に対する
 \begin{equation}
   u n_1 + v n_2 = T,\qquad u>0,\quad v>0
   \label{eq:finduv-diophantine}
 \end{equation}
-の候補を元実装と同じnested-loop順で探す。具体的には、各合同解列について元実装と同じ$0<v<\lfloor T/n_2\rfloor$を走査境界とする。本稿でいう「最初の解」は、全正整数解に関する新たな完全性主張ではなく、この参照走査領域と順序において最初に受理される解を意味する。v2提案実装からの呼出しでは追加のsum-of-squares条件は無効である。探索中も$n_1,n_2$をpacked候補から再生成し、選ばれた候補だけを外部出力へ写す。この探索は可変回数であり、定数時間手続きではない。
+の候補を元実装と同じ二重ループの順序で探す。具体的には、各合同解列について元実装と同じ$0<v<\lfloor T/n_2\rfloor$を走査境界とする。本稿でいう「最初の解」は、全正整数解に関する新たな完全性主張ではなく、この参照走査領域と順序において最初に受理される解を意味する。v2提案実装からの呼出しでは追加の二平方和条件は無効である。探索中も$n_1,n_2$を圧縮候補から再生成し、選ばれた候補だけを外部出力へ写す。この探索は可変回数であり、定数時間手続きではない。
 
 \begin{algorithm}[H]
-  \caption{必要時に全精度へ戻るcertified norm比較}
+  \caption{必要な場合に全精度値へ戻るノルム比較}
   \label{alg:sketch-order}
   \small
   \begin{algorithmic}[1]
-    \Require packed候補$v$、Gram行列$G$、非零の調整ノルム$d$
-    \Ensure 成功時は正の全精度ノルム、10-byte sketch、または$(N(v_i),i)$の比較結果
+    \Require 圧縮候補$v$、Gram行列$G$、非零の調整ノルム$d$
+    \Ensure 成功時は正の全精度ノルム、10-byte要約、または$(N(v_i),i)$の比較結果
     \Function{FullNorm}{$v,G,d$}
       \State $p\gets\Call{WidenToIbz}{v}$
       \State $q\gets\Call{QuadraticForm}{p,G}$ \Comment{$q=p^{\mathsf T}Gp$を固定精度で評価}
@@ -418,7 +408,7 @@ $\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が�
       \ElsIf{$n_i\neq n_j$}
         \State \Return $\Call{Cmp}{n_i,n_j}$
       \Else
-        \State \Return $\Call{Cmp}{i,j}$ \Comment{元の列挙indexで全順序化}
+        \State \Return $\Call{Cmp}{i,j}$ \Comment{元の列挙番号で全順序化}
       \EndIf
     \EndFunction
   \end{algorithmic}
@@ -429,8 +419,8 @@ $\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が�
   \label{alg:prepare-row}
   \small
   \begin{algorithmic}[1]
-    \Require 行$j$、resident slot、caller-owned workspace $W$
-    \Ensure 全精度key $(N(v),i)$で整列したpacked候補行と個数$m$、または\textsc{Fatal}
+    \Require 行$j$、常駐させる行の位置、呼出し側所有の作業領域$W$
+    \Ensure 全精度キー$(N(v),i)$で整列した圧縮候補行と個数$m$、または\textsc{Fatal}
     \Function{PrepareRow}{$j,\mathrm{slot},W$}
       \State $m\gets0$
       \For{$v\in[-2,2]^4$を元実装と同じ順序で走査}
@@ -447,7 +437,7 @@ $\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が�
       \EndFor
       \State $P[k]\gets k$ for $0\leq k<m$
       \State \Call{HeapSort}{$P$, comparator \textsc{Compare}}
-      \If{比較errorがlatch済み} \State \Return \textsc{Fatal} \EndIf
+      \If{比較エラーを記録済み} \State \Return \textsc{Fatal} \EndIf
       \If{\textbf{not} $\Call{ApplyPermutationByCycles}{W.V[\mathrm{slot}],P}$}
         \State \Return \textsc{Fatal}
       \EndIf
@@ -461,7 +451,7 @@ $\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が�
   \label{alg:pair-search}
   \small
   \begin{algorithmic}[1]
-    \Require target $T>0$、ソート済み行$A[0..m_1-1],B[0..m_2-1]$、
+    \Require 目標値$T>0$、ソート済み行$A[0..m_1-1],B[0..m_2-1]$、
       行記述$R_k=(G_k,d_k)$、対角フラグ$\delta$
     \Ensure 参照実装の走査領域内で\cref{eq:finduv-diophantine}を満たす最初の
       $(u,v,i_1,i_2,n_1,n_2)$、\textsc{NotFound}、または\textsc{Fatal}
@@ -495,27 +485,27 @@ $\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が�
 \begin{figure}[H]
   \centering
   \input{figures/sketch-flow.tikz.tex}
-  \caption{certified norm sketchの保存形式と比較経路。ビット長または上位64 bitが異なる比較はsketchだけで確定し、両者が一致した場合はpacked候補から全精度ノルムを再生成する。再生成率は最終attribution corpusの観測値であり、正しさはその頻度に依存しない。}
+  \caption{ノルム要約の保存形式と比較経路。ビット長または上位64 bitが異なる場合は、要約だけで比較結果が決まる。両者が一致した場合は、圧縮候補から全精度ノルムを再生成する。図中の再生成率は固定鍵実行時間検査で観測した値であり、比較結果の正しさはこの頻度に依存しない。}
   \label{fig:sketch-flow}
 \end{figure}
 
 \begin{algorithm}[H]
-  \caption{v2提案実装の検証先行・二行streaming \texttt{find\_uv}}
-  \label{alg:d13-schedule}
+  \caption{全行を検証してから二行ずつ探索するv2提案実装の\texttt{find\_uv}}
+  \label{alg:two-row-schedule}
   \small
   \begin{algorithmic}[1]
-    \Require target $T$、base idealと四元数環$\mathcal I$、$r$個のorder、caller-owned workspace $W$
-    \Ensure 元実装と同じ最初の解、\textsc{NotFound}、または\textsc{Fatal}。全returnで$W=0$
+    \Require 目標値$T$、基底イデアルと四元数環$\mathcal I$、$r$個の整環、呼出し側所有の作業領域$W$
+    \Ensure 元実装と同じ最初の解、\textsc{NotFound}、または\textsc{Fatal}。すべての終了時に$W=0$
     \Function{FindUV-LM}{$T,\mathcal I,W$}
-      \If{引数または固定capacityが不正}
+      \If{引数または固定容量が不正}
         \State \Call{SecureClear}{$W$}; \State \Return \textsc{Fatal}
       \EndIf
       \State \Call{SecureClear}{$W$}
       \State $L\gets\Call{PrepareLatticeState}{T,\mathcal I,W.\mathrm{phase}.\mathrm{lattice\_mul}}$
       \If{$L=\textsc{Fatal}$} \State \Return $\Call{Finish}{\textsc{Fatal},W}$ \EndIf
       \State $R_j\gets(L.\mathrm{gram}[j],L.\mathrm{adjusted\_norm}[j])$ for $0\leq j<r$
-      \State \Call{SecureClear}{$W.\mathrm{phase}$} \Comment{候補phaseへの一方向遷移}
-      \For{$j\gets0$ \textbf{to} $r-1$} \Comment{全行の検証pass、slot 0を再利用}
+      \State \Call{SecureClear}{$W.\mathrm{phase}$} \Comment{候補処理へ一方向に遷移}
+      \For{$j\gets0$ \textbf{to} $r-1$} \Comment{全行を検証し、位置0を再利用}
         \State $c[j]\gets\Call{PrepareRow}{j,0,W}$
         \If{$c[j]=\textsc{Fatal}$} \State \Return $\Call{Finish}{\textsc{Fatal},W}$ \EndIf
       \EndFor
@@ -524,7 +514,7 @@ $\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が�
         \If{$m_1\neq c[j_1]$} \State \Return $\Call{Finish}{\textsc{Fatal},W}$ \EndIf
         \For{$j_2\gets j_1$ \textbf{to} $r-1$}
           \If{$j_2=j_1$}
-            \State $(V_2,m_2)\gets(W.V[0],m_1)$ \Comment{対角では同じ行をalias}
+            \State $(V_2,m_2)\gets(W.V[0],m_1)$ \Comment{対角では同じ行を参照}
           \Else
             \State $m_2\gets\Call{PrepareRow}{j_2,1,W}$; $V_2\gets W.V[1]$
             \If{$m_2\neq c[j_2]$} \State \Return $\Call{Finish}{\textsc{Fatal},W}$ \EndIf
@@ -532,7 +522,7 @@ $\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が�
           \State $V_1\gets W.V[0][0..m_1-1]$
           \State $z\gets\Call{SearchPairs}{T,V_1,V_2,R_{j_1},R_{j_2},j_1=j_2}$
           \If{$z=\textsc{Fatal}$} \State \Return $\Call{Finish}{\textsc{Fatal},W}$ \EndIf
-          \If{$z$ is a solution}
+          \If{$z$が解である}
             \If{\textbf{not} $\Call{ValidateAndPublish}{z}$}
               \State \Return $\Call{Finish}{\textsc{Fatal},W}$
             \EndIf
@@ -547,14 +537,14 @@ $\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が�
 
 \begin{proposition}[最初の解の保存]
 \label{prop:first-solution}
-固定された入力に対し、参照実装とv2提案実装の全精度演算がいずれも成功すると仮定する。両者が各行を$(N(v),i)$順に整列し、order対、行内index、合同解を同じ領域・順序で走査するならば、v2提案実装は参照実装と同じ最初の解を返し、参照走査内に受理解がなければ両者とも\textup{\textsc{NotFound}}を返す。
+固定された入力に対し、参照実装とv2提案実装の全精度演算がいずれも成功すると仮定する。両者が各行を$(N(v),i)$順に整列し、整環対、行内索引、合同解を同じ領域・順序で走査するならば、v2提案実装は参照実装と同じ最初の解を返し、参照走査内に受理解がなければ両者とも\textup{\textsc{NotFound}}を返す。
 \end{proposition}
 
 \begin{proof}
-\cref{prop:order-preservation}により、sketch比較と全精度再生成で得る各行の順序は全精度ノルム行の順序と一致する。検証passはcount以外の状態を探索へ持ち込まず、探索passは各行を決定的に再生成する。対角時の$i_2=i_1$開始、非対角時の$i_2=0$開始、$(j_1,j_2)$の三角形順、および\cref{alg:pair-search}の合同解列はいずれも参照走査と同じである。従って、最初に成功するtuple、または全tupleの不成功が保存される。
+\cref{prop:order-preservation}により、ノルム要約と全精度再生成で得る各行の順序は、全精度ノルム行の順序と一致する。最初の検証では個数以外の状態を探索へ持ち込まず、探索時には各行を同じ手順で再生成する。対角時の$i_2=i_1$開始、非対角時の$i_2=0$開始、$(j_1,j_2)$の三角形順、および\cref{alg:pair-search}の合同解列はいずれも参照走査と同じである。したがって、最初に成功する組、またはすべての組の不成功が保存される。
 \end{proof}
 
-\cref{prop:first-solution}の前提を実際のC実装へ接続するため、residentな全精度ノルム行を持つ全精度表実装（commit \texttt{6b79cfb5...}）と、その直系子であるv2提案実装（commit \texttt{71099e08...}）の\texttt{dim2id2iso.c}を凍結し、\cref{tab:finduv-correspondence}の対応を監査した。検査scriptは両sourceのdigestに加え、22個の列挙・比較・走査・失敗処理predicateを検査する。従って、命題の「同じ領域・順序」という条件は、抽象的な仮定のままではなく、この二commit間の表の各行へ具体化される。
+\cref{prop:first-solution}の前提を実際のC実装へ対応付けるため、全精度ノルム行を常駐させる全精度表実装（コミット\texttt{6b79cfb5...}）と、その直後のv2提案実装（コミット\texttt{71099e08...}）の\texttt{dim2id2iso.c}を比較した。\cref{tab:finduv-correspondence}は、その対応を示す。検査スクリプトは両ソースコードのダイジェストを確認し、列挙、比較、走査、失敗処理に関する22個の条件を検査する。これにより、命題で仮定した走査領域と順序を、この二つのコミットにあるC実装へ対応付ける。
 
 \begin{table}[H]
   \centering
@@ -565,19 +555,19 @@ $\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が�
     \toprule
     義務 & 全精度表参照 & v2提案 & 失敗時 \\
     \midrule
-    行生成 & \texttt{x/y/z/w}、符号代表、2/3除外、位数4代表、奇ノルム & 同じloop/filter後に\texttt{finduv\_eval\_norm} & 非整数商、非正値、capacity超過はFatal \\
-    ソートkey & 全精度$(N(v),i)$ & bit長、上位64 bit、全精度再生成、$i$ & 再生成失敗をlatchし、行をFatalにする \\
-    order対 & $j_1$昇順、$j_2\geq j_1$ & 同じ三角形順、対角は同一行をalias & 再生成数の不一致はFatal \\
-    行内index & $i_1$昇順、対角$i_2=i_1$、非対角$i_2=0$ & \texttt{find\_uv\_from\_compact\_lists}で同順 & norm再生成失敗はFatal \\
-    合同解列 & $v=(T\bmod n_1)n_2^{-1}\bmod n_1$、$v{+}{=}n_1$ & 同じ代表、stride、$v<\lfloor T/n_2\rfloor$ & 非可逆はcontinue、破損算術はFatal \\
-    公開・終了 & 成功後だけidealを検証・公開 & 同じpublication構造、追加条件は本経路で無効 & Success/NotFound/Fatalを分離し全体消去 \\
+    行生成 & \texttt{x/y/z/w}、符号代表、2/3除外、位数4代表、奇ノルム & 同じループと判定の後に\texttt{finduv\_eval\_norm} & 非整数商、非正値、容量超過はFatal \\
+    ソートキー & 全精度$(N(v),i)$ & bit長、上位64 bit、全精度再生成、$i$ & 再生成失敗を記録し、行をFatalにする \\
+    整環対 & $j_1$昇順、$j_2\geq j_1$ & 同じ三角形順、対角では同一行を参照 & 再生成数の不一致はFatal \\
+    行内索引 & $i_1$昇順、対角$i_2=i_1$、非対角$i_2=0$ & \texttt{find\_uv\_from\_compact\_lists}で同順 & ノルム再生成失敗はFatal \\
+    合同解列 & $v=(T\bmod n_1)n_2^{-1}\bmod n_1$、$v{+}{=}n_1$ & 同じ代表、増分、$v<\lfloor T/n_2\rfloor$ & 非可逆なら次候補へ進み、破損算術ならFatal \\
+    出力・終了 & 成功後だけイデアルを検証して出力 & 同じ出力順。追加条件は本経路で無効 & Success/NotFound/Fatalを分離し全体消去 \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-この監査は、12 seedの全精度表参照実装対v2提案実装の差分、公式request 100本の通常API対低メモリAPIの差分、意図的sketch collision、NotFound/retry/Fatal/guard/消去fixtureと結合した。完全なC semanticsや全入力の形式証明ではない。対応表、source anchor、機械検査結果は補助資料の\url{https://github.com/quantumshiro/tinysqisign/tree/main/results/revision-2026-09-04}に置く。
+この監査に加えて、12個の固定入力による全精度表参照実装とv2提案実装の差分試験、および公式入力ベクトル100本による通常APIと低メモリAPIの差分試験を行った。さらに、意図的な要約衝突、NotFound、再試行、Fatal、保護領域、消去の各経路を個別に試験した。ただし、これらはCプログラム全体の意味論や全入力に対する形式証明ではない。対応表、ソースコード位置、機械検査結果は補助資料の\url{https://github.com/quantumshiro/tinysqisign/tree/main/results/revision-2026-09-04}に置く。
 
-ここで\textsc{Finish}は初期化済み固定精度objectをfinalizeした後、成功、失敗、未発見の別なくworkspace全体を\texttt{sqisign\_secure\_clear}する共通出口を表す。実装ではlong-lived lattice stateが\num{77168} bytes、phase unionが\num{94912} bytesであり、後者のcandidate memberは\num{14024} bytesである。従って、\texttt{find\_uv}の型サイズは
+ここで\textsc{Finish}は、初期化済みの固定精度オブジェクトを終了処理した後、成功、失敗、未発見の別なく作業領域全体を\texttt{sqisign\_secure\_clear}で消去する共通出口を表す。実装では、長期間生存する格子状態が\num{77168} bytes、処理段階ごとの共有領域が\num{94912} bytesであり、後者に含まれる候補探索用領域は\num{14024} bytesである。したがって、\texttt{find\_uv}の型サイズは
 \begin{equation}
   \num{77168}+\max(\num{94912},\num{14024})
   =\num{172080}\ \text{bytes}
@@ -585,77 +575,77 @@ $\ell(N(v_i))\neq\ell(N(v_j))$なら、ビット長の小さい非負整数が�
 \end{equation}
 となる。
 
-\subsection{v2提案実装の静的リンク閉包と消去}
+\subsection{v2提案実装のリンク後到達範囲と消去}
 
-最終firmwareでは、Level I/RADIX32のKeyGen、Sign、Verifyから到達するproject translation unitを52個に固定した。ELF監査により、allocator、GMP、system RNG、旧large-stack経路、未解決symbol、内部SRAMまたはXIP flash外へのallocated sectionが存在しないことを検査した。heapは0 byteである。operation ownerには前後guardを置き、各操作後にworkspace全体が0であることを確認する。
+測定対象のファームウェアでは、Level I/RADIX32のKeyGen、Sign、Verifyから到達するプロジェクト内の翻訳単位を52個に固定した。ELF監査では、動的メモリ確保関数、GMP、システム乱数生成器、旧大容量スタック経路、および未解決シンボルが存在しないことを検査した。また、配置済みのセクションが内部SRAMまたはXIPフラッシュの外にないことも検査した。ヒープの予約量は0 byteである。操作用共有領域の前後には保護領域を置き、各操作後に作業領域全体が0であることを確認する。
 
-この方法は、ソースに\texttt{malloc}が見えないことだけを根拠にしない。ライブラリ内部のallocator依存、dead-stripされなかった旧経路、暗黙のVLA、linker script上の未計上領域までを最終ELFで検査対象に含める。
+この方法は、ソースコードに\texttt{malloc}が見えないことだけを根拠にしない。ライブラリ内部の動的メモリ確保、削除されずに残った旧経路、暗黙の可変長配列、およびリンカスクリプト上の未計上領域まで、リンク済みELFで検査する。
 
-重畳の安全性については、主要11領域をlifetime certificateへ固定した。各recordはobject名、型、Arm ABI上のsize/alignmentとoffset、構築地点、最終参照、同時生存を禁止する相手、calleeへのpointer渡しとescape監査、正常・失敗・retry出口の消去、対応する静的・動的検査を持つ。\cref{tab:lifetime-certificate}はその要約であり、全列を持つCSVと検査結果は補助資料で公開する。
+領域共有の安全性を追跡できるように、主要11領域について生存期間確認表を作成した。各行には、オブジェクト名、型、Arm ABI上のサイズ・アラインメント・オフセット、構築地点、最終参照地点、同時使用を禁止する相手、呼出し先へのポインタ渡しと保持の有無、正常・失敗・再試行経路での消去地点、および対応する静的・動的検査を記録する。\cref{tab:lifetime-certificate}はその要約であり、全項目を含むCSVと検査結果は補助資料で公開する。
 
 \begin{table}[H]
   \centering
-  \caption{v2主要重畳領域のlifetime certificate要約}
+  \caption{v2で共有する主要領域の生存期間確認表（要約）}
   \label{tab:lifetime-certificate}
   \scriptsize
   \begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}r r p{0.22\linewidth}X@{}}
     \toprule
-    object（型） & size [B] & align [B] & 非重畳契約 & 終了・検査 \\
+    オブジェクト（型） & サイズ [B] & アラインメント [B] & 同時使用を禁止する相手 & 終了・検査 \\
     \midrule
-    operation owner & \num{172080} & 8 & KeyGen/Sign/Verifyを逐次化 & 各操作後に全ownerをzero scan、前後guard \\
-    KeyGen union & \num{172080} & 8 & \texttt{find\_uv}とdlog & terminal全体消去、callee retry契約、static assert \\
-    Sign union & \num{172080} & 8 & 7個の主要phase member & terminal全体消去、guard、100-input差分試験 \\
-    \texttt{find\_uv} lattice & \num{77168} & 8 & candidateと同時生存するため非重畳 & struct連結、offset assert、ASan/UBSan \\
-    \texttt{find\_uv} phase union & \num{94912} & 8 & lattice-mul/candidate/fixed-degree & 一方向遷移、Fatal/NotFoundを含む全出口消去 \\
-    Verify union & \num{15428} & 4 & even-isogenyとthetaを逐次化 & wrapper全出口消去、改変署名fixture \\
+    操作用共有領域 & \num{172080} & 8 & KeyGen/Sign/Verifyを逐次化 & 各操作後に全体を0走査、前後に保護領域 \\
+    KeyGen共有領域 & \num{172080} & 8 & \texttt{find\_uv}と離散対数 & 全終了時に消去、呼出し先の再試行条件、静的表明 \\
+    Sign共有領域 & \num{172080} & 8 & 7個の主要処理段階 & 全終了時に消去、保護領域、100入力の差分試験 \\
+    \texttt{find\_uv}格子状態 & \num{77168} & 8 & 候補探索と同時に使うため共有しない & 構造体の連結、オフセット表明、ASan/UBSan \\
+    \texttt{find\_uv}段階共有領域 & \num{94912} & 8 & 格子乗算・候補探索・固定次数処理 & 一方向遷移、Fatal/NotFoundを含む全出口で消去 \\
+    Verify共有領域 & \num{15428} & 4 & 偶数次数同種写像とthetaを逐次化 & ラッパーの全出口で消去、改変署名試験 \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-pointer escapeについては凍結source中の明白なglobal/static保存を機械走査し、いずれのowner pointerも同期呼出しの外へ保持されないことを確認した。ただし、これはsoundなalias解析ではない。特にSignの外側retryは各回に\num{172080} bytes全体を消去せず、active calleeのfinalize/clearと次phaseの初期化・上書きに依存する。全ownerの消去を直接確認したのはpublic workspace entryのterminal出口である。この限定を含むCSVは\url{https://github.com/quantumshiro/tinysqisign/blob/main/results/revision-2026-09-04/lifetime-certificate-v2.csv}、検査scriptは\texttt{scripts/check\_lifetime\_certificate.py}である。
+ポインタが想定した生存期間を越えて保持されないことを調べるため、対象ソースコードにある大域変数または静的変数への明示的な保存を機械的に走査した。操作用共有領域へのポインタが同期呼出しの外へ保持される例は見つからなかった。ただし、これはすべての別名参照を検出できる解析ではない。特にSignの外側の再試行では、各回に\num{172080} bytes全体を消去しない。実行中の呼出し先による終了処理・消去と、次の処理段階による初期化・上書きに依存する。操作用共有領域全体の消去を直接確認したのは、公開作業領域APIの最終出口である。この限定を含むCSVは\url{https://github.com/quantumshiro/tinysqisign/blob/main/results/revision-2026-09-04/lifetime-certificate-v2.csv}、検査スクリプトは\texttt{scripts/check\_lifetime\_certificate.py}である。
 
-\subsection{v3適応実装の局所lifetime scheduling}
+\subsection{v3適応実装における局所的な生存期間配置}
 \label{sec:v3-method}
 
-公式v3の\texttt{p324\_3/m4f}をRP2350向けにコンパイルすると、固定長として報告される最大の関数frameは\texttt{quat\_lll\_dual\_reduce\_ideal}の\num{34816} bytesであった。この関数には、順に実行される処理段階の間に二つの非交差生存区間がある。
+公式v3の\texttt{p324\_3/m4f}をRP2350向けにコンパイルすると、固定長として報告される最大の関数スタックフレームは、\texttt{quat\_lll\_dual\_reduce\_ideal}の\num{34816} bytesであった。この関数には、順に実行される処理の間で生存期間が重ならない領域が二組ある。
 
-第一の重畳では、格子簡約状態\texttt{fp\_ldl\_t}と、その簡約後に初めて構築する$4\times4$整数行列\texttt{Aout}を一つの型付き\texttt{union}へ置く。\texttt{fp\_ldl\_t}へのポインタは簡約ルーチンへ渡されるため、コンパイラが自動的に同じstack slotを使うとは限らない。Cの型配置で非交差性を明示することにより、この再利用を最終バイナリへ反映させる。
+第一の領域共有では、格子簡約状態\texttt{fp\_ldl\_t}と、簡約後に初めて構築する$4\times4$整数行列\texttt{Aout}を、一つの型付き\texttt{union}へ置く。\texttt{fp\_ldl\_t}へのポインタは簡約ルーチンへ渡されるため、コンパイラが自動的に同じスタック位置を使うとは限らない。Cの型配置で生存期間が重ならないことを明示し、この再利用をリンク済みバイナリへ反映させる。
 
-第二の重畳では、\texttt{ct\_mk\_result\_t}内の逆変換行列\texttt{Ainv\_total}から\texttt{Aout}を導出した後、その時点で不要となる\texttt{Ainv\_total}の領域を基底出力用\texttt{Bout}として再利用する。同じ構造体内のGram行列\texttt{G}と変換\texttt{T}は後続のノルム計算まで生存するため、これらは重畳しない。\texttt{Ainv\_total}と\texttt{Bout}の領域サイズが等しいことは\texttt{\_Static\_assert}で検査する。
+第二の領域共有では、\texttt{ct\_mk\_result\_t}内の逆変換行列\texttt{Ainv\_total}から\texttt{Aout}を導出した後、不要となった\texttt{Ainv\_total}の領域を基底出力用\texttt{Bout}として再利用する。同じ構造体内のグラム行列\texttt{G}と変換\texttt{T}は、後続のノルム計算まで生存するため共有しない。\texttt{Ainv\_total}と\texttt{Bout}の領域サイズが等しいことは\texttt{\_Static\_assert}で検査する。
 
-第三の重畳は、署名本体\texttt{protocols\_sign}に置く。commitment idealは\texttt{ideal\_skchall\_aux}の構築とGCD検査を終えた後には参照されない。一方、challenge isogenyの出力productはその後に初めて書き込まれる。この二つを\texttt{protocols\_sign\_phase\_t}へ配置し、\texttt{p324\_3}の同関数frameを\num{20008} bytesから\num{19272} bytesへ減らす。commitment idealの最終参照がoutput productの最初の書込みより前にあることは、source anchor付きlifetime certificateで検査する。
+第三の領域共有は、署名本体\texttt{protocols\_sign}に適用する。コミットメントイデアルは\texttt{ideal\_skchall\_aux}の構築と最大公約数検査を終えた後には参照されない。一方、チャレンジ同種写像の出力積は、その後に初めて書き込まれる。この二つを\texttt{protocols\_sign\_phase\_t}へ配置し、\texttt{p324\_3}における同関数のスタックフレームを\num{20008} bytesから\num{19272} bytesへ減らす。コミットメントイデアルの最終参照が出力積の最初の書込みより前にあることは、ソースコード位置を記録した生存期間確認表で検査する。
 
-以上の三変更を二関数へ適用した構成を最終v3適応実装（D3）とする。アルゴリズム、分岐条件、乱数消費、公開APIは変更せず、局所変数の所有と配置だけを変更する。従って、v2のcertified norm sketchのようなデータ表現の変更ではなく、\cref{eq:interference,eq:nonoverlap}の局所例である。先行する一関数版（D1）は、実機反復とbinary配置試験の対照として残すが、転用範囲に関する最終結果にはD3を用いる。
+以上の三変更を二つの関数へ適用した構成が二関数適応版である。アルゴリズム、分岐条件、乱数消費、公開APIは変更せず、局所変数の所有と配置だけを変更する。したがって、v2のノルム要約のようなデータ表現の変更ではなく、\cref{eq:interference,eq:nonoverlap}を二つの関数へ適用した例である。一関数適応版は、実機での反復試験とバイナリ配置試験に用いる。生存期間配置を二つの関数へ転用できるかという評価には、二関数適応版を用いる。
 
 \section{実装}
 \label{sec:implementation}
 
 \subsection{v2提案実装の構成と固定精度整数表現}
 
-実装はCompact Quaternion Algorithmsの公開実装系列を出発点とし、SQIsign v2.0.1 Level Iと、有限体・曲線層のRADIX32 backendへ固定した。RADIX32は有限体digitの選択であり、四元数整数のlimb幅ではない。四元数層の\texttt{ibz\_t}は、1665-bit magnitude boundに符号bitを加えて64-bit limb境界へ切り上げた\texttt{uint64\_t[27]}、すなわち1728-bit signed storage、1整数当たり216 bytesである。乗算、除算、GCD、平方根、modular exponentiationを含む多倍長演算は、この固定配列と専用workspace上で行う。有限体・曲線側も既存の固定幅実装を利用する。
+実装はCompact Quaternion Algorithmsの公開実装を出発点とし、SQIsign v2.0.1 Level Iと、有限体・曲線層のRADIX32表現に固定した。RADIX32は有限体要素の基数表現であり、四元数整数の語幅ではない。四元数層の\texttt{ibz\_t}は、1665 bitの絶対値上界に符号bitを加え、64 bit語の境界へ切り上げた\texttt{uint64\_t[27]}である。これは1728 bitの符号付き格納領域であり、1整数当たり216 bytesを要する。乗算、除算、最大公約数、平方根、モジュラー指数演算を含む多倍長演算は、この固定配列と専用作業領域上で行う。有限体・曲線側にも既存の固定幅実装を用いる。
 
-この選択により、整数objectごとの容量とalignmentはコンパイル時に定まり、\cref{eq:interference,eq:nonoverlap}の配置へ直接含められる。ただし固定幅であることは演算回数の固定を意味しない。現在のused-limb scan、比較、Euclid、指数演算は可変時間であり、本稿はこの整数backendを定数時間と主張しない。v2提案実装のSQIsign source commitは\texttt{71099e0827d3f0a3b3c705d2eda592c401e0d57d}、RP2350 firmware commitは\texttt{dc3289add3213cc7671f9943dfaa3bac770b2709}である。
+この選択により、各整数オブジェクトの容量とアラインメントはコンパイル時に定まり、\cref{eq:interference,eq:nonoverlap}の配置へ直接含められる。ただし、固定幅であることは演算回数が固定であることを意味しない。現在の使用語数の走査、比較、ユークリッド法、指数演算は可変時間である。本稿は、この整数処理を定数時間とは主張しない。v2提案実装のSQIsignソースコードはコミット\texttt{71099e0827d3f0a3b3c705d2eda592c401e0d57d}、RP2350ファームウェアはコミット\texttt{dc3289add3213cc7671f9943dfaa3bac770b2709}に固定した。
 
-\subsection{v2でGMPおよびmini-GMPを採用しない理由}
+\subsection{整数バックエンドの選択}
 
-GMP 6.3.0の公式manualでは、\texttt{mpz\_t}はsize情報と確保済みdataへのpointerを持ち、容量不足時には領域を追加確保し、既定では\texttt{malloc}/\texttt{realloc}/\texttt{free}を用いる\cite{gmp-manual-630}。従って通常のGMPはlimbの確保・再確保を一般heapへ委ね、allocatorなしのbare-metal link closureと、コンパイル時に確定する排他的SRAM予約という本稿の要件を満たさない。mini-GMPは依存関係を小さくできるが、本実験で用いたbundled sourceも\texttt{mpz\_t}ごとの可変長limb確保という所有モデルを保つため、stock版をリンクするだけではこの問題を解かない。
+GMP 6.3.0の公式マニュアルによれば、\texttt{mpz\_t}は整数の大きさと確保済みデータへのポインタを持つ。容量が不足すると領域を追加確保し、既定では\texttt{malloc}、\texttt{realloc}、\texttt{free}を用いる\cite{gmp-manual-630}。したがって、通常のGMPは多倍長整数の語を一般ヒープへ確保・再確保する。この方式は、動的メモリ確保関数を含まないベアメタル用コードと、コンパイル時に確定する排他的SRAM予約という本稿の要件を満たさない。mini-GMPは依存関係を小さくできるが、本実験で用いた同梱版も、\texttt{mpz\_t}ごとに可変長の語配列を確保する。したがって、未改変のmini-GMPをリンクするだけではメモリ所有の問題は解決しない。
 
-不採用理由は正しさではない。公式source commit \texttt{dd133d7aca576c361a270c8e6434832535b42ecc}のLevel-I実装だけをGMP backend間で切り替えた別実験では、system GMP、native mini-GMP、secure static-pool版mini-GMPの全てが公式100-vector KATに合格した。一方、凍結LP64 host corpusのSignでは、native mini-GMPの最大requested live limb payloadは\num{67168} bytesであったが、最大\num{4830} blockが同時生存した。16-byte alignmentの単純なsecure first-fit allocatorでは、全100経路が通る最小poolは\num{317696} bytesであり、\num{317680} bytesでは枯渇した。この値はallocator、ABI、入力corpusに依存する測定閾値であって、mini-GMP固有の下界でもCortex-M33上界でもない。また、このpoolだけでは公式実装のstack、他のmutable state、MSPを計上していないため、v2提案実装の\num{321408} byteというfirmware全体の値とは直接比較しない。
+機能試験では、公式ソースコードのコミット\texttt{dd133d7aca576c361a270c8e6434832535b42ecc}にあるLevel-I実装について、整数処理だけを切り替えた。システムGMP、未改変のmini-GMP、および消去機能を加えた静的プール版mini-GMPは、いずれも公式100ベクトルの既知解テストに合格した。一方、固定したLP64ホスト入力集合でSignを実行すると、未改変mini-GMPが同時に要求した多倍長整数の語領域は最大\num{67168} bytesであったが、同時に生存する領域数は最大\num{4830}個だった。16 byteアラインメントの単純な先頭適合型プール割当てでは、100経路すべてを処理できる最小プールが\num{317696} bytesであり、\num{317680} bytesでは枯渇した。この値は、メモリ割当て方式、ABI、および入力集合に依存する測定値である。mini-GMP固有の下界でも、Cortex-M33上の上界でもない。このプール量には、公式実装のスタック、その他の書換え可能な状態、およびMSPを含めていない。したがって、v2提案実装のファームウェア全体の値である\num{321408} bytesとは直接比較しない。
 
-性能も単純な優劣ではない。同じ公式host sourceにおけるnative mini-GMP/system GMPのmedian比はKeyGenで\num{1.3621}、Signで\num{1.4497}であった。clear-on-freeを行う単純poolはtracked mini-GMPに対しKeyGen \num{4.9441}倍、Sign \num{4.2316}倍を要したが、これはallocator prototypeのcostでありmini-GMP一般のcostではない。個別演算ではmini-GMPがGCDと逆元で速く、固定幅版が評価対象の乗算、除算、平方根で速かった。Arm GNU 15.2.1のsection GC前object textは、\texttt{-Os}で固定幅版\num{7962} bytes、mini-GMP側\num{18566} bytesであった。従って本研究は速度支配を理由に固定幅版を選んだのではなく、次のglobal invariantを監査できることを理由に選んだ。
+同じ公式ホストソースコードでは、未改変mini-GMPのシステムGMPに対する実行時間中央値の比が、KeyGenで\num{1.3621}、Signで\num{1.4497}であった。解放時に消去する単純なプール割当ては、要求量を記録するmini-GMPに対してKeyGenで\num{4.9441}倍、Signで\num{4.2316}倍の時間を要した。ただし、これは今回実装したメモリ割当て処理の費用であり、mini-GMP一般の費用ではない。個別演算ではmini-GMPが最大公約数と逆元で速く、固定幅版が今回測定した乗算、除算、平方根で速かった。Arm GNU 15.2.1が生成したオブジェクトコードのうち、未使用セクション除去前の命令領域は、\texttt{-Os}で固定幅版が\num{7962} bytes、mini-GMP側が\num{18566} bytesであった。固定幅版を選んだ主因は速度ではなく、次の性質を全到達経路について監査できることである。
 
 \begin{enumerate}[leftmargin=2.2em]
-  \item 全到達経路でheapを使用せず、operation reservationをlink前に上界化できる。
-  \item 数千の可変長blockに対するfragmentation、metadata、解放順の別証明を不要にする。
-  \item operation終了時にowner全体を一括消去し、解放済みlimbの消去漏れを検査できる。
-  \item allocation size、count、再配置addressという追加の入力依存traceを導入しない。
+  \item 全到達経路でヒープを使用せず、操作用領域の予約量をリンク前に確定できる。
+  \item 数千個の可変長領域について、断片化、管理情報、解放順を別途解析する必要がない。
+  \item 操作終了時に共有領域全体を一括消去し、解放済みの語領域に消去漏れがないか検査できる。
+  \item 確保サイズ、確保回数、再配置先アドレスという追加の入力依存トレースを導入しない。
 \end{enumerate}
 
-固定幅版にも値依存の制御・address traceが残るため、最後の項目はallocator由来の漏洩面を除くという限定的な意味である。bounded mini-GMPと専用region allocatorは有効な別設計だが、全retry経路のpool bound、32-bit target上の総SRAM、消去、target cycle、漏洩screenを同じ条件で示すまでは本稿の採用候補としない。
+固定幅版にも値に依存する制御フローとメモリアドレスが残る。したがって、最後の項目は、動的メモリ確保に由来する追加の漏洩面を除くという限定的な意味である。容量制限付きmini-GMPと専用領域割当ても設計候補になり得る。しかし、すべての再試行経路に必要なプール上界、32 bit実機上の総SRAM、消去、実行サイクル、および漏洩検査を評価していないため、本稿の比較対象には含めない。
 
 \subsection{v2提案実装のメモリ配置}
 
-v2提案実装の操作payloadは\num{172080} bytes、guard込みoperation ownerは\num{172208} bytesである。main SRAM bankにはoperation owner、\num{131072} byteのPSP予約、その他\num{9936} bytesを配置し、合計\num{313216} bytesをlink時に使用する。別scratch bankの\num{8192} bytesをMSP用に予約する。したがって排他的SRAM予約量は
+v2提案実装の操作用アリーナ本体は\num{172080} bytesであり、前後の保護領域を含む操作用共有領域は\num{172208} bytesである。主SRAMバンクには、操作用共有領域、\num{131072} byteのPSP予約、およびその他\num{9936} bytesを配置する。リンク時に確保する主SRAMバンクの合計は\num{313216} bytesである。別の補助バンクにある\num{8192} bytesをMSP用に予約する。したがって、排他的SRAM予約量は
 \begin{equation}
   \num{313216}+\num{8192}=\num{321408}\ \text{bytes}
 \end{equation}
@@ -663,23 +653,23 @@ v2提案実装の操作payloadは\num{172080} bytes、guard込みoperation owner
 
 \subsection{v3の構築条件と計上境界}
 
-v3では、公式source commit \texttt{6d017708db403bf83977fa70770fc4f7f9e9ff21}を無改変の対照群とする。一関数版D1はclean commit \texttt{9293313fb58de4c5ce9dd27a5a9fde0058766c79}、二関数版D3はclean commit \texttt{874658c64aa2e20f53b1f4d696144723d558ed5c}として固定する。D3は\texttt{lll\_dim4.c}と\texttt{sign.c}だけを変更し、公開bundleと一つの差分patchから再構成できる。三つの公式parameter setごとに生成済み\texttt{pqm4} sourceを分離し、生成元commitとtree digestを対応付けた。RP2350用D3はPico SDK 2.3.0、Arm GNU Toolchain 15.2.1、Release構成、\SI{150}{\mega\hertz}、1 coreでclean firmware commit \texttt{5df7acfb2e32019305094546939bdc50bbf71e00}から構築した。
+v3では、公式ソースコードのコミット\texttt{6d017708db403bf83977fa70770fc4f7f9e9ff21}を無改変の対照実装とする。一関数適応版はコミット\texttt{9293313fb58de4c5ce9dd27a5a9fde0058766c79}、二関数適応版はコミット\texttt{874658c64aa2e20f53b1f4d696144723d558ed5c}に固定する。二関数適応版が変更するのは\texttt{lll\_dim4.c}と\texttt{sign.c}だけである。三つの公式パラメータ集合について、生成元コミットと生成済み\texttt{pqm4}ソースコードのディレクトリ木ダイジェストを対応付けた。RP2350用の二関数適応版は、Pico SDK 2.3.0、Arm GNU Toolchain 15.2.1、Release構成、\SI{150}{\mega\hertz}、1コアという条件で、ファームウェアのコミット\texttt{5df7acfb2e32019305094546939bdc50bbf71e00}から構築した。再構成用パッチと各ダイジェストは公開補助資料に含める。
 
-公式v3は、大きな局所状態を主としてstackに置く。このため、v2提案実装の\texttt{operation arena payload}とv3のPSP上書き深さは同じ量ではない。v3 firmwareではアプリケーション用のProcess Stack Pointer（PSP）領域を\num{131072} bytes予約し、各操作の直前に塗ったpatternが連続して上書きされた深さを測る。割込み用のMain Stack Pointer（MSP）領域は\num{8192} bytesとする。
+公式v3は、大きな局所状態を主としてスタックに置く。このため、v2提案実装の操作用アリーナ本体とv3のPSP上書き深さは同じ量ではない。v3ファームウェアでは、アプリケーション用のPSP領域を\num{131072} bytes予約する。各操作の直前に既知のパターンを書き込み、操作後に連続して上書きされた深さを測る。割込み用のMSP領域は\num{8192} bytesとする。
 
-公式v3とv3適応実装のlinked heap sectionはいずれも0 byteである。ただし、診断用の\texttt{fprintf}/\texttt{abort}経路を介してnewlibのallocator関連symbolが残り、GCCのstack-usage出力には19件の動的frame記録がある。従って、v3適応実装については成功したK/S/V経路でheap使用を観測しなかったことと、局所frameを削減したことだけを主張する。v2提案実装のようにallocator symbolと動的frameをlink closureから全て除いたとは主張しない。
+公式v3とv3適応実装では、リンク済みELFのヒープ用セクションはいずれも0 byteである。ただし、診断用の\texttt{fprintf}/\texttt{abort}経路を介してnewlibの動的メモリ確保関連シンボルが残る。また、GCCのスタック使用量出力には19件の動的フレーム記録がある。したがって、v3適応実装について主張するのは、成功したKeyGen、Sign、Verify経路でヒープ使用を観測しなかったことと、対象関数の局所スタックフレームを削減したことだけである。v2提案実装とは異なり、動的メモリ確保関連シンボルと動的フレームをリンク後到達範囲からすべて除いたとは主張しない。
 
-\subsection{再現性のための固定条件}
+\subsection{実験条件と反復設計}
 
-v2実機試験ではAES-256 CTR-DRBGの決定的test adapterを使用し、host oracleと同じseed、message、期待digestを用いた。これは再現性と差分検査のためであり、製品向けentropy sourceではない。clock、toolchain、linker layout、binary hash、capture hashをmanifestへ固定した。同じ保存済みUF2を用いて2 bootを取得し、各boot内でKeyGen、Sign、Verifyを直列に実行して、各操作後のguardと全消去を確認した。これは一入力の反復であり、入力分布を広げる試験ではない。
+v2実機試験では、AES-256 CTR-DRBGを用いる決定的な試験用乱数生成器を使用した。ホスト参照と同じ乱数種、メッセージ、期待ダイジェストを用いる。この乱数源は差分検査用であり、製品向けのエントロピー源ではない。クロック、ツールチェーン、リンカ配置、バイナリのハッシュ、実機記録のハッシュをマニフェストへ記録した。UF2形式の同じファームウェアイメージを二回起動し、KeyGen、Sign、Verifyを直列に実行して、各操作後に前後の保護領域と全領域の消去を検査した。これは一つの入力を反復する試験であり、入力分布を広げる試験ではない。
 
-v2の公式request差分適合試験では、保存済みNIST-v2 Level-Iの公式100-vector request（SHA-256 \texttt{81ff60e3...d6ebc7e}、完全値は補助資料）を、同一commitから別々に構築した通常APIと\texttt{SQISIGN\_LOWMEM\_ONLY} APIへ与えた。低メモリ側は通常entryを呼ばず、呼出側所有workspace版のKeyGen、Sign、Open、およびVerifyだけを用いる。各vectorで正当signed messageの復元、署名一bit改変の拒否、前後guard、操作後消去を検査した。通常APIを一回、低メモリAPIを別々に起動したprocessで二回実行した。三つの応答列は同一だが、低メモリ側の反復は同じrequest集合と同一commitの通常経路を共有するため、独立なoracleではない。旧公式responseをoracleとするKATでもない。
+v2の差分適合試験では、保存済みのNIST-v2 Level-I公式入力ベクトル100本を用いた。入力ファイルのSHA-256は\texttt{81ff60e3...d6ebc7e}であり、完全な値は補助資料に記録した。同じコミットから通常APIと\texttt{SQISIGN\_LOWMEM\_ONLY} APIを別々に構築し、両方へ同じ入力を与えた。低メモリ側は通常の入口を呼ばず、呼出し側所有の作業領域を用いるKeyGen、Sign、Open、Verifyだけを実行する。各ベクトルについて、正当な署名付きメッセージの復元、署名の1 bit改変の拒否、前後の保護領域、および操作後の消去を検査した。通常APIは一回、低メモリAPIは別々に起動したプロセスで二回実行した。三つの応答列は一致したが、同じ入力集合と同じコミットの通常経路を共有するため、独立した期待値ではない。また、旧公式応答を期待値とする既知解テストでもない。
 
-v3実機試験では、公式既知解テストの第0ベクトルをfirmwareへ埋め込み、公開鍵、秘密鍵、署名付きmessage、復元messageをbyte単位で照合した。D1の対比較は5組10 bootで順序を反転し、10 captureすべてで\texttt{firmware\_dirty=0}を検査した。D3は別のclean commitから一回の第0ベクトルK/S/Vを取得し、ELF、UF2、map、archive、serial capture、source patch、bundleのdigestを一つのsummaryへ固定した。旧dirty campaignは投稿用の集計から除外した。
+v3実機試験では、公式既知解テストの第0ベクトルをファームウェアへ埋め込み、公開鍵、秘密鍵、署名付きメッセージ、復元メッセージをバイト単位で照合した。一関数適応版は、実行順を反転した5組、合計10回の起動時測定で公式版と比較した。二関数適応版は、第0ベクトルによるKeyGen、Sign、Verifyを一回測定した。報告する測定は、未コミットの変更を含まないソースコードとファームウェアに固定した。バイナリ、実機記録、差分パッチのSHA-256を公開補助資料に記録した。
 
-hostでは公式headとD3 headをclean treeから別々に構築し、\texttt{p324\_3}、\texttt{p500\_27}、\texttt{p664\_17}の全てでAPI test、scheme self-test、および公式response 100本を完走した。異なるparameter/request組は三parameter\(\times\)100本の300組である。各組を公式版とD3版で一回ずつ実行したため、実装別の検査回数は合計\num{600}回となる。Arm frame監査も同じ六構成を対象とする。v2のsource、build、resultは移動も上書きもせず、v3用の全成果物を専用directoryへ保存する。
+ホスト計算機では、公式版と二関数適応版を別々に構築した。\texttt{p324\_3}、\texttt{p500\_27}、\texttt{p664\_17}のすべてについて、API試験、方式自己試験、および公式応答100本を処理した。異なるパラメータと入力の組は、3集合\(\times\)100本の300組である。各組を公式版と二関数適応版で一回ずつ実行したため、合計\num{600}回検査した。Arm用スタックフレームの監査も同じ六構成を対象とし、版間でオブジェクトファイルを共有しない。
 
-単一ベクトル反復とは別に、公式responseの第0--9ベクトルを一つのbootで順に処理するfirmwareも構築した。公式版とv3適応版のそれぞれについて、暗号archive直前へ0個または512個のThumb NOPを置く二配置を用いる。後者は\texttt{crypto\_sign\_keypair}, \texttt{crypto\_sign}, \texttt{crypto\_sign\_open}を正確に\num{1024} bytes移動させる。この試験では正当K/S/Vのbyte一致に加えて、署名先頭bitを反転したnegative Verifyも各ベクトルで実行する。
+単一ベクトルの反復とは別に、公式応答の第0--9ベクトルを一回の起動で順に処理するファームウェアも構築した。公式版とv3適応版のそれぞれについて、暗号ライブラリの直前へ0個または512個のThumb無操作（NOP）命令を置く二つの配置を用いる。後者では、\texttt{crypto\_sign\_keypair}、\texttt{crypto\_sign}、\texttt{crypto\_sign\_open}の開始アドレスが正確に\num{1024} bytes移動する。この試験では、正当なKeyGen、Sign、Verifyの出力一致に加えて、署名先頭の1 bitを反転した改変署名を各ベクトルで拒否することも確認する。
 
 \section{評価方法}
 \label{sec:evaluation-method}
@@ -689,56 +679,56 @@ hostでは公式headとD3 headをclean treeから別々に構築し、\texttt{p3
 評価項目を次の五群に分けた。
 
 \begin{enumerate}[leftmargin=2.2em]
-  \item \textbf{機能同値性}: 参照経路との公開鍵、秘密鍵、signed message、post-RNG stateのbyte一致、正当署名の受理、改変署名の拒否。
-  \item \textbf{メモリ}: 型の\texttt{sizeof}、link map、ELF section、heap policy、PSP/MSP watermark、未予約SRAM。
-  \item \textbf{移植性}: RADIX64/RADIX32、Level I/III/Vの関連fixture、Arm compile、strict alias、VLA/alloca禁止。
-  \item \textbf{性能}: host上の交互順序反復と、RP2350上のoperation elapsed time。hostとtargetの結果は混同しない。
-  \item \textbf{漏洩screen}: 固定対ランダムのタイミング検査、制御フロー・実効address列の再現性、局所powmod timing診断。
+  \item \textbf{機能同値性}: 参照経路との公開鍵、秘密鍵、署名付きメッセージ、乱数生成器の事後状態のバイト一致、正当署名の受理、および改変署名の拒否。
+  \item \textbf{メモリ}: 型の\texttt{sizeof}、リンカマップ、ELFセクション、ヒープ使用方針、PSP/MSP上書き深さ、および未予約SRAM。
+  \item \textbf{移植性}: RADIX64/RADIX32、Level I/III/Vの関連試験、Arm向けコンパイル、Cの別名参照規則、および可変長配列・\texttt{alloca}の禁止。
+  \item \textbf{性能}: ホスト計算機上で実行順を反転した反復試験と、RP2350実機上の各操作の経過時間。両環境の結果を混同しない。
+  \item \textbf{入力依存性}: 固定入力とランダム入力の実行時間検査、制御フロー・実効アドレス列の再現性、および局所的なモジュラー指数演算の実行時間診断。
 \end{enumerate}
 
 \subsection{版分離と比較設計}
 \label{sec:version-isolation}
 
-三つの実験系列、すなわちv2提案実装、公式v3、およびv3適応実装は、source、build、resultの各領域を分離した。比較マニフェストは、各系列のcommit、ELF、実機capture、計測量の境界をSHA-256 digestで結び付ける。具体的なディレクトリ構成とdigestは、GitHub上の補助資料へ移す。
+v2提案実装、公式v3、およびv3適応実装は、固定したコミットから独立に構築し、実装間でオブジェクトファイルを共有しない。比較マニフェストは、各実装のコミット、ELF、実機記録、および各測定量の定義をSHA-256で対応付ける。
 
-公式v3とv3適応実装は同じ基準commit、parameter set、compiler optionを使い、適応headまでの追跡対象source差分を一ファイルに限定する。この版内比較を局所重畳の効果推定に用いる。v2とv3の比較は、parameter、アルゴリズム、整数表現、メモリ所有モデルが同時に変わるため記述的な比較に限る。特に、v2の明示的arenaとv3のstack watermarkを一つの「RAM使用量」として減算しない。
+公式v3とv3適応実装は、同じ基準コミット、パラメータ集合、コンパイラオプションを使う。比較対象とするソースコードの差分は、一関数適応版では一ファイル、二関数適応版では二ファイルに限定する。この版内比較を、局所的な領域共有の効果推定に用いる。v2とv3の間では、パラメータ、アルゴリズム、整数表現、およびメモリ所有方式が同時に変わる。このため、版間の数値は参考値として記述するだけにとどめる。特に、v2の明示的アリーナとv3のスタック上書き深さを、一つのRAM使用量として減算しない。
 
-\subsection{正しさのgate}
+\subsection{機能・メモリ安全性の検証}
 
 \begin{table}[H]
   \centering
-  \caption{v2提案実装で実施した主なacceptance gate}
+  \caption{v2提案実装に対する主な検証項目}
   \label{tab:correctness-gates}
   \small
   \begin{tabularx}{\linewidth}{@{}p{0.33\linewidth}Xr@{}}
     \toprule
-    Gate & 判定条件 & 結果 \\
+    検証項目 & 判定条件 & 結果 \\
     \midrule
-    sketch collision & $2^{100}$と$2^{100}+1$が全精度比較を通り正順序 & PASS \\
-    凍結トランスクリプト & PK/SK/signed messageが12 seed全てでbyte一致 & 12/12 \\
-    公式request差分適合試験 & 通常APIと低メモリAPIがbyte一致、別processで2反復 & 100/100 $\times 2$ \\
-    sanitizer & ASanおよびUBSanの対象fixtureが無警告完走 & PASS \\
-    radix/level & RADIX64/RADIX32およびLevel I/III/Vの対象gate & PASS \\
-    Arm ABI & candidate/phase/operationが規定byte数と一致 & PASS \\
-    stack policy & 選択済み閉包でVLA/allocaとdynamic stack recordが0 & PASS \\
-    target K/S/V & 同一UF2・同一入力の2 bootでK/S/V、guard、消去を完了 & 2/2 \\
-    Verify RNG非使用 & Verify前後でRNG stateが不変 & PASS \\
+    ノルム要約の衝突 & $2^{100}$と$2^{100}+1$が全精度比較を通り正順序 & PASS \\
+    固定入力 & PK/SK/署名付きメッセージが12入力すべてでバイト一致 & 12/12 \\
+    公式入力の差分適合試験 & 通常APIと低メモリAPIがバイト一致、別プロセスで2反復 & 100/100 $\times 2$ \\
+    メモリ安全性検査 & ASanおよびUBSanの対象試験で警告なし & PASS \\
+    基数・Level & RADIX64/RADIX32およびLevel I/III/Vの対象試験 & PASS \\
+    Arm ABI & 候補・処理段階・操作領域が規定バイト数と一致 & PASS \\
+    スタック方針 & 対象コードでVLA/\texttt{alloca}と動的フレーム記録が0 & PASS \\
+    RP2350上の全操作 & 同一UF2・同一入力の2回の起動で全操作成功、保護領域・消去が正常 & 2/2 \\
+    Verifyの乱数非使用 & Verify前後で乱数生成器の状態が不変 & PASS \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-二つの低メモリrunと通常APIが生成した三つの応答は全てbyte単位で一致し、SHA-256は\texttt{1d86d15c5d2bfbef99f17634496086a3ab80f0e848d34d3e9409d75f3019dd68}であった。従って、観測した100入力ではworkspace化による出力差を検出しなかった。ただし、Compact固定精度KeyGenは旧GMP実装と乱数消費列が異なるため、保存済み旧NIST-v2応答はこの比較のoracleではない。本稿が主張するのは、公式requestの全100入力を用いた同一v2提案algorithm内の通常経路対caller-owned経路の差分適合であり、旧GMP応答とのKAT一致ではない。
+二回の低メモリAPI試行と一回の通常API試行が生成した三つの応答は、すべてバイト単位で一致した。SHA-256は\texttt{1d86d15c5d2bfbef99f17634496086a3ab80f0e848d34d3e9409d75f3019dd68}であった。観測した100入力では、作業領域の所有方式を変えたことによる出力差を検出しなかった。ただし、Compact固定精度版のKeyGenは旧GMP実装と乱数消費列が異なるため、保存済みの旧NIST-v2応答を期待値には使えない。本稿が主張するのは、公式入力100本を用いた、同じv2提案アルゴリズム内の通常経路と呼出し側所有経路の差分適合である。旧GMP応答との既知解一致ではない。
 
-v3では公式\texttt{p324\_3}の既知解を基準とし、無改変実装とv3適応実装の双方へ同じgateを適用した。\cref{tab:v3-correctness-gates}の実機既知解テストは、単に自己生成した署名を自己検証する試験ではない。公式ベクトルの公開鍵、秘密鍵、署名付きmessage、復元messageとの完全一致を要求する。
+v3では公式\texttt{p324\_3}の既知解を基準とし、無改変実装とv3適応実装の双方へ同じ検証を適用した。\cref{tab:v3-correctness-gates}の実機既知解テストは、自己生成した署名を同じ実装で検証するだけの試験ではない。公式ベクトルに含まれる公開鍵、秘密鍵、署名付きメッセージ、復元メッセージとのバイト一致を要求する。
 
 \begin{table}[H]
   \centering
-  \caption{SQIsign v3.0 \texttt{p324\_3}の正しさgate}
+  \caption{SQIsign v3.0 \texttt{p324\_3}の機能検証}
   \label{tab:v3-correctness-gates}
   \small
   \begin{tabularx}{\linewidth}{@{}Xcc@{}}
     \toprule
-    Gate & v3公式 & v3適応実装 \\
+    検証項目 & v3公式 & v3適応実装 \\
     \midrule
     ホストNIST API試験 & PASS & PASS \\
     ホスト自己試験 & PASS & PASS \\
@@ -751,46 +741,46 @@ v3では公式\texttt{p324\_3}の既知解を基準とし、無改変実装とv3
 
 \subsection{メモリ計測の区別}
 
-「operation arena payload」「guard込みowner」「link済みmain bank」「PSP/MSP予約」「観測watermark」を別の量として記録する。watermarkは一入力で実際に上書きされた深さであり、最悪stack boundではない。未使用領域を報告する際は、観測watermarkまでを差し引くのではなく、保守的な予約全体を差し引く。
+操作用アリーナ本体、前後の保護領域を含む操作用共有領域、リンク時に確保する主SRAMバンク、PSP/MSP予約、および実測したスタック上書き深さを別の量として記録する。上書き深さは、一つの入力を処理したときに実際に書き換えられた範囲であり、最悪時スタック上界ではない。未予約領域を算出するときは、観測した上書き深さではなく、PSPとMSPの予約全体を総SRAMから差し引く。
 
 \section{評価結果}
 \label{sec:results}
 
 \subsection{候補領域と操作アリーナ}
 
-\cref{tab:sketch-arena}に全精度表実装からv2提案実装への直接差分を示す。全精度ノルム二行を削除したことでcandidate workspaceは\num{14024} bytesまで縮小した。しかしphase unionは\num{94912} bytesで止まる。これは既存のML2 retry workspaceが新たな最大memberになるためである。また、\num{77168} byteのlattice stateは候補探索と同時生存するため、重畳していない。局所配列だけでなく干渉関係を扱わなければ、この支配項の移動は説明できない。
+\cref{tab:sketch-arena}に、全精度表実装からv2提案実装への差分を示す。全精度ノルム二行を削除したことで、候補探索用領域は\num{14024} bytesまで縮小した。しかし、処理段階ごとの共有領域は\num{94912} bytes残る。これは、既存のML2再試行用領域が新たに最大の要素となるためである。また、\num{77168} byteの格子状態は候補探索と同時に生存するため、候補探索用領域とは共有していない。局所配列の大きさだけでなく、同時に生存する領域の関係を調べなければ、この最大要素の移動を説明できない。
 
 \begin{table}[H]
   \centering
-  \caption{certified norm sketchによるCortex-M33/RADIX32 arena差分}
+  \caption{ノルム要約によるCortex-M33/RADIX32のアリーナ使用量の変化}
   \label{tab:sketch-arena}
   \small
   \begin{tabular}{@{}lrrr@{}}
     \toprule
     項目 & 全精度表 [B] & v2提案 [B] & 差分 [B] \\
     \midrule
-    常駐full-norm 2行 & \num{269568} & 0 & $-\num{269568}$ \\
-    candidate workspace & \num{275840} & \num{14024} & $-\num{261816}$ \\
-    phase union & \num{275840} & \num{94912} & $-\num{180928}$ \\
-    完全operation arena & \num{353008} & \num{172080} & $-\num{180928}$ \\
+    常駐する全精度ノルム2行 & \num{269568} & 0 & $-\num{269568}$ \\
+    候補探索用領域 & \num{275840} & \num{14024} & $-\num{261816}$ \\
+    処理段階ごとの共有領域 & \num{275840} & \num{94912} & $-\num{180928}$ \\
+    操作用アリーナ全体 & \num{353008} & \num{172080} & $-\num{180928}$ \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-完全operation arenaの削減率は
+操作用アリーナ全体の削減率は
 \begin{equation}
   \frac{\num{353008}-\num{172080}}{\num{353008}}
   =\num{0.51253229}
 \end{equation}
 であり、\num{51.2532}\%である。
 
-\subsection{firmware全体のSRAMとflash}
+\subsection{ファームウェア全体のSRAMとフラッシュ}
 
-\cref{tab:firmware-memory}にv2提案実装のlink結果を示す。全精度表実装からv2提案実装への\num{180928} byte削減は、そのまま排他的SRAM予約量と未予約SRAMへ反映された。すなわち、単にheapをstackへ移した結果ではない。v2提案実装のBINは\num{288384} bytesであり、全精度表実装より\num{880} bytes大きい。これは再生成・比較コードのflash costである。
+\cref{tab:firmware-memory}に、v2提案実装をリンクした結果を示す。全精度表実装からv2提案実装への\num{180928} byteの削減は、そのまま排他的SRAM予約量の削減と未予約SRAMの増加に反映された。したがって、ヒープ上のデータをスタックへ移しただけの結果ではない。v2提案実装のバイナリイメージは\num{288384} bytesであり、全精度表実装より\num{880} bytes大きい。この増加は、全精度値の再生成と比較を行うコードによるものである。
 
 \begin{table}[H]
   \centering
-  \caption{v2提案実装のRP2350 firmwareメモリ内訳}
+  \caption{v2提案実装をRP2350上で動かすために予約したメモリの内訳}
   \label{tab:firmware-memory}
   \small
   \begin{tabular}{@{}lrr@{}}
@@ -805,167 +795,167 @@ v3では公式\texttt{p324\_3}の既知解を基準とし、無改変実装とv3
 \begin{figure}[H]
   \centering
   \input{figures/memory-bars.tikz.tex}
-  \caption{全精度表実装とv2提案実装のRP2350 SRAM予約。両棒はオンチップSRAM総量\num{532480} bytesを同じ尺度で表す。ownerは前後guard 128 bytesを含む。「共通予約」\num{18128} bytesはMSP \num{8192} bytesとその他main-bank領域\num{9936} bytesの和である。PSP/MSPはwatermarkではなく予約全体であり、白領域だけが未予約である。右下はBIN imageの差分で、SRAM棒には含めない。}
+  \caption{全精度表実装とv2提案実装のRP2350 SRAM予約量。両方の棒は、オンチップSRAM総量\num{532480} bytesを同じ尺度で表す。操作用共有領域には、前後の保護領域128 bytesを含む。「共通予約」\num{18128} bytesは、MSP予約\num{8192} bytesとその他の主SRAMバンク領域\num{9936} bytesの和である。PSPとMSPは実測した上書き深さではなく予約全体を示し、白い部分だけが未予約である。右下のバイナリイメージ差分は、SRAMの棒には含めない。}
   \label{fig:memory-bars}
 \end{figure}
 
-\subsection{実機stack観測}
+\subsection{実機で観測したスタック上書き深さ}
 
-PSPには\num{131072} bytesを予約し、同じUF2・決定的入力による2 bootの双方でKeyGen \num{91980} bytes、Sign \num{120452} bytes、Verify \num{20768} bytesの上書きextentを観測した。最も深いSignでも観測上の余裕は\num{10620} bytesであった。MSPも両bootで一致し、\num{8192} byte予約に対して保守的上限\num{2396} bytesを観測した。
+PSPには\num{131072} bytesを予約した。同じUF2と決定的入力を用いた二回の起動では、KeyGenで\num{91980} bytes、Signで\num{120452} bytes、Verifyで\num{20768} bytesの上書き深さを観測した。二回の値は一致した。最も深いSignでも、観測値と予約量の差は\num{10620} bytesであった。MSPの観測値も二回で一致し、\num{8192} byteの予約に対して保守的に見積もった上書き深さは\num{2396} bytesであった。
 
-二回のwatermarkだけでは入力依存経路の上界にならないため、測定済みELFの\texttt{.text}とbyte一致するclean再構築版を別に解析した。126個のstack-usage fileにある1154記録には動的frameがなく、link後の三つの操作根から到達するmetadata欠落と未解決間接callを0件まで閉じた。二つの再帰componentについては、長さが各子で半減するsource条件と最大長248からactive frameを高々9とした。source digest、生成定数、間接call解決、veneer、手動assembly/newlib frameのいずれかが変われば検査を停止する。
+二回の実測値だけでは、入力によって変わる実行経路の上界にならない。このため、測定済みELFの\texttt{.text}セクションとバイト一致する再構築版を別に解析した。126個のスタック使用量ファイルにある1154件の記録には、動的フレームがなかった。リンク後のKeyGen、Sign、Verifyから到達する関数について、スタック情報が欠落する関数と解決できない間接呼出しを0件まで調べた。二つの再帰処理では、各子呼出しで入力長が半減するというソースコード上の条件と最大長248から、同時に存在するフレームを高々9個とした。ソースコードのダイジェスト、生成定数、間接呼出しの解決結果、分岐中継コード、手書きアセンブリまたはnewlibのフレーム情報が変わった場合は、検査を停止する。
 
-縮約call graphの最長路へSecure Armv8-Mの最大例外entry \num{\VTwoExceptionPspAllowanceBytes} bytesを加えた結果を\cref{tab:v2-static-psp-bound}に示す。全三操作がPSP予約内に収まり、最小余裕はSignの\num{\VTwoStaticSignPspMarginBytes} bytesである。観測値がsoftware-call上界と一致したことは、解析対象ELFと計測経路のcross-checkとして用いる。
+再帰処理をまとめた呼出しグラフの最長経路に、Armv8-Mのセキュア状態における最大例外進入分\num{\VTwoExceptionPspAllowanceBytes} bytesを加えた結果を\cref{tab:v2-static-psp-bound}に示す。三操作すべてがPSP予約内に収まり、最小の余裕はSignの\num{\VTwoStaticSignPspMarginBytes} bytesである。実測値とソフトウェア呼出し分の上界が一致したことから、解析対象ELFと計測経路の対応を確認した。
 
 \begin{table}[H]
   \centering
-  \caption{v2固定imageの操作PSP解析。最終上界はsoftware-call上界に最大例外entry \num{\VTwoExceptionPspAllowanceBytes} bytesを加え、余裕は\num{131072} byte予約との差とした。}
+  \caption{固定したv2ファームウェアイメージのPSP解析。PSP上界は、ソフトウェア呼出し分の上界に最大例外進入分\num{\VTwoExceptionPspAllowanceBytes} bytesを加えた値である。予約余裕は、\num{131072} byteのPSP予約との差である。}
   \label{tab:v2-static-psp-bound}
   \small
   \begin{tabular}{@{}lrrrr@{}}
     \toprule
-    操作 & 実機観測 [B] & software call [B] & PSP上界 [B] & 予約余裕 [B] \\
+    操作 & 実機観測 [B] & ソフトウェア呼出し [B] & PSP上界 [B] & 予約余裕 [B] \\
     \midrule
     \input{generated/v2-static-psp-bound-rows.tex}\\
     \bottomrule
   \end{tabular}
 \end{table}
 
-このcertificateが対象とするのは、固定imageのlink済みKeyGen/Sign/Verify Thread-mode経路と、PSPに積まれる一回の最大例外entryである。handlerのsoftware frame、enabled IRQ集合、割込みnesting、entry時の生存MSP量は含まない。従って「全入力依存の操作PSP経路が予約内に収まる」とは述べるが、「割込み込み全programの最悪stack上界」とは述べない。\num{211072} byteという未予約量の算出でもPSP/MSPの実測値ではなく予約全体を控除する。
+この解析が対象とするのは、固定ファームウェアイメージにリンクされたKeyGen、Sign、Verifyのスレッドモード（Thread mode）経路と、PSPに積まれる一回の最大例外進入分である。割込み処理のソフトウェアフレーム、有効な割込み要求の集合、割込みの入れ子、および例外進入時点で使われているMSP量は含まない。したがって、リンク後に到達可能な各操作のPSP経路が予約内に収まるとは述べられるが、割込みを含むプログラム全体の最悪時スタック上界ではない。未予約量\num{211072} bytesの算出でも、PSPとMSPの実測値ではなく予約全体を控除する。
 
 \subsection{実行時間}
 
-\cref{tab:target-runtime}は第1 bootで得た経過時間である。cycle列は\SI{150}{\mega\hertz}が操作中一定であるとして時間から換算した値で、performance counterの直接値ではない。第2 bootではKeyGen、Sign、Verifyがそれぞれ\num{\VTwoRepeatKeygenSeconds}、\num{\VTwoRepeatSignSeconds}、\num{\VTwoRepeatVerifySeconds} sであり、第1 bootとの差は295、$-1150$、15~$\mu$sだった。これは同じ決定的経路の再現性であって性能分布ではない。KeyGenは約45分、Signは約127分を要したため、本実装はメモリ実現可能性の実証であり、リアルタイム署名器ではない。
+\cref{tab:target-runtime}は、一回目の起動で得た経過時間を示す。サイクル数は、操作中のクロックが\SI{150}{\mega\hertz}で一定であるとして、経過時間から換算した値である。性能カウンタから直接取得した値ではない。二回目の起動では、KeyGen、Sign、Verifyがそれぞれ\num{\VTwoRepeatKeygenSeconds}、\num{\VTwoRepeatSignSeconds}、\num{\VTwoRepeatVerifySeconds} sであった。一回目との差は、それぞれ295、$-1150$、15~$\mu$sである。これは同じ決定的経路の再現性を示すだけであり、入力分布に対する性能分布ではない。KeyGenは約45分、Signは約127分を要した。本実装はメモリ内に収められることの実証であり、リアルタイム署名器ではない。
 
 \begin{table}[H]
   \centering
-  \caption{RP2350上の決定的K/S/V実行（第1 boot。第2 bootのPSP深さは同一）}
+  \caption{RP2350上の決定的なKeyGen、Sign、Verify実行（一回目の起動。二回目のPSP上書き深さは同一）}
   \label{tab:target-runtime}
   \small
   \begin{tabular}{@{}lrrr@{}}
     \toprule
-    操作 & 時間 [s] & \SI{150}{\mega\hertz}換算cycle & PSP extent [B] \\
+    操作 & 時間 [s] & \SI{150}{\mega\hertz}換算サイクル数 & PSP上書き深さ [B] \\
     \midrule
     \input{generated/v2-runtime-rows.tex}\\
     \bottomrule
   \end{tabular}
 \end{table}
 
-全精度表実装とv2提案実装を交互順序で比較したhost試験は、15 seed、30 rowsを二回行った。v2提案実装と全精度表実装のmedian比はKeyGenで\num{1.003695}と\num{1.006464}、Signで\num{0.999481}と\num{0.998980}であった。host上ではKeyGenに小さなsub-percent costが見える一方、Sign slowdownの方向は再現しなかった。単一のtarget run同士ではKeyGen \num{1.000704}、Sign \num{1.037312}、Verify \num{1.000593}であったが、反復target分布がないため「Signが一般に\num{3.7}\%遅くなる」とは結論しない。
+全精度表実装とv2提案実装の実行順を入れ替えるホスト試験を二回行った。各試験は15個の乱数種について二回ずつ両実装を測定した、30組の対応のある測定からなる。v2提案実装の全精度表実装に対する実行時間中央値の比は、KeyGenで\num{1.003695}と\num{1.006464}、Signで\num{0.999481}と\num{0.998980}であった。ホスト計算機上のKeyGenでは1\%未満の増加が見られたが、Signの比は二回とも1を下回った。ただし、これらは有限の測定集合の記述統計であり、一般的な高速化や同等性を示す検定ではない。実機上の単一観測を比べると、KeyGenは\num{1.000704}、Signは\num{1.037312}、Verifyは\num{1.000593}であった。しかし、実機上の反復測定分布がないため、Signが一般に\num{3.7}\%遅くなるとは結論しない。
 
-\subsection{RAM--stack--flash--timeのPareto解釈}
+\subsection{RAM・スタック・フラッシュ・実行時間のトレードオフ}
 
-v2提案実装は全精度表実装に対し、operation RAMを大幅に減らし、局所stack frameを48--64 bytes増やし、flashを\num{880} bytes増やした。host KeyGenには小さな再計算costがあるが、host Signでは増加を分離できていない。実機の絶対時間は長く、target上の統計的なtime costは未確定である。このためv2提案実装を「全指標で優れる」とは位置付けず、RAMを主要目的としたPareto点として扱う。
+v2提案実装は全精度表実装に対し、操作用RAMを\num{180928} bytes削減した。一方、局所スタックフレームは48--64 bytes、フラッシュ使用量は\num{880} bytes増加した。ホスト計算機上のKeyGenでは小さな再計算時間が見られたが、Signでは実行時間増加を確認できなかった。実機上の絶対実行時間は長く、実行時間の増加率を推定できる反復測定もない。このため、v2提案実装がすべての指標で優れるとは位置付けない。本実装は、スタックとフラッシュの小さな増加を受け入れて、操作用RAMを大幅に削減する構成である。
 
 \begin{figure}[H]
   \centering
-  \input{figures/pareto.tikz.tex}
-  \caption{全精度表実装を1としたv2提案実装のresource/time trade-off profile。resource値はlink・型から得た確定値である。host timeは順序反転した二つの30-row実験を個別点で示し、target timeは一回ずつの観測なので白抜き点とした。異なる測定条件の点は結んでいない。PSP予約は不変だが、局所frameは48--64 bytes増加した。}
-  \label{fig:pareto}
+  \input{figures/tradeoff.tikz.tex}
+  \caption{全精度表実装を1としたv2提案実装のRAM、スタック予約、フラッシュ、および実行時間の比。メモリ量はリンク結果と型サイズから得た値である。ホスト計算機上の実行時間は、実行順を反転した二つの30組の測定を別々の点で示す。実機上の実行時間は各一回の観測なので白抜き点とした。測定条件が異なる点は結んでいない。PSP予約量は変わらないが、局所スタックフレームは48--64 bytes増加した。}
+  \label{fig:tradeoff}
 \end{figure}
 
-\subsection{SQIsign v3への転用追試}
+\subsection{SQIsign v3への適用結果}
 \label{sec:v3-results}
 
-最初に作成したD1は、\texttt{quat\_lll\_dual\_reduce\_ideal}だけへ二つの重畳を施す一関数版である。\cref{tab:v3-results}は、同じ公式v3基準commitから構築した無改変実装とD1の版内比較を示す。両者はhost上でそれぞれ公式response 100本を通過した。D1は同関数のframeを\num{34816} bytesから\num{30888} bytesへ削減し、その差\num{3928} bytesは5回すべてでSignのPSP高水位の減少量と一致した。この反復は局所frame差が実機stackへ現れることを確認する中間実験であり、最終的な転用範囲の根拠には後述のD3を用いる。
+一関数適応版は、\texttt{quat\_lll\_dual\_reduce\_ideal}だけに二組の領域共有を適用する。\cref{tab:v3-results}は、同じ公式v3基準コミットから構築した無改変実装との比較を示す。両実装は、ホスト計算機上でそれぞれ公式応答100本を処理した。一関数適応版は同関数のスタックフレームを\num{34816} bytesから\num{30888} bytesへ削減した。その差\num{3928} bytesは、5回すべてでSignのPSP上書き深さの減少量と一致した。この反復試験は、関数の局所スタックフレーム削減が実機のスタック使用量へ反映されるかを調べる。二つの関数へ転用した結果は、後述する二関数適応版で評価する。
 
 \begin{table}[H]
   \centering
-  \caption{RP2350上の公式SQIsign v3.0と一関数版D1の比較。時間列は各5回の中央値、差分列は5組の個別比率の中央値である。}
+  \caption{RP2350上の公式SQIsign v3.0と一関数適応版の比較。時間列は各5回の中央値、差分列は5組の個別比率の中央値である。}
   \label{tab:v3-results}
   \small
   \begin{tabular}{@{}lrrr@{}}
     \toprule
-    項目 & v3公式 & D1 & 差分 \\
+    項目 & v3公式 & 一関数適応版 & 差分 \\
     \midrule
     \input{generated/v3-results-rows.tex}\\
     \bottomrule
   \end{tabular}
 \end{table}
 
-KeyGenとVerifyのPSP上書き深さが変わらないことは、D1がSignの観測高水位だけを縮小したことと整合する。三操作のPSP値は、公式版、D1とも5回の版内反復で一定だった。Sign時間の対ごとの増加率は\num{0.4112}--\num{0.4204}\%で、中央値\num{0.4190}\%だった。この値は当該binary、基板、clock、決定的既知解ベクトルについてのD1観測であり、入力分布やD3のslowdownを表さない。
+KeyGenとVerifyのPSP上書き深さが変わらないことは、一関数適応版がSignだけを変更したことと整合する。三操作のPSP上書き深さは、公式版と一関数適応版のいずれでも5回の反復で一定だった。Sign時間の対ごとの増加率は\num{0.4112}--\num{0.4204}\%で、中央値は\num{0.4190}\%だった。この値は、当該バイナリ、基板、クロック、および決定的な既知解ベクトルに対する観測である。入力分布に対する値でも、二関数適応版の実行時間増加率でもない。
 
-D3では\texttt{protocols\_sign}の第三の重畳を加えた。\cref{tab:v3-d3-target}のclean RP2350 captureは、D3 sourceとfirmwareの双方を\texttt{dirty=0}で固定し、生成済みsource tree、ELF、UF2、map、archive、capture、patch、bundleのdigestを保存する。第0ベクトルのK/S/Vは公式responseと一致し、Sign PSPは公式版\num{\VThreeDThreeOfficialSignPspBytes} bytesから\num{\VThreeDThreeSignPspBytes} bytesへ、合計\num{\VThreeDThreeSavedBytes} bytes（\num{\VThreeDThreeSavedPercent}\%）減少した。D1からの追加削減\num{\VThreeDThreeSecondFunctionSavedBytes} bytesは、\texttt{protocols\_sign} frameの削減量と一致する。D3の実機captureは一回なので、経過時間は記録するが比較結果としては用いない。
+二関数適応版では、\texttt{protocols\_sign}の第三の領域共有を加えた。\cref{tab:v3-two-function-target}のRP2350測定は、未コミットの変更を含まないソースコードとファームウェアに対応付けた。第0ベクトルのKeyGen、Sign、Verifyは公式応答と一致した。SignのPSP上書き深さは、公式版の\num{\VThreeDThreeOfficialSignPspBytes} bytesから\num{\VThreeDThreeSignPspBytes} bytesへ、合計\num{\VThreeDThreeSavedBytes} bytes（\num{\VThreeDThreeSavedPercent}\%）減少した。一関数適応版から追加で減少した\num{\VThreeDThreeSecondFunctionSavedBytes} bytesは、\texttt{protocols\_sign}のスタックフレーム削減量と一致する。二関数適応版の実機測定は一回だけなので、経過時間は性能比較に用いない。
 
 \begin{table}[H]
   \centering
-  \caption{公式v3と二関数版D3のRP2350 \texttt{p324\_3}比較。frameはArm objectの静的値、PSPは公式版5回の中央値とD3一回の観測である。}
-  \label{tab:v3-d3-target}
+  \caption{RP2350上の公式v3と二関数適応版の\texttt{p324\_3}比較。関数スタックフレームはArmオブジェクトファイルから得た静的値である。PSP上書き深さは、公式版では5回の中央値、二関数適応版では一回の観測値である。}
+  \label{tab:v3-two-function-target}
   \small
   \begin{tabular}{@{}lrrr@{}}
     \toprule
-    項目 & 公式v3 & D3 & 差分 \\
+    項目 & 公式v3 & 二関数適応版 & 差分 \\
     \midrule
     \input{generated/v3-d3-results-rows.tex}\\
     \bottomrule
   \end{tabular}
 \end{table}
 
-単一parameterへの依存を調べるため、公式版とD3を三つの公式parameter setすべてで生成した。各構成はAPI test、scheme self-test、公式response 100本を通過した。これは300個の異なるparameter/request組を二実装で検査した合計\num{\VThreeDThreeKatVectors}回の実行である。\cref{tab:v3-all-parameter-frames}のとおり、二関数のframeは全六比較で減少した。これは局所配置が三parameterへ適用できることを示すが、\texttt{p500\_27}と\texttt{p664\_17}のwhole-image SRAMまたは実機watermarkを示すものではない。
+一つのパラメータ集合だけに依存する変更でないことを調べるため、公式版と二関数適応版を三つの公式パラメータ集合すべてで生成した。各構成は、API試験、方式自己試験、公式応答100本を通過した。これは、300種類のパラメータと入力の組を二実装で検査した、合計\num{\VThreeDThreeKatVectors}回の実行である。\cref{tab:v3-all-parameter-frames}のとおり、二つの関数のスタックフレームは六つの比較すべてで減少した。この結果は、局所的な領域共有を三つのパラメータ集合へ適用できることを示す。ただし、\texttt{p500\_27}と\texttt{p664\_17}について、ファームウェア全体のSRAM量または実機上のスタック上書き深さを示すものではない。
 
 \begin{table}[H]
   \centering
-  \caption{全公式parameter setにおけるD3のArm Cortex-M33 object frame。}
+  \caption{三つの公式パラメータ集合における二関数適応版のArm Cortex-M33用スタックフレーム。}
   \label{tab:v3-all-parameter-frames}
   \scriptsize
   \begin{tabular}{@{}llrrr@{}}
     \toprule
-    parameter & 関数 & 公式 [B] & D3 [B] & 削減 \\
+    パラメータ & 関数 & 公式 [B] & 二関数適応版 [B] & 削減 \\
     \midrule
     \input{generated/v3-all-parameter-frame-rows.tex}\\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\subsection{v3 D1の複数入力・binary配置試験}
+\subsection{局所スタック削減の入力・コード配置依存性}
 
-追加試験はclean firmware commit \texttt{76f88dcc...}、公式source commit \texttt{6d017708...}、D1 source commit \texttt{9293313f...}から四つの独立imageを生成した。全imageでheap sectionは0、allocator入口は三つのfail-stop trapだけであり、19件の動的stack記録は版間・配置間で同一である。\cref{tab:v3-multi}に結果を示す。
+複数入力試験では、ファームウェアのコミット\texttt{76f88dcc...}、公式ソースコードのコミット\texttt{6d017708...}、一関数適応版のコミット\texttt{9293313f...}から、四つのファームウェアイメージを生成した。すべてのイメージでヒープ用セクションは0 byteであり、動的メモリ確保関数の入口は三つの強制停止処理だけである。19件の動的スタック記録は、実装間およびコード配置間で同一だった。\cref{tab:v3-multi}に結果を示す。
 
 \begin{table}[H]
   \centering
-  \caption{公式response 10入力と二つのlinked配置によるv3追加試験。各列は10入力$\times$2配置である。配置間PSP比較はK/S/V/negative Verifyの10入力、計40対を対象とする。}
+  \caption{公式応答の10入力と二つのコード配置を用いた局所スタック削減の検査。各列は10入力$\times$2配置からなる。配置間のPSP比較は、KeyGen、Sign、Verify、および改変署名の拒否について各10入力、合計40対を対象とする。}
   \label{tab:v3-multi}
   \small
   \begin{tabular}{@{}lrr@{}}
     \toprule
-    項目 & 公式v3 & D1 \\
+    項目 & 公式v3 & 一関数適応版 \\
     \midrule
     \input{generated/v3-multi-results-rows.tex}\\
     \bottomrule
   \end{tabular}
 \end{table}
 
-40個の正当K/S/V経路と40個の改変拒否はすべて成功した。K/S/Vおよびnegative VerifyのPSP extentは、同一実装・入力の配置A/B間80比較で全て一致した。D1のSign削減量も20観測全てで\num{3928} bytesだった。従って、観測した削減が一つのKAT入力または一つのlinked addressだけに依存するという反対仮説には、この有界corpus内で反証を与える。
+40個の正当なKeyGen、Sign、Verify経路と、40個の改変署名拒否はすべて成功した。各操作のPSP上書き深さは、同じ実装・入力に対する配置AとBの80比較すべてで一致した。一関数適応版のSign削減量も、20観測すべてで\num{3928} bytesだった。したがって、観測した削減は、少なくともこの10入力と二配置の範囲では、一つの既知解入力または一つのリンクアドレスだけに依存しない。
 
-一方、同じmulti-vector imageにおけるSign時間差は\num{1.1327}--\num{1.5592}\%、中央値\num{1.3323}\%であり、単一ベクトルimageの\num{0.4190}\%とは一致しない。従って、D1またはD3の一般的slowdownを単一の百分率で主張しない。二配置間の入力ごとのSign時間順位は公式版でPearson \num{0.999999867}、D1で\num{0.999999912}と再現し、最大/最小比はそれぞれ\num{1.474635}, \num{1.468729}だった。ただし、この10本はseed、鍵、messageが同時に変わるため、固定鍵の秘密漏洩へ帰属する試験ではない。
+一方、同じ複数ベクトル用ファームウェアにおけるSign時間差は\num{1.1327}--\num{1.5592}\%、中央値は\num{1.3323}\%であり、単一ベクトル用ファームウェアの\num{0.4190}\%とは一致しない。したがって、v3適応実装の一般的な実行時間増加を単一の百分率で主張しない。二つのコード配置間における入力別Sign時間のPearson相関は、公式版で\num{0.999999867}、一関数適応版で\num{0.999999912}だった。入力間の最大時間と最小時間の比は、それぞれ\num{1.474635}、\num{1.468729}であった。ただし、この10入力では乱数種、鍵、メッセージが同時に変わる。この試験結果を、固定鍵の秘密情報に由来する漏洩へ帰属させることはできない。
 
-\subsection{v3の固定local-frame試作}
+\subsection{固定長配列版によるスタック上界の解析}
 
-19件の動的stack記録を一件ずつ調べ、\texttt{p324\_3/RADIX32}で定まる配列上界を生成sourceへ埋め込む固定frame試作を実装した。上界超過は\texttt{NDEBUG}で消えないtrapとし、\texttt{-Werror=vla -Werror=alloca}で再構築した。結果は18件が固定frameとなり、\texttt{mp\_div\_unsigned}一件はinlineまたは除去され、compiler報告の動的local-frameは0件となった。通常sourceでは公式response 100本、RP2350ではclean imageの第0ベクトルを通し、ELFではheap 0と三つのallocator trapを確認した。
+19件の動的スタック記録を一件ずつ調べ、\texttt{p324\_3/RADIX32}から定まる配列上界を生成ソースコードへ埋め込む固定長配列版を実装した。配列上界を超えた場合は、\texttt{NDEBUG}を指定しても消えない強制停止処理を実行する。\texttt{-Werror=vla -Werror=alloca}を指定して再構築した結果、18件が固定長のスタックフレームとなった。残る\texttt{mp\_div\_unsigned}一件はインライン展開または削除され、コンパイラが報告する動的局所フレームは0件となった。ホスト計算機では公式応答100本、RP2350ではコミットに固定したファームウェアイメージの第0ベクトルを検査した。ELFでは、ヒープ用セクションが0 byteであることと、三つの動的メモリ確保入口がすべて強制停止処理であることを確認した。
 
 \begin{table}[H]
   \centering
-  \caption{公式v3と固定local-frame試作。PSPは同じ第0ベクトル・同じ基板の別campaignであり、時間比較には用いない。}
-  \label{tab:v3-d2-static}
+  \caption{公式v3と固定長配列版の比較。PSP上書き深さは、同じ第0ベクトルと同じ基板を用いた別の測定系列から得た。実行時間の比較には用いない。}
+  \label{tab:v3-fixed-frame}
   \small
   \begin{tabular}{@{}lrrr@{}}
     \toprule
-    項目 & 公式v3 & 固定frame試作 & 差分 \\
+    項目 & 公式v3 & 固定長配列版 & 差分 \\
     \midrule
     \input{generated/v3-d2-static-rows.tex}\\
     \bottomrule
   \end{tabular}
 \end{table}
 
-固定frame試作は分類を静的化したが、Signの観測PSPを減らさず、KeyGenとVerifyのPSPを増やした。これは「VLAを固定配列へ置換すれば実測stackも直ちに減る」という解釈を退ける負の結果である。一方、予約への適合性は実測watermarkとは別に調べる必要があるため、この試作を基にlink固有のsoftware-call PSP上界を構成し、後述するhardware例外entryを加えた。
+固定長配列版はスタックフレームの大きさを静的に確定できるようにしたが、SignのPSP上書き深さは減らず、KeyGenとVerifyの値は増えた。この結果は、可変長配列を固定長配列へ置き換えるだけで実測スタック量も減る、という予想を支持しない。一方、PSP予約内に収まるかどうかは実測した上書き深さとは別に調べる必要がある。このため、固定長配列版を用いて、リンク結果に固有のソフトウェア呼出し分のPSP上界を求め、ハードウェア例外進入分を加えた。
 
-まず、成功時には到達しないnewlib診断経路の\texttt{fprintf}/\texttt{abort}を明示的なfail-stop trapへ置換し、暗号archiveを\texttt{-fstack-usage -Werror=vla -Werror=alloca}で再構築した。次に、link済みdisassemblyからBL/BLX、他symbolへのtail call、literal veneerを解決し、全\texttt{.su} recordと照合した。compiler metadataを持たない固定assembly/newlib helperについては、SP減算命令、最大保存量、命令断片、および関数bodyのSHA-256を結ぶ手動certificateを用いた。関数内の条件分岐をcallと誤認しないよう分離し、symbol境界を越える条件分岐3件はいずれもDCP floating-point wrapperの継続であり、対応する手動frameへ含めた。結果として、三つのK/S/V根から到達するmetadata欠落と未解決間接callsiteはともに0件となった。
+まず、正常終了時には到達しないnewlib診断経路の\texttt{fprintf}と\texttt{abort}を、明示的な強制停止処理へ置き換えた。暗号ライブラリは\texttt{-fstack-usage -Werror=vla -Werror=alloca}を指定して再構築した。次に、リンク済み逆アセンブリからBL/BLX命令、別シンボルへの末尾呼出し、および分岐中継コードを解決し、すべての\texttt{.su}記録と照合した。コンパイラがスタック情報を出力しない固定アセンブリとnewlib補助関数については、SP減算命令、最大保存量、命令断片、および関数本体のSHA-256を対応付けた手動記録を用いた。関数内の条件分岐を関数呼出しと誤認しないように区別した。シンボル境界を越える条件分岐3件は、いずれもDCP浮動小数点ラッパーの続きであり、対応する手動スタックフレームへ含めた。その結果、KeyGen、Sign、Verifyから到達する関数について、スタック情報の欠落と未解決の間接呼出し先はともに0件となった。
 
-再帰strongly connected componentはKeyGen/Signで3個、Verifyで0個である。離散対数再帰は入力長が各子で半分となり、この構成の最大入力長198に対してactive frameを高々9、Burnikel--Ziegler除算は一周ごとにlimb数が半減し、RADIX32の最大60 limbsに対して高々11とした。source上の減少条件と生成定数が変われば解析を停止する。各再帰componentをこのrank上界で重み付けして縮約call graphの最長路を求めると、\cref{tab:v3-static-psp-bound}を得る。
+呼出しグラフ上の再帰を含む強連結成分は、KeyGenとSignで3個、Verifyで0個である。離散対数の再帰では、各子呼出しで入力長が半分になる。この構成の最大入力長198に対し、同時に存在するスタックフレームを高々9個とした。Burnikel--Ziegler除算では、一回の再帰ごとに多倍長整数の語数が半減する。RADIX32における最大60語に対し、高々11個とした。ソースコード上の減少条件または生成定数が変わった場合は、解析を停止する。各再帰成分をこの深さ上界で重み付けし、再帰成分をまとめた呼出しグラフの最長経路を求めると、\cref{tab:v3-static-psp-bound}を得る。
 
 \begin{table}[H]
   \centering
-  \caption{固定frame imageのlink固有PSP上界。software callに最大例外entryを加え、余裕は\num{131072} byteのPSP予約との差とした。}
+  \caption{固定長配列版について、リンク結果から求めたPSP上界。ソフトウェア呼出し分に最大例外進入分を加え、\num{131072} byteのPSP予約との差を予約余裕とした。}
   \label{tab:v3-static-psp-bound}
   \small
   \begin{tabular}{@{}lrr@{}}
@@ -977,72 +967,72 @@ D3では\texttt{protocols\_sign}の第三の重畳を加えた。\cref{tab:v3-d3
   \end{tabular}
 \end{table}
 
-RP2350 imageはSecure Arm用の\texttt{rp2350-arm-s}である。Armv8-M Secure softwareでは、FPU contextがactiveでNon-Secure exceptionを取る場合の例外frameが最大52 wordsとなり、8-byte alignmentのためさらに1 wordが加わり得る\cite{arm-stack-sizing-2016}。そこでsoftware call上界へ一律\num{\VThreeExceptionPspAllowanceBytes} bytesを加えた。link済みELF全体の\texttt{MSR PSP}は、operation thunkへ入るtrampolineの設定・復元2命令だけであり、Handler mode側はMSPを使う。このためoperation中にPSPへ課される最初の最大例外entryを上界へ含める一方、handler software frameとそのnestingは別のMSP義務として残す。
+RP2350ファームウェアはArmv8-Mのセキュア状態で動作する\texttt{rp2350-arm-s}構成である。セキュア状態のソフトウェアでは、浮動小数点演算器の状態が有効なときに非セキュア状態から例外が発生すると、ハードウェア例外フレームが最大52語になる。8 byteアラインメントのため、さらに1語が加わる場合がある\cite{arm-stack-sizing-2016}。そこで、ソフトウェア呼出し分の上界へ一律\num{\VThreeExceptionPspAllowanceBytes} bytesを加えた。リンク済みELF全体で\texttt{MSR PSP}を実行するのは、操作用呼出しへ入る中継処理の設定命令と復元命令だけである。ハンドラモード（Handler mode）ではMSPを使う。このため、操作中にPSPへ積まれる最初の最大例外進入分を上界へ含める。一方、割込み処理のソフトウェアフレームと割込みの入れ子は、別途評価すべきMSP使用量として残す。
 
-同じclean固定frame imageを実機で再取得し、公式vector 0のK/S/V一致とterminal PASSを確認した。KeyGen、Sign、Verifyの観測PSPはそれぞれ\num{\VThreeStaticObservedKeygenPspBytes}、\num{\VThreeStaticObservedSignPspBytes}、\num{\VThreeStaticObservedVerifyPspBytes} bytesで、全て上記の静的上界以下だった。特にVerifyはsoftware-call上界\num{40256} bytesに対して\num{40252} bytesを観測し、最大例外entryを加えた最終上界との差は\num{216} bytesだった。この近さはcross-checkの有効性を示す一方、別binaryや別入力への余裕を意味しない。
+同じコミットに固定した固定長配列版のファームウェアを実機で再測定し、公式第0ベクトルについてKeyGen、Sign、Verifyの出力一致と最終的なPASSを確認した。観測したPSP上書き深さは、それぞれ\num{\VThreeStaticObservedKeygenPspBytes}、\num{\VThreeStaticObservedSignPspBytes}、\num{\VThreeStaticObservedVerifyPspBytes} bytesであり、すべて上記の上界以下だった。特にVerifyでは、ソフトウェア呼出し分の上界\num{40256} bytesに対して\num{40252} bytesを観測した。最大例外進入分を加えた上界との差は\num{216} bytesであった。この近さは解析値と実測値が対応することを示すが、別のバイナリや別の入力に対する余裕を意味しない。
 
-三操作の上界は全て予約内であるが、Signの静的余裕は\num{\VThreeStaticSignPspMarginBytes} bytesに限られる。このcertificateは固定commit、\texttt{p324\_3/RADIX32}、現在のcompiler/link結果に対する保守的なoperation PSP解析であり、C/assembly意味論を形式検証したものではない。割込み候補のhandler側には未解決の間接callbackが残り、enabled IRQ集合、優先度nest、entry時の生存MSP量も閉じていない。従って「link済みK/S/V software callと最大例外entryを含むPSP上界」は主張するが、「全programの最悪stack上界」へは昇格させない。
+三操作の上界はすべて予約内に収まるが、Signの余裕は\num{\VThreeStaticSignPspMarginBytes} bytesに限られる。この解析は、固定コミット、\texttt{p324\_3/RADIX32}、現在のコンパイル・リンク結果に対する保守的なPSP上界である。Cおよびアセンブリプログラムの意味論を形式検証したものではない。割込み処理側には未解決の間接コールバックが残る。また、有効な割込み要求の集合、割込み優先度、入れ子、および例外進入時に使われているMSP量も評価していない。したがって、リンク済みのKeyGen、Sign、Verifyにおけるソフトウェア呼出しと最大例外進入分を含むPSP上界は主張するが、プログラム全体の最悪時スタック上界とは主張しない。
 
-版間の絶対時間も参考値として記録する。同じRP2350と\SI{150}{\mega\hertz}で、v2提案実装の最初のbootにおけるKeyGen、Sign、Verifyは\num{2698.150029}、\num{7611.258527}、\num{0.814341} sであり、同じUF2を用いた二回目は\num{\VTwoRepeatKeygenSeconds}、\num{\VTwoRepeatSignSeconds}、\num{\VTwoRepeatVerifySeconds} sであった。これは同一入力のboot間再現であり、入力分布に対する性能標本ではない。v3公式実装の5回中央値は\num{2.263654}、\num{7.152690}、\num{0.822142} sであった。v3のKeyGenとSignが大幅に短いことは明白だが、parameter、アルゴリズム、整数backend、実装成熟度が同時に異なる。この差を一つの省メモリ変換による速度向上率とはしない。また、v2提案実装は\num{172080} byteの明示的arenaをPSPとは別に持つため、両版のPSP extentだけから総SRAMの優劣を導かない。
+版間の絶対時間も参考値として記録する。同じRP2350を\SI{150}{\mega\hertz}で動作させたとき、v2提案実装の一回目の起動におけるKeyGen、Sign、Verifyは、\num{2698.150029}、\num{7611.258527}、\num{0.814341} sであった。同じUF2を用いた二回目は、\num{\VTwoRepeatKeygenSeconds}、\num{\VTwoRepeatSignSeconds}、\num{\VTwoRepeatVerifySeconds} sであった。これは同じ入力に対する起動間の再現性を示すが、入力分布に対する性能標本ではない。v3公式実装の5回の中央値は、\num{2.263654}、\num{7.152690}、\num{0.822142} sであった。v3のKeyGenとSignは大幅に短いが、パラメータ、アルゴリズム、整数処理、および実装成熟度が同時に異なる。この差を、一つの省メモリ変換による速度向上率とは解釈しない。また、v2提案実装は\num{172080} byteの明示的アリーナをPSPとは別に持つ。両版のPSP上書き深さだけから、総SRAM使用量の優劣を導かない。
 
 \section{サイドチャネル評価}
 \label{sec:sca}
 
-本節の詳細な攻撃面追跡は主としてv2提案実装を対象とする。v3では、10個の公式response入力を二つのlinked配置で測る初期timing診断に加え、messageと署名乱数を固定したmulti-key timing、およびnative host上の制御フロー・実効address診断を追加した。さらに、同じ固定条件のmulti-key timingをRP2350上でも実施した。これらは鍵に対応する差を再現するが、秘密鍵には対応公開鍵が埋め込まれるため、秘密部分だけへの帰属ではない。電力・電磁波取得および鍵回復は別の証拠段階である。公式v3仕様も、提出実装全体は完全な定数時間実装ではないと明記する\cite{sqisign-spec-v3}。従って、v3適応実装のメモリ削減、既知解一致、または以下の差分をサイドチャネル耐性へ外挿しない。
+詳細な攻撃面の追跡は、主としてv2提案実装を対象とする。v3については、公式応答の10入力を二つのコード配置で測る実行時間診断、メッセージと署名乱数を固定して10鍵を比較する実行時間検査、ホスト計算機上の制御フロー・実効アドレス診断、および同じ固定条件におけるRP2350上の実行時間検査を行った。これらの試験では、鍵ごとに異なる結果を再現できた。ただし、秘密鍵データには対応する公開鍵が含まれるため、観測差を秘密部分だけに帰属できない。公式v3仕様も、提出実装全体が完全な定数時間実装ではないと明記する\cite{sqisign-spec-v3}。本研究は電力・電磁波波形の取得と鍵回復を評価していない。したがって、メモリ削減や既知解との一致からサイドチャネル耐性を導くことはできない。
 
 \subsection{省メモリ化と定数時間性は独立である}
 
-固定されたアリーナoffsetはallocator由来の変動を除くが、演算回数やaccessed valueを秘密非依存にはしない。v2提案実装には、sketch tie回数、探索再生回数、可逆性判定、rejection、first-success publicationなどの入力依存処理が残る。さらに、元のSQIsign署名経路には多倍長整数のused-limb scan、比較のearly return、可変回数Euclid、秘密由来指数を用いるmodular exponentiationがある。
+固定したアリーナのオフセットは、動的メモリ確保に由来するアドレス変動を除く。しかし、演算回数やアクセスする値を秘密から独立にはしない。v2提案実装には、二つのノルム要約が一致する回数、探索を再実行する回数、逆元の存在判定、候補の棄却、および最初の成功時に終了する処理が残る。いずれも入力に依存する。さらに、元のSQIsign署名経路には、多倍長整数の使用語数走査、比較の早期終了、反復回数が変わるユークリッド法、および秘密に由来する指数を用いるモジュラー指数演算がある。
 
-したがって、RAM削減後には漏洩検査を再実行し、「メモリ配置が固定だから安全」という推論を採用しなかった。
+従って、固定されたメモリ配置だけではサイドチャネル安全性を導けず、RAM削減後の実装を独立に評価する必要がある。
 
-\subsection{固定対ランダムのtiming screen}
+\subsection{固定入力とランダム入力の実行時間検査}
 
-v2提案実装について、固定対ランダムの64 pair試験を順序反転して二回実施した。一次統計$t_1$と、各classで中心化した時間の平方へ同じWelch検定を適用する二次統計$t_2$を計算した結果を\cref{tab:timing-screen}に示す。これは高次の非特定t検定で用いられるcentered-moment前処理に対応する\cite{schneider-moradi-2016}。一般的な探索閾値$|t|>4.5$\cite{schneider-moradi-2016}に対し、両runで$t_2$が閾値を超えた。同一条件のnegative controlは安定し、run間時間のPearson相関は\num{0.999929}、Spearman相関は\num{0.999771}であった。各class 64標本の小規模screenであるため、閾値未満を非漏洩の証拠には用いない。一方、順序反転した二回で同方向の閾値超過が再現したことを、当該条件下の分布差を示すpositive evidenceとして扱う。
+v2提案実装について、固定入力群とランダム入力群を各64標本測定し、実行順を反転して二回試験した。一次統計$t_1$に加えて、各群の中心値からの偏差を二乗し、その値へ同じWelch検定を適用する二次統計$t_2$を求めた。結果を\cref{tab:timing-test}に示す。この二次統計は、高次の非特定$t$検定で用いられる中心化モーメントによる前処理に対応する\cite{schneider-moradi-2016}。一般的な検出閾値$|t|>4.5$\cite{schneider-moradi-2016}に対し、二回とも$t_2$が閾値を超えた。同じ入力を比較する対照試験は安定し、二回の試験間における実行時間のPearson相関は\num{0.999929}、Spearman相関は\num{0.999771}であった。各群64標本の小規模な予備検査なので、閾値未満であっても非漏洩の証拠にはできない。一方、実行順を反転した二回の試験で同じ向きの閾値超過を観測した。この結果は、当該条件における実行時間分布の差を示す。
 
 \begin{table}[H]
   \centering
-  \caption{v2提案実装のSignに対する固定対ランダムhost timing screen}
-  \label{tab:timing-screen}
+  \caption{v2提案実装のSignについて、ホスト計算機上で固定入力とランダム入力の実行時間を比較した結果}
+  \label{tab:timing-test}
   \small
   \begin{tabular}{@{}lrrl@{}}
     \toprule
-    Run & $t_1$ & $t_2$ & 判定 \\
+    試行 & $t_1$ & $t_2$ & 判定 \\
     \midrule
-    A & \num{3.570} & \num{-5.410} & 二次alert \\
-    B（順序反転） & \num{3.576} & \num{-5.374} & 二次alert再現 \\
+    A & \num{3.570} & \num{-5.410} & 二次統計が閾値超過 \\
+    B（順序反転） & \num{3.576} & \num{-5.374} & 同じ向きの閾値超過 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-sketch比較回数、sketch tie回数、探索再生回数とSign時間の相関は、観測した指標では絶対Pearson値がおおむね\num{0.217}以下であった。従って、sketchが既存の支配的漏洩源であるとは示されていない。しかし相関が弱いことは非漏洩の証明でもなく、v2提案実装をサイドチャネル改善と評価する根拠にはならない。
+ノルム要約の比較回数、要約が一致した回数、探索を再実行した回数とSign時間とのPearson相関は、絶対値がおおむね\num{0.217}以下であった。したがって、今回測定した指標からは、ノルム要約が既存の支配的な漏洩源だとは示されなかった。しかし、相関が弱いことは非漏洩の証明ではない。v2提案実装をサイドチャネル安全性の改善と評価する根拠にもならない。
 
-v3については、message、署名乱数、および鍵の格納addressを固定する追加screenを行った。公式\texttt{p324\_3}既知解から10鍵を取り、各鍵を同じbufferへコピーした上で、33-byte messageと48-byte署名乱数seedを固定し、各鍵30反復を異なる二つのランダム化順序で実行した。native Darwin/arm64の公式版とv3適応版を合わせて\num{\VThreeFixedTimingRows}署名を測定し、全署名を対応する公開鍵で検証した。両実装とも二run間の鍵別中央値順位はSpearman \num{\VThreeKeyTimingSpearmanMin}以上で一致し、最速鍵と最遅鍵の中央値spanは中心中央値の\num{\VThreeKeyTimingSpanMinPercent}--\num{\VThreeKeyTimingSpanMaxPercent}\%であった。従って、このhost条件では鍵に対応する実行時間差が再現する。ただし、これは秘密部分だけへの帰属、物理漏洩、または鍵回復を示さない。
+v3については、メッセージ、署名乱数、および鍵を格納するアドレスを固定して実行時間を検査した。公式\texttt{p324\_3}既知解から10鍵を選び、各鍵を同じバッファへコピーした。33 byteのメッセージと48 byteの署名用乱数種を固定し、各鍵を30回ずつ、異なる二つのランダム化順序で実行した。Darwin/arm64のホスト計算機上で、公式版と一関数適応版を合わせて\num{\VThreeFixedTimingRows}個の署名を測定し、すべての署名を対応する公開鍵で検証した。両実装とも、二回の試験間における鍵別実行時間中央値の順位はSpearman相関\num{\VThreeKeyTimingSpearmanMin}以上で一致した。最速鍵と最遅鍵の実行時間中央値の差は、全鍵の中央値の\num{\VThreeKeyTimingSpanMinPercent}--\num{\VThreeKeyTimingSpanMaxPercent}\%であった。したがって、このホスト条件では鍵に対応する実行時間差が再現する。ただし、この結果は、差を秘密部分だけへ帰属できること、物理漏洩、または鍵回復を示さない。
 
-同じ仮説をRP2350でも事前固定した判定規則で検査した。10鍵を同じ固定addressへコピーし、XIP cacheを各計測直前に無効化し、固定message・固定署名乱数の下で、鍵順序の異なる二passを各5反復した。公式版とv3適応版を合わせて\num{\VThreeTargetFixedTimingSamples}署名を取得し、全ての検証成功、署名digest、canary、firmware/source digestを確認した。事前規則は、各実装についてpass間の鍵別中央値順位のSpearman相関を0.8以上、各passの鍵間spanを中心中央値の1\%以上かつ鍵内MAD中央値の10倍以上とするものである。両実装でSpearman相関は少なくとも\num{\VThreeTargetKeyTimingSpearmanMin}、spanは\num{\VThreeTargetKeyTimingSpanMinPercent}--\num{\VThreeTargetKeyTimingSpanMaxPercent}\%となり、規則を満たした。SignのPSPは全100標本で公式版\num{101060} bytes、v3適応版\num{97132} bytesであり、\num{3928} byte差も再現した。外側のbinary実行順は公式版、v3適応版の順に固定されていたため、版間速度差は一般的な性能比較に用いない。この一基板の結果はRP2350上の反復可能な\emph{鍵対応wall-clock差}であり、公開成分と秘密成分の分離、target上の制御フロー・address trace、analog power/EM漏洩、鍵回復、または耐性を示さない。
+同じ仮説をRP2350でも、測定前に定めた判定規則で検査した。10鍵を同じ固定アドレスへコピーし、XIPキャッシュを各計測直前に無効化した。メッセージと署名乱数を固定し、鍵順序を変えた二回の試験を各鍵について5回ずつ反復した。公式版と一関数適応版を合わせて\num{\VThreeTargetFixedTimingSamples}個の署名を取得した。すべての署名が検証に成功することに加えて、署名ダイジェスト、カナリア値、ファームウェアおよびソースコードのダイジェストを確認した。判定規則は、各実装について、二回の試験間における鍵別中央値順位のSpearman相関が0.8以上であることを要求する。また、各試験における最速鍵と最遅鍵の中央値の差が、全鍵の中央値の1\%以上、かつ鍵内の中央絶対偏差（MAD）の中央値の10倍以上であることを要求する。両実装のSpearman相関は少なくとも\num{\VThreeTargetKeyTimingSpearmanMin}であり、鍵間の差は\num{\VThreeTargetKeyTimingSpanMinPercent}--\num{\VThreeTargetKeyTimingSpanMaxPercent}\%だった。したがって、両実装とも判定規則を満たした。SignのPSP上書き深さは、100標本すべてで公式版が\num{101060} bytes、一関数適応版が\num{97132} bytesであり、\num{3928} byteの差も再現した。ファームウェアの実行順は公式版、一関数適応版の順に固定したため、版間の実行時間差を一般的な性能比較には用いない。この一基板の結果は、RP2350上で鍵ごとの実行時間差が反復して観測されたことを示す。ただし、公開成分と秘密成分の分離、RP2350上の制御フロー・アドレストレース、アナログ電力・電磁波漏洩、鍵回復、または耐性を示さない。
 
-同じ入力設計について、Apple ClangのSanitizerCoverageを用い、\texttt{crypto\_sign}中のedge IDとload/store実効addressを二つの独立processで記録した。KAT表中の鍵の格納先が異なるという自明な差を除くため、各秘密鍵を計測前に同じ固定addressのbufferへコピーした。公式版とv3適応版を合わせた同一鍵negative control \num{\VThreeStructuralControlPairs}組では、event数と二つのstream digestが全て一致した。他の9鍵を鍵0と比較する\num{\VThreeStructuralDifferentKeyPairs}組では、制御フローevent数またはdigest、および実効address event数またはdigestがそれぞれ\num{\VThreeStructuralEdgeDifferentPairs}/\num{\VThreeStructuralDifferentKeyPairs}、\num{\VThreeStructuralAddressDifferentPairs}/\num{\VThreeStructuralDifferentKeyPairs}で相違した。全streamは最大約7000万edge、3億5800万memory eventであり、先頭200万eventだけを保存し、全体はevent数とdual 64-bit digestで比較した。従ってnegative-control一致を形式的同値性とはしない。一方、全primary比較ではevent数自体も異なるため、鍵対応の構造差はdigest衝突仮定によらない。この結果も、鍵中の公開成分と秘密成分を分離せず、native host codeだけを観測するため、秘密漏洩、RP2350 code、物理波形、または攻撃成立の証拠ではない。
+同じ入力設計について、Apple ClangのSanitizerCoverageを用い、\texttt{crypto\_sign}実行中の制御フロー辺識別子と、読込み・書込み命令が使用した実効アドレスを二つの独立したプロセスで記録した。既知解表中の鍵ごとに格納先が異なるという自明な差を除くため、各秘密鍵を計測前に同じ固定アドレスのバッファへコピーした。公式版と一関数適応版を合わせて同じ鍵同士を比較した\num{\VThreeStructuralControlPairs}組では、事象数と二種類の列ダイジェストがすべて一致した。他の9鍵を鍵0と比較する\num{\VThreeStructuralDifferentKeyPairs}組では、制御フローの事象数またはダイジェスト、および実効アドレスの事象数またはダイジェストが、それぞれ\num{\VThreeStructuralEdgeDifferentPairs}/\num{\VThreeStructuralDifferentKeyPairs}組、\num{\VThreeStructuralAddressDifferentPairs}/\num{\VThreeStructuralDifferentKeyPairs}組で相違した。記録列は最大約7000万個の制御フロー辺と3億5800万個のメモリアクセスからなる。先頭200万事象だけを保存し、列全体は事象数と二つの64 bitダイジェストで比較した。このため、同じ鍵同士の一致を形式的な同値性とはみなさない。一方、異なる鍵を比較したすべての組では事象数自体も異なったため、鍵ごとの構造差をダイジェストの衝突確率に依存せず確認できる。この試験は、鍵中の公開成分と秘密成分を分離せず、ホスト計算機用コードだけを観測する。したがって、秘密漏洩、RP2350用コード、物理波形、または攻撃成立の証拠ではない。
 
-\subsection{全Signの構造差分}
+\subsection{署名処理全体の構造差分}
 
-別の二回のhost計測では、Sign中のedge列と対象load/storeの実効address列を記録した。同一seed同士のnegative controlは一致した一方、固定seedと異なるsigning-randomnessの全比較でedge列・address列が再現可能に相違した。最初の差分は、多倍長整数のused-limb scanまたはmost-significant-limb比較を通り、random ideal samplerへ到達した。
+別の二回のホスト計測では、Sign実行中の制御フロー辺列と、対象となる読込み・書込み命令の実効アドレス列を記録した。同じ乱数種同士を比較した対照試験では両方の列が一致した。一方、固定乱数種と異なる署名乱数を比較したすべての組で、両方の列が再現可能に相違した。最初の差分から到達した処理には、多倍長整数の使用語数走査、最上位語の比較、およびランダムイデアル標本化が含まれた。
 
-この結果は、コンパイル済み全Signに秘密到達可能な可変制御があることを示す。ただし、変化させた直接入力は署名乱数であり、最初の差分だけから長期秘密鍵が回復できるとは主張しない。
+この結果は、コンパイル済みの署名処理全体に、秘密から到達できる可変制御があることを示す。ただし、変化させた直接入力は署名乱数であり、最初の差分だけから長期秘密鍵が回復できるとは主張しない。
 
 \subsection{既報SPAとの対応}
 
-Mukherjeeらは、Cornacchia処理下のmodular exponentiationで使われる秘密由来の一時指数を単純電力解析で回復し、秘密鍵回復へ接続する攻撃を報告した\cite{spa-2025}。本実装の凍結12-seed Sign corpusでは、\texttt{Sign $\rightarrow$ RepresentInteger $\rightarrow$ Cornacchia $\rightarrow$ sqrt\_mod\_p}を361回観測し、そのうち190回が論文の指数関係に直接対応するmodulus classであった。
+Mukherjeeらは、Cornacchia処理中のモジュラー指数演算で使われる、秘密に由来する一時指数を単純電力解析で回復し、秘密鍵回復へ接続する攻撃を報告した\cite{spa-2025}。本実装で12個の固定乱数種を用いてSignを実行すると、\texttt{Sign $\rightarrow$ RepresentInteger $\rightarrow$ Cornacchia $\rightarrow$ sqrt\_mod\_p}の経路を361回観測した。そのうち190回は、既報攻撃の指数関係に直接対応する法の分類だった。
 
-RP2350上の切り出しpowmod timing診断では、指数Hamming weightと経過時間のPearson相関が\num{0.999860}、回帰傾きがset bit当たり約\num{4.004} msとなった。これは実チップ上の強い可変時間性を示すが、GPIOで区切った局所処理の時間計測であり、analog power/EM波形または完全Signの鍵回復実験ではない。
+RP2350上でモジュラー指数演算だけを測定したところ、指数のHamming重みと経過時間のPearson相関は\num{0.999860}、回帰直線の傾きは1 bitの増加当たり約\num{4.004} msだった。この結果は実チップ上の強い可変時間性を示す。ただし、GPIO信号で区切った局所処理の時間計測であり、アナログ電力・電磁波波形または署名処理全体からの鍵回復実験ではない。
 
-\subsection{対策prototypeと残課題}
+\subsection{局所対策後に残る可変時間性}
 
-指数schedule固定、乗算round固定、保護sqrtのSign統合という三つのprototypeを実装して局所timingを測定したが、いずれにも値依存差または上位経路の可変workが残った。入力集合、標本数、timer、分散、各倍率を含む詳細は補助資料の\texttt{experiments/sca/README.md}へ分離する。本稿で必要な結論は、対策前の可変時間性を検出でき、これらのprototypeもdeployment合格条件を満たさなかった、という境界確認である。完全Signの定数時間化、マスキング、二回以上の独立なpower/EM acquisition、既報攻撃をpositive controlとする検出能力確認がなお必要である。
+指数処理順の固定、乗算回数の固定、および保護した平方根処理のSignへの統合という三つの局所対策版を測定した。しかし、いずれにも値に依存する差または上位処理の可変回数が残った。入力集合、標本数、タイマー、分散、および各実装の時間比は補助資料の\texttt{experiments/sca/README.md}に示す。したがって、これらの変更は署名処理全体のサイドチャネル耐性を支持しない。耐性を評価するには、署名処理全体の定数時間化またはマスキングに加え、独立に取得した電力・電磁波波形が必要である。また、既報攻撃を検出できる測定系であることも確認する必要がある。
 
 \begin{figure}[H]
   \centering
   \input{figures/sca-evidence.tikz.tex}
-  \caption{本稿のサイドチャネル証拠と主張境界。実線枠は取得済みのpositive evidence、破線枠は未実施の実験を表す。取得済み結果から現実装が可変時間であることは言えるが、full-Signの電力・EM耐性や鍵回復可能性は判定できない。}
+  \caption{サイドチャネル評価の範囲。実線枠は本研究で得た検出結果、破線枠は実施していない実験を表す。現実装の可変時間性は検出したが、署名処理全体の電力・電磁波への耐性や、鍵を回復できるかどうかは判定していない。}
   \label{fig:sca-evidence}
 \end{figure}
 
@@ -1051,46 +1041,34 @@ RP2350上の切り出しpowmod timing診断では、指数Hamming weightと経�
 
 \subsection{v2からv3へ転用できた要素}
 
-二つの版に共通して有効だったのは、暗号方式の特定の変数名ではなく、各オブジェクトの生存区間と干渉関係を明示し、型付き領域の配置へ反映する手順である。v2提案実装は、この手順をプロトコル全体のoperation ownerへ適用した。v3のD3は、再設計後の二関数へ同じ手順を適用し、三parameter setの全六frame比較で削減を得た。\texttt{p324\_3}実機では二つの関数削減がSign watermarkへ加算され、公式版との差は\num{\VThreeDThreeSavedBytes} bytesとなった。これはlifetime schedulingがv2の\texttt{find\_uv}またはv3の一関数だけに依存する工夫ではないことを支持する。
+二つの版に共通して有効だったのは、各オブジェクトの生存期間と干渉関係を明示し、その結果を型付き領域の配置へ反映する手順である。v2提案実装は、この手順をプロトコル全体の操作用共有領域へ適用した。v3の二関数適応版は、再設計後の二つの関数へ同じ手順を適用した。その結果、三つのパラメータ集合における六つのスタックフレーム比較すべてで使用量が減少した。\texttt{p324\_3}の実機試験では、二つの関数で得た削減がSignのPSP上書き深さへ反映され、公式版との差は\num{\VThreeDThreeSavedBytes} bytesとなった。この結果は、生存期間配置をv2の\texttt{find\_uv}以外の処理へも適用できることを示す。
 
-一方、certified norm sketch、1665-bit整数幅、\num{172080} byte arena、およびallocator/VLAを除去した52 translation unitのlink closureはv2固有である。v3には対象となる\texttt{find\_uv}候補表が存在せず、D3には19件の動的stack記録が残る。このため、本稿は「v2の配置をv3へそのまま移植できた」とは結論しない。転用できたのは問題設定と検査手順であり、具体的な重畳対象と達成した保証は版ごとに異なる。
+一方、ノルム要約、1665 bitの整数幅、\num{172080} byteのアリーナ、および動的メモリ確保関数と可変長配列を除去した52翻訳単位の到達範囲は、v2に固有である。v3には対象となる\texttt{find\_uv}候補表が存在せず、二関数適応版には19件の動的スタック記録が残る。このため、v2の具体的なメモリ配置をv3へそのまま移植できたとは結論しない。転用できたのは、生存期間に基づいて共有可能性を判断する問題設定と検査手順である。共有した領域と得られた保証は、版ごとに異なる。
 
-\subsection{何が一般化できるか}
+\subsection{他の実装へ適用するための条件}
 
-本研究の個別定数は各版のLevel I相当parameterとRP2350に依存するが、方法は次の条件を持つ実装へ一般化できる可能性がある。
+本研究で得た具体的なメモリ量は、各版のLevel I相当パラメータとRP2350に依存する。一方、次の条件を満たす実装には、同じ考え方を適用できる可能性がある。
 
 \begin{enumerate}[leftmargin=2.2em]
-  \item 大きな中間値を入力または小さなrecipeから決定的に再生成できる。
-  \item 処理がphaseへ分解でき、phase間でポインタを保持しないAPIを設計できる。
-  \item パラメータごとに配列上界とalignmentをコンパイル時に固定できる。
+  \item 大きな中間値を、入力または小さな再生成情報から再構成できる。
+  \item 処理を複数の段階へ分けられ、段階を越えて作業領域へのポインタを保持しないAPIを設計できる。
+  \item パラメータごとに配列上界とアラインメントをコンパイル時に固定できる。
   \item 代表値だけで順序を決められない場合に、全精度比較へ戻れる。
 \end{enumerate}
 
-特にcertified sketchの本質は「上位bitが異なる場合だけ比較を確定し、同じ場合は必ず原値へ戻る」ことである。ノルム以外にも、比較対象を小さな入力から全精度で再構成できる探索・枝刈り処理へ適用できる。ただし、このデータ縮約を実証したのはv2だけである。lifetime schedulingについてはv2のoperation ownerとv3の二関数・三parameterを得たが、他PQC方式や他マイコンへの実証は行っていない。従って、SQIsign以外への一般性は設計仮説の段階である。
+ノルム要約の要点は、上位bitが異なる場合だけ比較を確定し、同じ場合は必ず元の全精度値へ戻ることである。この方法はノルムに限らず、小さな入力から比較対象を全精度で再構成できる探索や枝刈り処理へ適用できる可能性がある。ただし、データ量の削減を実証したのはv2のノルムだけである。生存期間配置については、v2の操作用共有領域とv3の二関数・三パラメータ集合で結果を得たが、他の耐量子暗号方式や他のマイクロコントローラでは実証していない。したがって、SQIsign以外へ適用できるという見通しは、今後検証すべき仮説である。
 
-\subsection{contract compilerとしての自動化範囲}
+\subsection{注釈駆動配置の適用範囲}
 
-手作業で定めたphase contractを入力とする最小generatorを追加実装した。これはC programから生存区間を発見する一般的な自動配置器ではなく、review済みcontractをlayoutへ変換する\emph{contract compiler}である。各objectへ\texttt{phases}, \texttt{size}, \texttt{alignment}, \texttt{secret}, \texttt{pointer\_escape}, \texttt{clear\_on}を付け、phase集合の交差から干渉辺を作り、alignment制約付きfirst-fitでoffsetを決める。生成物はJSON layout、Graphviz干渉グラフ、型付きC union/structおよび\texttt{\_Static\_assert}である。
+生存期間の条件から型付き配置を生成するため、各オブジェクトに\texttt{phases}（使用する処理段階）、\texttt{size}（大きさ）、\texttt{alignment}（アラインメント）、\texttt{secret}（秘密性）、\texttt{pointer\_escape}（ポインタ保持の有無）、\texttt{clear\_on}（消去時点）を与える注釈形式を用いた。生成器は、処理段階の集合が重なるオブジェクト間に干渉辺を作る。次に、アラインメント制約を満たす先頭適合方式でオフセットを割り当てる。出力は、JSON形式の配置、干渉グラフ、型付きCの\texttt{union}と\texttt{struct}、および\texttt{\_Static\_assert}である。
 
-凍結したv2 \texttt{find\_uv} annotationへ適用すると、\num{77168} byteの長期lattice stateと三つのphase objectの間に3辺を生成し、後三者をoffset \num{77168}へ重畳して全体\num{172080} bytesを再現した。生成headerはCortex-M33/RADIX32の実型と共にcompileし、既存\texttt{find\_uv\_workspace\_t}のsizeとoffsetへ一致することを確認した。これにより、次の1--3を試作範囲で自動化した。
+v2の\texttt{find\_uv}注釈では、\num{77168} byteの長期格子状態と、三つの処理段階用オブジェクトとの干渉を表した。後三者をオフセット\num{77168}へ共有配置し、合計\num{172080} byteの配置を生成した。生成したヘッダをCortex-M33/RADIX32の実際の型とともにコンパイルし、手動実装した\texttt{find\_uv\_workspace\_t}の大きさとオフセットに一致することを確認した。さらに、Cヘッダにある\num{\LifetimeAnnotatedObjects}個の物理オブジェクトと、ソースコード中で要素または処理段階全体へ直接アクセスする\num{\LifetimeDirectAccessForms}形式を列挙した。注釈のない要素または直接アクセスがあれば検査を失敗させる。
 
-\begin{enumerate}[leftmargin=2.2em]
-  \item annotationのphase state machineから干渉グラフを生成する。
-  \item alignment制約付きoffset割当を解き、Cのunion/structとstatic assertionを生成する。
-  \item 同一offsetを共有するfieldの生存区間非交差を検査する。
-  \item failure edgeを含む消去annotationをlayoutへ伝播する。
-  \item map/ELFと設計値を照合し、RAM--stack--flashのPareto表を再生成する。
-\end{enumerate}
-
-annotationの記載漏れを小さくするため、別のfail-closed coverage gateも追加した。このgateはC headerに宣言された\num{\LifetimeAnnotatedObjects}個の物理objectと、sourceに現れる直接field accessおよびwhole-phase access計\num{\LifetimeDirectAccessForms}形式を列挙し、未分類のmemberまたはaccessがあれば停止する。これにより、構造体へfieldを追加したのにannotationを更新しない種類の誤りは機械的に検出できる。
-
-また、二つのv2実機manifest、host時間JSON、v2/v3のPSP certificate、v3 clean/multi/D3 summaryを入力として、主要数値macroとmemory/runtime表を再生成するscriptを実装した。予約量と未予約量の和、ownerとguard、arena・排他的SRAM・空きSRAMの差分、BIN差分、\SI{150}{\mega\hertz}換算cycleを再計算し、不一致時は論文build前に停止する。
-
-ただし、coverage gateもCからphase labelを推論せず、間接alias、pointer escape、全failure edgeの消去、関数pointer、LTO後call graph、publication先の意味論を証明しない。従って自動配置のsoundnessは主張せず、生存区間とescapeの完全性は人手監査に残る。当面はcontract compilerをlifetime certificate、dynamic canary、zeroization fixture、ELF監査と組み合わせる必要がある。
+自動化するのは、与えられた注釈からの干渉グラフ生成、配置、および直接アクセスの網羅性検査である。処理段階の意味、生存期間、間接的な別名参照、ポインタの保持、すべての失敗経路における消去、関数ポインタの呼出し先、リンク時最適化後の呼出しグラフ、および未確定値が外部出力へ渡らないことは、Cソースコードから自動推論しない。このため、配置の妥当性は注釈の完全性に依存する。生存期間確認表、動的なカナリア値検査、消去試験、およびELF監査による別経路の検査が必要である。
 
 \subsection{未予約SRAMの意味}
 
-v2提案実装では\num{211072} bytesが未予約となり、全精度表実装の\num{30144} bytesに比べて実装余裕が大きくなった。この余裕はproduction RNG、通信buffer、割込みstack、サイドチャネル対策用の追加状態、別parameter setへの拡張に利用できる可能性がある。ただし、未予約であることは、その全てを同時に収容できる証明ではない。特に定数時間・masking実装は、追加workspaceとfresh randomnessを必要とし得るため、メモリ最適化と安全性最適化を同一Pareto面で再評価すべきである。v3については、v3適応実装の局所stack削減だけを測定しており、同じ定義の排他的SRAM予約量と未予約SRAMをまだ算出していない。
+v2提案実装では\num{211072} bytesが未予約となり、全精度表実装の\num{30144} bytesに比べて組込み時の余裕が大きくなった。この余裕は、製品用乱数生成器、通信バッファ、割込みスタック、サイドチャネル対策用の追加状態、または別パラメータ集合への拡張に利用できる可能性がある。ただし、未予約であることは、これらをすべて同時に収容できることを示さない。定数時間化またはマスキングを導入した後は、RAM、スタック、フラッシュ、実行時間を改めて測定し、本実装とのトレードオフを評価する必要がある。v3については、v3適応実装の局所スタック削減だけを測定しており、同じ定義による排他的SRAM予約量と未予約SRAMは算出していない。
 
 \section{妥当性への脅威と限界}
 \label{sec:limitations}
@@ -1098,75 +1076,46 @@ v2提案実装では\num{211072} bytesが未予約となり、全精度表実装
 本結果には次の限界がある。
 
 \begin{enumerate}[leftmargin=2.2em]
-  \item \textbf{単一target}: 実機結果はRP2350、Arm Cortex-M33、1 coreに限られる。v2はLevel I/RADIX32だけを対象とする。v3 D3のhost機能試験とArm frame監査は全三parameterを含むが、whole-imageの構築・実機watermarkは\texttt{p324\_3/m4f}だけである。他MCUのfitを示さない。
-  \item \textbf{決定的乱数}: v2は再現用CTR-DRBG adapter、v3は公式既知解ベクトルを用いる。entropy source、reseeding、故障時処理を含むproduction RNG統合は未評価である。
-  \item \textbf{実行回数}: v2のtarget反復は同じ決定的K/S/Vを2 bootで測ったcross-checkである。v3 D1は順序を反転した単一ベクトル5組と10ベクトル二配置、D3は一回の第0ベクトルを測定した。固定鍵screenと固定frame試作も単一基板であり、母集団上の入力分布、個体差、retry tail、D3の時間分布を与えない。
-  \item \textbf{機能同値性の範囲}: v2の12個の凍結トランスクリプト、公式requestを用いた100-vector通常・低メモリ差分適合の別process反復、およびv3の300個のparameter/request組を二実装で検査した計600回の公式response一致は強い回帰gateだが、有限corpusであり、全入力の形式的equivalence proofではない。またv2差分試験の期待値は同一commitの通常APIであり、乱数消費列が異なる旧GMP応答ではない。
-  \item \textbf{手動lifetime}: contract compilerとcoverage gateは、宣言済み全memberと直接accessのannotation漏れをfail-closedで検出する。しかしphase、生存区間、間接alias、pointer escape、failure edgeの消去は人手のcontractに依存する。sanitizer、canary、ELF監査、公式responseは誤りを検出するが、C alias意味論に対する完全性を証明しない。
-  \item \textbf{v3の静的閉包}: D3には19件の動的stack記録が残る。別の固定frame試作はcompiler上これを0件にし、allocatorと診断失敗をfail-stop trapへ限定した。link済み操作根のmetadata、間接call、固定assembly frame、および3個の再帰componentを閉じ、software callにSecure Armv8-Mの最大例外entryを加えたK/S/VのPSP上界を得た。ただしこの上界はD3へは移らない。USB CDCとalarm poolから到達し得る割込み候補4根では直接call先のstack metadata欠落を0件まで閉じたが、重複を除いて18地点の間接callbackが残る。handler software frame、enabled IRQ集合、割込みnesting、および各entry時の生存MSP量は未評価であるため、全program boundではない。
-  \item \textbf{可変時間}: v2署名には入力依存の分岐、address、retry、再計算が残る。完全Signのanalog power/EM testとkey-recovery reproductionは未実施である。v3では10入力のtarget時間差に加え、native host上の固定message・固定署名乱数条件で10鍵に対応する時間差とedge/address差を再現し、同じ固定条件の鍵対応timingをRP2350でも再現した。ただし鍵は対応する公開成分も同時に変わるため秘密部分だけへの帰属ではなく、target上の制御フロー・address traceおよび物理波形は未実施である。
-  \item \textbf{版の固定}: v2結果はsource commit \texttt{71099e08...}、v3公式版は\texttt{6d017708...}、D1は\texttt{9293313f...}、D3は\texttt{874658c6...}、固定frame試作は\texttt{cb94f242...}に固定される。今後の仕様・実装変更には再評価が必要である。
-  \item \textbf{実用性能}: v2提案実装のKeyGenとSignは非常に長く、省メモリ化だけでは製品利用に十分でない。v3は大幅に高速だが、D1の時間評価は単一ベクトルの対比較と10本の公式既知解ベクトルに限られ、D3は一回だけである。入力母集団を代表する標本ではなく、製品向け乱数も評価していない。
+  \item \textbf{対象範囲}: 実機測定はRP2350、Arm Cortex-M33、1コアに限られ、v2はLevel I/RADIX32だけを対象とする。v3二関数適応版のホスト機能試験とArm用スタックフレーム監査は三つのパラメータ集合を含むが、ファームウェア全体の構築と実機測定は\texttt{p324\_3/m4f}だけである。結果は本文に示したコミットに対応し、他のマイクロコントローラまたは異なる実装版へ適用できることを示さない。
+  \item \textbf{入力範囲}: v2の実機測定は、再現用CTR-DRBGを用いて同じ決定的なKeyGen、Sign、Verifyを二回の起動で反復した。v3一関数適応版では、実行順を反転した単一ベクトル5組と、10ベクトルを二つのコード配置で測定した。二関数適応版の実機測定は第0ベクトル一回である。これらの試験から入力分布、基板の個体差、再試行回数が大きい入力、または二関数適応版の実行時間分布は得られない。エントロピー源、乱数種の再設定、故障時処理を含む製品用乱数生成器も統合していない。
+  \item \textbf{機能同値性}: v2では12個の固定入力と、公式入力100本による通常・低メモリAPIの差分を検査した。v3では300種類のパラメータと入力の組を二実装で処理し、合計600回の公式応答一致を検査した。いずれも有限の入力集合を用いた回帰試験であり、全入力に対するCプログラムの同値性を証明しない。v2差分試験の期待値は同じコミットの通常APIであり、旧GMP実装の応答ではない。
+  \item \textbf{人手で定める条件}: 注釈から配置を生成するツールと網羅性検査は、宣言済み要素と直接アクセスの注釈漏れを検出する。しかし、処理段階、生存期間、間接的な別名参照、ポインタ保持、および失敗経路での消去は人手で定める。ASan・UBSan、カナリア値、ELF監査、および公式応答は別経路の誤り検出手段だが、別名参照を含むすべてのCプログラム挙動を証明しない。
+  \item \textbf{スタック上界}: v2の上界は、固定ファームウェアイメージの入力依存スレッドモード経路と、一回の最大例外進入分を扱う。v3固定長配列版は動的フレーム記録を0件にした別のバイナリであり、その上界は19件の動的記録が残る二関数適応版には適用できない。割込み候補4根の直接呼出し先では、スタック情報の欠落を検出しなかった。一方、18地点の間接コールバック、有効な割込み要求の集合、優先度、入れ子、割込み処理のフレーム、および例外進入時のMSP使用量は評価していない。したがって、いずれも割込みを含むプログラム全体の上界ではない。
+  \item \textbf{安全性範囲}: v2署名には、入力に依存する分岐、メモリアドレス、再試行、再計算が残る。v3でも鍵ごとの実行時間差と制御フロー・メモリアドレス差を観測したが、公開鍵成分と秘密鍵成分が同時に変わるため、差を秘密部分だけに帰属できない。署名処理全体の電力・電磁波波形、独立取得、攻撃再現、マスキング、およびRP2350上の構造トレースは評価していない。したがって、サイドチャネル耐性は示していない。
+  \item \textbf{実用性}: v2のKeyGenとSignは、多くの製品用途には長すぎる。未予約の\num{211072} bytesは組込み時の余裕であり、製品用乱数生成器、通信、割込み、および対策用状態を同時に収容できることを実証した値ではない。v3についても、同じ定義による排他的SRAM総量は算出していない。
 \end{enumerate}
 
-\cref{tab:stack-claim-layers}はstackに関する保証層をまとめる。ここで「成立」は固定したELFに限り、「未成立」は実測が予約内だったという事実を上界へ読み替えないことを意味する。
+\cref{tab:stack-claim-layers}は、スタックに関して得られた結果と、その結果に含まれない要素を実装ごとに示す。
 
 \begin{table}[H]
   \centering
-  \caption{stack claimの分解。D2は固定frame試作、D3は最終v3適応版であり、別binaryである。}
+  \caption{スタック評価の範囲。固定長配列版と二関数適応版は別のバイナリである。}
   \label{tab:stack-claim-layers}
   \footnotesize
-  \begin{tabularx}{\linewidth}{@{}p{0.31\linewidth}p{0.15\linewidth}X@{}}
+  \begin{tabularx}{\linewidth}{@{}p{0.27\linewidth}p{0.34\linewidth}X@{}}
     \toprule
-    対象 & 状態 & 保証境界 \\
+    対象 & 得られた証拠 & 含まれない要素 \\
     \midrule
-    v2 K/S/V operation PSP & 成立 & link済み入力依存Thread-mode経路＋PSP上の最大例外entry一回 \\
-    v3 D2 K/S/V operation PSP & 成立 & 固定frame試作のlink済みsoftware call＋同例外entry \\
-    v3 D3 operation PSP & 未成立 & 二関数の局所frameと一回の\texttt{p324\_3}watermarkのみ。動的frame 19件 \\
-    handler software/MSP/nesting & 未成立 & enabled IRQ集合、間接callback、entry時MSP量を含む全program解析が必要 \\
+    v2のKeyGen・Sign・Verify用PSP & リンク済みの入力依存スレッドモード経路と一回の最大例外進入分の上界 & 割込み処理、割込みの入れ子、例外進入時のMSP使用量 \\
+    v3固定長配列版の操作用PSP & リンク済みソフトウェア呼出しと一回の最大例外進入分の上界 & 二関数適応版への適用、割込み処理とMSP \\
+    v3二関数適応版の操作用PSP & 二関数の局所フレーム差と一回の\texttt{p324\_3}上書き深さ & 動的フレーム19件を含む操作経路の上界 \\
+    割込み側スタック & MSP予約・上書き深さ、直接呼出し先のスタック情報監査 & 有効な割込み要求の集合、間接コールバック、割込みの入れ子、例外進入時のMSP使用量 \\
     \bottomrule
   \end{tabularx}
 \end{table}
-
-\section{追加研究工程の実施結果と未解決課題}
-\label{sec:future-work}
-
-旧稿で今後の研究工程として列挙した項目について、本改訂では、現在の計算機・RP2350基板だけで実行できる有限の試験と試作をすべて完了した。\cref{tab:future-work-status}の「限定完了」は、記載した有限corpusまたは反復を完了したことだけを表す。「試作完了」は生成器の目標出力を得た状態であり、解析のsoundnessを意味しない。「実験完了（負）」は、事前に定めた実験を完走したが、目標性質が成立しなかった状態である。従って、負の結果または外部機材待ちを研究目標の達成へ読み替えない。
-
-\begin{table}[H]
-  \centering
-  \caption{旧「今後の研究工程」に対する実施状況。状態は研究目標の達成度ではなく、記載した有限工程と残る証明境界を表す。}
-  \label{tab:future-work-status}
-  \footnotesize
-  \begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}p{0.12\linewidth}X@{}}
-    \toprule
-    工程 & 状態 & 得られた結果と残る境界 \\
-    \midrule
-    \input{generated/future-work-rows.tex}\\
-    \bottomrule
-  \end{tabularx}
-\end{table}
-
-v2については、同一入力2 bootという実験上の限界を補うため、測定ELFと\texttt{.text}が一致するclean再構築版のlink済みcall graphを解析した。入力依存Thread-mode経路へ最大例外entryを加えたK/S/Vの操作PSP上界は\num{\VTwoStaticKeygenPspBoundBytes}/\num{\VTwoStaticSignPspBoundBytes}/\num{\VTwoStaticVerifyPspBoundBytes} bytesで、全て予約内に収まった。D3ではv3転用を一関数から二関数へ拡張し、全三parameterのhost機能試験とArm frame監査を完了した。RP2350 \texttt{p324\_3}の一経路ではSign PSPを\num{\VThreeDThreeSavedBytes} bytes削減した。これにより「v2は一入力watermarkだけ」「v3は一関数・一parameterだけ」という旧稿の二つの限定を、operation-PSP解析と全parameter局所検証で狭めた。ただしv3の全parameter実機fitは依然未評価である。
-
-v3の動的局所frame記録は固定frame試作で19件から0件へ変更できた。しかし、同じ第0ベクトルに対するPSP上書き深さは、公式版に比べてKeyGenで\num{5124} bytes、Verifyで\num{2808} bytes増え、Signでは変わらなかった。その後、link後のcall graphについてmetadataのない固定frameとveneerをELFへ結び、間接callを解決し、3個の再帰強連結成分へ構成固有rankを与えた。さらにSecure Armv8-Mの最大例外entry \num{\VThreeExceptionPspAllowanceBytes} bytesを加え、固定imageのK/S/V操作PSP上界を\num{\VThreeStaticKeygenPspBoundBytes}/\num{\VThreeStaticSignPspBoundBytes}/\num{\VThreeStaticVerifyPspBoundBytes} bytesとして閉じた。全て\num{131072} byte予約内であり、clean実機vector 0の観測\num{\VThreeStaticObservedKeygenPspBytes}/\num{\VThreeStaticObservedSignPspBytes}/\num{\VThreeStaticObservedVerifyPspBytes} bytesもこの範囲に入った。非同期側では候補4根の直接call metadataを閉じた一方、handler側の間接callback 18地点、IRQ nesting、およびentry時のMSP量が残った。従って全program上界は主張しない。
-
-サイドチャネル対策では、固定budgetのrandom ideal samplerとCornacchiaの固定scheduleを一つの実験用署名経路へ統合した。局所的な演算回数分岐は除去できた一方、全Signの固定対ランダム比較では、制御フロー差と実効address差が二回の測定でともに再現した。残存面の台帳には12件が残り、現時点の判定は\texttt{side\_channel\_resistant=false}である。v3については10入力のtarget時間順位を二配置で再現し、host上でmessageと署名乱数を固定した10鍵×30反復×2順序でも、公式版とv3適応版の双方に同一の鍵別時間順位を得た。同条件のhost構造traceでは同一鍵control 8組が安定し、異なる鍵の36組全てで制御フロー・address差を二processにわたり検出した。さらにRP2350上で、固定address、計測直前のXIP cache無効化、固定message・固定署名乱数の下、10鍵×5反復×2順序×2実装の\num{\VThreeTargetFixedTimingSamples}署名を完走し、両実装で事前規則を満たす鍵対応timingを検出した。ただし秘密成分だけへの帰属、target上の構造trace、および物理波形を満たさない。これらは「耐性を得た」という結果ではなく、未達条件を具体化した負の結果である。
-
-電力・電磁波取得用firmware、データ形式、一次・二次検定、および既報攻撃用のpositive controlは準備した。しかし、現在接続されているのはRP2350基板だけであり、電流または近傍電磁界probeとscope/SCA取得装置がない。従って、物理traceは0件であり、独立二回の取得工程は外部機材待ちとして残す。他PQC方式と複数マイコンへの展開は、著者が本改訂の対象外としたため実施せず、一般性の根拠にも数えない。各状態、入力成果物、およびSHA-256 digestは補助資料の\texttt{future-work-status.json}へ保存する。
 
 \section{結論}
 \label{sec:conclusion}
 
-本稿では、SQIsign v2.0.1 Level IのKeyGen、Sign、VerifyをRP2350のオンチップSRAM内でGMPおよび動的確保なしに実行するためのメモリ設計を示した。型付きlifetime-aware arena schedulingによりプロトコル全体の同時生存領域を削減し、候補ノルムのビット長と上位64 bitを保持して必要時だけ全精度へ戻るcertified norm sketchを組み合わせた。元の全精度順序を保ったままoperation arenaを\num{353008} bytesから\num{172080} bytesへ削減した。実機2 bootに加え、固定ELFのlink済み入力依存Thread-mode経路についてK/S/VのPSP上界を閉じ、いずれも\num{131072} byte予約内であることを確認した。
+SQIsign v2.0.1 Level Iに対し、型付きの生存期間配置とノルム要約を組み合わせ、元の全精度比較順序を保ったまま操作用アリーナを\num{353008} bytesから\num{172080} bytesへ削減した。RP2350ファームウェアはGMP、動的確保、外部PSRAMを用いない。排他的に予約するSRAMは\num{321408} bytesであり、\num{211072} bytesを未予約として残す。公式入力100本による差分適合試験、生存期間確認表、ELF監査、および固定ファームウェアイメージのPSP解析は、この範囲における機能・メモリ結果を支持する。
 
-v3.0では、同じ考え方を\texttt{quat\_lll\_dual\_reduce\_ideal}と\texttt{protocols\_sign}へ適用した。全三parameterの300個のparameter/request組を二実装で検査し、計\num{\VThreeDThreeKatVectors}回の公式response一致を確認した。二関数の全六Arm frameも削減した。\texttt{p324\_3}実機ではSign PSPが\num{\VThreeDThreeOfficialSignPspBytes} bytesから\num{\VThreeDThreeSignPspBytes} bytesへ減少した。同時に、certified norm sketchとv2の静的closureはそのまま転用できないことも示した。別の固定frame試作では操作PSP上界を128 KiB内で閉じたが、この保証はD3およびhandler/MSPへは移らない。
+SQIsign v3.0では、同じ配置原理を\texttt{quat\_lll\_dual\_reduce\_ideal}と\texttt{protocols\_sign}へ適用し、三つのパラメータ集合における六つのArm用スタックフレームを削減した。\texttt{p324\_3}の実機試験では、SignのPSP上書き深さが\num{\VThreeDThreeOfficialSignPspBytes} bytesから\num{\VThreeDThreeSignPspBytes} bytesへ減少した。一方、ノルム要約はv2固有である。また、固定長配列版のPSP上界は二関数適応版や割込み処理用MSPには適用できない。
 
-v2最終firmwareは\num{321408} bytesを排他的に予約し、\num{211072} bytesを未予約として残しながら、決定的K/S/Vを2 bootで完了した。hostでは公式request 100本による差分適合試験を二回完走し、同一commitの通常APIとのbyte一致、正当message復元、改変拒否、arena境界・消去を各100本で確認した。一方、v2のKeyGenとSignは非常に遅く、署名の可変時間性と既知のSPA攻撃面も残る。v3でもhostとRP2350の固定条件で鍵対応timingを再現し、v3適応実装にも動的stackと未評価の漏洩面が残る。これは定数時間性または物理漏洩を証明する結果ではなく、省メモリ化とは独立に安全性評価が必要であることを具体化する結果である。従って本結果の価値は、値の上界、同時生存、再計算、link時予約、安全性の主張範囲を版ごとに分離し、二世代の実装で監査可能な設計として示した点にある。
+v2とv3の両方で、入力に依存する実行時間、制御フロー、およびメモリアドレスが残る。v2のKeyGenとSignは、実用的な実行時間にも達していない。したがって、本稿の結果は、省メモリ配置とその検査方法に関するものである。定数時間性、物理漏洩への耐性、プログラム全体の最悪時スタック上界、または製品利用可能性は示していない。
 
 \section*{成果物と再現性}
 
-ソースコード、再構成用パッチ、実験スクリプト、バイナリのdigest、および実機captureを含む補助資料は、\url{https://github.com/quantumshiro/tinysqisign}で公開する。
+ソースコード、再構成用パッチ、実験スクリプト、バイナリのダイジェスト、および実機記録を含む補助資料は、\url{https://github.com/quantumshiro/tinysqisign}で公開している。
 
 \printbibliography[title={参考文献}]
 

@@ -4,7 +4,7 @@ Literature and public-source freeze: **2026-09-04 (Asia/Tokyo)**. This audit was
 
 ## Standardization context
 
-NIST advanced SQIsign to Round 3 of the Additional Digital Signatures process on 2026-05-14. The current [Round-3 candidate page](https://csrc.nist.gov/projects/pqc-dig-sig/round-3-additional-signatures) lists SQIsign and links its project website. The official project website now publishes [SQIsign v3.0](https://sqisign.org/spec/sqisign-20260901.pdf) and the corresponding [`nist-v3` implementation](https://github.com/SQIsign/the-sqisign/tree/nist-v3), both dated 2026-09-01. This project therefore freezes two distinct objects: v2.0.1 Level I for the central low-memory result, and v3.0 `p324_3/m4f` for a separate transfer experiment. It does not treat v3 as evidence about the v2 implementation or silently update v2 parameters.
+NIST advanced SQIsign to Round 3 of the Additional Digital Signatures process on 2026-05-14. The current [Round-3 candidate page](https://csrc.nist.gov/projects/pqc-dig-sig/round-3-additional-signatures) lists SQIsign and links its project website. The official project website now publishes [SQIsign v3.0](https://sqisign.org/spec/sqisign-20260901.pdf) and the corresponding [`nist-v3` implementation](https://github.com/SQIsign/the-sqisign/tree/nist-v3), both dated 2026-09-01. The comparison treats two distinct objects: v2.0.1 Level I for the central low-memory result, and v3.0 `p324_3/m4f` for the transfer experiment. Results for v3 are not used as evidence about the v2 implementation.
 
 This version qualification matters. Results for the 2023 Round-1 submission and one-dimensional variants cannot be used as direct memory or performance baselines for the current v2 higher-dimensional implementation.
 
@@ -42,8 +42,8 @@ K, S, and V mean a real KeyGen, Sign, and Verify path respectively. A parenthesi
 
 | Work/artifact | GMP at runtime | Dynamic allocation | Constant-time claim | Source status | Direct comparison with this project |
 |---|---:|---:|---|---|---|
-| Official v3 | No external GMP | The official Cortex-M implementation uses fixed-precision arithmetic; this audit does not infer a whole-program allocator-free closure from that fact alone | The specification does not claim the complete submission is constant-time | Public `nist-v3` branch | Direct within-version control for the v3 D1 lifetime overlay; not a baseline for the v2 arena reduction. |
-| Official v2 | Yes | Yes, directly in applications and indirectly throughout GMP | No whole-implementation claim | Public | Conformance oracle, but cannot be linked into the final firmware. |
+| Official v3 | No external GMP | The official Cortex-M implementation uses fixed-precision arithmetic; this audit does not infer a whole-program allocator-free closure from that fact alone | The specification does not claim the complete submission is constant-time | Public `nist-v3` branch | Direct within-version control for the v3 one-function lifetime overlay; not a baseline for the v2 arena reduction. |
+| Official v2 | Yes | Yes, directly in applications and indirectly throughout GMP | No whole-implementation claim | Public | Conformance oracle, but cannot be linked into the measured target firmware. |
 | pqm4 2024 audit | Yes in the excluded SQIsign host candidate | Yes | No | pqm4 public; no embedded SQIsign integration in that study | Establishes a historical ~300 KB host estimate, not a heap-free MCU signer. |
 | Optimized 1D | mini-GMP in the full 32-bit host port; not in V-only build | Full K/S uses it; V-only build removes it | No whole-library claim | Public | Important prior 32-bit and Cortex-M work, but embedded K/S are explicitly unfinished and the protocol generation differs. |
 | Paving the Way | Yes | Yes | Constant-time claims are limited to low-level field primitives | No standalone public artifact identified | Full 32-bit K/S/V, but on a Linux Cortex-A SBC with 1 GB external DRAM. |
@@ -63,14 +63,14 @@ K, S, and V mean a real KeyGen, Sign, and Verify path respectively. A parenthesi
 | SPA attack | N/A | N/A | Demonstrates leakage instead of claiming resistance | Public attack code | Requires us to label signing variable-time and avoid any side-channel-resistance claim. |
 | Adaptive scheduling | NR | NR | Explicitly notes timing and memory-access leakage risks | No public source/data found | Its “scheduling” is retry ranking, not object-lifetime scheduling; the negative live result does not supersede this project. |
 
-## Frozen source audit
+## Source and binary inspection
 
 README claims were not accepted as dependency evidence. We inspected CMake link definitions, includes, source calls, and linked symbols using `rg`, `nm`, and `otool`/`objdump` where applicable.
 
-| Frozen artifact | Result of local source/binary inspection |
+| Artifact | Result of local source/binary inspection |
 |---|---|
-| `work/official-v3` at `6d017708…` | Official v3.0 `p324_3/m4f` control. A clean firmware harness at `467ca5b…` compiled this source into a separate ELF/UF2/map. Five paired RP2350 rounds pass official vector 0; the source and results are isolated from v2. |
-| `work/v3-lowmem-d1` at `6d017708…` plus patch 0035 | One tracked source-file change introduces two local lifetime overlays. The applied diff has SHA-256 `44e08929…`; a clean firmware harness built and measured it in the same paired campaign. |
+| `work/official-v3` at `6d017708…` | Official v3.0 `p324_3/m4f` control. A commit-pinned firmware harness at `467ca5b…` compiled this source into a separate ELF/UF2/map. Five paired RP2350 rounds pass official vector 0; the source and results are isolated from v2. |
+| `work/v3-lowmem-d1` at `6d017708…` plus patch 0035 | One tracked source-file change introduces two local lifetime overlays. The applied diff has SHA-256 `44e08929…`; a commit-pinned firmware harness built and measured it in the same paired experiment. |
 | `external/official` at `dd133d7…` | Release Level-I binary links Homebrew `libgmp.10.dylib` and exposes numerous `__gmpz_*` references. Applications also call `calloc/free`. |
 | `external/fixed-precision` at `d0cb037…` | Release Level-I production binary has no GMP or allocator references from the crypto path. A bundled mini-GMP tree exists but is not linked. `find_uv` instead materializes enormous fixed-precision VLAs on stack. |
 | `external/compact-sqisign` at `5b94b09…` | Release Level-I production binary has no GMP references, but `find_uv` calls `malloc` five times and later securely frees the blocks. A bundled mini-GMP tree exists but is not linked. |

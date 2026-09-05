@@ -10,16 +10,14 @@ Authors (in the same order as the paper)
 1. Name: Hiro Nakanishi
    Email: quantumsity@protonmail.com (public)
    Affiliation: Independent Researcher
-   ORCID: optional
-   ROR: optional
 
 Abstract (plain text for the submission form)
 ---------------------------------------------
 Small SQIsign keys and signatures do not imply a small signing workspace. In the SQIsign v2.0.1 Level-I compact implementation studied here, five simultaneously live regions in find_uv total 6,339,868 bytes, exceeding RP2350 on-chip SRAM. We combine typed lifetime scheduling with an order-preserving norm sketch that stores a bit length and 64-bit prefix and regenerates full precision only when required.
 
-For Level I/RADIX32, the operation arena falls from 353,008 to 172,080 bytes (51.2532%). The firmware uses no GMP, dynamic allocation, or external PSRAM; it reserves 321,408 of 532,480 SRAM bytes and leaves 211,072 unreserved. The ordinary API and two separately started low-memory runs process the same 100 official requests. These are fresh-process repetitions of a differential check, not independent or historical-response oracles. For the fixed image, a linked call-graph analysis bounds the KeyGen, Sign, and Verify operation-PSP paths at 92,192, 120,664, and 20,980 bytes, including one 212-byte exception entry; handler frames, interrupt nesting, and live MSP use are excluded.
+For Level I/RADIX32, the operation arena falls from 353,008 to 172,080 bytes (51.2532%). The firmware uses no GMP, dynamic allocation, or external PSRAM; it reserves 321,408 of 532,480 SRAM bytes and leaves 211,072 unreserved. A 100-request differential-conformance test finds byte-identical output between the ordinary and low-memory APIs at the same commit; it is not a historical-response KAT. For the fixed image, linked call-graph analysis bounds the KeyGen, Sign, and Verify operation-PSP paths at 92,192, 120,664, and 20,980 bytes, including one 212-byte exception entry; handler frames, interrupt nesting, and live MSP use are excluded.
 
-For v3.0, we overlay three lifetime-disjoint pairs in two functions. Both variants pass API, self-test, and official-response checks on 300 distinct parameter-set/request pairs each, giving 600 implementation-vector runs in total, and all six affected Arm frames shrink. One clean p324_3 RP2350 path reduces the Sign PSP watermark from 101,060 to 96,396 bytes. These target data cover one parameter and one deterministic path, not a timing distribution or whole-program stack bound. Software screens find input-dependent behavior; we make no claim of constant-time or power/EM resistance.
+For v3.0, we overlay three lifetime-disjoint pairs in two functions. The official and adapted builds pass API, self-test, and official-response checks on 300 distinct parameter-set/request pairs each, giving 600 implementation-vector runs in total, and all six affected Arm frames shrink. One commit-pinned p324_3 RP2350 path reduces the Sign PSP watermark from 101,060 to 96,396 bytes. These target data cover one parameter and one deterministic path, not a timing distribution or whole-program stack bound. Software screens find input-dependent behavior; we make no claim of constant-time or power/EM resistance.
 
 Category
 --------
@@ -28,19 +26,3 @@ Implementation
 Keywords (comma separated; no more than 120 characters in total)
 ----------------------------------------------------------------
 SQIsign, embedded cryptography, memory optimization, microcontroller, side-channel analysis
-
-Publication information
------------------------
-Enter "No" if unpublished; otherwise enter the bibliographic information.
-
-Additional public notes
------------------------
-Leave empty for the first version unless a public note is needed.
-
-Message to editors
-------------------
-Normally leave empty.
-
-License
--------
-To be selected by the author in the submission form because the choice is irrevocable.

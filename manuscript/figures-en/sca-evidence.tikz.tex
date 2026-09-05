@@ -1,4 +1,4 @@
-% Evidence and claim boundary for the English manuscript.
+% Evidence and evaluation scope for the English manuscript.
 \begin{tikzpicture}[
   x=1mm,y=1mm,
   box/.style={draw=black,line width=.6pt,rounded corners=.8mm,minimum height=17mm,
@@ -22,10 +22,10 @@
   \draw[flow] (target.east) -- (claim.west);
 
   \draw[dashed,line width=.9pt] (0,-30) -- (160,-30);
-  \node[strong,fill=white,inner xsep=2mm] at (80,-30) {no evidence beyond this line};
+  \node[strong,fill=white,inner xsep=2mm] at (80,-30) {outside evaluation scope};
   \node[missing] (power) at (47,-43) {full-Sign\\analog power/EM};
   \node[missing] (recovery) at (113,-43) {key recovery from\\target traces};
   \draw[flow,dashed] (power.east) -- (recovery.west);
   \node[lab,anchor=north,align=center] at (80,-54)
-    {No claim of power/EM resistance or key-recovery resistance};
+    {power/EM resistance and key recovery not evaluated};
 \end{tikzpicture}

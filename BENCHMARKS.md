@@ -1,8 +1,8 @@
 # Benchmark record and methodology
 
-This file separates phase-1 host diagnostics from future RP2350 claims. Unless explicitly marked otherwise, values below are single-machine smoke measurements and must not be compared as a paper-quality performance table.
+This file records the chronological host diagnostics and RP2350 measurements that underlie the paper. Early entries retain their experiment identifiers and contemporaneous evidence limits. Unless explicitly marked otherwise, values are single-machine smoke measurements and are not directly comparable across different source, compiler, or target configurations.
 
-## Frozen host
+## Recorded host environment
 
 | Item | Value |
 |---|---|
@@ -481,8 +481,8 @@ workspace guards/full clearing, invalid input and valid-input NULL-workspace
 nonpublication. No performance ratio is reported. Depending on retry attempts,
 the explicit path performs 534,912–1,000,704 logical secure-clear bytes per
 successful invocation, and is not yet called by public KeyGen/Sign. These are
-API-level individual-TU measurements rather than a production peak or target
-Pareto point.
+API-level individual-TU measurements rather than a production peak or a target
+memory--stack--code--time trade-off result.
 
 ## D10 full encoded KeyGen workspace checkpoint
 
@@ -523,7 +523,8 @@ The two short runs do not resolve a slowdown; equally, no equivalence margin
 or target experiment was predeclared, so they do not establish equivalence or
 a speedup. Clearing the outer arena on entry and exit writes 706,016 logical
 bytes before nested phase/retry clearing. Cortex-M33 cycles, wall time and
-energy remain unmeasured, so D10 is not yet a Pareto point.
+energy remain unmeasured, so D10 does not yet establish a target
+memory--stack--code--time trade-off point.
 
 ## D11a allocator-free selected KeyGen closure
 
@@ -912,14 +913,15 @@ UF2  685a311857040e8321e0976f50211a3fd14425418340acf6bf56f07f9c30135b
 BIN  f1e11ae2b7cb950f6413b4306c47e76f100847d2c91eb1c398eff8b0b9b13d10
 ```
 
-The complete capture and manifest are in `results/rp2350/`. Before publication, repeat Verify over a larger deterministic corpus, alternate order, separate wrapper/interrupt effects, and report min/median/mean/standard deviation/max. The current approximately 0.817-second values are correctness observations only.
+The complete capture and manifest are in `results/rp2350/`. The approximately 0.817-second values come from a correctness smoke run; that artifact does not contain a larger input corpus, alternate ordering, separated wrapper/interrupt effects, or a timing distribution.
 
-## RP2350 benchmark protocol
+## RP2350 measurement fields
 
 Standalone target Verify and KeyGen correctness smokes, a sequential K→S run,
-and the final deterministic one-boot K→S→V run now exist. Multi-run KeyGen/Sign
-distributions and a paper-quality Verify distribution remain outstanding.
-The final harness must record, for every profile and firmware commit:
+and a deterministic one-boot K→S→V run are archived. The KeyGen/Sign records
+do not provide input distributions, and the Verify smoke is not a timing
+distribution. Target manifests distinguish the following fields where they
+apply:
 
 ```text
 board model/revision and RP2350 stepping where available
@@ -941,9 +943,9 @@ number of repetitions and retry counts
 
 Mutable `.data/.bss`, stack, workspaces, SDK/runtime state and measurement buffers are all included in total peak SRAM. Read-only flash is separate and its XIP time cost is measured.
 
-For each optimization variant A–H, run deterministic correctness first, then at least enough randomized repetitions to stabilize medians and retry distributions. Energy is secondary and should only be added when the measurement apparatus and shunt/calibration are documented.
+The recorded optimization sequence applies deterministic correctness checks before performance attribution. Energy is not reported because the artifact does not include a documented shunt or calibrated acquisition apparatus.
 
-## Planned variant table
+## Historical transformation matrix
 
 | Variant | Definition | Correct | Peak SRAM | K/S/V time | Status |
 |---|---|---:|---:|---:|---|
@@ -972,16 +974,10 @@ For each optimization variant A–H, run deterministic correctness first, then a
 | D12b | D12a plus workspace-aware secret-key decode and bounded even-isogeny strategy | Exact signed-message/post-RNG differential, both radices, all-level normal, sanitizer/strict, exact 51-object Arm closure and physical K→S PASS | 502,204 B exclusive reservation; 30,276 B unassigned; K/S PSP 91,980/120,452 of 131,072 B | one physical run: K 2,696.208062 s, S 7,337.883516 s | Deterministic correctness/feasibility point only; no production RNG, target distribution, equivalence, worst-case stack or side-channel claim |
 | D12c | D12b plus bounded detached Verify/Open under one sequential K/S/V union | Valid/altered Verify, Open success/failure zeroing, RNG-nonuse and cleanup fixtures; exact 52-object Arm closure, static ELF policy and one-boot K/S/V PASS | Verify member 15,428 B; operation union unchanged at 353,008 B; 502,336 B exclusive reservation leaves 30,144 B unassigned; K/S/V PSP 91,980/120,452/20,768 of 131,072 B | one physical run: K 2,696.250983 s, S 7,337.481041 s, V 0.813858 s | Deterministic correctness/feasibility point only; no production RNG, target distribution, equivalence, worst-case stack or side-channel claim |
 | RP2350 KG | D11d-3 selected closure plus Pico SDK, deterministic CTR-DRBG, guarded owner and separate PSP/MSP | Physical transcript/guard/clear and ELF policy PASS | **493,728 B** exclusive reservation; **38,752 B** unreserved | one run **2,696.500982 s** | Physical deterministic KeyGen complete; production RNG, Sign, worst-case stack and benchmark distribution pending |
-| E | Additional precision specialization | — | Unknown; proof required | — | Not yet safe |
-| F | Recompute/streaming additions | — | Pareto search | — | D includes first quotient/row recomputation candidates |
-| G | Balanced low-memory profile | — | Target-dependent | — | Pending |
-| H | Minimum-memory profile | — | Target-dependent | — | Pending |
 
-The physical KeyGen and Verify milestones are deliberately outside variants
-A–H because those variants describe the transformation lineage rather than
+The physical KeyGen and Verify measurements are listed outside variants
+because the table rows describe the transformation lineage rather than
 particular target firmware profiles.
-
-No empty cell in this table may be replaced with a projected value and presented as a measurement.
 
 ## RP2350 powmod exponent-branch mitigation
 
@@ -1002,10 +998,10 @@ The regularized/legacy ratio of random medians is
 but residual same-input timing repeats across runs at Pearson 0.9999987 and
 random SD remains at least 680x fixed SD. The Arm candidate/helper/window
 frames are static 1,128/232/32 bytes; no arena growth is attributed. This is a
-component countermeasure Pareto point, not an analog, constant-time, full-Sign
-or production result.
+component-level memory--code--time trade-off measurement, not an analog,
+constant-time, full-Sign, or production result.
 
-## RP2350 fixed-work powmod Pareto point
+## RP2350 fixed-work powmod memory--code--time trade-off
 
 The second diagnostic fixes both the exponent schedule and the 521-bit
 multiplication/addition schedule. The results below are coarse GPIO-window
@@ -1025,8 +1021,8 @@ rounds, 1,042 modular multiplications, 542,882 multiplier-bit rounds and
 1,085,764 modular additions. Arm frames for add/multiply/wrapper/pow/window are
 88/56/896/1,000/32 bytes, all static.
 
-The attractive Pareto point is not a resistance result. Across both fixed-work
-runs, the pooled fixed-minus-random median remains `-5 µs` with paired
+The favorable time/code-size trade-off is not a resistance result. Across both
+fixed-work runs, the pooled fixed-minus-random median remains `-5 µs` with paired
 `t=-7.7963`, and negative-control ordering/variance warnings remain. The
 coarse timing screen therefore fails; the candidate is neither integrated
 into Sign nor evaluated by analog SPA/EM or exponent recovery.
@@ -1251,22 +1247,20 @@ High or Medium finding. Old/new Cortex-M33 `.text` is byte-identical, so no time
 or code-size delta is assigned. A stub-RNG test of the rejection branch remains
 desirable; the saved tests do not prove every program path free of UB.
 
-## Paper-revision closure (2026-09-04)
+## Paper evidence summary (2026-09-04)
 
-| Evidence | Bounded result | Claim boundary |
+| Evidence | Bounded result | Evidence limitation |
 |---|---|---|
-| v2 target repeat | Exact archived UF2; 2/2 boots PASS; K/S/V PSP 91,980/120,452/20,768 B and transcripts identical | One deterministic input and one board; no input distribution or worst-case stack bound |
+| v2 target repeat | Measured UF2; 2/2 boots PASS; K/S/V PSP 91,980/120,452/20,768 B and transcripts identical | One deterministic input and one board; no input distribution or worst-case stack bound |
 | v3 multi-input/placement | 10 official vectors × 2 implementations × 2 placements; 40 valid K/S/V and 40 modified-signature rejection trials PASS; PSP mismatches 0/80 | Finite vectors and one board; no population/worst-case result |
-| v3 fixed-frame linked bound | Compiler dynamic records 19→0; K/S/V PSP bounds including one 212-B maximum Secure exception entry are 108,300/127,932/40,468 B; clean vector-0 observations 62,096/101,060/40,252 B | Linked synchronous operation roots only; 18 handler-side indirect callbacks and IRQ/MSP nesting remain, so not a whole-program bound |
+| v3 fixed-frame linked bound | Compiler dynamic records 19→0; K/S/V PSP bounds including one 212-B maximum Secure exception entry are 108,300/127,932/40,468 B; commit-pinned vector-0 observations 62,096/101,060/40,252 B | Linked synchronous operation roots only; 18 handler-side indirect callbacks and IRQ/MSP nesting remain, so not a whole-program bound |
 | v3 RP2350 fixed-key timing | 200/200 signatures verify; both images have A/B key-rank Spearman 1.0 and key-median spans 50.8419--51.3752%; Sign PSP delta −3,928 B in all 100 pairs | Key-associated wall-clock timing only; no secret-only attribution, physical leakage, attack, or resistance |
-| Future-work register | `BOUNDED_LOCAL_PROGRAM_COMPLETE_WITH_EXTERNAL_HARDWARE_BLOCKER`; all locally executable bounded campaigns complete | All research goals false; physical traces 0 because probe/scope hardware is absent; cross-scheme/MCU work excluded by author scope |
 
 Machine-readable sources are
 `results/rp2350/ksv-d13-repeat-2026-09-04-summary.json`,
 `results/v3/rp2350/multi-input-placement-clean-2026-09-04/summary.json`,
 `results/v3/rp2350/static-closure-clean-2026-09-04/summary.json`,
-`results/v3/rp2350/fixed-key-timing-clean-2026-09-04/summary.json`, and
-`results/revision-2026-09-04/future-work-status.json`.
+and `results/v3/rp2350/fixed-key-timing-clean-2026-09-04/summary.json`.
 
 ## Public reconstruction closure (2026-09-04)
 

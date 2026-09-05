@@ -36,6 +36,8 @@
   \draw[flow] (len.south) -- node[lab,right] {no} (bylen.north);
   \draw[flow] (top.south) -- node[lab,right] {no} (bytop.north);
   \draw[flow] (full.south) -- node[lab,right] {no} (bynorm.north);
-  \draw[flow] (full.west) -- ++(-4,0) |- node[lab,near start,above] {yes} (byindex.north);
+  % Leave the decision vertically and enter the result at its east anchor;
+  % this avoids retracing the incoming edge or running along the box border.
+  \draw[flow] (full.west) |- node[lab,near start,left] {yes} (byindex.east);
   \node[strong,anchor=west] at (91,-24.5) {rebuild path: \num{5041}/\num{2062361}=\num{0.2444}\%};
 \end{tikzpicture}

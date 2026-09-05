@@ -83,25 +83,24 @@ regenerates full precision only when required.
 For Level I/RADIX32, the operation arena falls from \num{353008} to
 \num{172080} bytes (\num{51.2532}\%).  The firmware uses no GMP, dynamic
 allocation, or external PSRAM; it reserves \num{321408} of \num{532480} SRAM
-bytes and leaves \num{211072} unreserved.  The ordinary API and two separately
-started low-memory runs process the same 100 official requests.  These are
-fresh-process repetitions of a differential check, not independent or
-historical-response oracles.  For the fixed image, a
-linked call-graph analysis bounds the KeyGen, Sign, and Verify operation-PSP
-paths at \num{\VTwoStaticKeygenPspBoundBytes},
+bytes and leaves \num{211072} unreserved.  A 100-request differential-
+conformance test finds byte-identical output between the ordinary and
+low-memory APIs at the same commit; it is not a historical-response KAT.  For
+the fixed image, linked call-graph analysis bounds the KeyGen, Sign, and Verify
+operation-PSP paths at \num{\VTwoStaticKeygenPspBoundBytes},
 \num{\VTwoStaticSignPspBoundBytes}, and
 \num{\VTwoStaticVerifyPspBoundBytes} bytes, including one 212-byte exception
 entry; handler frames, interrupt nesting, and live MSP use are excluded.
 
-For v3.0, we overlay three lifetime-disjoint pairs in two functions.  Both
-variants pass API, self-test, and official-response checks on 300 distinct
+For v3.0, we overlay three lifetime-disjoint pairs in two functions.  The
+official and adapted builds pass API, self-test, and official-response checks on 300 distinct
 parameter-set/request pairs each, giving \num{600} implementation-vector runs
-in total, and all six affected Arm frames shrink.  One clean
+in total, and all six affected Arm frames shrink.  One commit-pinned
 \texttt{p324\_3} RP2350 path reduces the Sign PSP watermark
 from \num{\VThreeDThreeOfficialSignPspBytes} to
 \num{\VThreeDThreeSignPspBytes} bytes.  These target data cover one parameter
 and one deterministic path, not a timing distribution or whole-program stack
-bound.  Software screens find input-dependent behavior; we make no claim of
+bound.  Software timing and trace tests find input-dependent behavior; we make no claim of
 constant-time or power/EM resistance.
 \end{abstract}
 
@@ -148,31 +147,31 @@ Our contributions are as follows.
 \begin{enumerate}[leftmargin=2.2em]
   \item We formulate protocol workspace placement as an aligned storage
         allocation problem over typed objects and path-sensitive lifetimes.
-        A manually reviewed contract is compiled into C unions, offsets, and
-        static assertions.
+        Reviewed lifetime annotations are translated into C unions, offsets,
+        and static assertions.
   \item We introduce an order-preserving norm sketch for the v2 candidate
         table.  It reduces resident state while retaining a full-precision
         fallback whenever the sketch alone cannot decide an ordering.
-  \item We produce an auditable v2 artifact: source correspondence checks,
-        lifetime certificates, sanitizer and guard tests, ELF audits, two
-        fresh-process repetitions of a 100-request differential campaign, a
-        fixed-image operation-PSP analysis, and RP2350 captures.
+  \item We validate the v2 construction with source-correspondence and
+        lifetime audit records, sanitizer and guard tests, ELF audits, two
+        fresh-process repetitions of a 100-request differential experiment,
+        fixed-image operation-PSP analysis, and RP2350 measurements.
   \item We transfer lifetime scheduling, but not the v2 norm sketch, to two
         v3 functions.  We test all three official parameter sets on the host
-        and in Arm object builds, and report one clean \texttt{p324\_3}
+        and in Arm object builds, and report one commit-pinned \texttt{p324\_3}
         target path.
-  \item We separate functionality and memory claims from implementation
-        security.  The measured implementations remain variable-time, and
-        no analog trace campaign has been performed.
+  \item We evaluate implementation security separately from functionality
+        and memory.  The measured implementations remain variable-time, and
+        no analog trace experiment has been performed.
 \end{enumerate}
 
 \begin{figure}[ht]
   \centering
   \input{figures-en/overview.tikz.tex}
   \caption{Study overview.  The v2 path combines lifetime scheduling with an
-  order-preserving norm sketch.  The v3 D3 experiment transfers only the
-  scheduling principle.  Functionality and memory evidence are kept separate
-  from the side-channel claim boundary.}
+  order-preserving norm sketch.  The v3 two-function variant transfers only the
+  scheduling principle.  Functionality and memory evidence are evaluated
+  separately from side-channel behavior.}
   \label{fig:en-overview}
 \end{figure}
 
@@ -217,17 +216,17 @@ active research topics\cite{ct-integer-2025,ct-lattice-2025,ct-quaternion-2025}.
 Mukherjee et al. demonstrated a simple-power-analysis key-recovery route via a
 secret-derived exponent in Cornacchia processing\cite{spa-2025}.  These works
 show why a static address layout is not a side-channel countermeasure.  Our
-timing and software-trace screens identify residual variable behavior; they
+timing and software-trace tests identify residual variable behavior; they
 do not replace power/EM acquisition or attack reproduction.
 
-Our literature audit was frozen on 2026-09-04, after the v3 release.  Search
-queries, databases, inclusion criteria, and nearby counterexamples are stored
-in the public artifact.  The negative result is deliberately narrow: we found
-no prior report matching the combined v2 scope of complete K/S/V, no GMP or
-heap, on-chip-only RP2350 execution, and linked-image accounting.  It is not a
-claim over unpublished or later work.
+A documented search through 2026-09-04, after the v3 release, found no prior
+report combining the following v2 properties: complete KeyGen/Sign/Verify, no GMP or heap,
+on-chip-only RP2350 execution, and linked-image accounting.  The public search
+log records the queries, databases, inclusion criteria, and nearby
+counterexamples.  This observation is limited to the documented search and
+does not cover unpublished or later work.
 
-\section{Background and Claim Boundary}
+\section{Background and Evaluation Scope}
 \label{sec:en-background}
 
 \subsection{SQIsign v2 and v3}
@@ -254,7 +253,7 @@ GMP and its smaller mini-GMP implementation represent integers with
 separately allocated limb arrays and grow those arrays through an allocator
 \cite{gmp-manual-630}.  Mini-GMP passed the functional response checks in a
 separate host experiment, but a simple 16-byte-aligned static-pool allocator
-needed \num{317696} bytes for the measured 100-vector signing corpus and saw
+needed \num{317696} bytes for the measured 100-vector signing test set and saw
 up to \num{4830} live blocks.  This host threshold is neither a mini-GMP lower
 bound nor an RP2350 total.  We choose fixed-capacity arrays because their
 ownership, alignment, and reservation can be audited before linking, not
@@ -269,13 +268,13 @@ read-only data execute from internal flash; only the chip's \num{532480}
 bytes of SRAM are counted as available data memory.  The builds use Pico SDK
 2.3.0 and Arm GNU Toolchain 15.2.1 in Release mode.
 
-We distinguish five quantities: operation-arena payload, guarded owner,
+We distinguish five quantities: operation-arena payload, guarded operation region,
 linked mutable regions, reserved Process/Main Stack Pointer regions, and an
 observed stack watermark.  A watermark is the overwritten extent for one
 execution, not a bound.  ``Unreserved SRAM'' is computed after subtracting
 the full PSP and MSP reservations, never only the observed watermarks.
 
-\subsection{Security boundary}
+\subsection{Security evaluation scope}
 
 Functional failures include output disagreement, boundary-canary corruption,
 uncleared workspace state, or an unintended allocator/GMP dependency.  For
@@ -330,7 +329,7 @@ Two objects may share an offset only when their reviewed contracts establish:
 escape or returned reference; (iii) required clearing before reuse;
 (iv) typed aliasing and alignment; and (v) cleanup on every return edge.  ABI
 probes, \texttt{-Wvla -Walloca -Werror}, ASan/UBSan, canaries, zeroization
-fixtures, and ELF audits serve as independent failure gates.  They do not
+tests, and ELF audits provide complementary checks.  They do not
 constitute whole-program alias verification.
 
 \begin{figure}[ht]
@@ -343,7 +342,7 @@ constitute whole-program alias verification.
   \label{fig:en-lifetime}
 \end{figure}
 
-KeyGen, Sign, and Verify also share one operation owner because the embedded
+KeyGen, Sign, and Verify also share one operation arena because the embedded
 API serializes them.  This makes the reservation their maximum rather than
 their sum.  Reentrancy, concurrent signing, and cross-core use are outside
 the API contract.
@@ -355,8 +354,8 @@ the API contract.
 
 The starting \texttt{find\_uv} stores candidate vectors, full-precision
 norms, quotients, row counts, and sorting records simultaneously.  We apply
-the following transformations, checking differential transcripts after each
-stage:
+the following transformations in sequence, checking differential transcripts
+after each transformation:
 
 \begin{enumerate}[leftmargin=2.2em]
   \item pack each four-coordinate candidate in \texttt{int8\_t[4]} after
@@ -377,7 +376,7 @@ stage:
   \centering
   \caption{v2 ablation.  Rows before explicit lattice ownership describe the
   candidate region; later rows describe caller-owned workspace or the
-  operation arena, and are not whole-firmware peaks.}
+  operation arena, and are not maximum memory values for the complete firmware.}
   \label{tab:en-ablation}
   \small
   \begin{tabularx}{\linewidth}{@{}l r X@{}}
@@ -397,9 +396,9 @@ stage:
 \end{table}
 
 Moving the lattice VLA to an owner intentionally increases the displayed
-region from \num{275840} to \num{353008} bytes: this is an ownership
-checkpoint, not a claimed saving.  It prevents a change of storage class from
-being misreported as reduced total memory.
+region from \num{275840} to \num{353008} bytes.  This accounting treatment
+prevents a change of storage class from being misreported as reduced total
+memory.
 
 \subsection{Order-preserving norm sketch}
 \label{sec:en-sketch}
@@ -440,7 +439,7 @@ integers are equal.  These cases cover every pair.
 
 For example, $2^{100}$ and $2^{100}+1$ have equal sketches but are sent to
 the reconstruction path.  Correctness therefore does not depend on assuming
-that sketch ties are rare.  In the attribution corpus, reconstruction was
+that sketch ties are rare.  In the attribution test set, reconstruction was
 used for \num{5041} of \num{2062361} sorting comparisons
 (\num{0.2444}\%); this frequency is a performance observation only.
 
@@ -531,7 +530,7 @@ published as a successful result.
 
 \subsection{From the proposition to the C implementation}
 
-The frozen full-norm-table reference is commit \texttt{6b79cfb5...}.
+The full-norm-table reference is fixed at commit \texttt{6b79cfb5...}.
 The proposed commit \texttt{71099e08...} is its direct child.  A source
 audit binds 22 predicates and anchors to their digests.  \Cref{tab:en-correspondence}
 summarizes the obligations connecting \cref{prop:en-order} to the C search.
@@ -542,7 +541,7 @@ summarizes the obligations connecting \cref{prop:en-order} to the C search.
   proposed \texttt{find\_uv}.}
   \label{tab:en-correspondence}
   \scriptsize
-  \begin{tabularx}{\linewidth}{@{}p{0.15\linewidth}p{0.25\linewidth}p{0.32\linewidth}X@{}}
+  \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.15\linewidth}>{\raggedright\arraybackslash}p{0.25\linewidth}>{\raggedright\arraybackslash}p{0.32\linewidth}>{\raggedright\arraybackslash}X@{}}
     \toprule
     Obligation & Reference & Proposed & Failure handling \\
     \midrule
@@ -582,32 +581,32 @@ orders are the same by \cref{tab:en-correspondence}; hence both searches first
 accept the same tuple or exhaust the same sequence.
 \end{proof}
 
-This result is conditional on the frozen source correspondence.  It is not a
+This result is conditional on the source correspondence at those commits.  It is not a
 formal proof of all C behavior.  The source audit is therefore combined with
 12 reference/proposed transcripts, the two 100-request differential runs, an
-intentional sketch-tie fixture, and NotFound, retry, fatal, guard, and clearing
+intentional sketch-tie test, and NotFound, retry, fatal, guard, and clearing
 tests.
 
-\subsection{Lifetime certificate and linked closure}
+\subsection{Lifetime audit records and linked-code scope}
 
-The final v2 firmware fixes 52 project translation units reachable from the
+The evaluated v2 firmware fixes 52 project translation units reachable from the
 Level-I/RADIX32 operations.  ELF checks reject allocator, GMP, system-RNG,
 legacy large-stack, unresolved-symbol, or out-of-region sections; the linked
 heap is zero bytes.  Eleven principal regions have a machine-readable
-lifetime certificate recording type, Arm size/alignment, offset, construction
+lifetime audit record describing type, Arm size/alignment, offset, construction
 and last-use anchors, prohibited co-residents, pointer passing and escape
 review, cleanup on success/failure/retry, and associated static/dynamic tests.
 
 \begin{table}[ht]
   \centering
-  \caption{Summary of principal v2 lifetime-certificate records.}
-  \label{tab:en-lifetime-certificate}
+  \caption{Summary of the principal v2 lifetime audit records.}
+  \label{tab:en-lifetime-audit}
   \scriptsize
-  \begin{tabularx}{\linewidth}{@{}p{0.21\linewidth}rrp{0.22\linewidth}X@{}}
+  \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.21\linewidth}rr>{\raggedright\arraybackslash}p{0.22\linewidth}>{\raggedright\arraybackslash}X@{}}
     \toprule
     Object & Size [B] & Align [B] & Exclusion contract & Exit checks \\
     \midrule
-    Operation owner & \num{172080} & 8 & Serialized K/S/V & Full zero scan and guards \\
+    Operation arena & \num{172080} & 8 & Serialized KeyGen/Sign/Verify & Full zero scan and guards \\
     KeyGen union & \num{172080} & 8 & \texttt{find\_uv} versus discrete log &
       Terminal clear, retry contract, assertions \\
     Sign union & \num{172080} & 8 & Seven principal phase members &
@@ -617,24 +616,25 @@ review, cleanup on success/failure/retry, and associated static/dynamic tests.
     \texttt{find\_uv} phase union & \num{94912} & 8 & Lattice multiply,
       candidate, fixed degree & One-way transitions and all terminal exits \\
     Verify union & \num{15428} & 4 & Even-isogeny versus theta &
-      Wrapper cleanup and modified-signature fixture \\
+      Wrapper cleanup and modified-signature test \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-The pointer-escape scan rules out direct global/static stores in the frozen
+The pointer-escape scan rules out direct global/static stores in the audited
 source, but is not a sound whole-program alias analysis.  In particular, an
 outer Sign retry clears/finalizes the active callee and relies on subsequent
 initialization; a full-owner zero scan is performed at the public operation's
-terminal exit.  The certificate records this distinction rather than
+terminal exit.  The audit record preserves this distinction rather than
 silently treating every retry as a whole-owner clear.
 
 \section{Transfer to SQIsign v3}
 \label{sec:en-v3}
 
 The official v3 \texttt{p324\_3/m4f} object reports a
-\num{34816}-byte frame for \texttt{quat\_lll\_dual\_reduce\_ideal}.  D1, an
-intermediate one-function variant, introduces two typed overlays:
+\num{34816}-byte frame for \texttt{quat\_lll\_dual\_reduce\_ideal}.  We call
+the implementation with changes only to this function the \emph{one-function
+variant}.  It introduces two typed overlays:
 
 \begin{enumerate}[leftmargin=2.2em]
   \item lattice-reduction state \texttt{fp\_ldl\_t} shares storage with the
@@ -645,36 +645,39 @@ intermediate one-function variant, introduces two typed overlays:
         Gram matrix and transform do not overlap it.
 \end{enumerate}
 
-D3 adds a third overlay in \texttt{protocols\_sign}: the commitment ideal's
+The \emph{two-function variant} adds a third overlay in
+\texttt{protocols\_sign}: the commitment ideal's
 last reference precedes the first write of the challenge-isogeny output
-product.  Source-anchored certificates check those boundaries and the equal
-type sizes.  D3 changes ownership and placement in two functions; it does not
-change the API, algorithms, branch conditions, or randomness consumption.
-Its source commit is \texttt{874658c6...}, based on official v3 commit
-\texttt{6d017708...}.  The RP2350 firmware was built from clean harness
-commit \texttt{5df7acfb...}; source tree, patch, bundle, generated tree, ELF,
-UF2, map, archive, and capture digests are stored together.
+product.  Source-anchored audit records check those boundaries and the equal
+type sizes.  The two-function variant changes ownership and placement in two
+functions; it does not change the API, algorithms, branch conditions, or
+randomness consumption.  Its source commit is \texttt{874658c6...}, based on
+official v3 commit \texttt{6d017708...}.  The RP2350 firmware is tied to
+harness commit \texttt{5df7acfb...}; the reported build contains no
+uncommitted source or harness changes.  Reconstruction patches and SHA-256
+bindings for the generated source, binary, and target record are public.
 
 This transfer remains local.  It does not establish an automatic whole-v3
-placement, and the D3 image retains 19 compiler-reported dynamic frames.  A
-separate D2 fixed-frame prototype is used only to study stack analysis; its
-results do not transfer to the D3 binary.
+placement, and the two-function image retains 19 compiler-reported dynamic
+frames.  A separate \emph{fixed-frame analysis build} is used to study stack
+bounds; its results do not transfer to the two-function binary.
 
 \section{Evaluation Method}
 \label{sec:en-evaluation}
 
 \subsection{Version isolation}
 
-v2, official v3, D1, D2, and D3 use separate source, build, and result
-directories.  Within-v3 comparisons share the official base, parameter set,
-toolchain, and options.  Cross-generation timing or PSP differences are
-descriptive only because parameters, algorithms, integer backends, and memory
-ownership change together.  In particular, the explicit v2 arena and the v3
-PSP watermark are not subtracted as though they were the same resource.
+Each executable is built independently from a pinned source commit without
+sharing object files across variants.  Within-v3 comparisons use the same
+official base, parameter set, toolchain, and options.  Cross-generation timing
+or PSP differences are descriptive only because parameters, algorithms,
+integer backends, and memory ownership change together.  In particular, the
+explicit v2 arena and the v3 PSP watermark are not subtracted as though they
+were the same resource.
 
-\subsection{Functional gates}
+\subsection{Functional validation}
 
-For v2, 12 frozen transcripts compare the full-norm-table and proposed
+For v2, 12 fixed transcripts compare the full-norm-table and proposed
 implementations.  One ordinary-API process and two separately started
 low-memory processes each consume all 100 official v2 Level-I requests.  Each vector
 checks public/secret keys, signed message, post-RNG state, successful Open,
@@ -682,18 +685,18 @@ one-bit modified-signature rejection, guards, and terminal clearing.  All
 three generated response streams are byte-identical.  The expected response
 is produced by the ordinary path at the same compact-source commit.  The two
 low-memory runs therefore test fresh-process repeatability, but do not provide
-independent oracles.  We call this a differential-conformance test using
-official requests, not a historical-response KAT.
+independent oracles.  This is a differential-conformance test using official
+requests, not a historical-response KAT.
 
-For v3, official and D3 builds each pass the NIST API test, scheme self-test,
+For v3, official and two-function builds each pass the NIST API test, scheme self-test,
 and 100 official-response vectors for \texttt{p324\_3}, \texttt{p500\_27},
 and \texttt{p664\_17}.  This is 300 distinct parameter-set/request pairs run
 once on each implementation, or \num{600} implementation-vector runs in
-total.  D1 additionally
-has five interleaved official/adapted target pairs and a 10-vector campaign in
-two linked-code placements.  D3's final target evidence is one clean
-\texttt{p324\_3} vector-0 K/S/V capture.  These corpora are finite regression
-gates, not all-input equivalence proofs.
+total.  The one-function variant additionally has five interleaved
+official/adapted target pairs and a 10-vector experiment in two linked-code
+placements.  The two-function variant's target evidence is one
+commit-pinned \texttt{p324\_3} vector-0 KeyGen/Sign/Verify run.  These test sets are
+finite regression tests, not all-input equivalence proofs.
 
 \subsection{Stack method}
 
@@ -710,10 +713,10 @@ allowance for one maximum Secure Armv8-M exception entry
 software uses the MSP and is not included; neither are the enabled-interrupt
 set, nesting policy, or live MSP at entry.
 
-The separate v3 D2 analysis follows the same pattern after replacing 19
+The separate v3 fixed-frame analysis build follows the same pattern after replacing 19
 dynamic frames with fixed-capacity frames.  It closes the linked operation
 roots, but retains 18 indirect callback sites in candidate interrupt-handler
-paths.  Hence neither the v2 nor D2 result is a whole-program,
+paths.  Hence neither the v2 nor fixed-frame result is a whole-program,
 interrupt-inclusive stack bound.
 
 \section{Results}
@@ -760,7 +763,7 @@ cross-check, not input-population sampling.
 
 \begin{table}[ht]
   \centering
-  \caption{v2 operation-PSP analysis for the fixed image.  The final column
+  \caption{v2 operation-PSP analysis for the fixed image.  The rightmost column
   is relative to the \num{131072}-byte reservation.}
   \label{tab:en-v2-psp}
   \small
@@ -795,52 +798,55 @@ nesting, and MSP usage.
 
 KeyGen takes about 45 minutes and Sign about 127 minutes, so the v2 result is
 a memory-feasibility result rather than a real-time signer.  On the host, two
-reversed-order 30-row campaigns give proposed/baseline median ratios of
+reversed-order 30-row experiments give proposed/baseline median ratios of
 \num{1.003695} and \num{1.006464} for KeyGen, and \num{0.999481} and
 \num{0.998980} for Sign.  A small KeyGen cost is visible; a Sign slowdown
 direction is not reproduced.  Single target observations have ratios
 \num{1.000704}, \num{1.037312}, and \num{1.000593}, but cannot estimate a
-target timing distribution.  The design is therefore a RAM-oriented Pareto
-point with an 880-byte flash cost, not a claim of dominance on every metric.
+target timing distribution.  The design therefore trades an 880-byte flash
+increase and small local-frame increases for a large RAM reduction; it is not
+a claim of improvement on every metric.
 
 \subsection{v3 local transfer}
 
-In D1, the two overlays reduce the
+In the one-function variant, the two overlays reduce the
 \texttt{quat\_lll\_dual\_reduce\_ideal} frame by \num{3928} bytes; five paired
-target runs show the same reduction in Sign PSP.  D3 adds the second function
-and produces the results in \cref{tab:en-v3-target}.
+target runs show the same reduction in Sign PSP.  The two-function variant
+adds the second function and produces the results in
+\cref{tab:en-v3-target}.
 
 \begin{table}[ht]
   \centering
-  \caption{Official v3 versus D3 on \texttt{p324\_3}.  Frame sizes are Arm
-  object values; official PSP is the earlier five-run median and D3 PSP is one
-  clean observation.}
+  \caption{Official v3 versus the two-function variant on \texttt{p324\_3}.
+  Frame sizes are Arm object values; official PSP is the earlier five-run
+  median and the adapted PSP is one observation from the fixed build.}
   \label{tab:en-v3-target}
   \small
   \begin{tabular}{@{}lrrr@{}}
     \toprule
-    Quantity & Official v3 & D3 & Difference \\
+    Quantity & Official v3 & Two-function & Difference \\
     \midrule
-    \input{generated/v3-d3-results-rows.tex}\\
+    \input{generated/v3-d3-results-rows-en.tex}\\
     \bottomrule
   \end{tabular}
 \end{table}
 
-The D3 Sign PSP watermark is \num{\VThreeDThreeSignPspBytes} bytes, a
+The two-function Sign PSP watermark is \num{\VThreeDThreeSignPspBytes} bytes, a
 \num{\VThreeDThreeSavedBytes}-byte (\num{\VThreeDThreeSavedPercent}\%)
 reduction from official v3.  The incremental \num{736}-byte reduction from
-D1 to D3 equals the \texttt{protocols\_sign} frame reduction.  D3 has only one
-target capture, so its elapsed time is archived but not used for a slowdown
-claim.
+the one-function to the two-function variant equals the
+\texttt{protocols\_sign} frame reduction.  The two-function variant has only
+one target run, so its elapsed time is reported descriptively and not used
+for a slowdown estimate.
 
 \begin{table}[ht]
   \centering
-  \caption{D3 Arm frame changes for all official v3 parameter sets.}
+  \caption{Two-function-variant Arm frame changes for all official v3 parameter sets.}
   \label{tab:en-v3-parameters}
   \scriptsize
   \begin{tabular}{@{}llrrr@{}}
     \toprule
-    Parameter & Function & Official [B] & D3 [B] & Reduction \\
+    Parameter & Function & Official [B] & Adapted [B] & Reduction \\
     \midrule
     \input{generated/v3-all-parameter-frame-rows.tex}\\
     \bottomrule
@@ -853,48 +859,51 @@ vectors.  This supports applicability of the three local overlays across the
 official parameter sets.  It does not supply whole-image SRAM or target
 watermarks for \texttt{p500\_27} or \texttt{p664\_17}.
 
-The D1 10-vector/two-placement campaign passes 40 valid K/S/V trials and 40
-modified-signature rejections.  PSP extents agree across both code placements,
-and the \num{3928}-byte D1 Sign reduction appears in all 20 observations.  It
-addresses a one-vector/one-address alternative explanation for D1, but it is
-not a D3 multi-input campaign.
+The one-function 10-vector/two-placement experiment passes 40 valid KeyGen/Sign/Verify
+trials and 40 modified-signature rejections.  PSP extents agree across both
+code placements, and the \num{3928}-byte Sign reduction appears in all 20
+observations.  It addresses a one-vector/one-address alternative explanation
+for the one-function result, but it is not a multi-input experiment on the
+two-function variant.
 
-\subsection{What the separate fixed-frame prototype establishes}
+\subsection{Fixed-frame stack-bound experiment}
 
-D2 converts the 19 dynamic-frame reports to fixed-capacity frames, rejects
+The fixed-frame analysis build converts the 19 dynamic-frame reports to fixed-capacity frames, rejects
 capacity violations with fail-stop traps, and builds with VLA/alloca errors.
-The linked K/S/V operation-PSP results, after adding the 212-byte exception
+The linked KeyGen/Sign/Verify operation-PSP results, after adding the 212-byte exception
 entry, are \num{\VThreeStaticKeygenPspBoundBytes},
 \num{\VThreeStaticSignPspBoundBytes}, and
-\num{\VThreeStaticVerifyPspBoundBytes} bytes.  A clean vector-0 target
-cross-check observes \num{\VThreeStaticObservedKeygenPspBytes},
+\num{\VThreeStaticVerifyPspBoundBytes} bytes.  A commit-pinned vector-0 target
+run observes \num{\VThreeStaticObservedKeygenPspBytes},
 \num{\VThreeStaticObservedSignPspBytes}, and
 \num{\VThreeStaticObservedVerifyPspBytes} bytes, respectively.
 
 This is a negative result for the simple hypothesis that replacing VLAs with
-fixed arrays automatically lowers measured stack: D2 leaves the Sign
-watermark unchanged and increases KeyGen and Verify.  More importantly, D2
-is a different binary from D3.  Its operation-PSP analysis says nothing about
-D3's 19 dynamic frames, handler callbacks, IRQ nesting, or MSP use.
+fixed arrays automatically lowers measured stack: the analysis build leaves the
+Sign watermark unchanged and increases KeyGen and Verify.  More importantly,
+the analysis build is a different binary from the two-function variant.  Its
+operation-PSP analysis says nothing about that variant's 19 dynamic frames,
+handler callbacks, IRQ nesting, or MSP use.
 
 \begin{table}[ht]
   \centering
-  \caption{Stack-claim decomposition.  ``Established'' refers only to the
-  frozen linked image and the stated layer.}
+  \caption{Evidence included in each stack result and the scope excluded from
+  it.  The fixed-frame analysis build and two-function variant are different
+  binaries.}
   \label{tab:en-stack-layers}
   \small
-  \begin{tabularx}{\linewidth}{@{}p{0.30\linewidth}p{0.16\linewidth}X@{}}
+  \begin{tabularx}{\linewidth}{@{}p{0.26\linewidth}p{0.34\linewidth}X@{}}
     \toprule
-    Layer & Status & Boundary \\
+    Layer & Available evidence & Excluded scope \\
     \midrule
-    v2 K/S/V operation PSP & Established & Linked input-dependent Thread-mode
-      paths plus one maximum PSP exception entry \\
-    v3 D2 K/S/V operation PSP & Established & Separate fixed-frame binary,
-      linked software paths plus the same entry allowance \\
-    v3 D3 operation PSP & Open & Two local frame changes and one
-      \texttt{p324\_3} watermark; 19 dynamic-frame records remain \\
-    Handler software, MSP, nesting & Open & Requires enabled-IRQ policy,
-      callback resolution, handler frames, nesting, and entry-time MSP state \\
+    v2 KeyGen/Sign/Verify operation PSP & Linked input-dependent Thread-mode paths plus one
+      maximum PSP exception entry & Handler software, nesting, and entry-time MSP \\
+    v3 fixed-frame operation PSP & Linked software paths plus the same exception
+      allowance & Transfer to the two-function binary and handler/MSP behavior \\
+    v3 two-function operation PSP & Two local frame changes and one
+      \texttt{p324\_3} watermark & An operation bound for the 19 dynamic frames \\
+    Interrupt-side stack & MSP reservation/watermark and direct-callee metadata
+      checks & Enabled IRQs, indirect callbacks, nesting, and entry-time MSP \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -908,28 +917,28 @@ still contains sketch-tie reconstruction, variable candidate search,
 rejection, used-limb scans, early-return comparison, Euclid loops, and
 secret-derived modular exponents.
 
-For v2, two reversed-order fixed-versus-random host timing screens, 64 pairs
+For v2, two reversed-order fixed-versus-random host timing tests, 64 samples per class
 each, give first-order statistics 3.570 and 3.576 and centered second-order
 statistics $-5.410$ and $-5.374$.  Both second-order values cross the commonly
 used $|t|>4.5$ exploratory threshold\cite{schneider-moradi-2016}.  This small
-screen detects a repeatable distributional difference; a value below the
+test detects a repeatable distributional difference; a value below the
 threshold would not certify nonleakage.  Full-Sign software traces also show
 reproducible edge and effective-address differences when signing randomness
 changes.
 
 The known SPA route targets secret-derived exponents during Cornacchia
-processing\cite{spa-2025}.  In our 12-seed v2 corpus, Sign reaches the
+processing\cite{spa-2025}.  In our 12-seed v2 test set, Sign reaches the
 Cornacchia modular-square-root path 361 times, 190 in the modulus class that
 directly matches the published exponent relation.  An isolated RP2350 powmod
 diagnostic has correlation 0.999860 between exponent Hamming weight and time,
 with an approximate slope of 4.004 ms per set bit.  This is a timing
 diagnostic, not an analog trace or a full-Sign key-recovery experiment.
 
-For v3, a fixed-message, fixed-signing-randomness, fixed-key-address screen
-uses ten official keys in two key orders.  Across official and D1 host builds,
+For v3, a fixed-message, fixed-signing-randomness, fixed-key-address test
+uses ten official keys in two key orders.  Across official and one-function host builds,
 \num{\VThreeFixedTimingRows} verified signatures reproduce key-associated
 median rankings; the minimum between-order Spearman coefficient is
-\num{\VThreeKeyTimingSpearmanMin}.  The corresponding RP2350 campaign
+\num{\VThreeKeyTimingSpearmanMin}.  The corresponding RP2350 experiment
 collects \num{\VThreeTargetFixedTimingSamples} verified signatures with cache
 normalization; both implementations have rank coefficient
 \num{\VThreeTargetKeyTimingSpearmanMin} and key-median spans of
@@ -940,7 +949,7 @@ key-associated timing, not secret-only attribution.
 \begin{figure}[ht]
   \centering
   \input{figures-en/sca-evidence.tikz.tex}
-  \caption{Side-channel evidence and boundary.  The available experiments
+  \caption{Scope of the side-channel evidence.  The available experiments
   detect variable behavior.  Full-Sign analog acquisition and target-trace
   key recovery remain unperformed.}
   \label{fig:en-sca}
@@ -948,36 +957,51 @@ key-associated timing, not secret-only attribution.
 
 Fixed-schedule exponentiation and sampling prototypes remove selected local
 variations but leave value-dependent or upper-level work.  No prototype meets
-a deployment criterion.  The artifact therefore records a negative
-side-channel-resistance decision; memory reduction and response-vector
-agreement do not alter it.
+a deployment criterion.  These measurements therefore show residual
+variability and do not support a side-channel-resistance claim; memory
+reduction and response-vector agreement do not alter that conclusion.
 
-\section{Contract Compiler and Automation Boundary}
-\label{sec:en-automation}
+\section{Discussion}
+\label{sec:en-discussion}
 
-The artifact includes a small contract compiler.  Each manually annotated
-object provides phases, size, alignment, secrecy, pointer-escape status, and
-cleanup events.  The tool constructs the interference graph, assigns aligned
-offsets by first fit, and emits JSON, Graphviz, typed C unions/structures, and
-static assertions.  On the frozen v2 annotations it reproduces the
-\num{172080}-byte layout.  The generated header is compiled against the Arm
-types and checked against the hand-reviewed workspace offsets.
+\subsection{Transferability and RAM--stack--flash--time trade-offs}
 
-A separate fail-closed coverage gate enumerates all
-\LifetimeAnnotatedObjects{} declared physical members and
-\LifetimeDirectAccessForms{} direct member/whole-phase access forms.  Adding
-a member or direct access without an annotation causes failure.  This closes
-one practical annotation-omission class.
+The common element across v2 and v3 is the procedure for identifying typed
+objects, establishing noninterference from their lifetimes, and making the
+resulting storage reuse explicit in C.  The v2 norm sketch, 1665-bit integer
+bound, and \num{172080}-byte arena are version-specific.  The v3 results show
+that the placement procedure applies to different local states, but do not
+establish generality beyond the two SQIsign functions and three parameter sets
+tested here.
 
-The tools do not infer phases or lifetimes from C.  They do not establish the
-absence of indirect aliases, pointer escape, missing failure-edge cleanup,
-function-pointer targets, or changes introduced by whole-program
-optimization.  Placement soundness therefore remains conditional on manual
-annotation completeness.  The appropriate description is a contract
-compiler with a coverage gate, not a general automatic placement or static
-alias-analysis system.
+The v2 firmware leaves \num{211072} bytes unreserved, compared with
+\num{30144} bytes for the full-norm-table baseline.  This is integration
+capacity rather than demonstrated capacity for a particular combination of
+randomness, communications, interrupts, and countermeasures.  Constant-time
+or masked implementations may require additional state and fresh randomness,
+so their memory and security costs must be evaluated together.  For v3, only
+local stack changes were measured; an exclusive-SRAM total comparable to the
+v2 accounting is not available.
 
-\section{Limitations and Next Steps}
+\subsection{Annotation-driven layout generation}
+
+Each layout annotation specifies phases, size, alignment, secrecy,
+pointer-escape status, and clearing events.  The generator constructs an
+interference graph, assigns aligned offsets by first fit, and emits JSON,
+Graphviz, typed C unions/structures, and static assertions.  For the v2
+\texttt{find\_uv} annotations, it reproduces the \num{172080}-byte layout, and
+the generated header matches the size and offsets of the Arm workspace types.
+
+A coverage check enumerates all \LifetimeAnnotatedObjects{} declared physical
+members and \LifetimeDirectAccessForms{} direct member or whole-phase access
+forms; an unannotated member or direct access is rejected.  The generator does
+not infer phase meaning or lifetimes from C, nor does it establish the absence
+of indirect aliases, pointer escape, missing failure-edge cleanup,
+function-pointer targets, or optimization-induced changes.  Its guarantees
+therefore depend on annotation completeness and are supplemented by lifetime
+audit tables, canaries, zeroization tests, and ELF audits.
+
+\section{Limitations}
 \label{sec:en-limitations}
 
 The evidence supports a narrower conclusion than an unconstrained ``embedded
@@ -985,42 +1009,35 @@ SQIsign'' claim:
 
 \begin{enumerate}[leftmargin=2.2em]
   \item \textbf{Target scope.}  All physical measurements use one RP2350
-        board and one Cortex-M33 core.  v2 covers Level I/RADIX32.  D3 host
-        response checks and Arm frames cover all three v3 parameter sets, but
-        target whole-image evidence covers only \texttt{p324\_3}.
+        board and one Cortex-M33 core.  v2 covers Level I/RADIX32.  The
+        two-function variant's host response checks and Arm frames cover all
+        three v3 parameter sets, but target whole-image evidence covers only
+        \texttt{p324\_3}.
   \item \textbf{Input scope.}  The v2 target result repeats one deterministic
-        K/S/V path twice.  Its operation-PSP analysis closes linked
+        KeyGen/Sign/Verify path twice.  Its operation-PSP analysis closes linked
         input-dependent Thread-mode paths for the fixed image, but not handler
-        or MSP behavior.  D3 has one target vector and no target timing
-        distribution.
+        or MSP behavior.  The two-function variant has one target vector and
+        no target timing distribution.
   \item \textbf{Functional scope.}  v2 differential tests and v3 official
-        response checks are finite corpora.  The C correspondence audit and
+        response checks use finite test sets.  The C correspondence audit and
         \cref{prop:en-first} do not form an all-input semantics proof.
-  \item \textbf{Manual contracts.}  The coverage gate catches declared-member
+  \item \textbf{Manual contracts.}  The coverage check catches declared-member
         and direct-access omissions, but phase meaning, indirect aliases,
         escape, and failure cleanup remain manually reviewed assumptions.
   \item \textbf{Stack scope.}  A whole-program, interrupt-inclusive maximum
         requires resolution of handler callbacks, enabled IRQs and priorities,
-        nesting, and live MSP state.  D3 additionally requires bounds for its
-        remaining dynamic frames.
+        nesting, and live MSP state.  The two-function variant additionally
+        requires bounds for its remaining dynamic frames.
   \item \textbf{Security scope.}  The implementations are variable-time.
         Full-Sign power/EM traces, independent acquisitions, positive-control
         attack reproduction, masking, and a complete constant-time rewrite
-        remain future work.
+        were not evaluated and are required before claiming resistance.
   \item \textbf{Practicality.}  v2 KeyGen and Sign are too slow for many
         products.  The \num{211072} unreserved bytes may accommodate system
         integration or countermeasures, but that capacity has not been
         demonstrated with production RNG, communications, interrupts, and
         countermeasure state active together.
 \end{enumerate}
-
-Locally executable bounded campaigns listed in the earlier research plan are
-complete in the artifact.  The remaining work is not a hidden checklist item:
-it requires either a stronger program analysis (whole-program interrupt and
-alias/lifetime coverage), additional target campaigns (D3 input diversity and
-the two larger parameter sets), or external power/EM acquisition equipment.
-Other PQC schemes and additional microcontrollers are outside this revision
-and are not counted as evidence of generality.
 
 \section{Conclusion}
 \label{sec:en-conclusion}
@@ -1029,28 +1046,28 @@ Typed lifetime scheduling and an order-preserving norm sketch reduce the
 SQIsign v2 Level-I operation arena from \num{353008} to \num{172080} bytes.
 The resulting RP2350 firmware uses no GMP, heap, or external PSRAM, reserves
 \num{321408} bytes of SRAM, and leaves \num{211072} bytes unreserved.  Two
-fresh-process repetitions of the official-request differential campaign,
-lifetime and source certificates, linked-image audits, and fixed-image
+fresh-process repetitions of the official-request differential experiment,
+lifetime and source audit records, linked-image audits, and fixed-image
 operation-PSP analysis support this bounded result.
 
 In SQIsign v3, three local overlays across two functions reduce all six tested
-Arm frames over the three official parameter sets.  One clean
+Arm frames over the three official parameter sets.  One commit-pinned
 \texttt{p324\_3} target path reduces the Sign PSP watermark from
 \num{101060} to \num{96396} bytes.  This transfer supports the reuse of the
-lifetime-scheduling workflow, while the v2 norm-sketch transformation remains
+lifetime-scheduling method, while the v2 norm-sketch transformation remains
 version-specific.
 
-The strongest remaining qualifications are explicit: D3 lacks a linked
-operation-PSP bound and broad target sampling; handler/MSP/nesting analysis is
-open; automatic placement depends on manual annotations; and the code remains
-variable-time with no analog resistance evidence.  The contribution is thus
-an auditable memory-engineering result with defined evidence boundaries, not
-a claim of general optimality or hardened deployment readiness.
+The two-function v3 result is limited to local frame analysis and one target
+path, and the annotation-driven placement depends on manually established
+lifetimes.  Both generations remain variable-time, and neither has analog
+resistance evidence or an interrupt-inclusive whole-program stack bound.
+Accordingly, the result concerns auditable memory engineering rather than
+general optimality or hardened deployment readiness.
 
 \section*{Artifact Availability}
 
-Source-reconstruction patches, scripts, machine-readable certificates,
-firmware digests, and RP2350 captures are available at
+Source-reconstruction patches, scripts, machine-readable audit tables,
+firmware digests, and RP2350 execution records are available at
 \url{https://github.com/quantumshiro/tinysqisign}.
 
 \printbibliography[title={References}]

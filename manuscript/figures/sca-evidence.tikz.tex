@@ -1,4 +1,4 @@
-% Evidence map and claim boundary for side-channel statements.
+% Evidence map and evaluation scope for side-channel statements.
 \begin{tikzpicture}[
   x=1mm,y=1mm,
   box/.style={draw=black,line width=.6pt,rounded corners=.8mm,minimum height=17mm,
@@ -8,13 +8,13 @@
   lab/.style={font=\sffamily\footnotesize},
   strong/.style={font=\sffamily\bfseries\footnotesize}
 ]
-  \node[strong,anchor=west] at (0,0) {取得済み：positive evidence};
+  \node[strong,anchor=west] at (0,0) {本研究で得た検出結果};
   \node[box,fill=black!10] (timing) at (20,-14)
-    {host Sign timing\\$t_2=-5.410,-5.374$};
+    {ホスト上のSign時間\\$t_2=-5.410,-5.374$};
   \node[box,pattern=north east lines,pattern color=black] (trace) at (61,-14)
-    {host全Sign\\edge/address差分};
+    {署名処理全体の\\制御・アドレス差分};
   \node[box,fill=black!28] (target) at (102,-14)
-    {RP2350 timing\\powmod＋10鍵Sign};
+    {RP2350実行時間\\指数演算＋10鍵Sign};
   \node[box,line width=.9pt,text width=25mm] (claim) at (145,-14)
     {結論\\現実装は\\非定数時間};
   \draw[flow] (timing.east) -- (trace.west);
@@ -22,12 +22,12 @@
   \draw[flow] (target.east) -- (claim.west);
 
   \draw[dashed,line width=.9pt] (0,-30) -- (160,-30);
-  \node[strong,fill=white,inner xsep=2mm] at (80,-30) {ここから先は本稿の証拠なし};
+  \node[strong,fill=white,inner xsep=2mm] at (80,-30) {評価範囲外};
   \node[missing] (power) at (47,-43)
-    {full-Sign\\analog power/EM};
+    {署名処理全体の\\電力・電磁波};
   \node[missing] (recovery) at (113,-43)
-    {実機traceからの\\key recovery};
+    {実機波形からの\\鍵回復};
   \draw[flow,dashed] (power.east) -- (recovery.west);
   \node[lab,anchor=north,align=center] at (80,-54)
-    {従って「電力・EM耐性あり」「鍵回復不能」は主張しない};
+    {電力・電磁波耐性と鍵回復は未評価};
 \end{tikzpicture}

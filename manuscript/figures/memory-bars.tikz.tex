@@ -18,7 +18,7 @@
   % legible in monochrome print.
   \fill[black!62] (147.30,-15) rectangle (152.06,-7);
   \draw[outline] (20,-15) rectangle (160,-7);
-  \node[strong] at (66.4,-11) {owner \num{\VTwoFullOwnerBytes}};
+  \node[strong] at (66.4,-11) {操作領域 \num{\VTwoFullOwnerBytes}};
   \node[lab] at (130.1,-11) {PSP \num{\VTwoPspReservedBytes}};
   \draw[leader] (156.0,-7) -- (156.0,-5);
   \node[lab,anchor=south east] at (160,-4.5) {空き \num{\VTwoFullUnreservedBytes}};
@@ -28,7 +28,7 @@
   \fill[pattern=north east lines,pattern color=black] (65.28,-29) rectangle (99.74,-21);
   \fill[black!62] (99.74,-29) rectangle (104.50,-21);
   \draw[outline] (20,-29) rectangle (160,-21);
-  \node[strong] at (42.6,-25) {owner \num{\VTwoLowOwnerBytes}};
+  \node[strong] at (42.6,-25) {操作領域 \num{\VTwoLowOwnerBytes}};
   \node[lab] at (82.5,-25) {PSP \num{\VTwoPspReservedBytes}};
   \node[strong] at (132.25,-25) {空き \num{\VTwoUnreservedBytes}};
 
@@ -37,13 +37,13 @@
 
   \node[lab,anchor=west] at (20,-43) {凡例：};
   \fill[black!18] (34,-46) rectangle (40,-41); \draw (34,-46) rectangle (40,-41);
-  \node[lab,anchor=west] at (42,-43.5) {guard込みowner};
+  \node[lab,anchor=west] at (42,-43.5) {保護領域込み操作領域};
   \fill[pattern=north east lines,pattern color=black] (76,-46) rectangle (82,-41); \draw (76,-46) rectangle (82,-41);
   \node[lab,anchor=west] at (84,-43.5) {PSP予約};
   \draw (117,-46) rectangle (123,-41);
   \node[lab,anchor=west] at (125,-43.5) {未予約};
 
-  \node[strong,anchor=west] at (0,-53) {(b) XIP BIN image};
+  \node[strong,anchor=west] at (0,-53) {(b) XIP用バイナリイメージ};
   \node[lab,anchor=west] at (20,-60) {全精度表 \num{\VTwoFullBinBytes} B};
   \draw[->,line width=.65pt] (68,-60) -- node[strong,above] {$+\num{\VTwoBinDeltaBytes}$ B} (103,-60);
   \node[lab,anchor=west] at (108,-60) {v2提案 \num{\VTwoBinBytes} B};

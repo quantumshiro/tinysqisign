@@ -4,31 +4,37 @@ TEXMFVAR ?= $(CURDIR)/.texlive-var
 TEXMFCACHE ?= $(TEXMFVAR)
 export TEXMFVAR TEXMFCACHE
 
+JA_FIGURES := $(wildcard figures/*.tikz.tex)
+EN_FIGURES := $(wildcard figures-en/*.tikz.tex)
+GENERATED_TEX := $(wildcard generated/*.tex)
+
 all: pdf
 
 evidence:
 	cd .. && python3 scripts/generate_manuscript_evidence.py
-	cd .. && python3 scripts/generate_future_work_status.py
 
 pdf: evidence main.pdf main-en.pdf
 
-main.pdf: main.tex references.bib
+main.pdf: evidence main.tex references.bib $(JA_FIGURES) $(GENERATED_TEX)
 	mkdir -p "$(TEXMFVAR)"
 	latexmk -lualatex -interaction=nonstopmode -halt-on-error main.tex
 
-main-en.pdf: main-en.tex references.bib
+main-en.pdf: evidence main-en.tex references.bib $(EN_FIGURES) $(GENERATED_TEX)
 	mkdir -p "$(TEXMFVAR)"
 	latexmk -lualatex -interaction=nonstopmode -halt-on-error main-en.tex
 
 # 提出直前用。生成済み証拠とPDFの双方を検査する。
 eprint-check: pdf
-	cd .. && python3 scripts/generate_future_work_status.py --require-v2-repeat --require-local-complete
 	@if grep -En '著者氏名（要入力）|所属（要入力）|author@example\.org|github\.com/USERNAME/REPOSITORY|^\\placeholderfigure|^\\todo\{' main.tex main-en.tex; then \
 		echo 'ERROR: 原稿に提出前プレースホルダが残っています。' >&2; \
 		exit 1; \
 	fi
 	@if grep -Ein 'exact|厳密' main.tex main-en.tex figures/*.tikz.tex figures-en/*.tikz.tex; then \
 		echo 'ERROR: 避けることにした表現が原稿または図に残っています。' >&2; \
+		exit 1; \
+	fi
+	@if grep -Ein '追加研究工程|今後の研究工程|本稿の成功条件|不採用理由|状態台帳|future[- ]work status|research roadmap|stage[[:space:]]+[A-Z]' main.tex main-en.tex; then \
+		echo 'ERROR: 執筆・開発工程の管理表現が原稿に残っています。' >&2; \
 		exit 1; \
 	fi
 	@if grep -En '要入力|要選択' eprint-metadata.txt; then \

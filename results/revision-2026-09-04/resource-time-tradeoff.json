@@ -109,6 +109,6 @@
       "sample": "one deterministic path per image"
     }
   ],
-  "schema": "tinysqisign-v2-resource-time-pareto-v1",
+  "schema": "tinysqisign-v2-resource-time-tradeoff-v1",
   "status": "PASS"
 }

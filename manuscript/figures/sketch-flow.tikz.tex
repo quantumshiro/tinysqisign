@@ -10,9 +10,9 @@
   strong/.style={font=\sffamily\bfseries\footnotesize}
 ]
   \node[strong,anchor=west] at (0,0) {(a) 生成時};
-  \node[box,text width=19mm] (v) at (24,-8) {packed $v$\\4 B};
+  \node[box,text width=19mm] (v) at (24,-8) {圧縮した$v$\\4 B};
   \node[box,text width=25mm] (norm) at (66,-8) {\texttt{FullNorm}\\全精度（一時）};
-  \node[box,text width=35mm] (resident) at (119,-8) {常駐\\$v:4$ B、$(\ell,h_{64}):10$ B};
+  \node[box,text width=35mm] (resident) at (119,-8) {常駐データ\\$v:4$ B、$(\ell,h_{64}):10$ B};
   \draw[flow] (v.east) -- node[lab,above] {$G_j,d_j$} (norm.west);
   \draw[flow] (norm.east) -- (resident.west);
   \node[lab,anchor=north] at (66,-13) {全精度表は保存しない};
@@ -25,17 +25,19 @@
     {両$N(v)$を\\全精度再生成};
   \node[decision] (full) at (146,-34) {$N_i=N_j$?};
   \draw[flow] (pair.east) -- (len.west);
-  \draw[flow] (len.east) -- node[lab,above] {yes} (top.west);
-  \draw[flow] (top.east) -- node[lab,above] {yes} (replay.west);
+  \draw[flow] (len.east) -- node[lab,above] {はい} (top.west);
+  \draw[flow] (top.east) -- node[lab,above] {はい} (replay.west);
   \draw[flow] (replay.east) -- (full.west);
 
   \node[box,text width=17mm] (bylen) at (42,-51) {$\ell$で確定};
   \node[box,text width=19mm] (bytop) at (78,-51) {$h_{64}$で確定};
-  \node[box,text width=18mm] (byindex) at (116,-51) {indexで確定};
+  \node[box,text width=18mm] (byindex) at (116,-51) {列挙番号で確定};
   \node[box,text width=16mm] (bynorm) at (148,-51) {$N$で確定};
-  \draw[flow] (len.south) -- node[lab,right] {no} (bylen.north);
-  \draw[flow] (top.south) -- node[lab,right] {no} (bytop.north);
-  \draw[flow] (full.south) -- node[lab,right] {no} (bynorm.north);
-  \draw[flow] (full.west) -- ++(-4,0) |- node[lab,near start,above] {yes} (byindex.north);
+  \draw[flow] (len.south) -- node[lab,right] {いいえ} (bylen.north);
+  \draw[flow] (top.south) -- node[lab,right] {いいえ} (bytop.north);
+  \draw[flow] (full.south) -- node[lab,right] {いいえ} (bynorm.north);
+  % Leave the decision vertically and enter the result at its east anchor;
+  % this avoids retracing the incoming edge or running along the box border.
+  \draw[flow] (full.west) |- node[lab,near start,left] {はい} (byindex.east);
   \node[strong,anchor=west] at (91,-24.5) {再生成経路：\num{5041}/\num{2062361}=\num{0.2444}\%};
 \end{tikzpicture}
